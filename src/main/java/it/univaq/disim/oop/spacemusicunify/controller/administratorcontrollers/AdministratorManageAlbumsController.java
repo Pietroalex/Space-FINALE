@@ -22,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -33,8 +34,7 @@ import java.util.*;
 public class AdministratorManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
 	
     private final ViewDispatcher dispatcher;
-    private final SPACEMusicUnifyService SPACEMusicUnifyService;
-    private final UtenteGenericoService utenteGenerico;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
     private Artista artist;
 
 
@@ -66,8 +66,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
     public AdministratorManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        SPACEMusicUnifyService = factory.getAmministratoreService();
-        utenteGenerico = factory.getUtenteGenerico();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
 
     @Override
@@ -97,10 +96,10 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
             final Button modify = new Button("Detail");
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
-                if (this.utenteGenerico.getSituation() == ViewSituations.user) {
-                    this.utenteGenerico.setSituation(ViewSituations.user);
+                if (spaceMusicUnifyService.getSituation() == ViewSituations.user) {
+                    spaceMusicUnifyService.setSituation(ViewSituations.user);
                 } else {
-                    this.utenteGenerico.setSituation(ViewSituations.detail);
+                    spaceMusicUnifyService.setSituation(ViewSituations.detail);
                 }
 
                 dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
@@ -108,7 +107,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
             return new SimpleObjectProperty<Button>(modify);
         });
 
-        if (this.utenteGenerico.getSituation() == ViewSituations.user){
+        if (spaceMusicUnifyService.getSituation() == ViewSituations.user){
             page.setMaxHeight(500);
         }
     }
@@ -117,7 +116,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
         this.artist = discography.iterator().next().getArtist();
 
         stageName.setText(this.artist.getStageName());
-        if(utenteGenerico.getSituation() == ViewSituations.user) {
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.user) {
         	newAlbumButton.setVisible(false);
         	operation.setText("View");
         }
@@ -133,9 +132,16 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
     	newAlbum.setGenre(Genere.rock);
     	newAlbum.setRelease(LocalDate.now());
 	    newAlbum.setArtist(artist);
-		/*newAlbum.setCover("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"viste"+ File.separator+"RAMfiles"+ File.separator+"cover.png");
-*/
-        this.utenteGenerico.setSituation(ViewSituations.newobject);
+        Picture picture = new Picture();
+        ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+        try {
+            outStreamObj.writeBytes(Files.readAllBytes(Paths.get("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"dati"+ File.separator+"RAMfiles"+ File.separator+"cover.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        picture.setPhoto(outStreamObj.toByteArray());
+        newAlbum.setCover(picture);
+        spaceMusicUnifyService.setSituation(ViewSituations.newobject);
 
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", newAlbum);
     }

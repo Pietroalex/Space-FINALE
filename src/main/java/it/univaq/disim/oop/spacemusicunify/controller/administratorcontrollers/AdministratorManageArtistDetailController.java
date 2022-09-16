@@ -5,6 +5,7 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
 import it.univaq.disim.oop.spacemusicunify.domain.Artista;
 import it.univaq.disim.oop.spacemusicunify.domain.Nazionalità;
+import it.univaq.disim.oop.spacemusicunify.domain.Picture;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,20 +21,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class AdministratorManageArtistDetailController implements Initializable, DataInitializable<Artista>{
 
-    private final UtenteGenericoService utenteGenerico;
-    private ViewDispatcher dispatcher;
+    private final ViewDispatcher dispatcher;
     private Artista artist;
 
 
@@ -86,14 +83,13 @@ public class AdministratorManageArtistDetailController implements Initializable,
     private Label existingLabel;
 
     private Amministratore admin;
-    private SPACEMusicUnifyService SPACEMusicUnifyService;
+    private SPACEMusicUnifyService spaceMusicUnifyService;
 
     private static String imgUrl;
     public AdministratorManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        SPACEMusicUnifyService = factory.getAmministratoreService();
-        utenteGenerico = factory.getUtenteGenerico();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 
     }
 
@@ -140,14 +136,12 @@ public class AdministratorManageArtistDetailController implements Initializable,
 	    this.biography.setEditable(false);
     }
     public void loadImages(){
-        if (!(this.artist.getPictures().isEmpty()) && (this.artist.getPictures().get(0).endsWith(".png") || this.artist.getPictures().get(0).endsWith(".jpg"))) {
-            for( String img: this.artist.getPictures()) {
+        if (!(this.artist.getPictures().isEmpty())) {
+            for( Picture img: this.artist.getPictures()) {
                 ImageView imgview;
-                try {
-                    imgview = new ImageView(new Image(Files.newInputStream(Paths.get(img))));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
+                    imgview = new ImageView(new Image(new ByteArrayInputStream(img.getPhoto())));
+
                 imgview.setFitHeight(120);
                 imgview.setFitWidth(120);
                 this.images.getChildren().add(imgview);
@@ -155,30 +149,28 @@ public class AdministratorManageArtistDetailController implements Initializable,
         }
     }
     public void loadModifyImages() {
-        if (!(this.artist.getPictures().isEmpty()) && (this.artist.getPictures().get(0).endsWith(".png") || this.artist.getPictures().get(0).endsWith(".jpg"))) {
-            for (String img : this.artist.getPictures()) {
+        if (!(this.artist.getPictures().isEmpty()) ) {
+            for (Picture img : this.artist.getPictures()) {
 
                 ImageView imgs;
-                try {
-                    imgs = new ImageView(new Image(Files.newInputStream(Paths.get(img))));
+
+                    imgs = new ImageView(new Image(new ByteArrayInputStream(img.getPhoto())));
                     imgs.setFitHeight(120);
                     imgs.setFitWidth(120);
                     imgs.setCursor(Cursor.HAND);
 
                     imgs.setOnMouseClicked(event -> {
 
-                        this.focusImage(img);
+                        this.focusImage(String.valueOf(img.getId()));
                     });
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
 
 
                 modifyImages.getChildren().add(imgs);
             }
             ImageView imgAdd;
             try {
-                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "RAMfiles" + File.separator + "addp.png")));
+                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "addp.png")));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -191,7 +183,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
         }else{
             ImageView imgAdd;
             try {
-                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "RAMfiles" + File.separator + "addp.png")));
+                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "addp.png")));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -214,9 +206,9 @@ public class AdministratorManageArtistDetailController implements Initializable,
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
                 artist.setNationality(nationalityField.getValue());
 
-                SPACEMusicUnifyService.add(artist);
+                spaceMusicUnifyService.add(artist);
             } else {
-                SPACEMusicUnifyService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures());
+                spaceMusicUnifyService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures());
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
@@ -240,8 +232,8 @@ public class AdministratorManageArtistDetailController implements Initializable,
     }
     @FXML
     public void manageAlbums(){
-        if(this.utenteGenerico.getSituation() == ViewSituations.user){
-            this.utenteGenerico.setSituation(ViewSituations.user);
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.user){
+            spaceMusicUnifyService.setSituation(ViewSituations.user);
         }
         ViewDispatcher dispatcher = ViewDispatcher.getInstance();
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());
@@ -260,8 +252,17 @@ public class AdministratorManageArtistDetailController implements Initializable,
             String path = file.getPath();
             if(path.endsWith(".png") || path.endsWith(".jpg")){
                 existingLabel.setVisible(false);
-                List<String> tempimg = this.artist.getPictures();
-                tempimg.add(path);
+                Set<Picture> tempimg = this.artist.getPictures();
+                try {
+                    Picture picture = new Picture();
+                    ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+                    outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
+                    picture.setPhoto(outStreamObj.toByteArray());
+                    tempimg.add(picture);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 modifyImages.getChildren().clear();
                 this.artist.setPictures(tempimg);
                 this.loadModifyImages();
@@ -278,10 +279,10 @@ public class AdministratorManageArtistDetailController implements Initializable,
     }
     @FXML
     public void deleteThisImage(ActionEvent event){
-        List<String> tempimg = this.artist.getPictures();
+        Set<Picture> tempimg = this.artist.getPictures();
 
-        for(String img: tempimg){
-            if(this.imgUrl.equals(img)){
+        for(Picture img: tempimg){
+            if(imgUrl.equals(img.getId().toString())){
                 tempimg.remove(img);
                 modifyImages.getChildren().clear();
                 this.artist.setPictures(tempimg);
@@ -294,7 +295,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){
-        this.imgUrl = "";
+        imgUrl = String.valueOf(0);
         cancelbox.setVisible(false);
 
     }
@@ -302,7 +303,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
     public void deleteThisArtist(){
         try{
             if (artist.getId() != null) {
-                SPACEMusicUnifyService.delete(artist);
+                spaceMusicUnifyService.delete(artist);
             }else{
                 System.out.println("Artist not found");
             }
@@ -313,7 +314,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
         }
     }
     public void setView(){
-        switch (this.utenteGenerico.getSituation()){
+        switch (spaceMusicUnifyService.getSituation()){
             case detail:
                 masterPane.getChildren().setAll(infoPane.getChildren()) ;
                 break;
@@ -334,18 +335,18 @@ public class AdministratorManageArtistDetailController implements Initializable,
                 this.deleteartist.setVisible(false);
                 this.modify.setVisible(false);
                 this.albums.setText("View Artist albums");
-                this.utenteGenerico.setSituation(ViewSituations.user);
+                spaceMusicUnifyService.setSituation(ViewSituations.user);
                 this.masterPane.getChildren().setAll(this.infoPane.getChildren());
                 break;
         }
     }
     @FXML
     public void showModify(ActionEvent event) {
-        if(this.utenteGenerico.getSituation() == ViewSituations.detail){
-            this.utenteGenerico.setSituation(ViewSituations.modify);
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
+            spaceMusicUnifyService.setSituation(ViewSituations.modify);
             this.setView();
         }else {
-            this.utenteGenerico.setSituation(ViewSituations.detail);
+            spaceMusicUnifyService.setSituation(ViewSituations.detail);
             this.setView();
         }
     }

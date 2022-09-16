@@ -1,9 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
-import it.univaq.disim.oop.spacemusicunify.business.MediaPlayerSettings;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.business.UtenteService;
-import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Utente;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
@@ -17,17 +14,18 @@ import javafx.util.Duration;
 
 public class UserLayoutController implements DataInitializable<Utente> {
 
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	private ViewDispatcher dispatcher;
 	@FXML
 	private TextField searchField;
-	private UtenteService utenteService;
+
 	private Utente user;
 	private MediaPlayerSettings mediaPlayerSettings;
 
 	public UserLayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		utenteService = factory.getUtenteService();
+		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	@Override
@@ -50,7 +48,7 @@ public class UserLayoutController implements DataInitializable<Utente> {
 	}
 	@FXML
 	public void searchAction(ActionEvent event) {
-		utenteService.setRicerca(searchField.getText());
+		spaceMusicUnifyService.setRicerca(searchField.getText());
 		dispatcher.renderView("UserViews/RicercaView/ricercaView", user);
 	}
 

@@ -34,7 +34,7 @@ public class UtilityObjectRetriever extends Object {
 		String str = file.substring(file.indexOf("dati"+ File.separator)+ 5);
 		System.out.println(str);
 		switch(str) {
-			case "canzoni.txt": 
+			case "songs.txt":
 				System.out.println("canzone");
 				try {
 					FileData fileData = Utility.readAllRows(file);
@@ -70,7 +70,7 @@ public class UtilityObjectRetriever extends Object {
 				}
 
 				break;
-			case "artisti.txt":
+			case "artists.txt":
 				System.out.println("artista");
 				try {
 					FileData fileData = Utility.readAllRows(file);
@@ -80,6 +80,23 @@ public class UtilityObjectRetriever extends Object {
 							System.out.println("cerco artista");
 							object = findArtist(colonne, file);
 							System.out.println("trovato artista");
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+
+				break;
+			case "pictures.txt":
+				System.out.println("pictures");
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] colonne : fileData.getRighe()) {
+						if(colonne[0].equals(id)) {
+							System.out.println("cerco picture");
+							object = findPicture(colonne, file);
+							System.out.println("trovato pictur");
 						}
 					}
 				} catch (IOException e) {
@@ -114,31 +131,25 @@ public class UtilityObjectRetriever extends Object {
 		album.setTitle(colonne[1]);
 		album.setGenre(Genere.valueOf(colonne[2]));
 		/*album.setCover(immaginiDirectory+colonne[3]);*/
-		Picture picture = new Picture();
-		ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-		try {
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(immaginiDirectory+"cover1.png")));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		picture.setPhoto(outStreamObj.toByteArray());
-		album.setCover(picture);
+
+		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(colonne[3], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"pictures.txt"))));
+
 		album.setRelease(LocalDate.parse(colonne[4]));
 		if(currentArtist != null) {
 			if(colonne[5].equals(currentArtist.getId().toString())){
 				album.setArtist(currentArtist);
 			}else{
-				album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artisti.txt")));
+				album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
 			}
 		} else {
-			album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artisti.txt")));
+			album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
 		}
 
 		List<Canzone> canzoneList = new ArrayList<>();
 		currentAlbum = album;
 		for(String canzoni: Utility.leggiArray(colonne[6])){
 			System.out.println("id "+canzoni);
-			canzoneList.add((Canzone) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"canzoni.txt")));
+			canzoneList.add((Canzone) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
 
 		}
 		album.setSongList(canzoneList);
@@ -157,10 +168,12 @@ public class UtilityObjectRetriever extends Object {
 		artista.setNationality(Nazionalità.valueOf(colonne[4]));
 
 
-		List<String> immagini = new ArrayList<>();
-		for(String img : Utility.leggiArray(colonne[5])) {
+		Set<Picture> immagini = new HashSet<>();
+/*		for(String img : Utility.leggiArray(colonne[5])) {
+			Picture picture = new Picture();
+			picture.setPhoto();
 			immagini.add(immaginiDirectory + img);
-		}
+		}*/
 		artista.setPictures(immagini);
 		currentArtist = artista;
 		Set<Album> albums = new HashSet<>();
@@ -169,6 +182,21 @@ public class UtilityObjectRetriever extends Object {
 		}
 		artista.setDiscography(albums);
 		return artista;
+	}
+	private static Picture findPicture(String[] colonne, String file){
+		Picture picture = new Picture();
+		picture.setId(Integer.valueOf(colonne[0]));
+		ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+		try {
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(immaginiDirectory+colonne[1])));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		System.out.println("ecco bytes "+colonne[1]);
+		picture.setPhoto(outStreamObj.toByteArray());
+		picture.setHeight(Integer.parseInt(colonne[2]));
+		picture.setWidth(Integer.parseInt(colonne[3]));
+		return picture;
 	}
 }
 

@@ -27,8 +27,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
 
 
     private final ViewDispatcher dispatcher;
-    private final SPACEMusicUnifyService SPACEMusicUnifyService;
-    private final UtenteGenericoService utenteGenerico;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
     @FXML
     private AnchorPane masterPane;
     @FXML
@@ -77,8 +76,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        SPACEMusicUnifyService = factory.getAmministratoreService();
-        utenteGenerico = factory.getUtenteGenerico();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -148,12 +146,12 @@ public class AdministratorManageSongDetailController implements Initializable, D
 
                 canzone.setLyrics(lyricsField.getText());
 
-                SPACEMusicUnifyService.add(canzone);
+                spaceMusicUnifyService.add(canzone);
             } else {
                 System.out.println("eseguo modify");
-                SPACEMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
+                spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
             }
-            this.utenteGenerico.setSituation(ViewSituations.detail);
+            spaceMusicUnifyService.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
         } catch (AlreadyTakenFieldException e) {
@@ -204,7 +202,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
     public void deleteThisSong(ActionEvent event) {
         try{
             if (canzone.getId() != null) {
-                SPACEMusicUnifyService.delete(canzone);
+                spaceMusicUnifyService.delete(canzone);
             }else{
                 System.out.println("Song not found");
             }
@@ -215,7 +213,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
         }
     }
     public void setView(){
-        switch (this.utenteGenerico.getSituation()){
+        switch (spaceMusicUnifyService.getSituation()){
             case detail:
                 this.back.setVisible(true);
                 this.masterPane.getChildren().setAll(this.infoPane.getChildren()) ;
@@ -243,11 +241,11 @@ public class AdministratorManageSongDetailController implements Initializable, D
     }
     @FXML
     public void showModify(ActionEvent event) {
-        if(this.utenteGenerico.getSituation() == ViewSituations.detail){
-            this.utenteGenerico.setSituation(ViewSituations.modify);
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
+            spaceMusicUnifyService.setSituation(ViewSituations.modify);
             this.setView();
         }else {
-            this.utenteGenerico.setSituation(ViewSituations.detail);
+            spaceMusicUnifyService.setSituation(ViewSituations.detail);
             this.setView();
         }
     }

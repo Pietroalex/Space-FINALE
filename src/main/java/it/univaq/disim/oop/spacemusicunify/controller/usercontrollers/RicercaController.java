@@ -46,7 +46,7 @@ import javafx.stage.Stage;
 
 public class RicercaController implements Initializable, DataInitializable<Utente>{
 
-	private final UtenteGenericoService generalUser;
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TableView<Canzone> song;
 	@FXML
@@ -94,7 +94,6 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 	@FXML
 	private TableColumn<Album, Button> albumInfo;
 	private ViewDispatcher dispatcher;
-	private UtenteService utenteService;
 	private String ricerca;
 	private Utente utente;
 	private MediaPlayerSettings mediaPlayerSettings;
@@ -102,14 +101,14 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 	public RicercaController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        utenteService = factory.getUtenteService();
-		generalUser = factory.getUtenteGenerico();
+		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.ricerca = utenteService.getRicerca();
+		this.ricerca = spaceMusicUnifyService.getRicerca();
 		//songTable
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
@@ -129,7 +128,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				this.generalUser.setSituation(ViewSituations.user);
+				spaceMusicUnifyService.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);
@@ -145,7 +144,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			}
 
 			addButton.setOnAction((ActionEvent event) -> {
-				utenteService.addSongToQueue(utente, param.getValue());
+				spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
 				if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 					mediaPlayerSettings.getMediaPlayer().stop();
 					mediaPlayerSettings.getMediaPlayer().dispose();
@@ -167,7 +166,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				this.generalUser.setSituation(ViewSituations.user);
+				spaceMusicUnifyService.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);
@@ -207,7 +206,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 						}
 					}
 					if(!alreadyAdded) {
-						utenteService.addSongToQueue(utente, canzoneAlbum);
+						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
 					}
 				}
 
@@ -227,7 +226,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				this.generalUser.setSituation(ViewSituations.user);
+				spaceMusicUnifyService.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);
@@ -245,12 +244,12 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 
 	@Override
 	public void initializeData(Utente utente) {
-		this.ricerca = utenteService.getRicerca();
+		this.ricerca = spaceMusicUnifyService.getRicerca();
 		this.utente = utente;
 
-		try {
+
 			List<Artista> artistList = new ArrayList<>();
-			for(Artista artista: generalUser.getAllArtists()) {
+			for(Artista artista: spaceMusicUnifyService.getAllArtists()) {
 				if(artista.getStageName().contains(ricerca.strip())) {
 					artistList.add(artista);
 				}
@@ -260,7 +259,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 
 
 			List<Canzone> songList = new ArrayList<>();
-			for(Canzone song: generalUser.getAllSongs()) {
+			for(Canzone song: spaceMusicUnifyService.getAllSongs()) {
 				if(song.getTitle().contains(ricerca.strip()) || song.getGenre().toString().equals(ricerca)) {
 					songList.add(song);
 				}
@@ -270,7 +269,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 
 
 			List<Album> albumList = new ArrayList<>();
-			for(Album album: generalUser.getAllAlbums()) {
+			for(Album album: spaceMusicUnifyService.getAllAlbums()) {
 				if(album.getTitle().contains(ricerca.strip()) || album.getGenre().toString().equals(ricerca)) {
 					albumList.add(album);
 				}
@@ -278,9 +277,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			ObservableList<Album> albumData = FXCollections.observableArrayList(albumList);
 			album.setItems(albumData);
 
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+
 
 		song.setRowFactory( tablerow -> {
 			TableRow<Canzone> canzone = new TableRow<>();
@@ -292,18 +289,18 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 						mediaPlayerSettings.setPlayerState(PlayerState.searchDoubleClick);
 						System.out.println("this.utente.getcurrentSong() != null");
 						if(this.utente.getcurrentSong().getId().intValue() != canzone.getItem().getId().intValue()) {
-							
-							utenteService.deleteSongFromQueue(utente, canzone.getItem());	//rimuovo la canzone se già presente in coda
+
+							spaceMusicUnifyService.deleteSongFromQueue(utente, canzone.getItem());	//rimuovo la canzone se già presente in coda
 							
 							//carica la canzone nel player
 							if(utente.getSongQueue().size() == this.utente.getcurrentPosition()) {
-								utenteService.addSongToQueue(utente, canzone.getItem());
+								spaceMusicUnifyService.addSongToQueue(utente, canzone.getItem());
 								System.out.println("utente.getSongQueue().size() <= this.utente.getcurrentPosition()");
 								dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 							} else {
 								mediaPlayerSettings.getMediaPlayer().stop();
 								mediaPlayerSettings.getMediaPlayer().dispose();
-								utenteService.replaceCurrentSong(utente, canzone.getItem());
+								spaceMusicUnifyService.replaceCurrentSong(utente, canzone.getItem());
 								System.out.println("utente.getSongQueue().size() > this.utente.getcurrentPosition()");
 								dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 							}
@@ -312,7 +309,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 							System.out.println("la canzone è già in riproduzione al momento");
 						}
 					} else {
-						utenteService.addSongToQueue(utente, canzone.getItem());
+						spaceMusicUnifyService.addSongToQueue(utente, canzone.getItem());
 
 						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 					}
@@ -359,7 +356,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 					}
 				}
 				try {
-					utenteService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					spaceMusicUnifyService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -371,7 +368,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 		tableView.getColumns().addAll(name, add);
 
 		try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(utenteService.getAllPlaylists(utente));
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(spaceMusicUnifyService.getAllPlaylists(utente));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
 			e1.printStackTrace();

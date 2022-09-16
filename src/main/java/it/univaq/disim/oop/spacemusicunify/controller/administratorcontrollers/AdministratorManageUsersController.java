@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdministratorManageUsersController implements Initializable, DataInitializable<Amministratore>{
-    private final SPACEMusicUnifyService SPACEMusicUnifyService;
-    private final UtenteGenericoService utenteService;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
     private TableView<Utente> usersList;
@@ -40,8 +39,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        SPACEMusicUnifyService = factory.getAmministratoreService();
-        utenteService = factory.getUtenteGenerico();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,7 +54,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
 
-                this.utenteService.setSituation(ViewSituations.detail);
+                spaceMusicUnifyService.setSituation(ViewSituations.detail);
                 dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", param.getValue());
             });
             return new SimpleObjectProperty<Button>(modify);
@@ -65,7 +63,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
     @Override
     public void initializeData(Amministratore amministratore) {
 
-            List<Utente> utenti = utenteService.getAllUsers();
+            List<Utente> utenti = spaceMusicUnifyService.getAllUsers();
             ObservableList<Utente> utenteData = FXCollections.observableArrayList(utenti);
             usersList.setItems(utenteData);
 
@@ -76,7 +74,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
         utente.setUsername("utente");
         utente.setPassword("123456");
 
-        this.utenteService.setSituation(ViewSituations.newobject);
+        spaceMusicUnifyService.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", utente);
 
     }

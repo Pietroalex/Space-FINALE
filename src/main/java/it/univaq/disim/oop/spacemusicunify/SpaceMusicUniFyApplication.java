@@ -10,7 +10,7 @@ public class SpaceMusicUniFyApplication extends Application {
 
 	public static void main(String[] args) {
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		SPACEMusicUnifyService SPACEMusicUnifyService = factory.getAmministratoreService();
+		SPACEMusicUnifyService SPACEMusicUnifyService = factory.getSPACEMusicUnifyService();
 		SPACEMusicUnifyService.setAllDefaults();
 		
 		launch(args);

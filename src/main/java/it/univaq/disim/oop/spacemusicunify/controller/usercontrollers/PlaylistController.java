@@ -6,11 +6,7 @@ import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.MediaPlayerSettings;
-import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.business.UtenteService;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
@@ -34,6 +30,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class PlaylistController implements Initializable, DataInitializable<Playlist>{
 
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TableView<Canzone> playlistTable;
 	@FXML
@@ -57,13 +54,13 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 	private ViewDispatcher dispatcher;
 	
-	private UtenteService utenteService;
+
 	
 	private MediaPlayerSettings mediaPlayerSettings;
 	
 	public PlaylistController() {
 		dispatcher = ViewDispatcher.getInstance();
-		utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteService();
+		spaceMusicUnifyService = SpacemusicunifyBusinessFactory.getInstance().getSPACEMusicUnifyService();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	
@@ -95,7 +92,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				
 				playlist.getSongList().remove(param.getValue());
 				try {
-					utenteService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser());
+					spaceMusicUnifyService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser());
 				} catch (BusinessException e) {
 					e.printStackTrace();
 				}
@@ -142,9 +139,8 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 	@FXML
 	public void deletePlaylist(ActionEvent event) {
-		UtenteService utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteService();
 		try {
-			utenteService.deletePlaylist(playlist);
+			spaceMusicUnifyService.deletePlaylist(playlist);
 		} catch (BusinessException e) {
 			e.printStackTrace();
 		}

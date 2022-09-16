@@ -4,10 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.business.MediaPlayerSettings;
-import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.business.UtenteService;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
 import it.univaq.disim.oop.spacemusicunify.domain.Utente;
@@ -26,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class QueueController implements Initializable, DataInitializable<Utente> {
 	private final ViewDispatcher dispatcher;
 	private final MediaPlayerSettings mediaPlayerSettings;
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TableView<Canzone> queueTable;
 	@FXML
@@ -39,12 +37,11 @@ public class QueueController implements Initializable, DataInitializable<Utente>
 	@FXML
 	private TableColumn<Canzone, Button> delete;
 	private Utente utente;
-	private UtenteService utenteService;
 	
 	public QueueController(){
 		dispatcher = ViewDispatcher.getInstance();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
-		utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteService();
+		spaceMusicUnifyService = SpacemusicunifyBusinessFactory.getInstance().getSPACEMusicUnifyService();
 	}
 	
 	@Override
@@ -73,7 +70,7 @@ public class QueueController implements Initializable, DataInitializable<Utente>
 					if(utente.getSongQueue().size() > 1 ){				//più canzoni in riproduzione
 
 						if(utente.getcurrentPosition() + 1 == utente.getSongQueue().size()){		//ultima canzone in coda uguale a canzone in corso
-							utenteService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
+							spaceMusicUnifyService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
 							mediaPlayerSettings.setPlayerState(PlayerState.queueControllerLoad);
 						}else {																			//canzone corrente tra prima posizione e penultima
 							if(utente.getcurrentPosition() != 0){
@@ -103,7 +100,7 @@ public class QueueController implements Initializable, DataInitializable<Utente>
 									System.out.println("canzone da eliminare uguale a canzone precedente");
 								}
 								mediaPlayerSettings.setPlayerState(PlayerState.queueControllerResume);
-								utenteService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
+								spaceMusicUnifyService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
 								break;
 							}
 						}
@@ -115,7 +112,7 @@ public class QueueController implements Initializable, DataInitializable<Utente>
 				MediaPlayerSettings.getInstance().getMediaPlayer().stop();
 				MediaPlayerSettings.getInstance().getMediaPlayer().dispose();
 				queueTable.getItems().remove(param.getValue());
-				utenteService.deleteSongFromQueue(utente, param.getValue());
+				spaceMusicUnifyService.deleteSongFromQueue(utente, param.getValue());
 				queueTable.refresh();
 
 				dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);

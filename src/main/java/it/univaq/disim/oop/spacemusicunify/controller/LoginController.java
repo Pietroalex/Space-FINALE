@@ -16,7 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class LoginController implements Initializable, DataInitializable<Object>{
-	
+
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TextField username;
 	@FXML
@@ -30,14 +31,12 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	
 	private ViewDispatcher dispatcher;
 	
-	private UtenteGenericoService utenteGenericoService;
-	private SPACEMusicUnifyService SPACEMusicUnifyService;
+
 	
 	public LoginController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		utenteGenericoService = factory.getUtenteGenerico();
-		SPACEMusicUnifyService = factory.getAmministratoreService();
+		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	private void loginAction(ActionEvent event) throws ViewException {
 		
 		try {
-			UtenteGenerico utenteGenerico = utenteGenericoService.authenticate(username.getText(), password.getText());
+			UtenteGenerico utenteGenerico = spaceMusicUnifyService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(utenteGenerico);
 		} catch (UtenteGenericoNotFoundException e) {
 			errorLabel.setVisible(true);
@@ -71,7 +70,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 		utente.setUsername("utente");
 		utente.setPassword("123456");
 
-		utenteGenericoService.setSituation(ViewSituations.register);
+		spaceMusicUnifyService.setSituation(ViewSituations.register);
 		dispatcher.registerView("RegisterView/user_detail", utente);
 	}
 

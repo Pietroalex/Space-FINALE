@@ -1,8 +1,8 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
+import it.univaq.disim.oop.spacemusicunify.business.SPACEMusicUnifyService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.business.UtenteService;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
@@ -29,7 +29,8 @@ import java.util.ResourceBundle;
 
 public class PlaylistPaneController implements Initializable, DataInitializable<Utente> {
     private final ViewDispatcher dispatcher;
-    private final UtenteService utenteService;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
+
     @FXML
     private TableView<Playlist> playlistView;
     @FXML
@@ -39,7 +40,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     public PlaylistPaneController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        utenteService = factory.getUtenteService();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
 
     @Override
@@ -57,7 +58,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     public void initializeData(Utente utente) {
         this.user = utente;
         try {
-            List<Playlist> result = utenteService.getAllPlaylists(utente);
+            List<Playlist> result = spaceMusicUnifyService.getAllPlaylists(utente);
             ObservableList<Playlist> playlistData = FXCollections.observableArrayList(result);
             playlistView.setItems(playlistData);
 
@@ -94,7 +95,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             playlist.setUser(this.user);
             // aggiungere la playlist alla TableView
             try {
-                utenteService.addNewPlaylist(playlist);
+                spaceMusicUnifyService.addNewPlaylist(playlist);
             } catch (BusinessException e1) {
                 dispatcher.renderError(e1);
             }

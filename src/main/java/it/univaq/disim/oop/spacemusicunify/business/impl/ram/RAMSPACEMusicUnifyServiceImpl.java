@@ -3,7 +3,11 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -12,28 +16,30 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	private static List<Artista> storedArtists = new ArrayList<>();
 	private static List<Album> storedAlbums = new ArrayList<>();
 	private static List<Canzone> storedSongs = new ArrayList<>();
+	private static List<Utente> storedUsers = new ArrayList<>();
+	private static int idUser = 1;
+	private static ViewSituations situation;
 
-
+	private List<Playlist> storedPlaylists = new ArrayList<>();
+	private String ricerca;
+	private static int id = 1;
 
 	private static int idArtists = 1;
 	private static int idAlbums = 1;
 	private static int idSongs = 1;
 
-	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "RAMfiles" + File.separator;
-	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "RAMfiles" + File.separator;
+	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
+	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
 
 
 	@Override
 	public void add(Utente utente) throws BusinessException {
-		UtenteGenericoService utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteGenerico();
-		utenteService.createNewUser(utente);
+		createNewUser(utente);
 	}
 
 	@Override
 	public void modify(Integer id, String username, String password) throws AlreadyTakenFieldException {
-		UtenteGenericoService utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteGenerico();
-
-		List<Utente> utenti = utenteService.getAllUsers();
+		List<Utente> utenti = getAllUsers();
 
 		for (Utente user : utenti) {
 			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
@@ -52,13 +58,11 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	@Override
 	public void delete(Utente utente) {
-		UtenteGenericoService utenteGenericoService = SpacemusicunifyBusinessFactory.getInstance().getUtenteGenerico();
-		UtenteService utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteService();
 
-		List<Utente> utenti = utenteGenericoService.getAllUsers();
+		List<Utente> utenti = getAllUsers();
 		List<Playlist> playlists = null;
 		try {
-			playlists = utenteService.getAllPlaylists(utente);
+			playlists = getAllPlaylists(utente);
 			System.out.println(playlists);
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
@@ -74,7 +78,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		for (Playlist playlist : playlistList) {
 			if (playlist.getUser().equals(utente)) {
 				try {
-					utenteService.deletePlaylist(playlist);
+					deletePlaylist(playlist);
 				} catch (BusinessException e) {
 					e.printStackTrace();
 				}
@@ -82,6 +86,21 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		}
 
 		System.out.println(playlists);
+	}
+
+	@Override
+	public void add(Picture picture) throws BusinessException {
+
+	}
+
+	@Override
+	public void modify(Integer id, byte[] photo, int height, int width) throws BusinessException {
+
+	}
+
+	@Override
+	public void delete(Picture picture) throws BusinessException {
+
 	}
 
 	@Override
@@ -137,7 +156,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, List<String> images)
+	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, Set<Picture> images)
 			throws AlreadyTakenFieldException {
 		for (Artista artista : storedArtists) {
 			if (artista.getStageName().equals(stageName) && artista.getId().intValue() != id.intValue()) {
@@ -152,6 +171,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				artist.setBiography(biography);
 				artist.setYearsOfActivity(yearsOfActivity);
 				artist.setNationality(nationality);
+				artist.setPictures(images);
 			}
 		}
 
@@ -373,10 +393,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			storedAlbums.forEach(
 					(Album albums) -> canzone.getAlbum().getSongList().removeIf((Canzone canzonecheck) -> canzonecheck == canzone));
-			UtenteGenericoService utenteGenService = SpacemusicunifyBusinessFactory.getInstance().getUtenteGenerico();
-			UtenteService utenteService = SpacemusicunifyBusinessFactory.getInstance().getUtenteService();
-			for(Utente utente : utenteGenService.getAllUsers()) {
-				utenteService.getAllPlaylists(utente).forEach(
+
+			for(Utente utente : getAllUsers()) {
+				getAllPlaylists(utente).forEach(
 						(Playlist playlist) -> playlist.getSongList().removeIf((Canzone canzonecheck) -> canzonecheck == canzone));
 			}
 		} else {
@@ -398,11 +417,30 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artista1.setBiography("Sono Pasquale Arrosto, suono la musica elettronica");
 		artista1.setNationality(Nazionalità.italian);
 		artista1.setYearsOfActivity(6);
-		List<String> artista1img = new ArrayList<>();
-		artista1img.add(path+"pasqualearrosto.jpg");
-		artista1img.add(path+"group4.jpg");
-		artista1img.add(path+"group4.jpg");
-		artista1img.add(path+"group4.jpg");
+		Set<Picture> artista1img = new HashSet<>();
+		try {
+			Picture picture = new Picture();
+			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"pasqualearrosto.jpg")));
+			picture.setPhoto(outStreamObj.toByteArray());
+			artista1img.add(picture);
+
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
+			picture.setPhoto(outStreamObj.toByteArray());
+			artista1img.add(picture);
+
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
+			picture.setPhoto(outStreamObj.toByteArray());
+			artista1img.add(picture);
+
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
+			picture.setPhoto(outStreamObj.toByteArray());
+			artista1img.add(picture);
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 		artista1.setPictures(artista1img);
 
 		// creo l'album dell'artista1
@@ -657,11 +695,19 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artista2.setBiography("We are 2 bassist, We are the new rock problems");
 		artista2.setNationality(Nazionalità.british);
 		artista2.setYearsOfActivity(10);
-		List<String> img1artista2 = new ArrayList<>();
-		img1artista2.add(path+"2bassists.png");
+		Set<Picture> artista2img = new HashSet<>();
+		try {
+			Picture picture = new Picture();
+			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"2bassists.png")));
+			picture.setPhoto(outStreamObj.toByteArray());
+			artista2img.add(picture);
 
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
-		artista2.setPictures(img1artista2);
+		artista2.setPictures(artista2img);
 
 		// creo l'album dell'artista2
 		Album artista2album1 = new Album();
@@ -817,19 +863,6 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			throw new RuntimeException(e);
 		}
 
-
-
-		/*
-		 * Artista artista3 = new Artista(); artista3.setId(idArtists++);
-		 * artista3.setStageName("British Wonder");
-		 * artista3.setBiography("We are 2 bassist, We are the new rock problems");
-		 * artista3.setNationality(Nationality.english); artista3.setYearsOfActivity(3);
-		 * List<Picture> img3 = new ArrayList<>(); img3.add(new
-		 * Picture("/viste/AdministratorViews/RAMfiles/2bassists.png"));
-		 * artista3.setPicture(img3); artista.add(artista3);
-		 * 
-		 */
-
 		storedSongs.addAll(canzoni);
 		storedAlbums.addAll(albums);
 		storedArtists.addAll(artisti);
@@ -852,77 +885,130 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void addNewPlaylist(Playlist playlist) throws BusinessException {
-
-	}
-
-	@Override
-	public void modify(Integer id, String title, List<Canzone> songlist, Utente user) throws BusinessException {
-
-	}
-
-	@Override
-	public List<Playlist> getAllPlaylists(Utente utente) throws BusinessException {
-		return null;
-	}
-
-	@Override
-	public void deletePlaylist(Playlist playlist) throws BusinessException {
-
-	}
-
-	@Override
-	public String getRicerca() {
-		return null;
-	}
-
-	@Override
-	public void setRicerca(String ricerca) {
-
-	}
-
-	@Override
-	public void addSongToQueue(Utente utente, Canzone canzone) {
-
-	}
-
-	@Override
-	public void deleteSongFromQueue(Utente utente, Canzone canzone) {
-
-	}
-
-	@Override
-	public void updateCurrentSong(Utente utente, int position) {
-
-	}
-
-	@Override
-	public void replaceCurrentSong(Utente utente, Canzone canzone) {
-
-	}
-
-	@Override
 	public void setSituation(ViewSituations sit) {
-
+		situation = sit;
 	}
 
 	@Override
 	public ViewSituations getSituation() {
-		return null;
+		return situation;
+	}
+
+	@Override
+	public void createNewUser(Utente utente) throws BusinessException, AlreadyExistingException {
+		// controllo se l'utente già è presente
+		for (Utente user : storedUsers) {
+			if (user.getUsername().equals(utente.getUsername())) {
+				throw new AlreadyExistingException();
+			}
+		}
+		// utente nuovo
+
+		utente.setId(idUser++);
+		storedUsers.add(utente);
 	}
 
 	@Override
 	public UtenteGenerico authenticate(String username, String password) throws BusinessException {
-		return null;
+		if ("admin".equalsIgnoreCase(username)) {
+			UtenteGenerico admin = new Amministratore();
+			admin.setUsername(username);
+			admin.setPassword(password);
+			return admin;
+		} else {
+			for (Utente user : storedUsers) {
+				if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+					return user;
+				}
+			}
+		}
+		throw new UtenteGenericoNotFoundException();
 	}
 
 	@Override
 	public List<Utente> getAllUsers() {
-		return null;
+		return storedUsers;
 	}
 
 	@Override
-	public void createNewUser(Utente utente) throws BusinessException {
+	public void addNewPlaylist(Playlist playlist) throws BusinessException {
+		playlist.setId(id++);
+		if(!storedPlaylists.add(playlist)) throw new BusinessException();
+	}
+	@Override
+	public void modify(Integer id, String title, List<Canzone> songlist, Utente user)
+			throws AlreadyTakenFieldException {
 
+		for (Playlist playlist : storedPlaylists) {
+
+			if (playlist.getId().intValue() == id.intValue()) {
+				playlist.setSongList(songlist);
+
+			}
+		}
+
+	}
+	@Override
+	public void deletePlaylist(Playlist playlist) throws BusinessException {
+		boolean controllo = false;
+		for(Playlist play : storedPlaylists) {
+			if(play.getId().intValue() == playlist.getId().intValue()) {
+				controllo = true;
+				break;
+			}
+		}
+		if(controllo) {
+			storedPlaylists.remove(playlist);
+		} else {
+			throw new BusinessException();
+		}
+	}
+	@Override
+	public List<Playlist> getAllPlaylists(Utente utente) throws BusinessException {
+
+		boolean controllo = false;
+		for(Utente user: getAllUsers()) {
+			if(user.getId().intValue() == utente.getId().intValue()) {
+				controllo = true;
+				break;
+			}
+		}
+		if(controllo) {
+			List<Playlist> userPlaylists = new ArrayList<>();
+			//prendere solo le playlist dell'utente passato
+
+			for(Playlist playList: storedPlaylists) {
+				if(playList.getUser() == utente) {
+					userPlaylists.add(playList);
+				}
+			}
+			return userPlaylists;
+		}
+		throw new BusinessException();
+	}
+
+	@Override
+	public String getRicerca() {
+		return ricerca;
+	}
+	@Override
+	public void setRicerca(String ricerca) {
+		this.ricerca = ricerca;
+	}
+	@Override
+	public void addSongToQueue(Utente utente, Canzone canzone) {
+		utente.getSongQueue().add(canzone);
+	}
+	@Override
+	public void deleteSongFromQueue(Utente utente, Canzone canzone) {
+		utente.getSongQueue().remove(canzone);
+	}
+	@Override
+	public void updateCurrentSong(Utente utente, int position) {
+		utente.setcurrentPosition(position);
+	}
+	@Override
+	public void replaceCurrentSong(Utente utente, Canzone canzone) {
+		utente.getSongQueue().set(utente.getcurrentPosition(), canzone);
 	}
 }

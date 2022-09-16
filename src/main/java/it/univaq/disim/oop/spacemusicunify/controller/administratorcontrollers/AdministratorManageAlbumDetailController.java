@@ -33,9 +33,8 @@ import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
 public class AdministratorManageAlbumDetailController implements Initializable, DataInitializable<Album> {
-	private final SPACEMusicUnifyService SPACEMusicUnifyService;
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	private final ViewDispatcher dispatcher;
-	private final UtenteGenericoService utenteGenerico;
 	@FXML
 	private AnchorPane masterPane;
 	@FXML
@@ -116,8 +115,8 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 		dispatcher = ViewDispatcher.getInstance();
 
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		SPACEMusicUnifyService = factory.getAmministratoreService();
-		utenteGenerico = factory.getUtenteGenerico();
+		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+
 	}
 
 	@Override
@@ -157,11 +156,11 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			deletesong.setOnAction((ActionEvent event) -> {
 				try{
 					if (param.getValue().getId() != null ) {
-						SPACEMusicUnifyService.delete(param.getValue());
+						spaceMusicUnifyService.delete(param.getValue());
 					}else{
 						System.out.println("Song not found");
 					}
-					utenteGenerico.setSituation(ViewSituations.modify);
+					spaceMusicUnifyService.setSituation(ViewSituations.modify);
 					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
 				} catch (BusinessException e) {
@@ -175,7 +174,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				this.utenteGenerico.setSituation(ViewSituations.detail);
+				spaceMusicUnifyService.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -195,10 +194,10 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				if(this.utenteGenerico.getSituation() == ViewSituations.user){
-					this.utenteGenerico.setSituation(ViewSituations.user);
+				if(spaceMusicUnifyService.getSituation() == ViewSituations.user){
+					spaceMusicUnifyService.setSituation(ViewSituations.user);
 				}else{
-					this.utenteGenerico.setSituation(ViewSituations.detail);
+					spaceMusicUnifyService.setSituation(ViewSituations.detail);
 				}
 
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
@@ -279,10 +278,10 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 				album.setGenre(genreField.getValue());
 				album.setRelease(releaseField.getValue());
 
-				SPACEMusicUnifyService.add(album);
+				spaceMusicUnifyService.add(album);
 
 			} else {
-				SPACEMusicUnifyService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
+				spaceMusicUnifyService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
 
@@ -305,7 +304,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	}
 	@FXML
 	public void backToTheArtist(ActionEvent event) {
-		this.utenteGenerico.setSituation(ViewSituations.detail);
+		spaceMusicUnifyService.setSituation(ViewSituations.detail);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
 	}
 	public void focusImage(String image){
@@ -330,9 +329,9 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 				existingLabel.setVisible(false);
 
 
-				Picture picture = new Picture();
-				try {
 
+				try {
+				Picture picture = new Picture();
 				ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 				outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
 				picture.setPhoto(outStreamObj.toByteArray());
@@ -403,7 +402,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 		}else{
 			canzone.setGenre(album.getGenre());
 		}
-		this.utenteGenerico.setSituation(ViewSituations.newobject);
+		spaceMusicUnifyService.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", canzone);
 
 	}
@@ -411,7 +410,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	public void deleteThisAlbum(ActionEvent event) {
 		try{
 			if (album.getId() != null) {
-				SPACEMusicUnifyService.delete(album);
+				spaceMusicUnifyService.delete(album);
 			}else{
 				System.out.println("Album not found");
 			}
@@ -423,7 +422,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	}
 
 	public void setView(){
-		switch (this.utenteGenerico.getSituation()){
+		switch (spaceMusicUnifyService.getSituation()){
 			case detail:
 				this.masterPane.getChildren().setAll(this.infoPane.getChildren());
 
@@ -453,12 +452,12 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	
 	@FXML
 	public void showModify(ActionEvent event) {
-		if(this.utenteGenerico.getSituation() == ViewSituations.detail){
-			this.utenteGenerico.setSituation(ViewSituations.modify);
+		if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
+			spaceMusicUnifyService.setSituation(ViewSituations.modify);
 
 			this.setView();
 		}else {
-			this.utenteGenerico.setSituation(ViewSituations.detail);
+			spaceMusicUnifyService.setSituation(ViewSituations.detail);
 
 			this.setView();
 		}

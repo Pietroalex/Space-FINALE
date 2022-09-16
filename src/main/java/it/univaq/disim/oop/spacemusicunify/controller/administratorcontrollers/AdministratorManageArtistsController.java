@@ -22,9 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class AdministratorManageArtistsController implements Initializable, DataInitializable<Amministratore> {
-	private final UtenteGenericoService utenteGenerico;
-	private SPACEMusicUnifyService SPACEMusicUnifyService;
-
+	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TableView<Artista> artistList;
 	@FXML
@@ -49,10 +47,8 @@ public class AdministratorManageArtistsController implements Initializable, Data
 	private ViewDispatcher dispatcher;
 	public AdministratorManageArtistsController(){
 		dispatcher = ViewDispatcher.getInstance();
-
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		SPACEMusicUnifyService = factory.getAmministratoreService();
-		utenteGenerico = factory.getUtenteGenerico();
+		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 	}
 
 	@Override
@@ -69,7 +65,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				this.utenteGenerico.setSituation(ViewSituations.detail);
+				spaceMusicUnifyService.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -79,7 +75,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			final Button modify = new Button("Albums");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				this.utenteGenerico.setSituation(ViewSituations.detail);
+				spaceMusicUnifyService.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue().getDiscography());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -98,7 +94,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 
 	@Override
 	public void initializeData(Amministratore amministratore) {
-			List<Artista> artisti = SPACEMusicUnifyService.getAllArtists();
+			List<Artista> artisti = spaceMusicUnifyService.getAllArtists();
 			ObservableList<Artista> artistaData = FXCollections.observableArrayList(artisti);
 			artistList.setItems(artistaData);
 		
@@ -115,7 +111,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 		artista.setNationality(Nazionalità.british);
 		artista.setYearsOfActivity(1);
 
-		this.utenteGenerico.setSituation(ViewSituations.newobject);
+		this.spaceMusicUnifyService.setSituation(ViewSituations.newobject);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
 	}
 

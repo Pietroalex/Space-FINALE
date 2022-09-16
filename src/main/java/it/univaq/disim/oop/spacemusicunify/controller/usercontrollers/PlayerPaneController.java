@@ -47,7 +47,7 @@ import java.util.*;
 public class PlayerPaneController implements Initializable, DataInitializable<Utente>{
     protected static final Duration Scarto = Duration.millis(60);
 	private final ViewDispatcher dispatcher;
-    private final UtenteService utenteService;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
     @FXML
     private Button playButton, nextButton, previousButton, pauseButton, volumeButton, muteButton, queueButton, addToPlaylistButton;
     @FXML
@@ -67,7 +67,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
     public PlayerPaneController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        utenteService = factory.getUtenteService();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
         mediaPlayerSettings = MediaPlayerSettings.getInstance();
     }
 
@@ -228,7 +228,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
                 if(mediaPlayerSettings.getLastDuration().greaterThanOrEqualTo(Duration.millis(mediaPlayer.getTotalDuration().toMillis() - Scarto.toMillis()))) {
                 	if(user.getcurrentPosition() < user.getSongQueue().size() - 1) {
                 		mediaPlayerSettings.setLastSong(user.getcurrentSong());
-                		utenteService.updateCurrentSong(user, user.getcurrentPosition() + 1);
+                        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);
                     	mediaPlayerSettings.setPlayerOnPlay(true);
 
                         mediaPlayer.stop();
@@ -514,7 +514,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
 
     public void previousSong(ActionEvent event) {
         mediaPlayerSettings.setLastSong(user.getcurrentSong());
-        utenteService.updateCurrentSong(user, user.getcurrentPosition() - 1);
+        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);
     	mediaPlayerSettings.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
@@ -528,7 +528,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
     public void nextSong(ActionEvent event) {
 
         mediaPlayerSettings.setLastSong(user.getcurrentSong());
-        utenteService.updateCurrentSong(user, user.getcurrentPosition() + 1);
+        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);
     	mediaPlayerSettings.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
@@ -579,7 +579,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
 				}
 
 				try {
-					utenteService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+                    spaceMusicUnifyService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -591,7 +591,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
         tableView.getColumns().add(add);
 		
 		try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(utenteService.getAllPlaylists(user));
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(spaceMusicUnifyService.getAllPlaylists(user));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
 			e1.printStackTrace();
@@ -617,7 +617,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
 
     public void showSongInfo(MouseEvent mouseEvent) {
         if (user.getcurrentSong() != null) {
-            SpacemusicunifyBusinessFactory.getInstance().getUtenteGenerico().setSituation(ViewSituations.user);
+            spaceMusicUnifyService.setSituation(ViewSituations.user);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", user.getcurrentSong());
         }
     }

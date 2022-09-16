@@ -1,0 +1,4 @@
+4
+1§Our Sympathy of test group§audio1.mp3§ElDlive§1§04:02§pop
+2§new song of 'new album of test group'§aaaaaa§Lyrics§2§04:02§rock
+3§new song of 'new album of test groups'§aaaaaa§Lyrics§3§04:02§rock

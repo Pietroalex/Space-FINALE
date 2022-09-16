@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface SPACEMusicUnifyService {
 
@@ -12,10 +13,15 @@ public interface SPACEMusicUnifyService {
 	void modify(Integer id, String username, String password) throws BusinessException;
 
 	public void delete(Utente utente) throws BusinessException;
+	//picture
+	public void add(Picture picture) throws BusinessException;
+	void modify(Integer id, byte[] photo, int height, int width) throws BusinessException;
+
+	public void delete(Picture picture) throws BusinessException;
 	
 	//artista
 	public void add(Artista artista) throws BusinessException;
-	void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, List<String> images) throws BusinessException;
+	void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, Set<Picture> images) throws BusinessException;
 
 	public void delete(Artista artista) throws BusinessException;
 

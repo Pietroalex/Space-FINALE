@@ -15,9 +15,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AdministratorManageUserDetailController implements Initializable, DataInitializable<Utente> {
-    private final SPACEMusicUnifyService SPACEMusicUnifyService;
+    private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
-    private final UtenteGenericoService utenteGenerico;
     @FXML
     private AnchorPane masterPane;
     @FXML
@@ -44,15 +43,14 @@ public class AdministratorManageUserDetailController implements Initializable, D
     public AdministratorManageUserDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        SPACEMusicUnifyService = factory.getAmministratoreService();
-        utenteGenerico = factory.getUtenteGenerico();
+        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 
     }
     @Override
     public void initializeData(Utente utente) {
         this.utente = utente;
         this.setView();
-        if(utenteGenerico.getSituation() != ViewSituations.register) {
+        if(spaceMusicUnifyService.getSituation() != ViewSituations.register) {
 	        this.username.setText(utente.getUsername());
 	        this.password.setText(utente.getPassword());
         }
@@ -71,8 +69,8 @@ public class AdministratorManageUserDetailController implements Initializable, D
             if (utente.getId() == null) {
                 utente.setUsername(usernameField.getText());
                 utente.setPassword(passwordField.getText());
-                SPACEMusicUnifyService.add(utente);
-                if (utenteGenerico.getSituation() == ViewSituations.register) {
+                spaceMusicUnifyService.add(utente);
+                if (spaceMusicUnifyService.getSituation() == ViewSituations.register) {
                     dispatcher.logout();
                 } else {
                     dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
@@ -80,7 +78,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
 
             } else {
 
-                SPACEMusicUnifyService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
+                spaceMusicUnifyService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
 
                 dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
             }
@@ -100,7 +98,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
     @FXML
     public void cancelModify() {
 
-        if(utenteGenerico.getSituation() == ViewSituations.register){
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.register){
             dispatcher.logout();
         }else {
             dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
@@ -110,7 +108,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
     public void deleteUser(){
         try{
             if (utente.getId() != null) {
-                SPACEMusicUnifyService.delete(utente);
+                spaceMusicUnifyService.delete(utente);
             }else{
                 System.out.println("Utente not found");
             }
@@ -121,7 +119,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
         }
     }
     public void setView(){
-        switch (utenteGenerico.getSituation()){
+        switch (spaceMusicUnifyService.getSituation()){
             case detail:
                 masterPane.getChildren().setAll(infoPane.getChildren()) ;
                 break;
@@ -148,11 +146,11 @@ public class AdministratorManageUserDetailController implements Initializable, D
     }
     @FXML
     public void showModify() {
-        if(utenteGenerico.getSituation() == ViewSituations.detail){
-            this.utenteGenerico.setSituation(ViewSituations.modify);
+        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
+            spaceMusicUnifyService.setSituation(ViewSituations.modify);
             this.setView();
         }else {
-            this.utenteGenerico.setSituation(ViewSituations.detail);
+            spaceMusicUnifyService.setSituation(ViewSituations.detail);
             this.setView();
         }
     }

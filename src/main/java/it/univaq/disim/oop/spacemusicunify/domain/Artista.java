@@ -1,11 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import javafx.scene.image.Image;
 
 public class Artista {
 
@@ -13,7 +9,7 @@ public class Artista {
 	private String stageName;
 	private int yearsOfActivity;
 	private String biography;
-	private List<String> pictures = new ArrayList<>();
+	private Set<Picture> pictures = new HashSet<>();
 	private Nazionalità nationality;
 
 	private Set<Album> discography = new HashSet<>();
@@ -52,11 +48,11 @@ public class Artista {
 	public void setDiscography(Set<Album> discography) {
 		this.discography = discography;
 	}
-	public List<String> getPictures() {
+	public Set<Picture> getPictures() {
 		return pictures;
 	}
-	public void setPictures(List<String> picture) {
-		this.pictures = picture;
+	public void setPictures(Set<Picture> pictures) {
+		this.pictures = pictures;
 	}
 
 	public Integer getId() {
