@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.QueueController">
+   <children>
+      <TableView fx:id="queueTable" layoutY="80.0" prefHeight="400.0" prefWidth="910.0">
+      <placeholder>
+        <Label text="queue is empty"/>
+    </placeholder>
+        <columns>
+          <TableColumn fx:id="songName" prefWidth="282.0" text="Title" />
+          <TableColumn fx:id="artistName" prefWidth="168.0" text="Artist" />
+            <TableColumn fx:id="albumName" minWidth="0.0" prefWidth="139.0" text="Album" />
+            <TableColumn fx:id="duration" prefWidth="125.0" text="Duration" />
+            <TableColumn fx:id="delete" prefWidth="77.0" />
+        </columns>
+      </TableView>
+      <Label alignment="CENTER" layoutX="77.0" layoutY="5.0" prefHeight="54.0" prefWidth="789.0" text="My Playback Queue" textFill="#e366d0">
+         <font>
+            <Font size="37.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

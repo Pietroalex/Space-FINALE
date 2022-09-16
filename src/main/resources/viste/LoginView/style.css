@@ -1,0 +1,23 @@
+#b1{
+-fx-background-color:transparent;
+-fx-border-color: black;
+-fx-border-width:2px;
+-fx-background-radius:25px;
+-fx-border-radius:25px;
+-fx-text-fill:black;
+}
+#b1:hover {      
+-fx-background-color: #cb6aff;
+-fx-text-fill:white;      
+-fx-border-color:white; 
+}
+#text{
+-fx-border-radius:25px;
+-fx-background-color:transparent;
+-fx-border-color:white;
+-fx-text-fill:white;
+-fx-background-radius:25px;
+}
+#sfondo{
+-fx-background: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+}

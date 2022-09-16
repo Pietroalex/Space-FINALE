@@ -1,0 +1,25 @@
+#b1{
+-fx-background-color:transparent;
+}
+#t1{
+-fx-border-color: black;
+}
+#b{
+-fx-background-color:transparent;
+-fx-border-color: black;
+-fx-border-width:2px;
+-fx-background-radius:25px;
+-fx-border-radius:25px;
+-fx-text-fill:black;
+}
+#b:hover {      
+-fx-background-color: #45b5fb;
+-fx-text-fill:white;      
+-fx-border-color:white; 
+}
+#color{
+-fx-background-color: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+}
+#color2{
+-fx-background-color: linear-gradient(to bottom right, #45b5fb 0%, #e366d0 100%);
+}

@@ -1,0 +1,51 @@
+#b1{
+-fx-background-color:transparent;
+}
+#t1{
+-fx-border-color: black;
+}
+#b{
+-fx-background-color:transparent;
+-fx-border-color: black;
+-fx-border-width:2px;
+-fx-background-radius:25px;
+-fx-border-radius:25px;
+-fx-text-fill:black;
+}
+#b:hover {      
+-fx-background-color: #45b5fb;
+-fx-text-fill:white;      
+-fx-border-color:white; 
+}
+#text{
+-fx-border-radius:25px;
+-fx-background-color:transparent;
+-fx-border-color:black;
+-fx-text-fill:black;
+-fx-background-radius:25px;
+}
+#addP{
+-fx-background-color:grey;
+-fx-border-color: lightblue;
+-fx-border-width:2px;
+-fx-text-fill:orange;
+}
+#t1{
+-fx-background-color:grey;
+-fx-border-color: lightblue;
+-fx-border-width:2px;
+-fx-text-fill:orange;
+}
+#list{
+-fx-background-color:grey;
+-fx-border-color:transparent;
+-fx-border-width:2px;
+-fx-text-fill:orange;
+}
+#vbox{
+-fx-border-color:lightblue;
+-fx-border-width:4px;
+}
+#color{
+-fx-background-color: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+}

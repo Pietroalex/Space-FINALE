@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.AdministratorManageArtistsController">
+   <children>
+      <Label alignment="CENTER" layoutX="11.0" layoutY="20.0" prefHeight="24.0" prefWidth="147.0" text="Manage Artists" textFill="#e366d0">
+         <font>
+            <Font name="Yu Gothic Medium" size="16.0" />
+         </font></Label>
+      <Button id="b1" layoutX="770.0" layoutY="25.0" mnemonicParsing="false" onAction="#newArtist" text="New Artist">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <TableView fx:id="artistList" layoutX="-1.0" layoutY="81.0" prefHeight="400.0" prefWidth="910.0">
+        <placeholder>
+        <Label text="no artist found"/>
+   		</placeholder>
+        <columns>
+          <TableColumn fx:id="id" prefWidth="58.0" text="ID" />
+            <TableColumn fx:id="stageName" prefWidth="132.0" text="Stage Name" />
+          <TableColumn fx:id="yearsofActivity" prefWidth="102.0" text="Years Of Activity" />
+            <TableColumn fx:id="nationality" minWidth="0.0" prefWidth="114.0" text="Nationality" />
+            <TableColumn fx:id="songNumber" minWidth="0.0" prefWidth="114.0" text="Songs Number" />
+            <TableColumn fx:id="biography" minWidth="0.0" prefWidth="157.0" text="Biography" />
+            <TableColumn fx:id="viewmodify" prefWidth="143.0" text="View/Modify" />
+            <TableColumn fx:id="viewalbums" prefWidth="88.0" text="Artist Albums" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

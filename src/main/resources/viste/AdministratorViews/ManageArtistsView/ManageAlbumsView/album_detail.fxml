@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="masterPane" prefHeight="480.0" prefWidth="1820.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.AdministratorManageAlbumDetailController">
+   <AnchorPane fx:id="modifyPane" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="910.0" BorderPane.alignment="CENTER">
+      <children>
+         <TextField id="text" fx:id="titleField" alignment="CENTER" layoutX="524.0" layoutY="86.0" prefHeight="27.0" prefWidth="200.0" promptText="Title" />
+         <Button id="b1" fx:id="confirm" layoutX="14.0" layoutY="398.0" mnemonicParsing="false" onAction="#confirmAlbum" text="Confirm">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <font>
+               <Font size="17.0" />
+            </font></Button>
+         <Label fx:id="titleView" alignment="CENTER" contentDisplay="CENTER" layoutX="457.0" layoutY="25.0" text="title">
+            <font>
+               <Font size="30.0" />
+            </font>
+         </Label>
+         <Button id="b1" fx:id="cancel" layoutX="820.0" layoutY="398.0" mnemonicParsing="false" onAction="#cancelModify" text="Cancel">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <font>
+               <Font size="17.0" />
+            </font></Button>
+         <DatePicker fx:id="releaseField" layoutX="469.0" layoutY="125.0" prefHeight="27.0" prefWidth="141.0" promptText="Relaise Date" />
+         <TableView fx:id="modifyalbumsongs" layoutX="2.0" layoutY="205.0" prefHeight="172.0" prefWidth="910.0">
+           <placeholder>
+           <Label text="album is empty" />
+   		   </placeholder>
+           <columns>
+             <TableColumn fx:id="idModify" prefWidth="75.0" text="ID" />
+             <TableColumn fx:id="titleModify" prefWidth="305.9999694824219" text="Title" />
+               <TableColumn fx:id="lengthModify" prefWidth="81.0" text="Length" />
+               <TableColumn fx:id="artistsModify" prefWidth="185.0" text="Artists" />
+               <TableColumn fx:id="detailSongModify" prefWidth="101.0" />
+               <TableColumn fx:id="managesong" prefWidth="160.0" />
+           </columns>
+         </TableView>
+         <Label layoutX="24.0" layoutY="174.0" text=" Manage this album Songs" />
+         <Button id="b1" fx:id="newSong" layoutX="783.0" layoutY="168.0" mnemonicParsing="false" onAction="#createNewSong" text="New Song">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor></Button>
+         <ComboBox id="text" fx:id="genreField" layoutX="630.0" layoutY="125.0" prefHeight="27.0" prefWidth="123.0" promptText="Genre" />
+         <VBox fx:id="coverField" layoutX="225.0" layoutY="28.0" prefHeight="100.0" prefWidth="100.0" />
+         <VBox fx:id="cancelBox" alignment="CENTER" layoutX="6.0" layoutY="47.0" prefHeight="78.0" prefWidth="200.0">
+            <children>
+               <Label text="Do you want to delete this cover?" />
+               <HBox alignment="CENTER" prefHeight="73.0" prefWidth="174.0" spacing="20.0">
+                  <children>
+                     <Button mnemonicParsing="false" onAction="#cancelDeleteSelection" style="-fx-background-color: transparent;">
+                        <graphic>
+                           <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../../AdministratorHomeView/icon/cancel.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                     <Button mnemonicParsing="false" onAction="#deleteCover" style="-fx-background-color: transparent;">
+                        <graphic>
+                           <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../../AdministratorHomeView/icon/delete.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <Label fx:id="existingLabel" alignment="CENTER" layoutX="221.0" layoutY="402.0" prefHeight="34.0" prefWidth="472.0" text="This album already exists" textFill="#dd4129" visible="false">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Label>
+      </children>
+   </AnchorPane>
+      <AnchorPane fx:id="infoPane" layoutX="1070.0" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="910.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="b1" fx:id="modify" layoutX="14.0" layoutY="404.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <font>
+               <Font size="16.0" />
+            </font></Button>
+            <Label layoutX="585.0" layoutY="79.0" text="Genre">
+            <font>
+               <Font size="21.0" />
+            </font></Label>
+            <Label contentDisplay="CENTER" layoutX="361.0" layoutY="19.0" text="Album Info">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Label>
+            <Button id="b1" fx:id="deletealbum" layoutX="773.0" layoutY="404.0" mnemonicParsing="false" onAction="#deleteThisAlbum" text="Delete Album">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <font>
+               <Font size="16.0" />
+            </font></Button>
+            <Label layoutX="747.0" layoutY="79.0" text="Release date">
+            <font>
+               <Font size="21.0" />
+            </font></Label>
+            <Label fx:id="genreAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="573.0" layoutY="110.0" text="Album genre">
+            <font>
+               <Font size="15.0" />
+            </font></Label>
+            <Label fx:id="releaseAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="757.0" layoutY="110.0" text="Album release">
+            <font>
+               <Font size="15.0" />
+            </font></Label>
+         <TableView fx:id="albumsongs" layoutX="14.0" layoutY="200.0" prefHeight="194.0" prefWidth="898.0">
+            <placeholder>
+        	<Label text="album is empty" />
+   			</placeholder>
+            <columns>
+               <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
+               <TableColumn fx:id="title" prefWidth="203.0" text="Title" />
+               <TableColumn fx:id="length" prefWidth="138.0" text="Length" />
+               <TableColumn fx:id="artists" prefWidth="171.0" text="Artist" />
+               <TableColumn fx:id="detailSong" minWidth="0.0" prefWidth="310.0" text="Detail song" />
+            </columns>
+         </TableView>
+         <VBox fx:id="coverAlbum" layoutX="36.0" layoutY="47.0" prefHeight="127.0" prefWidth="141.0" />
+         <Button id="b1" fx:id="cancel1" layoutX="351.0" layoutY="404.0" mnemonicParsing="false" onAction="#backToTheArtist" text="Back to the artist">
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <font>
+               <Font size="16.0" />
+            </font>
+         </Button>
+            <Label layoutX="218.0" layoutY="79.0" text="Title">
+            <font>
+               <Font size="21.0" />
+            </font>
+         </Label>
+            <Label fx:id="titleAlbum" alignment="CENTER" layoutX="217.0" layoutY="110.0" text="Album title">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         </children>
+      </AnchorPane>
+</AnchorPane>
