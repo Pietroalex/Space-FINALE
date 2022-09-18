@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -195,8 +196,6 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					if (Long.parseLong(righe[0]) == id) {
 						StringBuilder row = new StringBuilder();
 						row.append(id);
-						row.append(Utility.SEPARATORE_COLONNA);
-						row.append(TipologiaUtente.utente.toString());
 						row.append(Utility.SEPARATORE_COLONNA);
 						row.append(username);
 						row.append(Utility.SEPARATORE_COLONNA);
@@ -582,7 +581,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			canzone.setLyrics("Lyrics");
 			canzone.setLength("04:02");
 			canzone.setGenre(album.getGenre());
-			canzone.setFileMp3("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
+			//canzone.setFileMp3("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
 
 			Set<Album> albumSet = album.getArtist().getDiscography();
 			albumSet.add(album);
@@ -644,7 +643,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, List<Song> songlist) throws BusinessException {
+	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, Set<Song> songlist) throws BusinessException {
 		String oldGenre = null;
 		try {
 			System.out.println("Modifico Album");
@@ -694,10 +693,10 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					}
 				}
 			}
-			songlist.get(0).getAlbum().setCover(cover);
-			songlist.get(0).getAlbum().setTitle(title);
-			songlist.get(0).getAlbum().setGenre(genre);
-			songlist.get(0).getAlbum().setRelease(release);
+			songlist.iterator().next().getAlbum().setCover(cover);
+			songlist.iterator().next().getAlbum().setTitle(title);
+			songlist.iterator().next().getAlbum().setGenre(genre);
+			songlist.iterator().next().getAlbum().setRelease(release);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -811,7 +810,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					check = true;
 					List<String> listaCanzoni = Utility.leggiArray(righe[6]);
 					listaCanzoni.add(canzone.getId().toString());
-					List<Song> canzoneList = album.getSongList();
+					Set<Song> canzoneList = album.getSongList();
 					canzoneList.add(canzone);
 					album.setSongList(canzoneList);
 					Picture cover = album.getCover();
@@ -836,7 +835,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, String length, Genre genre, String mp3, String lyrics, Album album)
+	public void modify(Integer id, String title, String length, Genre genre, byte[] mp3, String lyrics, Album album)
 			throws BusinessException {
 		System.out.println("in esecuzione modify");
 		boolean check = false;
@@ -855,13 +854,15 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 					check = true;
 					String[] row;
-					if(mp3.contains(righe[2])){
+				/**
+					if(mp3.contains(righe[2])){ 
 						row = new String[]{id.toString(), title, righe[2], lyrics, righe[4], length, genre.toString()};
 					}else{
-						/*Files.delete(Paths.get(mp3Directory+righe[2]));*/
-						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audio")*/, lyrics, righe[4], length, genre.toString()};
+						/*Files.delete(Paths.get(mp3Directory+righe[2]));*
+						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audio")*, lyrics, righe[4], length, genre.toString()};
 					}
-					List<Song> list = album.getSongList();
+				*/
+					Set<Song> list = album.getSongList();
 					for(Song canzone: list){
 						if(canzone.getId() == id){
 							canzone.setId(id);
@@ -874,7 +875,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						}
 					}
 					album.setSongList(list);
-					fileData.getRighe().set(cont, row);
+					//fileData.getRighe().set(cont, row);
 					break;
 				}
 				cont++;
@@ -922,7 +923,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						if(righe[0].equals(album.getId().toString())) {
 							List<String> listaCanzoni = Utility.leggiArray(righe[6]);
 							listaCanzoni.remove(canzone.getId().toString());
-							List<Song> canzoneList = album.getSongList();
+							Set<Song> canzoneList = album.getSongList();
 							canzoneList.remove(canzone);
 							album.setSongList(canzoneList);
 							Picture cover = album.getCover();
@@ -1017,7 +1018,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					}
 					
 					//rimuovo il file mp3 dalla cartella
-					Files.delete(Paths.get(canzone.getFileMp3()));
+				//	Files.delete(Paths.get(canzone.getFileMp3()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1158,13 +1159,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						case "utente" :
 							utente = new User();
 
-							((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
+							//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
 							List<String> songQueue = Utility.leggiArray(colonne[5]);
 							List<Song> queueList = new ArrayList<>();
 							for(String string : songQueue) {
 								queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
 							}
-							((User) utente).setSongQueue(queueList);
+							//((User) utente).setSongQueue(queueList);
 							break;
 
 						case "amministratore" :
@@ -1201,13 +1202,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				utente.setId(Integer.parseInt(colonne[0]));
 				utente.setUsername(colonne[2]);
 				utente.setPassword(colonne[3]);
-				((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
+				//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
 				List<String> songQueue = Utility.leggiArray(colonne[5]);
 				List<Song> queueList = new ArrayList<>();
 				for(String string : songQueue) {
 					queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
 				}
-				((User) utente).setSongQueue(queueList);
+				//((User) utente).setSongQueue(queueList);
 				utenteList.add(utente);
 			}
 
@@ -1235,8 +1236,6 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				}
 				StringBuilder row = new StringBuilder();
 				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(TipologiaUtente.utente);
 				row.append(Utility.SEPARATORE_COLONNA);
 				row.append(utente.getUsername());
 				row.append(Utility.SEPARATORE_COLONNA);
@@ -1291,7 +1290,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, List<Song> songlist, User user) throws  BusinessException {
+	public void modify(Integer id, String title, Set<Song> songlist, User user) throws  BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			List<String> idSongList = new ArrayList<>();
@@ -1367,7 +1366,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					playlist.setId(Integer.parseInt(colonne[0]));
 					playlist.setTitle(colonne[1]);
 					playlist.setUser(utente);
-					List<Song> listaCanzoni = new ArrayList<>();
+					Set<Song> listaCanzoni = new HashSet<>();
 					List<String> songList = Utility.leggiArray(colonne[3]);
 
 					if(!(songList.contains("")	)){
@@ -1398,116 +1397,6 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	@Override
 	public void setRicerca(String ricerca) {
 		this.ricerca = ricerca;
-	}
-
-	@Override
-	public void addSongToQueue(User utente, Song canzone) {
-		try {
-			FileData fileData = Utility.readAllRows(usersFile);
-			int cont = 0;
-			for(String[] righe : fileData.getRighe()) {
-				if(righe[0].equals(utente.getId().toString())) {
-					List<String> songQueue = Utility.leggiArray(righe[5]);
-					songQueue.add(String.valueOf(canzone.getId()));
-					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], righe[4], songQueue.toString()};
-					fileData.getRighe().set(cont, row);
-					utente.getSongQueue().add(canzone);
-					break;
-				}
-				cont++;
-			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void deleteSongFromQueue(User utente, Song canzone) {
-		try {
-			FileData fileData = Utility.readAllRows(usersFile);
-			int cont = 0;
-			for(String[] righe : fileData.getRighe()) {
-				if(righe[0].equals(utente.getId().toString())) {
-					List<String> songQueue = Utility.leggiArray(righe[5]);
-					songQueue.remove(String.valueOf(canzone.getId()));
-					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], righe[4], songQueue.toString()};
-					fileData.getRighe().set(cont, row);
-					List<Song> lista = new ArrayList<>(utente.getSongQueue());
-					for(Song song : utente.getSongQueue()) {
-						if(song.getId().equals(canzone.getId())) lista.remove(song);
-					}
-					utente.setSongQueue(lista);
-					break;
-				}
-				cont++;
-			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void updateCurrentSong(User utente, int position) { //aggiorna la canzone corrente scorrendo la coda
-		try {
-			FileData fileData = Utility.readAllRows(usersFile);
-			int cont = 0;
-			for(String[] righe : fileData.getRighe()) {
-				if(righe[0].equals(utente.getId().toString())) {
-					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], String.valueOf(position), righe[5]};
-					fileData.getRighe().set(cont, row);
-					utente.setcurrentPosition(position);
-					break;
-				}
-				cont++;
-			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void replaceCurrentSong(User utente, Song canzone) { //aggiorna la canzone corrente con una canzone a scelta
-		try {
-			FileData fileData = Utility.readAllRows(usersFile);
-			int cont = 0;
-			for(String[] righe : fileData.getRighe()) {
-				if(righe[0].equals(utente.getId().toString())) {
-					List<String> songQueue = Utility.leggiArray(righe[5]);
-					songQueue.set(Integer.parseInt(righe[4]), String.valueOf(canzone.getId()));
-					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], righe[4], songQueue.toString()};
-					fileData.getRighe().set(cont, row);
-					utente.getSongQueue().set(utente.getcurrentPosition(), canzone);
-					break;
-				}
-				cont++;
-			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

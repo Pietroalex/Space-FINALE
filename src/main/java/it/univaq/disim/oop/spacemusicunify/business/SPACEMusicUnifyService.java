@@ -28,7 +28,7 @@ public interface SPACEMusicUnifyService {
 
 	//album
 	public void add(Album album) throws BusinessException;
-	void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, List<Song> songlist) throws BusinessException;
+	void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, Set<Song> songlist) throws BusinessException;
 
 	public void delete(Album album) throws BusinessException;
 	
@@ -36,7 +36,7 @@ public interface SPACEMusicUnifyService {
 
 	void add(Song canzone)throws BusinessException;
 
-	public void modify(Integer id, String title, String duration, Genre genre, String mp3, String lyrics, Album album) throws BusinessException;
+	public void modify(Integer id, String title, String duration, Genre genre, byte[] mp3, String lyrics, Album album) throws BusinessException;
 
 	public void delete(Song canzone) throws BusinessException;
 
@@ -51,17 +51,13 @@ public interface SPACEMusicUnifyService {
 	//utenteservice
 	public void addNewPlaylist(Playlist playlist) throws BusinessException;
 
-	void modify(Integer id, String title, List<Song> songlist, User user)
+	void modify(Integer id, String title, Set<Song> songlist, User user)
 			throws BusinessException;
 
 	public List<Playlist> getAllPlaylists(User utente) throws BusinessException;
 	public void deletePlaylist(Playlist playlist) throws BusinessException;
 	public String getRicerca();
 	public void setRicerca(String ricerca);
-	void addSongToQueue(User utente, Song canzone);
-	void deleteSongFromQueue(User utente, Song canzone);
-	void updateCurrentSong(User utente, int position);
-	void replaceCurrentSong(User utente, Song canzone);
 
 	//utentegenericoService
 	void setSituation(ViewSituations sit);
@@ -72,6 +68,5 @@ public interface SPACEMusicUnifyService {
 	List<User> getAllUsers();
 
 	void createNewUser(User utente) throws BusinessException;
-
-
+	
 }

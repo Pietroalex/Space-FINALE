@@ -1,18 +1,20 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.domain.Album;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
+import it.univaq.disim.oop.spacemusicunify.domain.Genre;
+import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
+import it.univaq.disim.oop.spacemusicunify.domain.Picture;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 
 public class UtilityObjectRetriever extends Object {
 
@@ -113,7 +115,7 @@ public class UtilityObjectRetriever extends Object {
 		Song canzone = new Song();
 		canzone.setId(Integer.parseInt(colonne[0]));
 		canzone.setTitle(colonne[1]);
-		canzone.setFileMp3(filesMp3Directory+colonne[2]);
+		//canzone.setFileMp3(filesMp3Directory+colonne[2]);
 		canzone.setLyrics(colonne[3]);
 		if(currentAlbum == null) {
 
@@ -145,7 +147,7 @@ public class UtilityObjectRetriever extends Object {
 			album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
 		}
 
-		List<Song> canzoneList = new ArrayList<>();
+		Set<Song> canzoneList = new HashSet<>();
 		currentAlbum = album;
 		for(String canzoni: Utility.leggiArray(colonne[6])){
 			System.out.println("id "+canzoni);

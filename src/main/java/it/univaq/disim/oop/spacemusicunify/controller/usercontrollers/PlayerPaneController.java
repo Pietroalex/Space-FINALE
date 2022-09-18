@@ -115,15 +115,13 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 break;
 
                 case searchSingleClick:
-                    System.out.println("aggiunta");
-                    if (  user.getSongQueue().size() <= 1 || mediaPlayerSettings.getLastSong() == null) {
-                            System.out.println("aggiunta start");
-                            this.startPlayer();
-                    }else{
-                        System.out.println("aggiunta resume");
-                        mediaPlayerSettings.setLastSong(user.getcurrentSong());
-                        this.resume();
-                    }
+					/*
+					 * System.out.println("aggiunta"); if ( user.getSongQueue().size() <= 1 ||
+					 * mediaPlayerSettings.getLastSong() == null) {
+					 * System.out.println("aggiunta start"); this.startPlayer(); }else{
+					 * System.out.println("aggiunta resume");
+					 * mediaPlayerSettings.setLastSong(user.getcurrentSong()); this.resume(); }
+					 */
                     break;
 
                 case queueControllerLoad:
@@ -140,16 +138,16 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                     break;
                 case started:
                     System.out.println("default");
-                    if (user.getcurrentSong() == null || user.getSongQueue().size() == 1) {
-                        System.out.println("player first check passed");
-
-                        this.startPlayer();
-
-                    } else {
-                        System.out.println("resume");
-
-                        this.resume();
-                    }
+					/*
+					 * if (user.getcurrentSong() == null || user.getSongQueue().size() == 1) {
+					 * System.out.println("player first check passed");
+					 * 
+					 * this.startPlayer();
+					 * 
+					 * } else { System.out.println("resume");
+					 * 
+					 * this.resume(); }
+					 */
                     break;
             }
 
@@ -213,18 +211,13 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 int minTime = (int) current.toMinutes();
                 int secTime = (int) current.toSeconds();
                 currentTime.setText(String.valueOf(minTime % 60)+":"+String.valueOf(secTime%60));
-
-                if(user.getcurrentSong() == mediaPlayerSettings.getLastSong()) {
-	                if(current.toSeconds() != 0){
-	                	mediaPlayerSettings.setLastDuration(current);
-	                }else{
-	                    mediaPlayerSettings.setLastDuration(oldValue);
-	                }
-                } else {
-                	mediaPlayerSettings.setLastDuration(current);
-                	mediaPlayerSettings.setLastSong(user.getcurrentSong());
-                }
-                
+				/*
+				 * if(user.getcurrentSong() == mediaPlayerSettings.getLastSong()) {
+				 * if(current.toSeconds() != 0){ mediaPlayerSettings.setLastDuration(current);
+				 * }else{ mediaPlayerSettings.setLastDuration(oldValue); } } else {
+				 * mediaPlayerSettings.setLastDuration(current);
+				 * mediaPlayerSettings.setLastSong(user.getcurrentSong()); }
+				 
                 if(mediaPlayerSettings.getLastDuration().greaterThanOrEqualTo(Duration.millis(mediaPlayer.getTotalDuration().toMillis() - Scarto.toMillis()))) {
                 	if(user.getcurrentPosition() < user.getSongQueue().size() - 1) {
                 		mediaPlayerSettings.setLastSong(user.getcurrentSong());
@@ -238,6 +231,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                         previousButton.setDisable(false);
                 	}
                 }
+                */
             }
         });
 
@@ -284,8 +278,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     
     private boolean loadFirstSong() {
         Song song;
-        song = user.getcurrentSong();
-        System.out.println("first song "+user.getcurrentSong());
+      //  song = user.getcurrentSong();
+      //  System.out.println("first song "+user.getcurrentSong());
         if(song != null) {
             songTitle.setText(song.getTitle());
 
@@ -295,8 +289,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             totalTime.setText(song.getLength());
 
             mediaPlayerSettings.setLastDuration(Duration.ZERO);
-            mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
-            //Files.newInputStream(Paths.get(user.getcurrentSong().getFileMp3()))
+         //->   mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
+            /*Files.newInputStream(Paths.get(user.getcurrentSong().getFileMp3()))*/
             mediaPlayer = mediaPlayerSettings.getMediaPlayer();
 
             this.mediaPlayerModulesInitializer();

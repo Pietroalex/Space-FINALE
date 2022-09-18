@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
@@ -247,7 +248,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 
 		this.setView();
 
-		List<Song> songs = album.getSongList();
+		Set<Song> songs = album.getSongList();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
 		modifyalbumsongs.setItems(songData);
 

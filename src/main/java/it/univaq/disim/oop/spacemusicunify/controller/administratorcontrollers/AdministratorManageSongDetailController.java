@@ -113,7 +113,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
         lengthField.setText(canzone.getLength());
         lyricsField.setText(canzone.getLyrics());
         if(canzone.getId() != null) {
-            songField.setText(canzone.getFileMp3());
+            //songField.setText(canzone.getFileMp3());
         }
         if(album.getGenre() == Genre.singoli) {
             genreField.setDisable(false);
@@ -137,11 +137,11 @@ public class AdministratorManageSongDetailController implements Initializable, D
                 }
                 if (!(songField.getText().isEmpty())) {
 
-                    canzone.setFileMp3(songField.getText());
+                   // canzone.setFileMp3(songField.getText());
 
                 } else {
                     this.changeSong();
-                    canzone.setFileMp3(songField.getText());
+                  //  canzone.setFileMp3(songField.getText());
                 }
 
                 canzone.setLyrics(lyricsField.getText());
@@ -149,7 +149,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
                 spaceMusicUnifyService.add(canzone);
             } else {
                 System.out.println("eseguo modify");
-                spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
+             //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
             }
             spaceMusicUnifyService.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
