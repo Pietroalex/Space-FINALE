@@ -1,6 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
-public enum Nazionalità {
+public enum Nationality {
 	afghan,
 	albanian,
 	algerian,

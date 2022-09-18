@@ -2,7 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,14 +12,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-public class UserLayoutController implements DataInitializable<Utente> {
+public class UserLayoutController implements DataInitializable<User> {
 
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	private ViewDispatcher dispatcher;
 	@FXML
 	private TextField searchField;
 
-	private Utente user;
+	private User user;
 	private MediaPlayerSettings mediaPlayerSettings;
 
 	public UserLayoutController() {
@@ -29,7 +29,7 @@ public class UserLayoutController implements DataInitializable<Utente> {
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	@Override
-	public void initializeData(Utente utente) {
+	public void initializeData(User utente) {
 		this.user = utente;
 		mediaPlayerSettings.setPlayerState(PlayerState.started);
 		dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);

@@ -1,6 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
-public enum Genere {
+public enum Genre {
 	singoli,
 	acoustic,
 	blues,

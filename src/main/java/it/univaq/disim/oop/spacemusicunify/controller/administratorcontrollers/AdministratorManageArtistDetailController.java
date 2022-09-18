@@ -2,9 +2,9 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
-import it.univaq.disim.oop.spacemusicunify.domain.Artista;
-import it.univaq.disim.oop.spacemusicunify.domain.Nazionalità;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
+import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
 import it.univaq.disim.oop.spacemusicunify.domain.Picture;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.value.ChangeListener;
@@ -28,16 +28,16 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class AdministratorManageArtistDetailController implements Initializable, DataInitializable<Artista>{
+public class AdministratorManageArtistDetailController implements Initializable, DataInitializable<Artist>{
 
     private final ViewDispatcher dispatcher;
-    private Artista artist;
+    private Artist artist;
 
 
     @FXML
     private TextField stageNameField;
     @FXML
-    private ComboBox<Nazionalità> nationalityField;
+    private ComboBox<Nationality> nationalityField;
     @FXML
     private ComboBox<Integer> yearsOfActivityField;
 
@@ -82,7 +82,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
     @FXML
     private Label existingLabel;
 
-    private Amministratore admin;
+    private Administrator admin;
     private SPACEMusicUnifyService spaceMusicUnifyService;
 
     private static String imgUrl;
@@ -106,10 +106,10 @@ public class AdministratorManageArtistDetailController implements Initializable,
         for(int i=1; i<101; i++) {
         	yearsOfActivityField.getItems().add(i);
         }
-        nationalityField.getItems().addAll(Nazionalità.values());
+        nationalityField.getItems().addAll(Nationality.values());
     }
     @Override
-    public void initializeData(Artista artist) {
+    public void initializeData(Artist artist) {
 	    scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 	    scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 	

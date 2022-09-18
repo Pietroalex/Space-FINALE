@@ -9,9 +9,9 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 
-public class UserHomeController implements Initializable, DataInitializable<Utente> {
+public class UserHomeController implements Initializable, DataInitializable<User> {
 
 	@FXML
 	private Label benvenutoLabel;
@@ -21,7 +21,7 @@ public class UserHomeController implements Initializable, DataInitializable<Uten
 		
 	}
 	@Override
-	public void initializeData(Utente utente) {
+	public void initializeData(User utente) {
 		benvenutoLabel.setText("Benvenuto " +  utente.getUsername().substring(0, 1).toUpperCase(Locale.ROOT).concat(utente.getUsername().substring(1)) + "!");
 	}
 }

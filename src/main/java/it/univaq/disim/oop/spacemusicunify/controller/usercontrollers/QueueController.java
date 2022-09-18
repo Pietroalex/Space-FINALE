@@ -6,8 +6,8 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,23 +20,23 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class QueueController implements Initializable, DataInitializable<Utente> {
+public class QueueController implements Initializable, DataInitializable<User> {
 	private final ViewDispatcher dispatcher;
 	private final MediaPlayerSettings mediaPlayerSettings;
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
-	private TableView<Canzone> queueTable;
+	private TableView<Song> queueTable;
 	@FXML
-	private TableColumn<Canzone, String> songName;
+	private TableColumn<Song, String> songName;
 	@FXML
-	private TableColumn<Canzone, String> artistName;
+	private TableColumn<Song, String> artistName;
 	@FXML
-	private TableColumn<Canzone, String> albumName;
+	private TableColumn<Song, String> albumName;
 	@FXML
-	private TableColumn<Canzone, String> duration;
+	private TableColumn<Song, String> duration;
 	@FXML
-	private TableColumn<Canzone, Button> delete;
-	private Utente utente;
+	private TableColumn<Song, Button> delete;
+	private User utente;
 	
 	public QueueController(){
 		dispatcher = ViewDispatcher.getInstance();
@@ -47,20 +47,20 @@ public class QueueController implements Initializable, DataInitializable<Utente>
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		songName.setCellValueFactory(new PropertyValueFactory<>("title"));
-		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 
 			return new SimpleStringProperty(param.getValue().getAlbum().getArtist().getStageName());
 		});
-		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
 		});
 		duration.setCellValueFactory(new PropertyValueFactory<>("length"));
 		delete.setStyle("-fx-alignment: CENTER;");
 	}
 	@Override
-	public void initializeData(Utente utente) {
+	public void initializeData(User utente) {
 		this.utente = utente;
-		delete.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, Button> param) -> {
+		delete.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
 			deleteButton.setOnAction((ActionEvent event) -> {

@@ -2,9 +2,9 @@ package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -44,7 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class PlayerPaneController implements Initializable, DataInitializable<Utente>{
+public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
 	private final ViewDispatcher dispatcher;
     private final SPACEMusicUnifyService spaceMusicUnifyService;
@@ -59,7 +59,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
     private ImageView songImage, volumeImg;
 
     private MediaPlayer mediaPlayer;
-    private Utente user;
+    private User user;
     private MediaPlayerSettings mediaPlayerSettings;
     private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "UserHomeView" + File.separator + "icon" + File.separator;
 
@@ -82,7 +82,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
         }
     }
     @Override
-    public void initializeData(Utente utente) {
+    public void initializeData(User utente) {
         this.user = utente;
 
         if(mediaPlayerSettings.getPlayerOnPlay() == null) {
@@ -283,7 +283,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
     }
     
     private boolean loadFirstSong() {
-        Canzone song;
+        Song song;
         song = user.getcurrentSong();
         System.out.println("first song "+user.getcurrentSong());
         if(song != null) {
@@ -342,7 +342,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
 
     }
     public void loadSong() {
-        Canzone song;
+        Song song;
         song = user.getcurrentSong();
 
         if(song != null) {
@@ -412,7 +412,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
         }
     }
     public void resume() {
-        Canzone song = user.getcurrentSong();
+        Song song = user.getcurrentSong();
         songTitle.setText(song.getTitle());
 
         songArtist.setText(song.getAlbum().getArtist().getStageName());
@@ -566,9 +566,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
 
 			addButton.setOnAction((ActionEvent evento) -> {
 				//aggiunto album alla playlist
-				List<Canzone> lista = param.getValue().getSongList();
+				List<Song> lista = param.getValue().getSongList();
 				Boolean alreadyAdded = false;
-				for(Canzone canzonePlaylist: lista) {
+				for(Song canzonePlaylist: lista) {
 					if(user.getcurrentSong().getId().intValue() == canzonePlaylist.getId().intValue()) {
 						alreadyAdded = true;
 						break;
@@ -622,7 +622,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Ut
         }
     }
     public boolean checkForClones(Playlist playlist){
-        for(Canzone canzone : playlist.getSongList()){
+        for(Song canzone : playlist.getSongList()){
             if(canzone.getId().equals( user.getcurrentSong().getId())){
                 return true;
             }

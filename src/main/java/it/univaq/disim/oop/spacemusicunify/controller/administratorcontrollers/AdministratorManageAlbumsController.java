@@ -35,7 +35,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
 	
     private final ViewDispatcher dispatcher;
     private final SPACEMusicUnifyService spaceMusicUnifyService;
-    private Artista artist;
+    private Artist artist;
 
 
     @FXML
@@ -128,7 +128,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
     public void createNewAlbum(){
     	Album newAlbum = new Album();
     	newAlbum.setTitle("new album of "+artist.getStageName());
-    	newAlbum.setGenre(Genere.rock);
+    	newAlbum.setGenre(Genre.rock);
     	newAlbum.setRelease(LocalDate.now());
 	    newAlbum.setArtist(artist);
         Picture picture = new Picture();

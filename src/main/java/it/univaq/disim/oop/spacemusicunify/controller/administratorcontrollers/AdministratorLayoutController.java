@@ -1,7 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 import it.univaq.disim.oop.spacemusicunify.view.MenuElement;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.event.ActionEvent;
@@ -18,11 +18,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class AdministratorLayoutController implements Initializable, DataInitializable<Amministratore> {
+public class AdministratorLayoutController implements Initializable, DataInitializable<Administrator> {
 	
 	private static final String Folder = "AdministratorViews/";
 	
-	private Amministratore admin;
+	private Administrator admin;
 
     private static final MenuElement MENU_HOME = new MenuElement("Home", Folder + "AdministratorHomeView/home");
     private static final MenuElement[] MENU_ADMIN = {
@@ -43,7 +43,7 @@ public class AdministratorLayoutController implements Initializable, DataInitial
         menuBar.getChildren().add(new Separator());
     }
     @Override
-    public void initializeData(Amministratore amministratore) {
+    public void initializeData(Administrator amministratore) {
 		this.admin = amministratore;
 	}
 

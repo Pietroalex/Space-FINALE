@@ -13,10 +13,10 @@ import java.util.*;
 
 public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
-	private static List<Artista> storedArtists = new ArrayList<>();
+	private static List<Artist> storedArtists = new ArrayList<>();
 	private static List<Album> storedAlbums = new ArrayList<>();
-	private static List<Canzone> storedSongs = new ArrayList<>();
-	private static List<Utente> storedUsers = new ArrayList<>();
+	private static List<Song> storedSongs = new ArrayList<>();
+	private static List<User> storedUsers = new ArrayList<>();
 	private static int idUser = 1;
 	private static ViewSituations situation;
 
@@ -33,21 +33,21 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 
 	@Override
-	public void add(Utente utente) throws BusinessException {
+	public void add(User utente) throws BusinessException {
 		createNewUser(utente);
 	}
 
 	@Override
 	public void modify(Integer id, String username, String password) throws AlreadyTakenFieldException {
-		List<Utente> utenti = getAllUsers();
+		List<User> utenti = getAllUsers();
 
-		for (Utente user : utenti) {
+		for (User user : utenti) {
 			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
 			}
 		}
-		for (Utente user : utenti) {
+		for (User user : utenti) {
 			if (user.getId().intValue() == id.intValue()) {
 				user.setUsername(username);
 				user.setPassword(password);
@@ -57,9 +57,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Utente utente) {
+	public void delete(User utente) {
 
-		List<Utente> utenti = getAllUsers();
+		List<User> utenti = getAllUsers();
 		List<Playlist> playlists = null;
 		try {
 			playlists = getAllPlaylists(utente);
@@ -68,7 +68,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			throw new RuntimeException(e);
 		}
 
-		for (Utente user : utenti) {
+		for (User user : utenti) {
 			if (user.getId().intValue() == utente.getId().intValue()) {
 				utenti.remove(user);
 				break;
@@ -104,8 +104,8 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void add(Artista artista) throws AlreadyExistingException {
-		for (Artista artist : storedArtists) {
+	public void add(Artist artista) throws AlreadyExistingException {
+		for (Artist artist : storedArtists) {
 			if (artist.getStageName().equals(artista.getStageName())) {
 				System.out.println("controllo");
 				throw new AlreadyExistingException();
@@ -118,25 +118,25 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		Album album = new Album();
 		album.setId(idAlbums++);
 		album.setTitle("Inediti");
-		album.setGenre(Genere.singoli);
+		album.setGenre(Genre.singoli);
 		album.setRelease(LocalDate.now());
 		/*album.setCover(path+"cover.png");*/
 		album.setArtist(artista);
 
 		// creo la canzone e la lego all'album dell'artista1
-		Canzone canzone = new Canzone();
+		Song canzone = new Song();
 		canzone.setId(idSongs++);
 		canzone.setAlbum(album);
 		canzone.setTitle("Our Sympathy");
 		canzone.setLyrics("ElDlive");
 		canzone.setLength("04:02");
-		canzone.setGenre(Genere.pop);
+		canzone.setGenre(Genre.pop);
 
 
 			canzone.setFileMp3(pathmp3+"our_sympathy.mp3");
 
 		// aggiungo la canzone all'album dell'artista1
-		List<Canzone> canzoneList = album.getSongList();
+		List<Song> canzoneList = album.getSongList();
 		canzoneList.add(canzone);
 		album.setSongList(canzoneList);
 
@@ -156,15 +156,15 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, Set<Picture> images)
+	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images)
 			throws AlreadyTakenFieldException {
-		for (Artista artista : storedArtists) {
+		for (Artist artista : storedArtists) {
 			if (artista.getStageName().equals(stageName) && artista.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
 			}
 		}
-		for (Artista artist : storedArtists) {
+		for (Artist artist : storedArtists) {
 
 			if (artist.getId().intValue() == id.intValue()) {
 				artist.setStageName(stageName);
@@ -178,7 +178,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Artista artista) {
+	public void delete(Artist artista) {
 		for (Album album : artista.getDiscography()) {
 			try {
 				this.delete(album);
@@ -186,7 +186,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				e.printStackTrace();
 			}
 		}
-			storedArtists.removeIf((Artista artistacheck) -> artista.getId().intValue() == artistacheck.getId().intValue());
+			storedArtists.removeIf((Artist artistacheck) -> artista.getId().intValue() == artistacheck.getId().intValue());
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		album.setId(idAlbums++);
 
-			Canzone canzone = new Canzone();
+			Song canzone = new Song();
 			canzone.setAlbum(album);
 			canzone.setTitle("new song of '"+ album.getTitle()+ "'");
 			canzone.setLyrics("In the dark 背を向けた未来\n" +
@@ -281,7 +281,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Genere genre, LocalDate release, Picture cover, List<Canzone> songlist) throws AlreadyTakenFieldException {
+	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, List<Song> songlist) throws AlreadyTakenFieldException {
 		for (Album album : storedAlbums) {
 			if (album.getTitle().equals(title) && album.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
@@ -292,9 +292,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			if (albumcheck.getId().equals(id)) {
 				albumcheck.setRelease(release);
 				albumcheck.setTitle(title);
-				if (albumcheck.getGenre() != genre && genre != Genere.singoli) {
-					List<Canzone> toChangeGenreSongs = albumcheck.getSongList();
-					for (Canzone canzone : toChangeGenreSongs) {
+				if (albumcheck.getGenre() != genre && genre != Genre.singoli) {
+					List<Song> toChangeGenreSongs = albumcheck.getSongList();
+					for (Song canzone : toChangeGenreSongs) {
 						canzone.setGenre(genre);
 					}
 					albumcheck.setSongList(null);
@@ -309,7 +309,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	@Override
 	public void delete(Album album) throws BusinessException {
-		List<Canzone> songs = album.getSongList();
+		List<Song> songs = album.getSongList();
 		boolean controllo = false;
 		for (Album albums : storedAlbums) {
 			if (albums.getId().intValue() == album.getId().intValue()) {
@@ -338,9 +338,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void add(Canzone canzone) throws AlreadyExistingException {
+	public void add(Song canzone) throws AlreadyExistingException {
 		Album album = canzone.getAlbum();
-		for (Canzone canzoni : storedSongs) {
+		for (Song canzoni : storedSongs) {
 			if (canzoni.getTitle().equals(canzone.getTitle())) {
 				System.out.println("controllo");
 				throw new AlreadyExistingException();
@@ -348,7 +348,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		}
 
 		canzone.setId(idSongs++);
-		List<Canzone> canzoniAlbum = album.getSongList();
+		List<Song> canzoniAlbum = album.getSongList();
 
 		canzoniAlbum.add(canzone);
 		album.setSongList(canzoniAlbum);
@@ -358,15 +358,15 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, String length, Genere genre, String mp3, String lyrics, Album album)
+	public void modify(Integer id, String title, String length, Genre genre, String mp3, String lyrics, Album album)
 			throws AlreadyTakenFieldException {
-		for (Canzone canzone : storedSongs) {
+		for (Song canzone : storedSongs) {
 			if (canzone.getTitle().equals(title) && canzone.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
 			}
 		}
-		for (Canzone canzone : storedSongs) {
+		for (Song canzone : storedSongs) {
 			if (canzone.getId().intValue() == id.intValue()) {
 				canzone.setLyrics(lyrics);
 				canzone.setTitle(title);
@@ -380,23 +380,23 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Canzone canzone) throws BusinessException {
+	public void delete(Song canzone) throws BusinessException {
 		boolean controllo = false;
-		for (Canzone song : storedSongs) {
+		for (Song song : storedSongs) {
 			if (song.getId().intValue() == canzone.getId().intValue()) {
 				controllo = true;
 				break;
 			}
 		}
 		if (controllo) {
-			storedSongs.removeIf((Canzone canzonecheck) -> canzonecheck == canzone);
+			storedSongs.removeIf((Song canzonecheck) -> canzonecheck == canzone);
 
 			storedAlbums.forEach(
-					(Album albums) -> canzone.getAlbum().getSongList().removeIf((Canzone canzonecheck) -> canzonecheck == canzone));
+					(Album albums) -> canzone.getAlbum().getSongList().removeIf((Song canzonecheck) -> canzonecheck == canzone));
 
-			for(Utente utente : getAllUsers()) {
+			for(User utente : getAllUsers()) {
 				getAllPlaylists(utente).forEach(
-						(Playlist playlist) -> playlist.getSongList().removeIf((Canzone canzonecheck) -> canzonecheck == canzone));
+						(Playlist playlist) -> playlist.getSongList().removeIf((Song canzonecheck) -> canzonecheck == canzone));
 			}
 		} else {
 			throw new BusinessException();
@@ -406,16 +406,16 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	@Override
 	public void setAllDefaults() {
 
-		List<Artista> artisti = new ArrayList<>();
+		List<Artist> artisti = new ArrayList<>();
 		List<Album> albums = new ArrayList<>();
-		List<Canzone> canzoni = new ArrayList<>();
+		List<Song> canzoni = new ArrayList<>();
 
 		// creo l'artista1
-		Artista artista1 = new Artista();
+		Artist artista1 = new Artist();
 		artista1.setId(idArtists++);
 		artista1.setStageName("Pasquale Arrosto");
 		artista1.setBiography("Sono Pasquale Arrosto, suono la musica elettronica");
-		artista1.setNationality(Nazionalità.italian);
+		artista1.setNationality(Nationality.italian);
 		artista1.setYearsOfActivity(6);
 		Set<Picture> artista1img = new HashSet<>();
 		try {
@@ -447,13 +447,13 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		Album artista1album1 = new Album();
 		artista1album1.setId(idAlbums++);
 		artista1album1.setTitle("Inediti");
-		artista1album1.setGenre(Genere.singoli);
+		artista1album1.setGenre(Genre.singoli);
 		artista1album1.setRelease(LocalDate.of(2012, 10, 20));
 		/*artista1album1.setCover(path+"cover.png");*/
 		artista1album1.setArtist(artista1);
 
 		// creo la canzone e la lego all'album dell'artista1
-		Canzone artista1album1canzone1 = new Canzone();
+		Song artista1album1canzone1 = new Song();
 		artista1album1canzone1.setId(idSongs++);
 		artista1album1canzone1.setAlbum(artista1album1);
 		artista1album1canzone1.setTitle("Our Sympathy");
@@ -514,18 +514,18 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				"深い愛を 光の刃で flash flash flash\n" +
 				"Start！ Transfer ahh");
 		artista1album1canzone1.setLength("04:02");
-		artista1album1canzone1.setGenre(Genere.j_pop);
+		artista1album1canzone1.setGenre(Genre.j_pop);
 
 		artista1album1canzone1.setFileMp3(pathmp3+"our_sympathy.mp3");
 
 		canzoni.add(artista1album1canzone1);
 
 		// aggiungo la canzone all'album dell'artista1
-		List<Canzone> canzone = artista1album1.getSongList();
+		List<Song> canzone = artista1album1.getSongList();
 		canzone.add(artista1album1canzone1);
 		artista1album1.setSongList(canzone);
 
-		Canzone artista1album1canzone2 = new Canzone();
+		Song artista1album1canzone2 = new Song();
 		artista1album1canzone2.setId(idSongs++);
 		artista1album1canzone2.setAlbum(artista1album1);
 		artista1album1canzone2.setTitle("Unravel");
@@ -667,7 +667,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				"chi è in me\n" +
 				"僕の中に誰がいるの？");
 		artista1album1canzone2.setLength("04:00");
-		artista1album1canzone2.setGenre(Genere.j_rock);
+		artista1album1canzone2.setGenre(Genre.j_rock);
 
 
 			artista1album1canzone2.setFileMp3(pathmp3+"unravel.mp3");
@@ -689,11 +689,11 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		albums.add(artista1album1);
 
 		// creo l'artista2
-		Artista artista2 = new Artista();
+		Artist artista2 = new Artist();
 		artista2.setId(idArtists++);
 		artista2.setStageName("British Wonder");
 		artista2.setBiography("We are 2 bassist, We are the new rock problems");
-		artista2.setNationality(Nazionalità.british);
+		artista2.setNationality(Nationality.british);
 		artista2.setYearsOfActivity(10);
 		Set<Picture> artista2img = new HashSet<>();
 		try {
@@ -713,13 +713,13 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		Album artista2album1 = new Album();
 		artista2album1.setId(idAlbums++);
 		artista2album1.setTitle("Inediti");
-		artista2album1.setGenre(Genere.singoli);
+		artista2album1.setGenre(Genre.singoli);
 		artista2album1.setRelease(LocalDate.of(2012, 10, 20));
 		/*artista2album1.setCover(path+"cover.png");*/
 		artista2album1.setArtist(artista2);
 
 		// creo la canzone e la lego all'album dell'artista2
-		Canzone artista2album1canzone1 = new Canzone();
+		Song artista2album1canzone1 = new Song();
 		artista2album1canzone1.setId(idSongs++);
 		artista2album1canzone1.setAlbum(artista2album1);
 		artista2album1canzone1.setTitle("AOT-Opening 1");
@@ -831,7 +831,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				"arco e freccia dell'inferno\n" +
 				"冥府の弓矢");
 		artista2album1canzone1.setLength("03:13");
-		artista2album1canzone1.setGenre(Genere.j_metal);
+		artista2album1canzone1.setGenre(Genre.j_metal);
 
 
 			artista2album1canzone1.setFileMp3(path+"attack.mp3");
@@ -852,7 +852,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artisti.add(artista2);
 		albums.add(artista2album1);
 
-		Utente utente = new Utente();
+		User utente = new User();
 		utente.setUsername("utente");
 		utente.setPassword("123456");
 
@@ -869,7 +869,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public List<Artista> getAllArtists() {
+	public List<Artist> getAllArtists() {
 		return storedArtists;
 	}
 
@@ -880,7 +880,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public List<Canzone> getAllSongs() {
+	public List<Song> getAllSongs() {
 		return storedSongs;
 	}
 
@@ -895,9 +895,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void createNewUser(Utente utente) throws BusinessException, AlreadyExistingException {
+	public void createNewUser(User utente) throws BusinessException, AlreadyExistingException {
 		// controllo se l'utente già è presente
-		for (Utente user : storedUsers) {
+		for (User user : storedUsers) {
 			if (user.getUsername().equals(utente.getUsername())) {
 				throw new AlreadyExistingException();
 			}
@@ -909,14 +909,14 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public UtenteGenerico authenticate(String username, String password) throws BusinessException {
+	public GeneralUser authenticate(String username, String password) throws BusinessException {
 		if ("admin".equalsIgnoreCase(username)) {
-			UtenteGenerico admin = new Amministratore();
+			GeneralUser admin = new Administrator();
 			admin.setUsername(username);
 			admin.setPassword(password);
 			return admin;
 		} else {
-			for (Utente user : storedUsers) {
+			for (User user : storedUsers) {
 				if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
 					return user;
 				}
@@ -926,7 +926,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public List<Utente> getAllUsers() {
+	public List<User> getAllUsers() {
 		return storedUsers;
 	}
 
@@ -936,7 +936,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		if(!storedPlaylists.add(playlist)) throw new BusinessException();
 	}
 	@Override
-	public void modify(Integer id, String title, List<Canzone> songlist, Utente user)
+	public void modify(Integer id, String title, List<Song> songlist, User user)
 			throws AlreadyTakenFieldException {
 
 		for (Playlist playlist : storedPlaylists) {
@@ -964,10 +964,10 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		}
 	}
 	@Override
-	public List<Playlist> getAllPlaylists(Utente utente) throws BusinessException {
+	public List<Playlist> getAllPlaylists(User utente) throws BusinessException {
 
 		boolean controllo = false;
-		for(Utente user: getAllUsers()) {
+		for(User user: getAllUsers()) {
 			if(user.getId().intValue() == utente.getId().intValue()) {
 				controllo = true;
 				break;
@@ -996,19 +996,19 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		this.ricerca = ricerca;
 	}
 	@Override
-	public void addSongToQueue(Utente utente, Canzone canzone) {
+	public void addSongToQueue(User utente, Song canzone) {
 		utente.getSongQueue().add(canzone);
 	}
 	@Override
-	public void deleteSongFromQueue(Utente utente, Canzone canzone) {
+	public void deleteSongFromQueue(User utente, Song canzone) {
 		utente.getSongQueue().remove(canzone);
 	}
 	@Override
-	public void updateCurrentSong(Utente utente, int position) {
+	public void updateCurrentSong(User utente, int position) {
 		utente.setcurrentPosition(position);
 	}
 	@Override
-	public void replaceCurrentSong(Utente utente, Canzone canzone) {
+	public void replaceCurrentSong(User utente, Song canzone) {
 		utente.getSongQueue().set(utente.getcurrentPosition(), canzone);
 	}
 }

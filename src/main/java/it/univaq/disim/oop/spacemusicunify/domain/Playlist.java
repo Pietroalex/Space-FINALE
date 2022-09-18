@@ -6,8 +6,8 @@ import java.util.List;
 public class Playlist {
 	private Integer id;
 	private String title;
-	private List<Canzone> songList = new ArrayList<>();
-	private Utente user;
+	private List<Song> songList = new ArrayList<>();
+	private User user;
 	
 	public Integer getId() {
 		return id;
@@ -21,16 +21,16 @@ public class Playlist {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public List<Canzone> getSongList() {
+	public List<Song> getSongList() {
 		return songList;
 	}
-	public void setSongList(List<Canzone> songList) {
+	public void setSongList(List<Song> songList) {
 		this.songList = songList;
 	}
-	public Utente getUser() {
+	public User getUser() {
 		return user;
 	}
-	public void setUser(Utente user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	

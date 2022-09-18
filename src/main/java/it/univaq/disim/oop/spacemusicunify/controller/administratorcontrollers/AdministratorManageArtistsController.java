@@ -21,28 +21,28 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class AdministratorManageArtistsController implements Initializable, DataInitializable<Amministratore> {
+public class AdministratorManageArtistsController implements Initializable, DataInitializable<Administrator> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
-	private TableView<Artista> artistList;
+	private TableView<Artist> artistList;
 	@FXML
-	private TableColumn<Artista, String> id;
+	private TableColumn<Artist, String> id;
 
 	@FXML
-	private TableColumn<Artista, String> stageName;
+	private TableColumn<Artist, String> stageName;
 	@FXML
-	private TableColumn<Artista, Integer> yearsofActivity;
+	private TableColumn<Artist, Integer> yearsofActivity;
 
 	@FXML
-	private TableColumn<Artista, String> nationality;
+	private TableColumn<Artist, String> nationality;
 	@FXML
-	private TableColumn<Artista, String> songNumber;
+	private TableColumn<Artist, String> songNumber;
 	@FXML
-	private TableColumn<Artista, String> biography;
+	private TableColumn<Artist, String> biography;
 	@FXML
-	private TableColumn<Artista, Button> viewmodify;
+	private TableColumn<Artist, Button> viewmodify;
 	@FXML
-	private TableColumn<Artista, Button> viewalbums;
+	private TableColumn<Artist, Button> viewalbums;
 
 	private ViewDispatcher dispatcher;
 	public AdministratorManageArtistsController(){
@@ -61,7 +61,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 
 
 		viewmodify.setStyle("-fx-alignment: CENTER;");
-		viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Artista, Button> param) -> {
+		viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
@@ -71,7 +71,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			return new SimpleObjectProperty<Button>(modify);
 		});
 		viewalbums.setStyle("-fx-alignment: CENTER;");
-		viewalbums.setCellValueFactory((TableColumn.CellDataFeatures<Artista, Button> param) -> {
+		viewalbums.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 			final Button modify = new Button("Albums");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
@@ -80,7 +80,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			});
 			return new SimpleObjectProperty<Button>(modify);
 		});
-		songNumber.setCellValueFactory((TableColumn.CellDataFeatures<Artista, String> param) -> {
+		songNumber.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> param) -> {
 			int count = 0;
 
 			for (Album album : param.getValue().getDiscography()) {
@@ -93,9 +93,9 @@ public class AdministratorManageArtistsController implements Initializable, Data
 	}
 
 	@Override
-	public void initializeData(Amministratore amministratore) {
-			List<Artista> artisti = spaceMusicUnifyService.getAllArtists();
-			ObservableList<Artista> artistaData = FXCollections.observableArrayList(artisti);
+	public void initializeData(Administrator amministratore) {
+			List<Artist> artisti = spaceMusicUnifyService.getAllArtists();
+			ObservableList<Artist> artistaData = FXCollections.observableArrayList(artisti);
 			artistList.setItems(artistaData);
 		
 
@@ -105,10 +105,10 @@ public class AdministratorManageArtistsController implements Initializable, Data
 
 	@FXML
 	public void newArtist(ActionEvent event) {
-		Artista artista = new Artista();
+		Artist artista = new Artist();
 		artista.setStageName("test group");
 		artista.setBiography("test bio");
-		artista.setNationality(Nazionalità.british);
+		artista.setNationality(Nationality.british);
 		artista.setYearsOfActivity(1);
 
 		this.spaceMusicUnifyService.setSituation(ViewSituations.newobject);

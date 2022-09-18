@@ -8,9 +8,9 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewException;
 import javafx.beans.property.SimpleObjectProperty;
@@ -32,17 +32,17 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
-	private TableView<Canzone> playlistTable;
+	private TableView<Song> playlistTable;
 	@FXML
-	private TableColumn<Canzone, String> songName;
+	private TableColumn<Song, String> songName;
 	@FXML
-	private TableColumn<Canzone, String> artistName;
+	private TableColumn<Song, String> artistName;
 	@FXML
-	private TableColumn<Canzone, String> albumName;
+	private TableColumn<Song, String> albumName;
 	@FXML
-	private TableColumn<Canzone, String> duration;
+	private TableColumn<Song, String> duration;
 	@FXML
-	private TableColumn<Canzone, Button> delete;
+	private TableColumn<Song, Button> delete;
 	@FXML
 	private Label playlistName;
 	@FXML
@@ -67,11 +67,11 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		songName.setCellValueFactory(new PropertyValueFactory<>("title"));
-		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 
 			return new SimpleStringProperty(param.getValue().getAlbum().getArtist().getStageName());
 		});
-		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			String albumName = "";
 			if(playlist.getSongList() != null) {
 				albumName = param.getValue().getAlbum().getTitle();
@@ -85,7 +85,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	@Override
 	public void initializeData(Playlist playlist) {
 		this.playlist = playlist;
-		delete.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, Button> param) -> {
+		delete.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
 			deleteButton.setOnAction((ActionEvent event) -> {
@@ -107,18 +107,18 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	}
 
 	private void initializeTable() {
-		List<Canzone> songList = playlist.getSongList();
-		ObservableList<Canzone> playlistData = FXCollections.observableArrayList(songList);
+		List<Song> songList = playlist.getSongList();
+		ObservableList<Song> playlistData = FXCollections.observableArrayList(songList);
 		playlistTable.setItems(playlistData);
 	}
 	
 	@FXML
 	public void addPlaylistToQueue() {
-		Utente utente = playlist.getUser();
-		List<Canzone> lista = playlist.getSongList();
-		for(Canzone canzonePlaylist: lista) {
+		User utente = playlist.getUser();
+		List<Song> lista = playlist.getSongList();
+		for(Song canzonePlaylist: lista) {
 			Boolean alreadyAdded = false;
-			for(Canzone canzone: utente.getSongQueue()) {
+			for(Song canzone: utente.getSongQueue()) {
 				if(canzonePlaylist.getId().intValue() == canzone.getId().intValue()) {
 					alreadyAdded = true;
 					break;

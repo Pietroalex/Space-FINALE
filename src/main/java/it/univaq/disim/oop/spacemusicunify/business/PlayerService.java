@@ -1,6 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -27,9 +27,9 @@ public interface PlayerService{
 	
 	void setMute(Boolean mute);
 	
-	Canzone getLastSong();
+	Song getLastSong();
 	
-	void setLastSong(Canzone canzone);
+	void setLastSong(Song canzone);
 
     PlayerState getPlayerState();
 

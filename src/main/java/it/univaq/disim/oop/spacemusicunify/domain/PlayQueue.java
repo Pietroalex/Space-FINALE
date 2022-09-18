@@ -3,8 +3,8 @@ package it.univaq.disim.oop.spacemusicunify.domain;
 public class PlayQueue {
 	
 	private Integer id;
-	private Utente user;
-	private Canzone song;
+	private User user;
+	private Song song;
 	
 	public Integer getId() {
 		return id;
@@ -12,16 +12,16 @@ public class PlayQueue {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Utente getUser() {
+	public User getUser() {
 		return user;
 	}
-	public void setUser(Utente user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
-	public Canzone getSong() {
+	public Song getSong() {
 		return song;
 	}
-	public void setSong(Canzone song) {
+	public void setSong(Song song) {
 		this.song = song;
 	}
 }

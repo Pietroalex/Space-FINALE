@@ -2,8 +2,8 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUserDetailController implements Initializable, DataInitializable<Utente> {
+public class AdministratorManageUserDetailController implements Initializable, DataInitializable<User> {
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
@@ -37,8 +37,8 @@ public class AdministratorManageUserDetailController implements Initializable, D
     private Label password;
     @FXML
     private Label existingLabel;
-    private Amministratore admin;
-    private Utente utente;
+    private Administrator admin;
+    private User utente;
 
     public AdministratorManageUserDetailController(){
         dispatcher = ViewDispatcher.getInstance();
@@ -47,7 +47,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
 
     }
     @Override
-    public void initializeData(Utente utente) {
+    public void initializeData(User utente) {
         this.utente = utente;
         this.setView();
         if(spaceMusicUnifyService.getSituation() != ViewSituations.register) {

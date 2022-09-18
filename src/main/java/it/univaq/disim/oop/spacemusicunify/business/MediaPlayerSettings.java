@@ -1,6 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -12,7 +12,7 @@ public class MediaPlayerSettings implements PlayerService {
 	private boolean playerOnPlay;
 	private Double volume;
 	private boolean mute;
-	private Canzone lastSong;
+	private Song lastSong;
 	private PlayerState playerState;
 	
 	private static MediaPlayerSettings instance;
@@ -65,11 +65,11 @@ public class MediaPlayerSettings implements PlayerService {
 		this.mute = mute;
 	}
 	@Override
-	public Canzone getLastSong() {
+	public Song getLastSong() {
 		return lastSong;
 	}
 	@Override
-	public void setLastSong(Canzone song) {
+	public void setLastSong(Song song) {
 		this.lastSong = song;
 	}
 	@Override

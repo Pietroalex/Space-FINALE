@@ -8,11 +8,11 @@ public class Album {
 	
 	private Integer id;
 	private String title;
-	private Genere genre;
+	private Genre genre;
 	private Picture cover;
-	private List<Canzone> songList = new ArrayList<>();
+	private List<Song> songList = new ArrayList<>();
 	private LocalDate release;
-	private Artista artist;
+	private Artist artist;
 
 
 	public Integer getId() {
@@ -27,16 +27,16 @@ public class Album {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Genere getGenre() {
+	public Genre getGenre() {
 		return genre;
 	}
-	public void setGenre(Genere genre) {
+	public void setGenre(Genre genre) {
 		this.genre = genre;
 	}
-	public List<Canzone> getSongList() {
+	public List<Song> getSongList() {
 		return songList;
 	}
-	public void setSongList(List<Canzone> songList) {
+	public void setSongList(List<Song> songList) {
 		this.songList = songList;
 	}
 	public LocalDate getRelease() {
@@ -45,10 +45,10 @@ public class Album {
 	public void setRelease(LocalDate release) {
 		this.release = release;
 	}
-	public Artista getArtist() {
+	public Artist getArtist() {
 		return artist;
 	}
-	public void setArtist(Artista artista) {
+	public void setArtist(Artist artista) {
 		this.artist = artista;
 	}
 

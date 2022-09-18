@@ -176,7 +176,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void add(Utente utente) throws  BusinessException {
+	public void add(User utente) throws  BusinessException {
 		createNewUser(utente);
 	}
 
@@ -219,7 +219,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Utente utente) throws BusinessException {
+	public void delete(User utente) throws BusinessException {
 		Boolean controllo = false;
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
@@ -298,7 +298,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void add(Artista artista) throws BusinessException {
+	public void add(Artist artista) throws BusinessException {
 		
 		try {
 			FileData fileDataArtisti = Utility.readAllRows(artistsFile);
@@ -322,7 +322,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			//creo l'album Inediti
 			Album album = new Album();
 			album.setTitle("Inediti");
-			album.setGenre(Genere.singoli);
+			album.setGenre(Genre.singoli);
 			/*album.setCover(saveANDstore(("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png"), "cover"));
 			*/
 			Picture picture = new Picture();
@@ -331,11 +331,11 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			album.setRelease(LocalDate.now());
 			
 			//creo la canzone di default
-			Canzone canzone = new Canzone();
+			Song canzone = new Song();
 			canzone.setTitle("Our Sympathy of "+artista.getStageName());
 			canzone.setLyrics("ElDlive");
 			canzone.setLength("04:02");
-			canzone.setGenre(Genere.pop);
+			canzone.setGenre(Genre.pop);
 			/*canzone.setFileMp3(saveANDstore(("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3"), "audio"));
 			*/
 			//scrivo file artista
@@ -417,7 +417,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nazionalità nationality, Set<Picture> images) throws BusinessException {
+	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images) throws BusinessException {
 		try {
 			System.out.println("Modifico artista");
 			FileData fileData = Utility.readAllRows(artistsFile);
@@ -505,7 +505,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Artista artista) throws BusinessException {
+	public void delete(Artist artista) throws BusinessException {
 		boolean check = false;
 		System.out.println("artista da eliminare: "+artista.getId());
 		try {
@@ -576,7 +576,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			fileData = Utility.readAllRows(albumsFile);
 			album.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
 			//creo la canzone
-			Canzone canzone = new Canzone();
+			Song canzone = new Song();
 			canzone.setAlbum(album);
 			canzone.setTitle("new song of '" + album.getTitle() + "'");
 			canzone.setLyrics("Lyrics");
@@ -618,7 +618,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 				//aggiorno il file degli artisti
 				fileData = Utility.readAllRows(artistsFile);
-				Artista artista = album.getArtist();
+				Artist artista = album.getArtist();
 				int cont = 0;
 				for (String[] righe : fileData.getRighe()) {
 					if (righe[0].equals(artista.getId().toString())) {
@@ -644,13 +644,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Genere genre, LocalDate release, Picture cover, List<Canzone> songlist) throws BusinessException {
+	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, List<Song> songlist) throws BusinessException {
 		String oldGenre = null;
 		try {
 			System.out.println("Modifico Album");
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] colonne: fileData.getRighe()) {
-				if(genre != Genere.singoli) {
+				if(genre != Genre.singoli) {
 					if (colonne[1].equals(title) && !colonne[0].equals(id.toString())) {
 						throw new AlreadyTakenFieldException();
 					}
@@ -686,9 +686,9 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				}
 			}
 
-			if(oldGenre != null && genre != Genere.singoli) {
+			if(oldGenre != null && genre != Genre.singoli) {
 				if (!oldGenre.equals(String.valueOf(genre)) ) {
-					for (Canzone canzone : songlist) {
+					for (Song canzone : songlist) {
 						canzone.setGenre(genre);
 						modify(canzone.getId(), canzone.getTitle(), canzone.getLength(), canzone.getGenre(), canzone.getFileMp3(), canzone.getLyrics(), canzone.getAlbum());
 					}
@@ -727,7 +727,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					}
 					//aggiorno il file artisti.txt
 					fileData = Utility.readAllRows(artistsFile);
-					Artista artista = album.getArtist();
+					Artist artista = album.getArtist();
 					int cont = 0;
 					for(String[] righe: fileData.getRighe()) {
 						if(righe[0].equals(artista.getId().toString())) {
@@ -746,7 +746,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 							writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 						}
 					}
-					for(Canzone canzone : album.getSongList()){
+					for(Song canzone : album.getSongList()){
 						delete(canzone);
 					}
 
@@ -767,7 +767,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void add(Canzone canzone) throws BusinessException {
+	public void add(Song canzone) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] righe: fileData.getRighe()) {
@@ -811,7 +811,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					check = true;
 					List<String> listaCanzoni = Utility.leggiArray(righe[6]);
 					listaCanzoni.add(canzone.getId().toString());
-					List<Canzone> canzoneList = album.getSongList();
+					List<Song> canzoneList = album.getSongList();
 					canzoneList.add(canzone);
 					album.setSongList(canzoneList);
 					Picture cover = album.getCover();
@@ -836,7 +836,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, String length, Genere genre, String mp3, String lyrics, Album album)
+	public void modify(Integer id, String title, String length, Genre genre, String mp3, String lyrics, Album album)
 			throws BusinessException {
 		System.out.println("in esecuzione modify");
 		boolean check = false;
@@ -861,8 +861,8 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						/*Files.delete(Paths.get(mp3Directory+righe[2]));*/
 						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audio")*/, lyrics, righe[4], length, genre.toString()};
 					}
-					List<Canzone> list = album.getSongList();
-					for(Canzone canzone: list){
+					List<Song> list = album.getSongList();
+					for(Song canzone: list){
 						if(canzone.getId() == id){
 							canzone.setId(id);
 							canzone.setTitle(title);
@@ -893,10 +893,10 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void delete(Canzone canzone) throws BusinessException {
+	public void delete(Song canzone) throws BusinessException {
 		boolean check = false;
 		System.out.println("canzone da eliminare: "+canzone.getId());
-		for(Canzone song : getAllSongs()) {
+		for(Song song : getAllSongs()) {
 			System.out.println("canzone in file: "+song.getId());
 			if(canzone.getId().intValue() == song.getId().intValue()) {
 				check = true;
@@ -922,7 +922,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						if(righe[0].equals(album.getId().toString())) {
 							List<String> listaCanzoni = Utility.leggiArray(righe[6]);
 							listaCanzoni.remove(canzone.getId().toString());
-							List<Canzone> canzoneList = album.getSongList();
+							List<Song> canzoneList = album.getSongList();
 							canzoneList.remove(canzone);
 							album.setSongList(canzoneList);
 							Picture cover = album.getCover();
@@ -1091,13 +1091,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		
 	}
 	@Override
-	public List<Artista> getAllArtists() {
-		List<Artista> artistaList = new ArrayList<>();
+	public List<Artist> getAllArtists() {
+		List<Artist> artistaList = new ArrayList<>();
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			System.out.println("cerco artista getAll");
 			for (String[] colonne : fileData.getRighe()) {
-				artistaList.add((Artista) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
+				artistaList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
 				System.out.println("aggiungo artista getall");
 			}
 
@@ -1123,13 +1123,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		return albumList;
 	}
 	@Override
-	public List<Canzone> getAllSongs() {
-		List<Canzone> songList = new ArrayList<>();
+	public List<Song> getAllSongs() {
+		List<Song> songList = new ArrayList<>();
 		try {
 			FileData fileData = Utility.readAllRows(songsFile);
 			System.out.println("cerco canzone");
 			for(String[] righe : fileData.getRighe()) {
-				songList.add((Canzone) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
+				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
 				System.out.println("aggiungo canzone");
 			}
 		} catch (IOException e) {
@@ -1148,27 +1148,27 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public UtenteGenerico authenticate(String username, String password) throws UtenteGenericoNotFoundException, BusinessException {
+	public GeneralUser authenticate(String username, String password) throws UtenteGenericoNotFoundException, BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for(String[] colonne : fileData.getRighe()) {
 				if(colonne[2].equals(username) && colonne[3].equals(password)) {
-					UtenteGenerico utente = null;
+					GeneralUser utente = null;
 					switch (colonne[1]) {
 						case "utente" :
-							utente = new Utente();
+							utente = new User();
 
-							((Utente) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
+							((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
 							List<String> songQueue = Utility.leggiArray(colonne[5]);
-							List<Canzone> queueList = new ArrayList<>();
+							List<Song> queueList = new ArrayList<>();
 							for(String string : songQueue) {
-								queueList.add((Canzone) UtilityObjectRetriever.findObjectById(string, songsFile));
+								queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
 							}
-							((Utente) utente).setSongQueue(queueList);
+							((User) utente).setSongQueue(queueList);
 							break;
 
 						case "amministratore" :
-							utente = new Amministratore();
+							utente = new Administrator();
 							break;
 
 						default :
@@ -1190,24 +1190,24 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public List<Utente> getAllUsers() {
-		List<Utente> utenteList = new ArrayList<>();
+	public List<User> getAllUsers() {
+		List<User> utenteList = new ArrayList<>();
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			fileData.getRighe().remove(0);
 
 			for (String[] colonne : fileData.getRighe()) {
-				Utente utente = new Utente();
+				User utente = new User();
 				utente.setId(Integer.parseInt(colonne[0]));
 				utente.setUsername(colonne[2]);
 				utente.setPassword(colonne[3]);
-				((Utente) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
+				((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
 				List<String> songQueue = Utility.leggiArray(colonne[5]);
-				List<Canzone> queueList = new ArrayList<>();
+				List<Song> queueList = new ArrayList<>();
 				for(String string : songQueue) {
-					queueList.add((Canzone) UtilityObjectRetriever.findObjectById(string, songsFile));
+					queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
 				}
-				((Utente) utente).setSongQueue(queueList);
+				((User) utente).setSongQueue(queueList);
 				utenteList.add(utente);
 			}
 
@@ -1219,7 +1219,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void createNewUser(Utente utente) throws AlreadyExistingException, BusinessException {
+	public void createNewUser(User utente) throws AlreadyExistingException, BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] colonne : fileData.getRighe()) {
@@ -1291,11 +1291,11 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, List<Canzone> songlist, Utente user) throws  BusinessException {
+	public void modify(Integer id, String title, List<Song> songlist, User user) throws  BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			List<String> idSongList = new ArrayList<>();
-			for(Canzone canzone : songlist) {
+			for(Song canzone : songlist) {
 				idSongList.add(canzone.getId().toString());
 			}
 			try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
@@ -1355,7 +1355,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	}
 	@Override
-	public List<Playlist> getAllPlaylists(Utente utente) {
+	public List<Playlist> getAllPlaylists(User utente) {
 		List<Playlist> playlistsUtente = new ArrayList<>();
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
@@ -1367,12 +1367,12 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					playlist.setId(Integer.parseInt(colonne[0]));
 					playlist.setTitle(colonne[1]);
 					playlist.setUser(utente);
-					List<Canzone> listaCanzoni = new ArrayList<>();
+					List<Song> listaCanzoni = new ArrayList<>();
 					List<String> songList = Utility.leggiArray(colonne[3]);
 
 					if(!(songList.contains("")	)){
 						for (String canzoneString : songList) {
-							listaCanzoni.add((Canzone) UtilityObjectRetriever.findObjectById(canzoneString, songsFile));
+							listaCanzoni.add((Song) UtilityObjectRetriever.findObjectById(canzoneString, songsFile));
 						}
 					}
 					playlist.setSongList(listaCanzoni);
@@ -1401,7 +1401,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void addSongToQueue(Utente utente, Canzone canzone) {
+	public void addSongToQueue(User utente, Song canzone) {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			int cont = 0;
@@ -1428,7 +1428,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void deleteSongFromQueue(Utente utente, Canzone canzone) {
+	public void deleteSongFromQueue(User utente, Song canzone) {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			int cont = 0;
@@ -1438,8 +1438,8 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					songQueue.remove(String.valueOf(canzone.getId()));
 					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], righe[4], songQueue.toString()};
 					fileData.getRighe().set(cont, row);
-					List<Canzone> lista = new ArrayList<>(utente.getSongQueue());
-					for(Canzone song : utente.getSongQueue()) {
+					List<Song> lista = new ArrayList<>(utente.getSongQueue());
+					for(Song song : utente.getSongQueue()) {
 						if(song.getId().equals(canzone.getId())) lista.remove(song);
 					}
 					utente.setSongQueue(lista);
@@ -1459,7 +1459,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void updateCurrentSong(Utente utente, int position) { //aggiorna la canzone corrente scorrendo la coda
+	public void updateCurrentSong(User utente, int position) { //aggiorna la canzone corrente scorrendo la coda
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			int cont = 0;
@@ -1484,7 +1484,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	}
 
 	@Override
-	public void replaceCurrentSong(Utente utente, Canzone canzone) { //aggiorna la canzone corrente con una canzone a scelta
+	public void replaceCurrentSong(User utente, Song canzone) { //aggiorna la canzone corrente con una canzone a scelta
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			int cont = 0;

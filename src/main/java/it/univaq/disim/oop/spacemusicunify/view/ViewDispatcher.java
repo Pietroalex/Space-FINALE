@@ -2,9 +2,9 @@ package it.univaq.disim.oop.spacemusicunify.view;
 
 import java.io.IOException;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
-import it.univaq.disim.oop.spacemusicunify.domain.UtenteGenerico;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.domain.GeneralUser;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -55,19 +55,19 @@ public class ViewDispatcher {
 	}
 
 	
-	public void loggedIn(UtenteGenerico utenteGenerico) throws ViewException {
+	public void loggedIn(GeneralUser utenteGenerico) throws ViewException {
 		//definire se caricare la vista utente o amministratore
 		
 		//vista utente
-		if(utenteGenerico instanceof Utente) {
+		if(utenteGenerico instanceof User) {
 		try{
-			View<Utente> layoutView = loadView("UserViews/UserHomeView/layout");
+			View<User> layoutView = loadView("UserViews/UserHomeView/layout");
 			layout = (BorderPane) layoutView.getView();
-			DataInitializable<Utente> layoutController = layoutView.getController();
-			layoutController.initializeData((Utente) utenteGenerico);
+			DataInitializable<User> layoutController = layoutView.getController();
+			layoutController.initializeData((User) utenteGenerico);
 			
 
-			renderView("UserViews/UserHomeView/home",(Utente) utenteGenerico);
+			renderView("UserViews/UserHomeView/home",(User) utenteGenerico);
 			Scene scene = new Scene(layout);
 			stage.setScene(scene);
 	} catch (ViewException e) {
@@ -76,12 +76,12 @@ public class ViewDispatcher {
 	}
 		} else {
 			try{
-				View<Amministratore> layoutView = loadView("AdministratorViews/AdministratorHomeView/layout");
-				DataInitializable<Amministratore> layoutController = layoutView.getController();
-				layoutController.initializeData((Amministratore) utenteGenerico);
+				View<Administrator> layoutView = loadView("AdministratorViews/AdministratorHomeView/layout");
+				DataInitializable<Administrator> layoutController = layoutView.getController();
+				layoutController.initializeData((Administrator) utenteGenerico);
 				
 				layout = (BorderPane) layoutView.getView();
-				renderView("AdministratorViews/AdministratorHomeView/home",(Amministratore) utenteGenerico);
+				renderView("AdministratorViews/AdministratorHomeView/home",(Administrator) utenteGenerico);
 				Scene scene = new Scene(layout);
 				stage.setScene(scene);
 			} catch (ViewException e) {

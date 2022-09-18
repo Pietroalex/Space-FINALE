@@ -8,10 +8,10 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 
 
-public class AdministratorHomeController implements Initializable, DataInitializable<Amministratore> {
+public class AdministratorHomeController implements Initializable, DataInitializable<Administrator> {
 
 	@FXML
 	private Label benvenutoLabel;
@@ -20,7 +20,7 @@ public class AdministratorHomeController implements Initializable, DataInitializ
 	}
 
 	@Override
-	public void initializeData(Amministratore amministratore) {
+	public void initializeData(Administrator amministratore) {
 		benvenutoLabel.setText("Benvenuto " + amministratore.getUsername().substring(0, 1).toUpperCase(Locale.ROOT).concat(amministratore.getUsername().substring(1)) + "!");
 	}
 

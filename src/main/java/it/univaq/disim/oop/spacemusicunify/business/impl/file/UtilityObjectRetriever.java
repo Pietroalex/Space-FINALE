@@ -16,7 +16,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class UtilityObjectRetriever extends Object {
 
-	private static Artista currentArtist;
+	private static Artist currentArtist;
 	private static Album currentAlbum;
 	private static String immaginiDirectory;
 	private static String filesMp3Directory;
@@ -109,8 +109,8 @@ public class UtilityObjectRetriever extends Object {
 		System.out.println("finito");
 		return object;
 	}
-	private static Canzone findSong(String[] colonne, String file){
-		Canzone canzone = new Canzone();
+	private static Song findSong(String[] colonne, String file){
+		Song canzone = new Song();
 		canzone.setId(Integer.parseInt(colonne[0]));
 		canzone.setTitle(colonne[1]);
 		canzone.setFileMp3(filesMp3Directory+colonne[2]);
@@ -122,14 +122,14 @@ public class UtilityObjectRetriever extends Object {
 			canzone.setAlbum(currentAlbum);
 		}
 		canzone.setLength(colonne[5]);
-		canzone.setGenre(Genere.valueOf(colonne[6]));
+		canzone.setGenre(Genre.valueOf(colonne[6]));
 		return canzone;
 	}
 	private static Album findAlbum(String[] colonne, String file){
 		Album album = new Album();
 		album.setId(Integer.parseInt(colonne[0]));
 		album.setTitle(colonne[1]);
-		album.setGenre(Genere.valueOf(colonne[2]));
+		album.setGenre(Genre.valueOf(colonne[2]));
 		/*album.setCover(immaginiDirectory+colonne[3]);*/
 
 		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(colonne[3], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"pictures.txt"))));
@@ -139,17 +139,17 @@ public class UtilityObjectRetriever extends Object {
 			if(colonne[5].equals(currentArtist.getId().toString())){
 				album.setArtist(currentArtist);
 			}else{
-				album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
+				album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
 			}
 		} else {
-			album.setArtist((Artista)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
+			album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
 		}
 
-		List<Canzone> canzoneList = new ArrayList<>();
+		List<Song> canzoneList = new ArrayList<>();
 		currentAlbum = album;
 		for(String canzoni: Utility.leggiArray(colonne[6])){
 			System.out.println("id "+canzoni);
-			canzoneList.add((Canzone) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
+			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
 
 		}
 		album.setSongList(canzoneList);
@@ -158,14 +158,14 @@ public class UtilityObjectRetriever extends Object {
 	}
 
 
-	private static Artista findArtist(String[] colonne, String file){
-		Artista artista = new Artista();
+	private static Artist findArtist(String[] colonne, String file){
+		Artist artista = new Artist();
 
 		artista.setId(Integer.parseInt(colonne[0]));
 		artista.setStageName(colonne[1]);
 		artista.setYearsOfActivity(Integer.parseInt(colonne[2]));
 		artista.setBiography(colonne[3]);
-		artista.setNationality(Nazionalità.valueOf(colonne[4]));
+		artista.setNationality(Nationality.valueOf(colonne[4]));
 
 
 		Set<Picture> immagini = new HashSet<>();

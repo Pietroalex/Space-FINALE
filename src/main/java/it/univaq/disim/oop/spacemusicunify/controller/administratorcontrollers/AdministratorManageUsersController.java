@@ -2,8 +2,8 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Amministratore;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -21,20 +21,20 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUsersController implements Initializable, DataInitializable<Amministratore>{
+public class AdministratorManageUsersController implements Initializable, DataInitializable<Administrator>{
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
-    private TableView<Utente> usersList;
+    private TableView<User> usersList;
     @FXML
-    private TableColumn<Utente, String> id;
+    private TableColumn<User, String> id;
 
     @FXML
-    private TableColumn<Utente, String> username;
+    private TableColumn<User, String> username;
     @FXML
-    private TableColumn<Utente, String> password;
+    private TableColumn<User, String> password;
     @FXML
-    private TableColumn<Utente, Button> viewmodify;
+    private TableColumn<User, Button> viewmodify;
     public AdministratorManageUsersController(){
         dispatcher = ViewDispatcher.getInstance();
 
@@ -49,7 +49,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
 
 
         viewmodify.setStyle("-fx-alignment: CENTER;");
-        viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Utente, Button> param) -> {
+        viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<User, Button> param) -> {
             final Button modify = new Button("Detail");
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
@@ -61,16 +61,16 @@ public class AdministratorManageUsersController implements Initializable, DataIn
         });
     }
     @Override
-    public void initializeData(Amministratore amministratore) {
+    public void initializeData(Administrator amministratore) {
 
-            List<Utente> utenti = spaceMusicUnifyService.getAllUsers();
-            ObservableList<Utente> utenteData = FXCollections.observableArrayList(utenti);
+            List<User> utenti = spaceMusicUnifyService.getAllUsers();
+            ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
             usersList.setItems(utenteData);
 
     }
     @FXML
     public void addNewUser(){
-        Utente utente = new Utente();
+        User utente = new User();
         utente.setUsername("utente");
         utente.setPassword("123456");
 

@@ -3,8 +3,8 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
-import it.univaq.disim.oop.spacemusicunify.domain.Genere;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +23,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageSongDetailController implements Initializable, DataInitializable<Canzone> {
+public class AdministratorManageSongDetailController implements Initializable, DataInitializable<Song> {
 
 
     private final ViewDispatcher dispatcher;
@@ -59,7 +59,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
     @FXML
     private Button deletesong;
     @FXML
-    private ComboBox<Genere> genreField;
+    private ComboBox<Genre> genreField;
     
     private Album album;
     @FXML
@@ -69,7 +69,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
     @FXML Button back;
     @FXML
     private Label existingLabel;
-    private Canzone canzone;
+    private Song canzone;
 
 
     public AdministratorManageSongDetailController(){
@@ -87,12 +87,12 @@ public class AdministratorManageSongDetailController implements Initializable, D
                 existingLabel.setVisible(false);
             }
         });
-        genreField.getItems().addAll(Genere.values());
-        genreField.getItems().remove(Genere.singoli);
+        genreField.getItems().addAll(Genre.values());
+        genreField.getItems().remove(Genre.singoli);
 
     }
     @Override
-    public void initializeData(Canzone canzone) {
+    public void initializeData(Song canzone) {
         this.canzone = canzone;
 
         genreField.setValue(canzone.getGenre());
@@ -115,7 +115,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
         if(canzone.getId() != null) {
             songField.setText(canzone.getFileMp3());
         }
-        if(album.getGenre() == Genere.singoli) {
+        if(album.getGenre() == Genre.singoli) {
             genreField.setDisable(false);
         }else{
             genreField.setDisable(true);
@@ -130,7 +130,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
 
                 canzone.setTitle(titleField.getText());
                 canzone.setLength(lengthField.getText());
-                if (album.getGenre() == Genere.singoli) {
+                if (album.getGenre() == Genre.singoli) {
                     canzone.setGenre(genreField.getValue());
                 } else {
                     canzone.setGenre(album.getGenre());

@@ -6,7 +6,7 @@ import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFacto
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PlaylistPaneController implements Initializable, DataInitializable<Utente> {
+public class PlaylistPaneController implements Initializable, DataInitializable<User> {
     private final ViewDispatcher dispatcher;
     private final SPACEMusicUnifyService spaceMusicUnifyService;
 
@@ -35,7 +35,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     private TableView<Playlist> playlistView;
     @FXML
     private TableColumn<Playlist, String> titleColumn;
-    private Utente user;
+    private User user;
 
     public PlaylistPaneController(){
         dispatcher = ViewDispatcher.getInstance();
@@ -55,7 +55,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         });
     }
     @Override
-    public void initializeData(Utente utente) {
+    public void initializeData(User utente) {
         this.user = utente;
         try {
             List<Playlist> result = spaceMusicUnifyService.getAllPlaylists(utente);

@@ -1,6 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
-public class UtenteGenerico {
+public class GeneralUser {
 	private Integer id;
 	private String username;
 	private String password;

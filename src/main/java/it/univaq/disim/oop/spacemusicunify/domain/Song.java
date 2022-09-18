@@ -1,14 +1,14 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
 
-public class Canzone {
+public class Song {
 	private Integer id;
 	private String title;
 	private String fileMp3;
 	private String lyrics;
 	private Album album;
 	private String length;
-	private Genere genre;
+	private Genre genre;
 
 
 	public Integer getId() {
@@ -50,10 +50,10 @@ public class Canzone {
 	public void setLength(String length) {
 		this.length = length;
 	}
-	public Genere getGenre() {
+	public Genre getGenre() {
 		return genre;
 	}
-	public void setGenre(Genere genre) {
+	public void setGenre(Genre genre) {
 		this.genre = genre;
 	}
 }

@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
-import it.univaq.disim.oop.spacemusicunify.domain.UtenteGenerico;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.domain.GeneralUser;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewException;
 import javafx.event.ActionEvent;
@@ -50,7 +50,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	private void loginAction(ActionEvent event) throws ViewException {
 		
 		try {
-			UtenteGenerico utenteGenerico = spaceMusicUnifyService.authenticate(username.getText(), password.getText());
+			GeneralUser utenteGenerico = spaceMusicUnifyService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(utenteGenerico);
 		} catch (UtenteGenericoNotFoundException e) {
 			errorLabel.setVisible(true);
@@ -66,7 +66,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	
 	@FXML
 	private void signupAction(ActionEvent event) {
-		Utente utente = new Utente();
+		User utente = new User();
 		utente.setUsername("utente");
 		utente.setPassword("123456");
 

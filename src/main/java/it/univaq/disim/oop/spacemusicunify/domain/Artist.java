@@ -3,14 +3,14 @@ package it.univaq.disim.oop.spacemusicunify.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Artista {
+public class Artist {
 
 	private Integer id;
 	private String stageName;
 	private int yearsOfActivity;
 	private String biography;
 	private Set<Picture> pictures = new HashSet<>();
-	private Nazionalità nationality;
+	private Nationality nationality;
 
 	private Set<Album> discography = new HashSet<>();
 
@@ -33,10 +33,10 @@ public class Artista {
 		this.biography = biography;
 	}
 	
-	public Nazionalità getNationality() {
+	public Nationality getNationality() {
 		return nationality;
 	}
-	public void setNationality(Nazionalità nationality) {
+	public void setNationality(Nationality nationality) {
 		this.nationality = nationality;
 	}
 	public void setStageName(String stageName) {

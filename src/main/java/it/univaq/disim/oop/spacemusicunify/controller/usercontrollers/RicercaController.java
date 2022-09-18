@@ -12,12 +12,12 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artista;
-import it.univaq.disim.oop.spacemusicunify.domain.Canzone;
-import it.univaq.disim.oop.spacemusicunify.domain.Genere;
-import it.univaq.disim.oop.spacemusicunify.domain.Nazionalità;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.Genre;
+import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Utente;
+import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -44,36 +44,36 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class RicercaController implements Initializable, DataInitializable<Utente>{
+public class RicercaController implements Initializable, DataInitializable<User>{
 
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
-	private TableView<Canzone> song;
+	private TableView<Song> song;
 	@FXML
-	private TableColumn<Canzone, String> songTitle;
+	private TableColumn<Song, String> songTitle;
 	@FXML
-	private TableColumn<Canzone, String> songArtist;
+	private TableColumn<Song, String> songArtist;
 	@FXML
-	private TableColumn<Canzone, String> songAlbum;
+	private TableColumn<Song, String> songAlbum;
 	@FXML
-	private TableColumn<Canzone, String> songTime;
+	private TableColumn<Song, String> songTime;
 	@FXML
-	private TableColumn<Canzone, Genere> songGenre;
+	private TableColumn<Song, Genre> songGenre;
 	@FXML
-	private TableColumn<Canzone, Button> addSongToQueue;
+	private TableColumn<Song, Button> addSongToQueue;
 	@FXML
-	private TableColumn<Canzone, Button> songInfo;
+	private TableColumn<Song, Button> songInfo;
 	
 	@FXML
-	private TableView<Artista> artist;
+	private TableView<Artist> artist;
 	@FXML
-	private TableColumn<Artista,String> artistName;
+	private TableColumn<Artist,String> artistName;
 	@FXML
-	private TableColumn<Artista,Nazionalità> artistNationality;
+	private TableColumn<Artist,Nationality> artistNationality;
 	@FXML
-	private TableColumn<Artista,Integer> artistYears;
+	private TableColumn<Artist,Integer> artistYears;
 	@FXML
-	private TableColumn<Artista, Button> artistInfo;
+	private TableColumn<Artist, Button> artistInfo;
 	
 	@FXML
 	private TableView<Album> album;
@@ -84,7 +84,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 	@FXML
 	private TableColumn<Album, String> albumArtists;
 	@FXML
-	private TableColumn<Album, Genere> albumGenre;
+	private TableColumn<Album, Genre> albumGenre;
 	@FXML
 	private TableColumn<Album, LocalDate> albumRelease;
 	@FXML
@@ -95,7 +95,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 	private TableColumn<Album, Button> albumInfo;
 	private ViewDispatcher dispatcher;
 	private String ricerca;
-	private Utente utente;
+	private User utente;
 	private MediaPlayerSettings mediaPlayerSettings;
 	
 	public RicercaController() {
@@ -111,17 +111,17 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 		this.ricerca = spaceMusicUnifyService.getRicerca();
 		//songTable
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 
 			return new SimpleStringProperty(param.getValue().getAlbum().getArtist().getStageName());
 		});
-		songAlbum.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, String> param) -> {
+		songAlbum.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
 		});
 		songGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
 		songTime.setCellValueFactory(new PropertyValueFactory<>("length"));
 		songInfo.setStyle("-fx-alignment: CENTER;");
-		songInfo.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, Button> param) -> {
+		songInfo.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 
 
 
@@ -134,7 +134,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			return new SimpleObjectProperty<Button>(info);
 		});
 		addSongToQueue.setStyle("-fx-alignment: CENTER;");
-		addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Canzone, Button> param) -> {
+		addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 
 			final Button addButton = new Button("Add to queue");
 			addButton.setCursor(Cursor.HAND);
@@ -162,7 +162,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 		artistNationality.setCellValueFactory(new PropertyValueFactory<>("nationality"));
 		artistYears.setCellValueFactory(new PropertyValueFactory<>("yearsOfActivity"));
 		artistInfo.setStyle("-fx-alignment: CENTER;");
-		artistInfo.setCellValueFactory((TableColumn.CellDataFeatures<Artista, Button> param) -> {
+		artistInfo.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
@@ -196,10 +196,10 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
-				List<Canzone> lista = param.getValue().getSongList();
-				for(Canzone canzoneAlbum: lista) {
+				List<Song> lista = param.getValue().getSongList();
+				for(Song canzoneAlbum: lista) {
 					Boolean alreadyAdded = false;
-					for(Canzone canzone: utente.getSongQueue()) {
+					for(Song canzone: utente.getSongQueue()) {
 						if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
 							alreadyAdded = true;
 							break;
@@ -243,28 +243,28 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 	}
 
 	@Override
-	public void initializeData(Utente utente) {
+	public void initializeData(User utente) {
 		this.ricerca = spaceMusicUnifyService.getRicerca();
 		this.utente = utente;
 
 
-			List<Artista> artistList = new ArrayList<>();
-			for(Artista artista: spaceMusicUnifyService.getAllArtists()) {
+			List<Artist> artistList = new ArrayList<>();
+			for(Artist artista: spaceMusicUnifyService.getAllArtists()) {
 				if(artista.getStageName().contains(ricerca.strip())) {
 					artistList.add(artista);
 				}
 			}
-			ObservableList<Artista> artistData = FXCollections.observableArrayList(artistList);
+			ObservableList<Artist> artistData = FXCollections.observableArrayList(artistList);
 			artist.setItems(artistData);
 
 
-			List<Canzone> songList = new ArrayList<>();
-			for(Canzone song: spaceMusicUnifyService.getAllSongs()) {
+			List<Song> songList = new ArrayList<>();
+			for(Song song: spaceMusicUnifyService.getAllSongs()) {
 				if(song.getTitle().contains(ricerca.strip()) || song.getGenre().toString().equals(ricerca)) {
 					songList.add(song);
 				}
 			}
-			ObservableList<Canzone> songData = FXCollections.observableArrayList(songList);
+			ObservableList<Song> songData = FXCollections.observableArrayList(songList);
 			song.setItems(songData);
 
 
@@ -280,7 +280,7 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 
 
 		song.setRowFactory( tablerow -> {
-			TableRow<Canzone> canzone = new TableRow<>();
+			TableRow<Song> canzone = new TableRow<>();
 			canzone.setOnMouseClicked((MouseEvent event) -> {
 				if(event.getClickCount() == 2) {
 					System.out.println("doppio click!");
@@ -320,9 +320,9 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 		});
 	}
 
-	public boolean checkForClones(Canzone value){
+	public boolean checkForClones(Song value){
 
-		for(Canzone canzone : utente.getSongQueue()){
+		for(Song canzone : utente.getSongQueue()){
 			if(canzone.getId().equals(value.getId())) return true;
 		}
 		return false;
@@ -342,10 +342,10 @@ public class RicercaController implements Initializable, DataInitializable<Utent
 			final Button addButton = new Button("add");
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiunto album alla playlist
-				List<Canzone> lista = param.getValue().getSongList();
-				for(Canzone canzoneAlbum: selectedAlbum.getSongList()) {
+				List<Song> lista = param.getValue().getSongList();
+				for(Song canzoneAlbum: selectedAlbum.getSongList()) {
 					Boolean alreadyAdded = false;
-					for(Canzone canzonePlaylist: lista) {
+					for(Song canzonePlaylist: lista) {
 						if(canzoneAlbum.getId().intValue() == canzonePlaylist.getId().intValue()) {
 							alreadyAdded = true;
 							break;
