@@ -62,7 +62,6 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
     private Label operation;
 
 
-
     public AdministratorManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
