@@ -67,6 +67,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title.setCellValueFactory(new PropertyValueFactory<>("title"));
