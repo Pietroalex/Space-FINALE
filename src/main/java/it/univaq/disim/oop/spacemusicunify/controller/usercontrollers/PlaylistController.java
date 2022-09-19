@@ -107,7 +107,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	}
 
 	private void initializeTable() {
-		List<Song> songList = playlist.getSongList();
+		Set<Song> songList = playlist.getSongList();
 		ObservableList<Song> playlistData = FXCollections.observableArrayList(songList);
 		playlistTable.setItems(playlistData);
 	}
@@ -115,10 +115,10 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	@FXML
 	public void addPlaylistToQueue() {
 		User utente = playlist.getUser();
-		List<Song> lista = playlist.getSongList();
+		Set<Song> lista = playlist.getSongList();
 		for(Song canzonePlaylist: lista) {
 			Boolean alreadyAdded = false;
-			for(Song canzone: utente.getSongQueue()) {
+			/*for(Song canzone: utente.getSongQueue()) {
 				if(canzonePlaylist.getId().intValue() == canzone.getId().intValue()) {
 					alreadyAdded = true;
 					break;
@@ -126,7 +126,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 			}
 			if(!alreadyAdded) {
 				utente.getSongQueue().add(canzonePlaylist);
-			}
+			}*/
 		}
 
 		if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
@@ -134,7 +134,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 			mediaPlayerSettings.getMediaPlayer().dispose();
 		}
 		mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
-		dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+		dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
 	}
 	
 	@FXML
@@ -145,6 +145,6 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 			e.printStackTrace();
 		}
 		dispatcher.renderView("UserViews/UserHomeView/home", playlist.getUser());
-		dispatcher.renderPlaylists("UserViews/UserHomeView/playlistPane", playlist.getUser());
+		dispatcher.renderView("UserViews/UserHomeView/playlistPane", playlist.getUser());
 	}
 }

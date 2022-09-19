@@ -32,8 +32,8 @@ public class UserLayoutController implements DataInitializable<User> {
 	public void initializeData(User utente) {
 		this.user = utente;
 		mediaPlayerSettings.setPlayerState(PlayerState.started);
-		dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
-		dispatcher.renderPlaylists("UserViews/UserHomeView/playlistPane", utente);
+		dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
+		dispatcher.renderView("UserViews/UserHomeView/playlistPane", utente);
 
 		
 	}

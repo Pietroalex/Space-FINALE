@@ -139,7 +139,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			final Button addButton = new Button("Add to queue");
 			addButton.setCursor(Cursor.HAND);
 
-			if(this.checkForClones(param.getValue())){
+			/*if(this.checkForClones(param.getValue())){
 				addButton.setDisable(true);
 			}
 
@@ -153,7 +153,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 				mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
 				dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 			});
-
+*/
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -196,10 +196,10 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
-				List<Song> lista = param.getValue().getSongList();
+				Set<Song> lista = param.getValue().getSongList();
 				for(Song canzoneAlbum: lista) {
 					Boolean alreadyAdded = false;
-					for(Song canzone: utente.getSongQueue()) {
+					/*for(Song canzone: utente.getSongQueue()) {
 						if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
 							alreadyAdded = true;
 							break;
@@ -207,7 +207,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 					}
 					if(!alreadyAdded) {
 						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
-					}
+					}*/
 				}
 
 				if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
@@ -215,7 +215,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 					mediaPlayerSettings.getMediaPlayer().dispose();
 				}
 				mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
-				dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+				dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -236,7 +236,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			final Button addButton = new Button("Add to playlist");
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
-				showPopupSelectPlaylist(param.getValue());
+				/*showPopupSelectPlaylist(param.getValue());*/
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -285,7 +285,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 				if(event.getClickCount() == 2) {
 					System.out.println("doppio click!");
 
-					if(this.utente.getcurrentSong() != null) {
+					/*if(this.utente.getcurrentSong() != null) {
 						mediaPlayerSettings.setPlayerState(PlayerState.searchDoubleClick);
 						System.out.println("this.utente.getcurrentSong() != null");
 						if(this.utente.getcurrentSong().getId().intValue() != canzone.getItem().getId().intValue()) {
@@ -313,22 +313,22 @@ public class RicercaController implements Initializable, DataInitializable<User>
 
 						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 					}
-
+*/
 				}
 			});
 			return canzone;
 		});
 	}
 
-	public boolean checkForClones(Song value){
+/*	public boolean checkForClones(Song value){
 
 		for(Song canzone : utente.getSongQueue()){
 			if(canzone.getId().equals(value.getId())) return true;
 		}
 		return false;
-	}
+	}*/
 
-	private void showPopupSelectPlaylist(Album selectedAlbum) {
+	/*private void showPopupSelectPlaylist(Album selectedAlbum) {
 		Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
 		Label title = new Label("Seleziona la playlist");
@@ -366,8 +366,8 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 		tableView.getColumns().addAll(name, add);
-
-		try {
+*/
+		/*try {
 			ObservableList<Playlist> observableList = FXCollections.observableArrayList(spaceMusicUnifyService.getAllPlaylists(utente));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
@@ -390,7 +390,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 		popupwindow.setResizable(false);
 		popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");
 		popupwindow.showAndWait();
-	}
+	}*/
 
 
 	@FXML

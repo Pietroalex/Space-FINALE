@@ -46,20 +46,49 @@ public class AdministratorManageUserDetailController implements Initializable, D
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 
     }
+    public void setView2(){
+        switch (spaceMusicUnifyService.getSituation()){
+            case detail:
+                this.username.setText(utente.getUsername());
+                this.password.setText(utente.getPassword());
+                break;
+
+            case modify:
+                title.setText("Modify User");
+                confirm.setText("Modify");
+                this.usernameField.setText(utente.getUsername());
+                this.passwordField.setText(utente.getPassword());
+                confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+                break;
+
+            case newobject:
+                this.usernameField.setText(utente.getUsername());
+                this.passwordField.setText(utente.getPassword());
+                confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+                title.setText("New User");
+                confirm.setText("Create");
+
+                break;
+            case register:
+                this.usernameField.setText(utente.getUsername());
+                this.passwordField.setText(utente.getPassword());
+                confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+                title.setText("Register");
+                confirm.setText("Create");
+
+                break;
+        }
+    }
     @Override
     public void initializeData(User utente) {
         this.utente = utente;
-        this.setView();
-        if(spaceMusicUnifyService.getSituation() != ViewSituations.register) {
-	        this.username.setText(utente.getUsername());
-	        this.password.setText(utente.getPassword());
-        }
-        this.usernameField.setText(utente.getUsername());
-        this.passwordField.setText(utente.getPassword());
+        this.setView2();
+
+
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+
 
     }
     @FXML
@@ -101,7 +130,8 @@ public class AdministratorManageUserDetailController implements Initializable, D
         if(spaceMusicUnifyService.getSituation() == ViewSituations.register){
             dispatcher.logout();
         }else {
-            dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
+            spaceMusicUnifyService.setSituation(ViewSituations.detail);
+            dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", utente);
         }
     }
     @FXML
@@ -148,10 +178,10 @@ public class AdministratorManageUserDetailController implements Initializable, D
     public void showModify() {
         if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
             spaceMusicUnifyService.setSituation(ViewSituations.modify);
-            this.setView();
+            dispatcher.renderView("AdministratorViews/ManageUsersView/modifyuser", utente);
         }else {
             spaceMusicUnifyService.setSituation(ViewSituations.detail);
-            this.setView();
+            dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", utente);
         }
     }
 

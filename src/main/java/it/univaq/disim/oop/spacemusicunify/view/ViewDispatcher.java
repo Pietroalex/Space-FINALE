@@ -95,48 +95,35 @@ public class ViewDispatcher {
 			View<T> view = loadView(viewName);
 			DataInitializable<T> controller = view.getController();
 			controller.initializeData(data);
-			layout.setCenter(view.getView());
+			String[] str = viewName.split("/");
+
+			switch (str[str.length-2]+"/"+str[str.length-1]){
+				case "UserHomeView/playerPane":
+					layout.setBottom(view.getView());
+					break;
+
+				case "UserHomeView/playlistPane":
+					layout.setLeft(view.getView());
+					break;
+
+				case "RegisterView/user_detail":
+					Scene scene = new Scene(view.getView());
+					stage.setScene(scene);
+					break;
+
+				default:
+					layout.setCenter(view.getView());
+					break;
+			}
 		} catch (ViewException e) {
 			renderError(e);
 		}
 	}
-	public <T> void renderPlayer(String viewName, T data) {
-		try {
-			View<T> view = loadView(viewName);
-			DataInitializable<T> controller = view.getController();
-			controller.initializeData(data);
-			layout.setBottom(view.getView());
-		} catch (ViewException e) {
-			renderError(e);
-		}
-	}
-	public <T> void renderPlaylists(String viewName, T data) {
-		try {
-			View<T> view = loadView(viewName);
-			DataInitializable<T> controller = view.getController();
-			controller.initializeData(data);
-			layout.setLeft(view.getView());
-		} catch (ViewException e) {
-			renderError(e);
-		}
-	}
+
 	public void logout() {
 		try {
 			Parent loginView = loadView("LoginView/login").getView();
 			Scene scene = new Scene(loginView);
-			stage.setScene(scene);
-		} catch (ViewException e) {
-			renderError(e);
-		}
-	}
-
-
-	public <T> void registerView(String s, T utente) {
-		try {
-			View<T> view = loadView(s);
-			DataInitializable<T> controller = view.getController();
-			controller.initializeData(utente);
-			Scene scene = new Scene(view.getView());
 			stage.setScene(scene);
 		} catch (ViewException e) {
 			renderError(e);

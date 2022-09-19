@@ -71,7 +71,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 		utente.setPassword("123456");
 
 		spaceMusicUnifyService.setSituation(ViewSituations.register);
-		dispatcher.registerView("RegisterView/user_detail", utente);
+		dispatcher.renderView("RegisterView/user_detail", utente);
 	}
 
 }

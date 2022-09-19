@@ -277,7 +277,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
     
     private boolean loadFirstSong() {
-        Song song;
+        Song song = null;
       //  song = user.getcurrentSong();
       //  System.out.println("first song "+user.getcurrentSong());
         if(song != null) {
@@ -314,7 +314,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
             mediaPlayerSettings.setMute(false);
 
-            if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
+           /* if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
                 nextButton.setDisable(false);
             }else{
                 nextButton.setDisable(true);
@@ -326,7 +326,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             }
 
             System.out.println("last song: " + mediaPlayerSettings.getLastSong());
-        	System.out.println("current: " + user.getcurrentSong());
+        	System.out.println("current: " + user.getcurrentSong());*/
             mediaPlayerSettings.setLastSong(song);
             System.out.println("update last: " + mediaPlayerSettings.getLastSong());
             return true;
@@ -336,8 +336,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     }
     public void loadSong() {
-        Song song;
-        song = user.getcurrentSong();
+        Song song = null;
+        /*song = user.getcurrentSong();*/
 
         if(song != null) {
             songTitle.setText(song.getTitle());
@@ -347,7 +347,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
 
             mediaPlayerSettings.setLastDuration(Duration.ZERO);
-            mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
+            /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
             mediaPlayer = mediaPlayerSettings.getMediaPlayer();
 
 
@@ -385,7 +385,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             playButton.setDisable(false);
             pauseButton.setDisable(false);
 
-            if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
+           /* if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
                 nextButton.setDisable(false);
             }else{
                 nextButton.setDisable(true);
@@ -394,7 +394,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 previousButton.setDisable(false);
             }else {
                 previousButton.setDisable(true);
-            }
+            }*/
 
             if(mediaPlayerSettings.getPlayerOnPlay()) {
                 pauseButton.setVisible(true);
@@ -406,7 +406,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }
     }
     public void resume() {
-        Song song = user.getcurrentSong();
+        Song song = null;
+       /* Song song = user.getcurrentSong();*/
         songTitle.setText(song.getTitle());
 
         songArtist.setText(song.getAlbum().getArtist().getStageName());
@@ -421,7 +422,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             playButton.setVisible(true);
         }
 
-        mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
+        /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
         mediaPlayer = mediaPlayerSettings.getMediaPlayer();
 
 
@@ -454,7 +455,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         addToPlaylistButton.setDisable(false);
 
 
-        if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
+       /* if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
             nextButton.setDisable(false);
         }else{
             nextButton.setDisable(true);
@@ -463,7 +464,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             previousButton.setDisable(false);
         }else {
             previousButton.setDisable(true);
-        }
+        }*/
         playButton.setDisable(false);
         pauseButton.setDisable(false);
         volumeSlider.setValue(mediaPlayerSettings.getPlayerVolume());
@@ -507,8 +508,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void previousSong(ActionEvent event) {
-        mediaPlayerSettings.setLastSong(user.getcurrentSong());
-        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);
+        /*mediaPlayerSettings.setLastSong(user.getcurrentSong());
+        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);*/
     	mediaPlayerSettings.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
@@ -521,8 +522,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     public void nextSong(ActionEvent event) {
 
-        mediaPlayerSettings.setLastSong(user.getcurrentSong());
-        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);
+       /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
+        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
     	mediaPlayerSettings.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
@@ -543,8 +544,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void addThisSongToPlaylist(ActionEvent event) {
     	Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
-		Label title = new Label("Add " + user.getcurrentSong().getTitle() + " to which playlist?");
-		title.setAlignment(Pos.CENTER);
+/*		Label title = new Label("Add " + user.getcurrentSong().getTitle() + " to which playlist?");*/
+		/*title.setAlignment(Pos.CENTER);*/
 		//selezione multipla playlist
 		TableView<Playlist> tableView = new TableView<>();
 		TableColumn<Playlist, String> name = new TableColumn<>("Title");
@@ -560,16 +561,16 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
 			addButton.setOnAction((ActionEvent evento) -> {
 				//aggiunto album alla playlist
-				List<Song> lista = param.getValue().getSongList();
+				Set<Song> lista = param.getValue().getSongList();
 				Boolean alreadyAdded = false;
 				for(Song canzonePlaylist: lista) {
-					if(user.getcurrentSong().getId().intValue() == canzonePlaylist.getId().intValue()) {
+					/*if(user.getcurrentSong().getId().intValue() == canzonePlaylist.getId().intValue()) {
 						alreadyAdded = true;
 						break;
-					}
+					}*/
 				}
 				if(!alreadyAdded) {
-					lista.add(user.getcurrentSong());
+					/*lista.add(user.getcurrentSong());*/
 				}
 
 				try {
@@ -595,12 +596,12 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		Button closeButton = new Button("Close");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderPlaylists("UserViews/UserHomeView/playlistPane", user);
+			dispatcher.renderView("UserViews/UserHomeView/playlistPane", user);
 			popupwindow.close();
 		});
 
 		VBox layout = new VBox(10);
-		layout.getChildren().addAll(title, tableView, closeButton);
+		/*layout.getChildren().addAll(title, tableView, closeButton);*/
 		layout.setAlignment(Pos.CENTER);
 		Scene scene1 = new Scene(layout, 300, 150);
 		popupwindow.setScene(scene1);
@@ -610,16 +611,16 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void showSongInfo(MouseEvent mouseEvent) {
-        if (user.getcurrentSong() != null) {
+        /*if (user.getcurrentSong() != null) {
             spaceMusicUnifyService.setSituation(ViewSituations.user);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", user.getcurrentSong());
-        }
+        }*/
     }
     public boolean checkForClones(Playlist playlist){
         for(Song canzone : playlist.getSongList()){
-            if(canzone.getId().equals( user.getcurrentSong().getId())){
+           /* if(canzone.getId().equals( user.getcurrentSong().getId())){
                 return true;
-            }
+            }*/
         }
 
         return false;

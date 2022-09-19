@@ -63,9 +63,9 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		delete.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
-			deleteButton.setOnAction((ActionEvent event) -> {
+			/*	deleteButton.setOnAction((ActionEvent event) -> {
 
-				if(param.getValue().getId().intValue() == utente.getcurrentSong().getId().intValue()){	//canzone in corso uguale a quella selezionata
+			if(param.getValue().getId().intValue() == utente.getcurrentSong().getId().intValue()){	//canzone in corso uguale a quella selezionata
 
 					if(utente.getSongQueue().size() > 1 ){				//più canzoni in riproduzione
 
@@ -122,6 +122,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		});
 		System.out.println("songqueue: " + utente.getSongQueue());
 		queueTable.getItems().addAll(utente.getSongQueue());
-	}
-	
+	*/
+		return null;});
+}
 }

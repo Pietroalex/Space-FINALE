@@ -99,7 +99,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             } catch (BusinessException e1) {
                 dispatcher.renderError(e1);
             }
-            dispatcher.renderPlaylists("UserViews/UserHomeView/playlistPane", this.user);
+            dispatcher.renderView("UserViews/UserHomeView/playlistPane", this.user);
             //refresh table
 
             popupwindow.close();

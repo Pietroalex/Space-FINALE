@@ -55,7 +55,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
             modify.setOnAction((ActionEvent event) -> {
 
                 spaceMusicUnifyService.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", param.getValue());
+                dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", param.getValue());
             });
             return new SimpleObjectProperty<Button>(modify);
         });
