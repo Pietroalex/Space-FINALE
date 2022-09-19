@@ -8,6 +8,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.domain.GeneralUser;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewException;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -70,7 +71,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 		utente.setUsername("utente");
 		utente.setPassword("123456");
 
-		spaceMusicUnifyService.setSituation(ViewSituations.register);
+		dispatcher.setSituation(ViewSituations.register);
 		dispatcher.renderView("RegisterView/user_detail", utente);
 	}
 

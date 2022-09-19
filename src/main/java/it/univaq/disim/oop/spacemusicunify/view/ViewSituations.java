@@ -1,4 +1,4 @@
-package it.univaq.disim.oop.spacemusicunify.business;
+package it.univaq.disim.oop.spacemusicunify.view;
 
 public enum ViewSituations {
 

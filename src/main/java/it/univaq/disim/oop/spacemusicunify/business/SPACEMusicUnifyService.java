@@ -60,9 +60,6 @@ public interface SPACEMusicUnifyService {
 	public void setRicerca(String ricerca);
 
 	//utentegenericoService
-	void setSituation(ViewSituations sit);
-
-	ViewSituations getSituation();
 
 	GeneralUser authenticate(String username, String password) throws BusinessException;
 	List<User> getAllUsers();

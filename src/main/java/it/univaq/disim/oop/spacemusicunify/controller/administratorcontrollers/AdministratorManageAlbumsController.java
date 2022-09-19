@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -95,10 +96,10 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
             final Button modify = new Button("Detail");
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
-                if (spaceMusicUnifyService.getSituation() == ViewSituations.user) {
-                    spaceMusicUnifyService.setSituation(ViewSituations.user);
+                if (dispatcher.getSituation() == ViewSituations.user) {
+                    dispatcher.setSituation(ViewSituations.user);
                 } else {
-                    spaceMusicUnifyService.setSituation(ViewSituations.detail);
+                    dispatcher.setSituation(ViewSituations.detail);
                 }
 
                 dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
@@ -106,7 +107,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
             return new SimpleObjectProperty<Button>(modify);
         });
 
-        if (spaceMusicUnifyService.getSituation() == ViewSituations.user){
+        if (dispatcher.getSituation() == ViewSituations.user){
             page.setMaxHeight(500);
         }
     }
@@ -115,7 +116,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
         this.artist = discography.iterator().next().getArtist();
 
         stageName.setText(this.artist.getStageName());
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.user) {
+        if(dispatcher.getSituation() == ViewSituations.user) {
         	newAlbumButton.setVisible(false);
         	operation.setText("View");
         }
@@ -140,7 +141,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
         }
         picture.setPhoto(outStreamObj.toByteArray());
         newAlbum.setCover(picture);
-        spaceMusicUnifyService.setSituation(ViewSituations.newobject);
+        dispatcher.setSituation(ViewSituations.newobject);
 
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", newAlbum);
     }

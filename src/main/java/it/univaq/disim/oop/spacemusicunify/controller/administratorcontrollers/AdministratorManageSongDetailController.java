@@ -6,6 +6,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -151,7 +152,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
                 System.out.println("eseguo modify");
              //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
             }
-            spaceMusicUnifyService.setSituation(ViewSituations.detail);
+            dispatcher.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
         } catch (AlreadyTakenFieldException e) {
@@ -213,7 +214,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
         }
     }
     public void setView(){
-        switch (spaceMusicUnifyService.getSituation()){
+        switch (dispatcher.getSituation()){
             case detail:
                 this.back.setVisible(true);
                 this.masterPane.getChildren().setAll(this.infoPane.getChildren()) ;
@@ -241,11 +242,11 @@ public class AdministratorManageSongDetailController implements Initializable, D
     }
     @FXML
     public void showModify(ActionEvent event) {
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
-            spaceMusicUnifyService.setSituation(ViewSituations.modify);
+        if(dispatcher.getSituation() == ViewSituations.detail){
+            dispatcher.setSituation(ViewSituations.modify);
             this.setView();
         }else {
-            spaceMusicUnifyService.setSituation(ViewSituations.detail);
+            dispatcher.setSituation(ViewSituations.detail);
             this.setView();
         }
     }

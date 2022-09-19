@@ -2,6 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -881,16 +882,6 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	@Override
 	public List<Song> getAllSongs() {
 		return storedSongs;
-	}
-
-	@Override
-	public void setSituation(ViewSituations sit) {
-		situation = sit;
-	}
-
-	@Override
-	public ViewSituations getSituation() {
-		return situation;
 	}
 
 	@Override

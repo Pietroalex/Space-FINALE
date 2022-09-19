@@ -1,10 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -16,9 +13,9 @@ import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
-import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -26,23 +23,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class RicercaController implements Initializable, DataInitializable<User>{
 
@@ -128,7 +118,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.user);
+				dispatcher.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);
@@ -166,7 +156,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.user);
+				dispatcher.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);
@@ -226,7 +216,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.user);
+				dispatcher.setSituation(ViewSituations.user);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(info);

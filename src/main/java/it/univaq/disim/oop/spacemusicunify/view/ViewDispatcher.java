@@ -18,6 +18,7 @@ public class ViewDispatcher {
 	
 	private Stage stage;
 	private BorderPane layout;
+	private ViewSituations situation;
 	
 	private static ViewDispatcher instance = new ViewDispatcher();
 	
@@ -128,5 +129,11 @@ public class ViewDispatcher {
 		} catch (ViewException e) {
 			renderError(e);
 		}
+	}
+	public void setSituation(ViewSituations sit) {
+		situation = sit;
+	}
+	public ViewSituations getSituation() {
+		return situation;
 	}
 }

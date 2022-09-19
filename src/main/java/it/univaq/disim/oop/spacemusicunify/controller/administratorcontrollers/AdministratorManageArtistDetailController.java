@@ -7,6 +7,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
 import it.univaq.disim.oop.spacemusicunify.domain.Picture;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -232,8 +233,8 @@ public class AdministratorManageArtistDetailController implements Initializable,
     }
     @FXML
     public void manageAlbums(){
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.user){
-            spaceMusicUnifyService.setSituation(ViewSituations.user);
+        if(dispatcher.getSituation() == ViewSituations.user){
+            dispatcher.setSituation(ViewSituations.user);
         }
         ViewDispatcher dispatcher = ViewDispatcher.getInstance();
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());
@@ -314,7 +315,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
         }
     }
     public void setView(){
-        switch (spaceMusicUnifyService.getSituation()){
+        switch (dispatcher.getSituation()){
             case detail:
                 masterPane.getChildren().setAll(infoPane.getChildren()) ;
                 break;
@@ -335,18 +336,18 @@ public class AdministratorManageArtistDetailController implements Initializable,
                 this.deleteartist.setVisible(false);
                 this.modify.setVisible(false);
                 this.albums.setText("View Artist albums");
-                spaceMusicUnifyService.setSituation(ViewSituations.user);
+                dispatcher.setSituation(ViewSituations.user);
                 this.masterPane.getChildren().setAll(this.infoPane.getChildren());
                 break;
         }
     }
     @FXML
     public void showModify(ActionEvent event) {
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
-            spaceMusicUnifyService.setSituation(ViewSituations.modify);
+        if(dispatcher.getSituation() == ViewSituations.detail){
+            dispatcher.setSituation(ViewSituations.modify);
             this.setView();
         }else {
-            spaceMusicUnifyService.setSituation(ViewSituations.detail);
+            dispatcher.setSituation(ViewSituations.detail);
             this.setView();
         }
     }

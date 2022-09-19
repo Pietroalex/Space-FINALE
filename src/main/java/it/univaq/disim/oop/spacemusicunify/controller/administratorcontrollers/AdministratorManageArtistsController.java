@@ -8,6 +8,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -65,7 +66,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.detail);
+				dispatcher.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -75,7 +76,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 			final Button modify = new Button("Albums");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.detail);
+				dispatcher.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue().getDiscography());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -111,7 +112,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 		artista.setNationality(Nationality.british);
 		artista.setYearsOfActivity(1);
 
-		this.spaceMusicUnifyService.setSituation(ViewSituations.newobject);
+		dispatcher.setSituation(ViewSituations.newobject);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
 	}
 

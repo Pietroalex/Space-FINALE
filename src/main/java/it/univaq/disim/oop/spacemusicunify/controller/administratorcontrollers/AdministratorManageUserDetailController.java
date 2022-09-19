@@ -5,6 +5,7 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -47,7 +48,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
 
     }
     public void setView2(){
-        switch (spaceMusicUnifyService.getSituation()){
+        switch (dispatcher.getSituation()){
             case detail:
                 this.username.setText(utente.getUsername());
                 this.password.setText(utente.getPassword());
@@ -99,7 +100,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
                 utente.setUsername(usernameField.getText());
                 utente.setPassword(passwordField.getText());
                 spaceMusicUnifyService.add(utente);
-                if (spaceMusicUnifyService.getSituation() == ViewSituations.register) {
+                if (dispatcher.getSituation() == ViewSituations.register) {
                     dispatcher.logout();
                 } else {
                     dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
@@ -127,10 +128,10 @@ public class AdministratorManageUserDetailController implements Initializable, D
     @FXML
     public void cancelModify() {
 
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.register){
+        if(dispatcher.getSituation() == ViewSituations.register){
             dispatcher.logout();
         }else {
-            spaceMusicUnifyService.setSituation(ViewSituations.detail);
+            dispatcher.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", utente);
         }
     }
@@ -148,41 +149,10 @@ public class AdministratorManageUserDetailController implements Initializable, D
             dispatcher.renderError(e);
         }
     }
-    public void setView(){
-        switch (spaceMusicUnifyService.getSituation()){
-            case detail:
-                masterPane.getChildren().setAll(infoPane.getChildren()) ;
-                break;
-
-            case modify:
-                title.setText("Modify User");
-                confirm.setText("Modify");
-                masterPane.getChildren().setAll(modifyPane.getChildren()) ;
-                break;
-
-            case newobject:
-                title.setText("New User");
-                confirm.setText("Create");
-                masterPane.getChildren().setAll(modifyPane.getChildren()) ;
-                break;
-            case register:
-                title.setText("Register");
-                confirm.setText("Create");
-                masterPane.getChildren().setAll(modifyPane.getChildren());
-                masterPane.setPrefHeight(600);
-                masterPane.setPrefWidth(1070);
-                break;
-        }
-    }
     @FXML
     public void showModify() {
-        if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
-            spaceMusicUnifyService.setSituation(ViewSituations.modify);
-            dispatcher.renderView("AdministratorViews/ManageUsersView/modifyuser", utente);
-        }else {
-            spaceMusicUnifyService.setSituation(ViewSituations.detail);
-            dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", utente);
-        }
+        dispatcher.setSituation(ViewSituations.modify);
+        dispatcher.renderView("AdministratorViews/ManageUsersView/modifyuser", utente);
     }
 
 }

@@ -5,6 +5,7 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,7 +55,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
 
-                spaceMusicUnifyService.setSituation(ViewSituations.detail);
+                dispatcher.setSituation(ViewSituations.detail);
                 dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", param.getValue());
             });
             return new SimpleObjectProperty<Button>(modify);
@@ -74,7 +75,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
         utente.setUsername("utente");
         utente.setPassword("123456");
 
-        spaceMusicUnifyService.setSituation(ViewSituations.newobject);
+        dispatcher.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", utente);
 
     }

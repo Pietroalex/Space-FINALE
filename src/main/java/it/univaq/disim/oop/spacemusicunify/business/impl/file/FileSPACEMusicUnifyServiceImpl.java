@@ -7,14 +7,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import javafx.scene.image.Image;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.util.Duration;
 
 public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
@@ -28,7 +27,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	private final String picturesDirectory;
 	private final String mp3Directory;
 
-	private static ViewSituations situation;
+
 	private String ricerca;
 
 	public FileSPACEMusicUnifyServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures) {
@@ -1138,15 +1137,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		}
 		return songList;
 	}
-	@Override
-	public void setSituation(ViewSituations sit) {
-		situation = sit;
-	}
 
-	@Override
-	public ViewSituations getSituation() {
-		return situation;
-	}
 
 	@Override
 	public GeneralUser authenticate(String username, String password) throws UtenteGenericoNotFoundException, BusinessException {
@@ -1156,7 +1147,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				if(colonne[2].equals(username) && colonne[3].equals(password)) {
 					GeneralUser utente = null;
 					switch (colonne[1]) {
-						case "utente" :
+						case "user" :
 							utente = new User();
 
 							//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
@@ -1168,7 +1159,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 							//((User) utente).setSongQueue(queueList);
 							break;
 
-						case "amministratore" :
+						case "admin" :
 							utente = new Administrator();
 							break;
 
@@ -1203,11 +1194,11 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				utente.setUsername(colonne[2]);
 				utente.setPassword(colonne[3]);
 				//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
-				List<String> songQueue = Utility.leggiArray(colonne[5]);
+				/*List<String> songQueue = Utility.leggiArray(colonne[5]);
 				List<Song> queueList = new ArrayList<>();
 				for(String string : songQueue) {
 					queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
-				}
+				}*/
 				//((User) utente).setSongQueue(queueList);
 				utenteList.add(utente);
 			}

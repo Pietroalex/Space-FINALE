@@ -1,11 +1,9 @@
 package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -13,6 +11,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -30,8 +29,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-
-import javax.imageio.ImageIO;
 
 public class AdministratorManageAlbumDetailController implements Initializable, DataInitializable<Album> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
@@ -161,7 +158,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 					}else{
 						System.out.println("Song not found");
 					}
-					spaceMusicUnifyService.setSituation(ViewSituations.modify);
+					dispatcher.setSituation(ViewSituations.modify);
 					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
 				} catch (BusinessException e) {
@@ -175,7 +172,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.setSituation(ViewSituations.detail);
+				dispatcher.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(modify);
@@ -195,10 +192,10 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			final Button modify = new Button("Detail");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
-				if(spaceMusicUnifyService.getSituation() == ViewSituations.user){
-					spaceMusicUnifyService.setSituation(ViewSituations.user);
+				if(dispatcher.getSituation() == ViewSituations.user){
+					dispatcher.setSituation(ViewSituations.user);
 				}else{
-					spaceMusicUnifyService.setSituation(ViewSituations.detail);
+					dispatcher.setSituation(ViewSituations.detail);
 				}
 
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
@@ -305,7 +302,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	}
 	@FXML
 	public void backToTheArtist(ActionEvent event) {
-		spaceMusicUnifyService.setSituation(ViewSituations.detail);
+		dispatcher.setSituation(ViewSituations.detail);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
 	}
 	public void focusImage(String image){
@@ -403,7 +400,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 		}else{
 			canzone.setGenre(album.getGenre());
 		}
-		spaceMusicUnifyService.setSituation(ViewSituations.newobject);
+		dispatcher.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", canzone);
 
 	}
@@ -423,7 +420,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	}
 
 	public void setView(){
-		switch (spaceMusicUnifyService.getSituation()){
+		switch (dispatcher.getSituation()){
 			case detail:
 				this.masterPane.getChildren().setAll(this.infoPane.getChildren());
 
@@ -453,12 +450,12 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	
 	@FXML
 	public void showModify(ActionEvent event) {
-		if(spaceMusicUnifyService.getSituation() == ViewSituations.detail){
-			spaceMusicUnifyService.setSituation(ViewSituations.modify);
+		if(dispatcher.getSituation() == ViewSituations.detail){
+			dispatcher.setSituation(ViewSituations.modify);
 
 			this.setView();
 		}else {
-			spaceMusicUnifyService.setSituation(ViewSituations.detail);
+			dispatcher.setSituation(ViewSituations.detail);
 
 			this.setView();
 		}
