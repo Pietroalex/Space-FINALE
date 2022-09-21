@@ -14,7 +14,6 @@ public class Album {
 	private Picture cover;
 	private Set<Song> songList = new HashSet<>();
 	private LocalDate release;
-	private Artist artist;
 
 	public Integer getId() {
 		return id;
@@ -56,14 +55,6 @@ public class Album {
 		this.release = release;
 	}
 	
-	public Artist getArtist() {
-		return artist;
-	}
-	
-	public void setArtist(Artist artista) {
-		this.artist = artista;
-	}
-
 	public Picture getCover() {
 		return cover;
 	}
