@@ -123,10 +123,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
 
-				artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-					return new SimpleStringProperty(album.getArtist().getStageName() );
-				});
+				artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(/*album.getArtist().getStageName()*/ ));
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
@@ -167,11 +164,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
 				lengthModify.setCellValueFactory(new PropertyValueFactory<>("length"));
 
-				artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-
-					return new SimpleStringProperty(album.getArtist().getStageName());
-				});
+				artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(/*album.getArtist().getStageName()*/));
 
 				managesong.setStyle("-fx-alignment: CENTER;");
 				managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
@@ -271,7 +264,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@Override
 	public void initializeData(Album album) {
 		this.album = album;
-		this.artista = album.getArtist();
+		/*this.artista = album.getArtist();*/
 
 		Set<Song> songs = album.getSongList();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
@@ -295,7 +288,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			} else {
 				spaceMusicUnifyService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
+			/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
 
 		} catch (AlreadyTakenFieldException e){
 			existingLabel.setText("This album title is already taken");
@@ -313,7 +306,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void cancelModify(ActionEvent event) {
 		switch (dispatcher.getSituation()){
 			case newobject:
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
+				/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
 				break;
 			default:
 				dispatcher.setSituation(ViewSituations.detail);
@@ -433,7 +426,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}else{
 				System.out.println("Album not found");
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
+			/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);

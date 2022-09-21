@@ -11,7 +11,7 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 	
 	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati";
 	private static final String ALBUM_FILE_NAME = REPOSITORY_BASE + File.separator + "albums.txt";
-	private static final String ARTISTI_FILE_NAME = REPOSITORY_BASE + File.separator + "artists.txt";
+	private static final String ARTISTI_FILE_NAME = REPOSITORY_BASE + File.separator + "singleartists.txt";
 	private static final String PLAYLIST_FILE_NAME = REPOSITORY_BASE + File.separator + "playlists.txt";
 	private static final String UTENTI_FILE_NAME = REPOSITORY_BASE + File.separator + "users.txt";
 	private static final String CANZONI_FILE_NAME = REPOSITORY_BASE + File.separator + "songs.txt";

@@ -6,6 +6,7 @@ public class Picture {
     private byte[] photo;
     private int height;
     private int width;
+    private String fileFormat;
     private Object ownership;
 
     public Integer getId() {
@@ -47,5 +48,12 @@ public class Picture {
 	public void setOwnership(Object ownership) {
 		this.ownership = ownership;
 	}
-	
+
+    public String getFormat() {
+        return fileFormat;
+    }
+
+    public void setFormat(String fileFormat) {
+        this.fileFormat = fileFormat;
+    }
 }

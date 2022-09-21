@@ -24,7 +24,7 @@ public class LayoutController implements Initializable, DataInitializable<Admini
 	
 	private Administrator admin;
 
-    private static final MenuElement MENU_HOME = new MenuElement("Home", Folder + "AdministratorHomeView/home");
+    private static final MenuElement MENU_HOME = new MenuElement("Home", Folder + "HomeView/home");
     private static final MenuElement[] MENU_ADMIN = {
             new MenuElement("Gestione Artisti", Folder + "ManageArtistsView/manage_artists"),//ManageArtistsView/manage_artist
             new MenuElement("Gestione Utenti", Folder + "ManageUsersView/manage_users"),//ManageUsersView/manage_user

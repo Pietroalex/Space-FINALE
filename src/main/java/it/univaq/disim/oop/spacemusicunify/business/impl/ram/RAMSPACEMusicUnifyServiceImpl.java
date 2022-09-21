@@ -107,10 +107,10 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	@Override
 	public void add(Artist artista) throws AlreadyExistingException {
 		for (Artist artist : storedArtists) {
-			if (artist.getStageName().equals(artista.getStageName())) {
+			/*if (artist.getStageName().equals(artista.getStageName())) {
 				System.out.println("controllo");
 				throw new AlreadyExistingException();
-			}
+			}*/
 		}
 
 
@@ -122,7 +122,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		album.setGenre(Genre.singoli);
 		album.setRelease(LocalDate.now());
 		/*album.setCover(path+"cover.png");*/
-		album.setArtist(artista);
+		/*album.setArtist(artista);*/
 
 		// creo la canzone e la lego all'album dell'artista1
 		Song canzone = new Song();
@@ -145,7 +145,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		artista1albums.add(album);
 
-		artista.setDiscography(artista1albums);
+		/*artista.setDiscography(artista1albums);*/
 
 		storedAlbums.add(album);
 		storedSongs.add(canzone);
@@ -158,7 +158,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	@Override
 	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images)
 			throws AlreadyTakenFieldException {
-		for (Artist artista : storedArtists) {
+		/*for (Artist artista : storedArtists) {
 			if (artista.getStageName().equals(stageName) && artista.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
@@ -173,19 +173,19 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				artist.setNationality(nationality);
 				artist.setPictures(images);
 			}
-		}
+		}*/
 
 	}
 
 	@Override
 	public void delete(Artist artista) {
-		for (Album album : artista.getDiscography()) {
+/*		for (Album album : artista.getDiscography()) {
 			try {
 				this.delete(album);
 			} catch (BusinessException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 			storedArtists.removeIf((Artist artistacheck) -> artista.getId().intValue() == artistacheck.getId().intValue());
 	}
 
@@ -270,11 +270,11 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			}
 
 
-		Set<Album> set = album.getArtist().getDiscography();
+		/*Set<Album> set = album.getArtist().getDiscography();
 
 		set.add(album);
 
-		album.getArtist().setDiscography(set);
+		album.getArtist().setDiscography(set);*/
 
 		storedAlbums.add(album);
 
@@ -318,7 +318,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			}
 		}
 
-		if (controllo) {
+/*		if (controllo) {
 				Set<Album> artistaalbums = album.getArtist().getDiscography();
 				Set<Album> albumset = new HashSet<>(artistaalbums);
 			for (Album albumcheck : artistaalbums) {
@@ -334,7 +334,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		} else {
 			throw new BusinessException();
-		}
+		}*/
 	}
 
 	@Override
@@ -413,9 +413,9 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		// creo l'artista1
 		Artist artista1 = new Artist();
 		artista1.setId(idArtists++);
-		artista1.setStageName("Pasquale Arrosto");
+		/*artista1.setStageName("Pasquale Arrosto");
 		artista1.setBiography("Sono Pasquale Arrosto, suono la musica elettronica");
-		artista1.setNationality(Nationality.italian);
+		artista1.setNationality(Nationality.italian);*/
 		artista1.setYearsOfActivity(6);
 		Set<Picture> artista1img = new HashSet<>();
 		try {
@@ -450,7 +450,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artista1album1.setGenre(Genre.singoli);
 		artista1album1.setRelease(LocalDate.of(2012, 10, 20));
 		/*artista1album1.setCover(path+"cover.png");*/
-		artista1album1.setArtist(artista1);
+		/*artista1album1.setArtist(artista1);*/
 
 		// creo la canzone e la lego all'album dell'artista1
 		Song artista1album1canzone1 = new Song();
@@ -682,7 +682,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		Set<Album> artista1Albums = new HashSet<>();
 
 		artista1Albums.add(artista1album1);
-		artista1.setDiscography(artista1Albums);
+		/*artista1.setDiscography(artista1Albums);
 
 
 		artisti.add(artista1);
@@ -694,7 +694,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artista2.setStageName("British Wonder");
 		artista2.setBiography("We are 2 bassist, We are the new rock problems");
 		artista2.setNationality(Nationality.british);
-		artista2.setYearsOfActivity(10);
+		artista2.setYearsOfActivity(10);*/
 		Set<Picture> artista2img = new HashSet<>();
 		try {
 			Picture picture = new Picture();
@@ -707,7 +707,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			throw new RuntimeException(e);
 		}
 
-		artista2.setPictures(artista2img);
+		/*artista2.setPictures(artista2img);*/
 
 		// creo l'album dell'artista2
 		Album artista2album1 = new Album();
@@ -716,7 +716,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artista2album1.setGenre(Genre.singoli);
 		artista2album1.setRelease(LocalDate.of(2012, 10, 20));
 		/*artista2album1.setCover(path+"cover.png");*/
-		artista2album1.setArtist(artista2);
+		/*artista2album1.setArtist(artista2);*/
 
 		// creo la canzone e la lego all'album dell'artista2
 		Song artista2album1canzone1 = new Song();
@@ -846,10 +846,10 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		Set<Album> artista2albums = new HashSet<>();
 
 		artista2albums.add(artista2album1);
-		artista2.setDiscography(artista2albums);
+		/*artista2.setDiscography(artista2albums);*/
 
 
-		artisti.add(artista2);
+		/*artisti.add(artista2);*/
 		albums.add(artista2album1);
 
 		User utente = new User();

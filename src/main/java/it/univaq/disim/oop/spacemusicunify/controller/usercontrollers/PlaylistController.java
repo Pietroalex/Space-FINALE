@@ -69,7 +69,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 		songName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 
-			return new SimpleStringProperty(param.getValue().getAlbum().getArtist().getStageName());
+			return new SimpleStringProperty(/*param.getValue().getAlbum().getArtist().getStageName()*/);
 		});
 		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			String albumName = "";

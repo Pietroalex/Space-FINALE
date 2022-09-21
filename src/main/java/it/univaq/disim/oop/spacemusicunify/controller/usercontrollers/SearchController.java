@@ -103,7 +103,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 
-			return new SimpleStringProperty(param.getValue().getAlbum().getArtist().getStageName());
+			return new SimpleStringProperty(/*param.getValue().getAlbum().getArtist().getStageName()*/);
 		});
 		songAlbum.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
@@ -175,7 +175,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		albumName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		albumArtists.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> param) -> {
 
-			return new SimpleStringProperty(param.getValue().getArtist().getStageName());
+			return new SimpleStringProperty(/*param.getValue().getArtist().getStageName()*/);
 		});
 		albumGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
 		albumRelease.setCellValueFactory(new PropertyValueFactory<>("release"));
@@ -240,9 +240,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 			List<Artist> artistList = new ArrayList<>();
 			for(Artist artista: spaceMusicUnifyService.getAllArtists()) {
-				if(artista.getStageName().contains(ricerca.strip())) {
+				/*if(artista.getStageName().contains(ricerca.strip())) {
 					artistList.add(artista);
-				}
+				}*/
 			}
 			ObservableList<Artist> artistData = FXCollections.observableArrayList(artistList);
 			artist.setItems(artistData);

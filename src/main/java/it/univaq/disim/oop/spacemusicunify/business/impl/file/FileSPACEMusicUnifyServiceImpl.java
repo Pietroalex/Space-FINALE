@@ -301,7 +301,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		try {
 			FileData fileDataArtisti = Utility.readAllRows(artistsFile);
 			for(String[] colonne: fileDataArtisti.getRighe()) {
-				if(colonne[1].equals(artista.getStageName())) {
+				if(colonne[1].equals(artista.getName())) {
 					throw new AlreadyExistingException();
 				}
 			}
@@ -330,7 +330,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			
 			//creo la canzone di default
 			Song canzone = new Song();
-			canzone.setTitle("Our Sympathy of "+artista.getStageName());
+			canzone.setTitle("Our Sympathy of "+artista.getName());
 			canzone.setLyrics("ElDlive");
 			canzone.setLength("04:02");
 			canzone.setGenre(Genre.pop);
@@ -350,13 +350,13 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				StringBuilder rowArtista = new StringBuilder();
 				rowArtista.append(contatore);
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getStageName());
+				rowArtista.append(artista.getName());
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
 				rowArtista.append(artista.getYearsOfActivity());
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
 				rowArtista.append(artista.getBiography());
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getNationality());
+				/*rowArtista.append(artista.getNationality());*/
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
 				rowArtista.append(imageList);
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
@@ -526,7 +526,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					}
 					List<Album> albumList = new ArrayList<>();
 					//aggiorno il file album.txt
-					for (Album controllo : artista.getDiscography()) {
+					/*for (Album controllo : artista.getDiscography()) {
 						Album album = new Album();
 						album.setId(controllo.getId());
 						album.setArtist(controllo.getArtist());
@@ -536,7 +536,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						album.setSongList(controllo.getSongList());
 						album.setRelease(controllo.getRelease());
 						albumList.add(album);
-					}
+					}*/
 					for(Album album : albumList){
 						delete(album);
 					}
@@ -582,7 +582,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			canzone.setGenre(album.getGenre());
 			//canzone.setFileMp3("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
 
-			Set<Album> albumSet = album.getArtist().getDiscography();
+			/*Set<Album> albumSet = album.getArtist().getDiscography();
 			albumSet.add(album);
 			album.getArtist().setDiscography(albumSet);
 			try (PrintWriter writerAlbum = new PrintWriter(new File(albumsFile))) {
@@ -607,7 +607,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				row.append("[]");
 				writerAlbum.println(row.toString());
 
-			}
+			}*/
 			try {
 				add(canzone);
 			} catch (BusinessException e) {
@@ -616,9 +616,9 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 				//aggiorno il file degli artisti
 				fileData = Utility.readAllRows(artistsFile);
-				Artist artista = album.getArtist();
+				/*Artist artista = album.getArtist();*/
 				int cont = 0;
-				for (String[] righe : fileData.getRighe()) {
+				/*for (String[] righe : fileData.getRighe()) {
 					if (righe[0].equals(artista.getId().toString())) {
 						String[] row;
 						List<String> albums = Utility.leggiArray(righe[6]);
@@ -629,7 +629,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 						break;
 					}
 					cont++;
-				}
+				}*/
 				try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
 					writer.println(fileData.getContatore());
 					for (String[] righe : fileData.getRighe()) {
@@ -705,7 +705,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	public void delete(Album album) throws BusinessException {
 		boolean check = false;
 		System.out.println("album da eliminare: "+album.getId());
-		for(Album albumCheck : album.getArtist().getDiscography()) {
+		/*for(Album albumCheck : album.getArtist().getDiscography()) {
 
 			if(album.getId().intValue() == albumCheck.getId().intValue()) {
 				check = true;
@@ -752,7 +752,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					albumSet.remove(album);
 					artista.setDiscography(albumSet);
 
-					/*Files.deleteIfExists(Paths.get(album.getCover()));*/
+					*//*Files.deleteIfExists(Paths.get(album.getCover()));*//*
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -760,7 +760,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 				break;
 			}
-		}
+		}*/
 		if(!check)throw new BusinessException("album inesistente");
 	}
 
@@ -814,8 +814,8 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 					album.setSongList(canzoneList);
 					Picture cover = album.getCover();
 					/*cover = cover.substring(cover.indexOf("immagini" + File.separator)+ 9);*/
-					String[] row = {album.getId().toString(),album.getTitle(),album.getGenre().toString(), String.valueOf(cover.getId()),album.getRelease().toString(),album.getArtist().getId().toString(),listaCanzoni.toString()};
-					fileData.getRighe().set(cont, row);
+					/*String[] row = {album.getId().toString(),album.getTitle(),album.getGenre().toString(), String.valueOf(cover.getId()),album.getRelease().toString(),album.getArtist().getId().toString(),listaCanzoni.toString()};
+					fileData.getRighe().set(cont, row);*/
 					break;
 				}
 				cont++;
@@ -927,8 +927,8 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 							album.setSongList(canzoneList);
 							Picture cover = album.getCover();
 							/*cover = cover.substring(cover.indexOf("immagini" + File.separator)+ 9);*/
-							String[] row = {album.getId().toString(),album.getTitle(),album.getGenre().toString(), String.valueOf(cover.getId()),album.getRelease().toString(),album.getArtist().getId().toString(),listaCanzoni.toString()};
-							fileData.getRighe().set(cont, row);
+							/*String[] row = {album.getId().toString(),album.getTitle(),album.getGenre().toString(), String.valueOf(cover.getId()),album.getRelease().toString(),album.getArtist().getId().toString(),listaCanzoni.toString()};
+							fileData.getRighe().set(cont, row);*/
 							break;
 						}
 						cont++;

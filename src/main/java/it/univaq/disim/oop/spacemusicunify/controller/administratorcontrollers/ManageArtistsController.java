@@ -77,16 +77,16 @@ public class ManageArtistsController implements Initializable, DataInitializable
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.detail);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue().getDiscography());
+				/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue().getDiscography());*/
 			});
 			return new SimpleObjectProperty<Button>(modify);
 		});
 		songNumber.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> param) -> {
 			int count = 0;
 
-			for (Album album : param.getValue().getDiscography()) {
+			/*for (Album album : param.getValue().getDiscography()) {
 				count = count + album.getSongList().size();
-			}
+			}*/
 			String number = String.valueOf(count);
 			return new SimpleStringProperty(number);
 		});
@@ -107,9 +107,9 @@ public class ManageArtistsController implements Initializable, DataInitializable
 	@FXML
 	public void newArtist(ActionEvent event) {
 		Artist artista = new Artist();
-		artista.setStageName("test group");
+		artista.setName("test group");
 		artista.setBiography("test bio");
-		artista.setNationality(Nationality.british);
+		/*artista.setNationality(Nationality.british);*/
 		artista.setYearsOfActivity(1);
 
 		dispatcher.setSituation(ViewSituations.newobject);

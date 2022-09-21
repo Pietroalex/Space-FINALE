@@ -283,7 +283,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         if(song != null) {
             songTitle.setText(song.getTitle());
 
-            songArtist.setText(song.getAlbum().getArtist().getStageName());
+            /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
             totalTime.setText(song.getLength());
@@ -342,7 +342,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         if(song != null) {
             songTitle.setText(song.getTitle());
 
-            songArtist.setText(song.getAlbum().getArtist().getStageName());
+            /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
 
@@ -410,7 +410,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
        /* Song song = user.getcurrentSong();*/
         songTitle.setText(song.getTitle());
 
-        songArtist.setText(song.getAlbum().getArtist().getStageName());
+        /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
         songAlbum.setText(song.getAlbum().getTitle());
         songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
 

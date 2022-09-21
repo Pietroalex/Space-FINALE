@@ -83,7 +83,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private Administrator admin;
     private SPACEMusicUnifyService spaceMusicUnifyService;
 
-    private static String imgUrl;
+    private static Picture imgUrl;
     public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
@@ -108,10 +108,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             case detail:
                 loadImages();
 
-                stageName.setText(artist.getStageName());
+                stageName.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
                 biography.setText(artist.getBiography());
-                nationality.setText(String.valueOf(artist.getNationality()));
+                /*nationality.setText(String.valueOf(artist.getNationality()));*/
                 biography.setEditable(false);
                 break;
 
@@ -125,10 +125,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 cancelbox.setVisible(false);
                 loadModifyImages();
 
-                stageNameField.setText(artist.getStageName());
+                stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
-                nationalityField.setValue(artist.getNationality());
+                /*nationalityField.setValue(artist.getNationality());*/
 
 
                 title.setText("Modify Artist");
@@ -146,10 +146,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 cancelbox.setVisible(false);
                 loadModifyImages();
 
-                stageNameField.setText(artist.getStageName());
+                stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
-                nationalityField.setValue(artist.getNationality());
+                /*nationalityField.setValue(artist.getNationality());*/
                 biography.setEditable(false);
 
                 title.setText("New Artist");
@@ -187,9 +187,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     imgs.setFitWidth(120);
                     imgs.setCursor(Cursor.HAND);
 
-                    imgs.setOnMouseClicked(event -> {
-
-                        this.focusImage(String.valueOf(img.getId()));
+                    imgs.setOnMouseClicked( (mouseEvent) -> {
+                        this.focusImage(img);
                     });
 
 
@@ -229,10 +228,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         try{
 
             if (artist.getId() == null) {
-                artist.setStageName(stageNameField.getText());
+                artist.setName(stageNameField.getText());
                 artist.setBiography(biographyField.getText());
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
-                artist.setNationality(nationalityField.getValue());
+                /*artist.setNationality(nationalityField.getValue());*/
 
                 spaceMusicUnifyService.add(artist);
             } else {
@@ -268,9 +267,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         if(dispatcher.getSituation() == ViewSituations.user){
             dispatcher.setSituation(ViewSituations.user);
         }
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());
+        /*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());*/
     }
-    public void focusImage(String image){
+    public void focusImage(Picture image){
         imgUrl = image;
         System.out.println(imgUrl);
         cancelbox.setVisible(true);
@@ -327,7 +326,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){
-        imgUrl = String.valueOf(0);
+        imgUrl = null;
         cancelbox.setVisible(false);
 
     }

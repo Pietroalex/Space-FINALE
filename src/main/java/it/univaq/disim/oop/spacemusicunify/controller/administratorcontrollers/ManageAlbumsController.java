@@ -113,9 +113,9 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     }
     @Override
     public void initializeData(Set<Album> discography) {
-        this.artist = discography.iterator().next().getArtist();
+       /* this.artist = discography.iterator().next().getArtist();
 
-        stageName.setText(this.artist.getStageName());
+        stageName.setText(this.artist.getStageName());*/
         if(dispatcher.getSituation() == ViewSituations.user) {
         	newAlbumButton.setVisible(false);
         	operation.setText("View");
@@ -128,10 +128,10 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     @FXML
     public void createNewAlbum(){
     	Album newAlbum = new Album();
-    	newAlbum.setTitle("new album of "+artist.getStageName());
+    	/*newAlbum.setTitle("new album of "+artist.getStageName());
     	newAlbum.setGenre(Genre.rock);
     	newAlbum.setRelease(LocalDate.now());
-	    newAlbum.setArtist(artist);
+	    newAlbum.setArtist(artist);*/
         Picture picture = new Picture();
         ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
         try {

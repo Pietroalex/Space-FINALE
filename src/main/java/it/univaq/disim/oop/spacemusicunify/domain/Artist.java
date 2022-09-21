@@ -6,17 +6,13 @@ import java.util.Set;
 public class Artist {
 
 	private Integer id;
-	private String stageName;
+	private String name;
 	private int yearsOfActivity;
 	private String biography;
 	private Set<Picture> pictures = new HashSet<>();
 
-	public String getStageName() {
-		return stageName;
-	}
-	
-	public void setStage_name(String stageName) {
-		this.stageName = stageName;
+	public String getName() {
+		return name;
 	}
 	
 	public int getYearsOfActivity() {
@@ -35,8 +31,8 @@ public class Artist {
 		this.biography = biography;
 	}
 	
-	public void setStageName(String stageName) {
-		this.stageName = stageName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public Set<Picture> getPictures() {

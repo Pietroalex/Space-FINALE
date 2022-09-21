@@ -7,14 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class UtilityObjectRetriever extends Object {
 
@@ -72,22 +68,38 @@ public class UtilityObjectRetriever extends Object {
 				}
 
 				break;
-			case "artists.txt":
-				System.out.println("artista");
+			case "singleartists.txt":
+				System.out.println("singolo artista");
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
 					for (String[] colonne : fileData.getRighe()) {
 						if(colonne[0].equals(id)) {
-							System.out.println("cerco artista");
-							object = findArtist(colonne, file);
-							System.out.println("trovato artista");
+							System.out.println("cerco singolo artista");
+							object = findSingleArtist(colonne, file);
+							System.out.println("trovato singolo artista");
 						}
 					}
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 
+				break;
+			case "bands.txt":
+				System.out.println("molti artisti");
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] colonne : fileData.getRighe()) {
+						if(colonne[0].equals(id)) {
+							System.out.println("cerco artisti");
+							object = findBand(colonne, file);
+							System.out.println("trovato artisti");
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				break;
 			case "pictures.txt":
 				System.out.println("pictures");
@@ -111,6 +123,39 @@ public class UtilityObjectRetriever extends Object {
 		System.out.println("finito");
 		return object;
 	}
+
+	private static Object findSingleArtist(String[] colonne, String file) {
+		SingleArtist artist = new SingleArtist();
+		artist.setId(Integer.parseInt(colonne[0]));
+		artist.setName(colonne[1]);
+		artist.setYearsOfActivity(Integer.parseInt(colonne[2]));
+		artist.setBiography(colonne[3]);
+		Set<Picture> pictures = new HashSet<>();
+		List<String> picturesSource = Utility.leggiArray(colonne[4]);
+		for(String pictureId : picturesSource){
+			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
+		}
+		artist.setPictures(pictures);
+		artist.setNationality(Nationality.valueOf(colonne[5]));
+		return artist;
+	}
+
+	private static Object findBand(String[] colonne, String file) {
+		Band band = new Band();
+		band.setId(Integer.parseInt(colonne[0]));
+		band.setName(colonne[1]);
+		band.setYearsOfActivity(Integer.parseInt(colonne[2]));
+		band.setBiography(colonne[3]);
+		Set<Picture> pictures = new HashSet<>();
+		List<String> picturesSource = Utility.leggiArray(colonne[4]);
+		for(String pictureId : picturesSource){
+			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
+		}
+		band.setPictures(pictures);
+		band.setNumberOfArtists(Integer.parseInt(colonne[5]));
+		return band;
+	}
+
 	private static Song findSong(String[] colonne, String file){
 		Song canzone = new Song();
 		canzone.setId(Integer.parseInt(colonne[0]));
@@ -139,13 +184,13 @@ public class UtilityObjectRetriever extends Object {
 		album.setRelease(LocalDate.parse(colonne[4]));
 		if(currentArtist != null) {
 			if(colonne[5].equals(currentArtist.getId().toString())){
-				album.setArtist(currentArtist);
+				/*album.setArtist(currentArtist);*/
 			}else{
-				album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
-			}
+				/*album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"singleartists.txt")));
+			*/}
 		} else {
-			album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"artists.txt")));
-		}
+			/*album.setArtist((Artist)  UtilityObjectRetriever.findObjectById(colonne[5], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"singleartists.txt")));
+		*/}
 
 		Set<Song> canzoneList = new HashSet<>();
 		currentAlbum = album;
@@ -164,10 +209,10 @@ public class UtilityObjectRetriever extends Object {
 		Artist artista = new Artist();
 
 		artista.setId(Integer.parseInt(colonne[0]));
-		artista.setStageName(colonne[1]);
+		artista.setName(colonne[1]);
 		artista.setYearsOfActivity(Integer.parseInt(colonne[2]));
 		artista.setBiography(colonne[3]);
-		artista.setNationality(Nationality.valueOf(colonne[4]));
+		/*artista.setNationality(Nationality.valueOf(colonne[4]));*/
 
 
 		Set<Picture> immagini = new HashSet<>();
@@ -182,23 +227,27 @@ public class UtilityObjectRetriever extends Object {
 		for(String album: Utility.leggiArray(colonne[6])){
 			albums.add((Album) UtilityObjectRetriever.findObjectById(album, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "albums.txt")));
 		}
-		artista.setDiscography(albums);
+		/*artista.setDiscography(albums);*/
 		return artista;
 	}
 	private static Picture findPicture(String[] colonne, String file){
-		Picture picture = new Picture();
-		picture.setId(Integer.valueOf(colonne[0]));
-		ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 		try {
+			Picture picture = new Picture();
+			picture.setId(Integer.valueOf(colonne[0]));
+			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(immaginiDirectory+colonne[1])));
+			picture.setPhoto(outStreamObj.toByteArray());
+			outStreamObj.close();
+
+			picture.setHeight(Integer.parseInt(colonne[2]));
+			picture.setWidth(Integer.parseInt(colonne[3]));
+			return picture;
+
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+		throw new RuntimeException(e);
 		}
-		System.out.println("ecco bytes "+colonne[1]);
-		picture.setPhoto(outStreamObj.toByteArray());
-		picture.setHeight(Integer.parseInt(colonne[2]));
-		picture.setWidth(Integer.parseInt(colonne[3]));
-		return picture;
+
 	}
 }
 
