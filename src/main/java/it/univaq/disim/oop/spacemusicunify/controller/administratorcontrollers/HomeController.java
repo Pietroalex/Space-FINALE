@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 
 
-public class AdministratorHomeController implements Initializable, DataInitializable<Administrator> {
+public class HomeController implements Initializable, DataInitializable<Administrator> {
 
 	@FXML
 	private Label benvenutoLabel;

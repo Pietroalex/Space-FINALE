@@ -30,7 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-public class AdministratorManageAlbumDetailController implements Initializable, DataInitializable<Album> {
+public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	private final ViewDispatcher dispatcher;
 	@FXML
@@ -109,99 +109,163 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	@FXML
 	private Label existingLabel;
 
-	public AdministratorManageAlbumDetailController(){
+	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
 
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
 
 	}
+	private void setView2(ObservableList<Song> songData) {
+		switch (dispatcher.getSituation()){
+			case detail:
+				id.setCellValueFactory(new PropertyValueFactory<>("id"));
+				title.setCellValueFactory(new PropertyValueFactory<>("title"));
+				length.setCellValueFactory(new PropertyValueFactory<>("length"));
 
+				artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
+
+					return new SimpleStringProperty(album.getArtist().getStageName() );
+				});
+				detailSong.setStyle("-fx-alignment: CENTER;");
+				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+					final Button modify = new Button("Detail");
+					modify.setCursor(Cursor.HAND);
+					modify.setOnAction((ActionEvent event) -> {
+						if(dispatcher.getSituation() == ViewSituations.user){
+							dispatcher.setSituation(ViewSituations.user);
+						}else{
+							dispatcher.setSituation(ViewSituations.detail);
+						}
+
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
+					});
+					return new SimpleObjectProperty<Button>(modify);
+				});
+
+				titleAlbum.setText(album.getTitle());
+				genreAlbum.setText(String.valueOf(album.getGenre()));
+				releaseAlbum.setText(String.valueOf(album.getRelease()));
+
+				Image img = new Image(new ByteArrayInputStream(album.getCover().getPhoto()));
+
+				ImageView imgview1 = new ImageView(img);
+				imgview1.setFitHeight(150);
+				imgview1.setFitWidth(150);
+
+				coverAlbum.getChildren().add(imgview1);
+				albumsongs.setItems(songData);
+				break;
+
+			case modify:
+				cancelBox.setVisible(false);
+
+				genreField.getItems().addAll(Genre.values());
+				genreField.getItems().remove(Genre.singoli);
+
+				idModify.setCellValueFactory(new PropertyValueFactory<>("id"));
+				titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
+				lengthModify.setCellValueFactory(new PropertyValueFactory<>("length"));
+
+				artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
+
+
+					return new SimpleStringProperty(album.getArtist().getStageName());
+				});
+
+				managesong.setStyle("-fx-alignment: CENTER;");
+				managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+					final Button deletesong = new Button("Delete");
+					deletesong.setCursor(Cursor.HAND);
+					if(album.getSongList().size() == 1){
+						deletesong.setDisable(true);
+					}
+					deletesong.setOnAction((ActionEvent event) -> {
+						try{
+							if (param.getValue().getId() != null ) {
+								spaceMusicUnifyService.delete(param.getValue());
+							}else{
+								System.out.println("Song not found");
+							}
+							dispatcher.setSituation(ViewSituations.modify);
+							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+
+						} catch (BusinessException e) {
+							dispatcher.renderError(e);
+						}
+					});
+					return new SimpleObjectProperty<Button>(deletesong);
+				});
+				detailSongModify.setStyle("-fx-alignment: CENTER;");
+				detailSongModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+					final Button modify = new Button("Detail");
+					modify.setCursor(Cursor.HAND);
+					modify.setOnAction((ActionEvent event) -> {
+						dispatcher.setSituation(ViewSituations.detail);
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
+					});
+					return new SimpleObjectProperty<Button>(modify);
+				});
+
+				if(this.album.getGenre() == Genre.singoli){
+					deletealbum.setDisable(true);
+					titleField.setDisable(true);
+					releaseField.setDisable(true);
+				}
+
+
+
+				titleField.setText(album.getTitle());
+				genreField.setValue(album.getGenre());
+				releaseField.setValue(album.getRelease());
+
+				Image imgM = new Image(new ByteArrayInputStream(album.getCover().getPhoto()));
+				ImageView imgview2 = new ImageView(imgM);
+				imgview2.setFitHeight(150);
+				imgview2.setFitWidth(150);
+				imgview2.setCursor(Cursor.HAND);
+				imgview2.setOnMouseClicked(event -> {
+					this.focusImage(String.valueOf(album.getCover().getId()));
+				});
+
+				coverField.getChildren().add(imgview2);
+				if(album.getGenre() == Genre.singoli){
+					genreField.setDisable(true);
+
+				}else {
+					if (album.getId() == null) {
+						newSong.setVisible(false);
+
+						confirm.setText("Create Album");
+						modifyalbumsongs.setVisible(false);
+					} else {
+
+						confirm.setText("Modify Album");
+					}
+				}
+				modifyalbumsongs.setItems(songData);
+				break;
+
+			case newobject:
+				genreField.getItems().addAll(Genre.values());
+				genreField.getItems().remove(Genre.singoli);
+
+				title.setText("New Album");
+				confirm.setText("Create");
+
+				break;
+		}
+	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+/*		confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
 		titleField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				existingLabel.setVisible(false);
 			}
-		});
+		});*/
 
-		cancelBox.setVisible(false);
-
-		genreField.getItems().addAll(Genre.values());
-		genreField.getItems().remove(Genre.singoli);
-
-
-		//tabella a sinistra
-		idModify.setCellValueFactory(new PropertyValueFactory<>("id"));
-		titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
-		lengthModify.setCellValueFactory(new PropertyValueFactory<>("length"));
-
-		artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-
-			return new SimpleStringProperty(album.getArtist().getStageName());
-		});
-
-		managesong.setStyle("-fx-alignment: CENTER;");
-		managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-			final Button deletesong = new Button("Delete");
-			deletesong.setCursor(Cursor.HAND);
-			if(album.getSongList().size() == 1){
-				deletesong.setDisable(true);
-			}
-			deletesong.setOnAction((ActionEvent event) -> {
-				try{
-					if (param.getValue().getId() != null ) {
-						spaceMusicUnifyService.delete(param.getValue());
-					}else{
-						System.out.println("Song not found");
-					}
-					dispatcher.setSituation(ViewSituations.modify);
-					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
-
-				} catch (BusinessException e) {
-					dispatcher.renderError(e);
-				}
-			});
-			return new SimpleObjectProperty<Button>(deletesong);
-		});
-		detailSongModify.setStyle("-fx-alignment: CENTER;");
-		detailSongModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-			final Button modify = new Button("Detail");
-			modify.setCursor(Cursor.HAND);
-			modify.setOnAction((ActionEvent event) -> {
-				dispatcher.setSituation(ViewSituations.detail);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
-			});
-			return new SimpleObjectProperty<Button>(modify);
-		});
-
-		//tabella a destra
-		id.setCellValueFactory(new PropertyValueFactory<>("id"));
-		title.setCellValueFactory(new PropertyValueFactory<>("title"));
-		length.setCellValueFactory(new PropertyValueFactory<>("length"));
-
-		artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-			return new SimpleStringProperty(album.getArtist().getStageName() );
-		});
-		detailSong.setStyle("-fx-alignment: CENTER;");
-		detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-			final Button modify = new Button("Detail");
-			modify.setCursor(Cursor.HAND);
-			modify.setOnAction((ActionEvent event) -> {
-				if(dispatcher.getSituation() == ViewSituations.user){
-					dispatcher.setSituation(ViewSituations.user);
-				}else{
-					dispatcher.setSituation(ViewSituations.detail);
-				}
-
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
-			});
-			return new SimpleObjectProperty<Button>(modify);
-		});
 
 	}
 	@Override
@@ -209,64 +273,14 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 		this.album = album;
 		this.artista = album.getArtist();
 
-		if(this.album.getGenre() == Genre.singoli){
-			deletealbum.setDisable(true);
-			titleField.setDisable(true);
-			releaseField.setDisable(true);
-		}
-
-
-		titleAlbum.setText(album.getTitle());
-		genreAlbum.setText(String.valueOf(album.getGenre()));
-		releaseAlbum.setText(String.valueOf(album.getRelease()));
-
-		Image img = new Image(new ByteArrayInputStream(album.getCover().getPhoto()));
-
-		ImageView imgview1 = new ImageView(img);
-		imgview1.setFitHeight(150);
-		imgview1.setFitWidth(150);
-
-		coverAlbum.getChildren().add(imgview1);
-
-		titleField.setText(album.getTitle());
-		genreField.setValue(album.getGenre());
-		releaseField.setValue(album.getRelease());
-
-
-		ImageView imgview2 = new ImageView(img);
-		imgview2.setFitHeight(150);
-		imgview2.setFitWidth(150);
-		imgview2.setCursor(Cursor.HAND);
-		imgview2.setOnMouseClicked(event -> {
-			this.focusImage(String.valueOf(album.getCover().getId()));
-		});
-
-		coverField.getChildren().add(imgview2);
-
-		this.setView();
-
 		Set<Song> songs = album.getSongList();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
-		modifyalbumsongs.setItems(songData);
+		setView2(songData);
 
-		albumsongs.setItems(songData);
-
-
-		if(album.getGenre() == Genre.singoli){
-			genreField.setDisable(true);
-
-		}else {
-			if (album.getId() == null) {
-				newSong.setVisible(false);
-
-				confirm.setText("Create Album");
-				modifyalbumsongs.setVisible(false);
-			} else {
-
-				confirm.setText("Modify Album");
-			}
-		}
 	}
+
+
+
 	@FXML
 	public void confirmAlbum(ActionEvent event) {
 		System.out.println("inizio modifica album");
@@ -297,8 +311,15 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	}
 	@FXML
 	public void cancelModify(ActionEvent event) {
+		switch (dispatcher.getSituation()){
+			case newobject:
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
+				break;
+			default:
+				dispatcher.setSituation(ViewSituations.detail);
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+		}
 
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());
 	}
 	@FXML
 	public void backToTheArtist(ActionEvent event) {
@@ -401,7 +422,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 			canzone.setGenre(album.getGenre());
 		}
 		dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", canzone);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", canzone);
 
 	}
 	@FXML
@@ -419,45 +440,12 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 		}
 	}
 
-	public void setView(){
-		switch (dispatcher.getSituation()){
-			case detail:
-				this.masterPane.getChildren().setAll(this.infoPane.getChildren());
 
-				break;
-
-			case modify:
-				this.title.setText("Modify Album");
-				this.confirm.setText("Modify");
-				this.masterPane.getChildren().setAll(this.modifyPane.getChildren());
-
-				break;
-
-			case newobject:
-				this.title.setText("New Album");
-				this.confirm.setText("Create");
-				this.masterPane.getChildren().setAll(this.modifyPane.getChildren());
-				break;
-
-			case user:
-				this.deletealbum.setVisible(false);
-				this.modify.setVisible(false);
-				this.cancel1.setVisible(false);
-				this.masterPane.getChildren().setAll(this.infoPane.getChildren()) ;
-				break;
-		}
-	}
 	
 	@FXML
 	public void showModify(ActionEvent event) {
-		if(dispatcher.getSituation() == ViewSituations.detail){
-			dispatcher.setSituation(ViewSituations.modify);
-
-			this.setView();
-		}else {
-			dispatcher.setSituation(ViewSituations.detail);
-
-			this.setView();
-		}
+		dispatcher.setSituation(ViewSituations.modify);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
 	}
+
 }

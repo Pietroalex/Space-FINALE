@@ -24,7 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageSongDetailController implements Initializable, DataInitializable<Song> {
+public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
 
 
     private final ViewDispatcher dispatcher;
@@ -70,71 +70,108 @@ public class AdministratorManageSongDetailController implements Initializable, D
     @FXML Button back;
     @FXML
     private Label existingLabel;
-    private Song canzone;
+    private Song song;
+    @FXML
+    private Button mp3button;
 
 
-    public AdministratorManageSongDetailController(){
+    public ManageSongDetailController(){
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
     }
+    public void setView2(){
+        switch (dispatcher.getSituation()){
+            case detail:
+                title.setText(song.getTitle());
+                length.setText(song.getLength());
+                lyrics.setText(song.getLyrics());
+                lyrics.setEditable(false);
+                genretext.setText(String.valueOf(song.getGenre()));
+                break;
+
+            case modify:
+                genreField.getItems().addAll(Genre.values());
+                genreField.getItems().remove(Genre.singoli);
+                titleView.setText("Modify Song");
+                confirm.setText("Modify");
+                mp3button.setText("Change mp3 file");
+                titleField.setText(song.getTitle());
+                lengthField.setText(song.getLength());
+                lyricsField.setText(song.getLyrics());
+                if(song.getId() != null) {
+                    //songField.setText(canzone.getFileMp3());
+                }
+                if(album.getGenre() == Genre.singoli) {
+                    genreField.setDisable(false);
+                }else{
+                    genreField.setDisable(true);
+                }
+                genreField.setValue(song.getGenre());
+
+                if(album.getSongList().size() == 1){
+                    deletesong.setDisable(true);
+                }
+                break;
+
+            case newobject:
+                genreField.getItems().addAll(Genre.values());
+                genreField.getItems().remove(Genre.singoli);
+                titleField.setText(song.getTitle());
+                lengthField.setText(song.getLength());
+                lyricsField.setText(song.getLyrics());
+                if(song.getId() != null) {
+                    //songField.setText(canzone.getFileMp3());
+                }
+                if(album.getGenre() == Genre.singoli) {
+                    genreField.setDisable(false);
+                }else{
+                    genreField.setDisable(true);
+                }
+                genreField.setValue(song.getGenre());
+                this.album = song.getAlbum();
+                if(album.getSongList().size() == 1){
+                    deletesong.setDisable(true);
+                }
+                confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
+                mp3button.setText("Pick Up an mp3");
+                titleView.setText("New Song");
+                confirm.setText("Create");
+
+                break;
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
+       /* confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
         titleField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 existingLabel.setVisible(false);
             }
-        });
-        genreField.getItems().addAll(Genre.values());
-        genreField.getItems().remove(Genre.singoli);
+        });*/
+
 
     }
     @Override
-    public void initializeData(Song canzone) {
-        this.canzone = canzone;
-
-        genreField.setValue(canzone.getGenre());
-        this.album = canzone.getAlbum();
-        if(album.getSongList().size() == 1){
-            deletesong.setDisable(true);
-        }
-
-        this.setView();
-
-        title.setText(canzone.getTitle());
-        length.setText(canzone.getLength());
-        lyrics.setText(canzone.getLyrics());
-        lyrics.setEditable(false);
-        genretext.setText(String.valueOf(canzone.getGenre()));
-
-        titleField.setText(canzone.getTitle());
-        lengthField.setText(canzone.getLength());
-        lyricsField.setText(canzone.getLyrics());
-        if(canzone.getId() != null) {
-            //songField.setText(canzone.getFileMp3());
-        }
-        if(album.getGenre() == Genre.singoli) {
-            genreField.setDisable(false);
-        }else{
-            genreField.setDisable(true);
-        }
-
+    public void initializeData(Song song) {
+        this.song = song;
+        this.album = song.getAlbum();
+        setView2();
     }
     @FXML
     public void confirmSong(ActionEvent event) {
     	try {
 
-            if (canzone.getId() == null) {
+            if (song.getId() == null) {
 
-                canzone.setTitle(titleField.getText());
-                canzone.setLength(lengthField.getText());
+                song.setTitle(titleField.getText());
+                song.setLength(lengthField.getText());
                 if (album.getGenre() == Genre.singoli) {
-                    canzone.setGenre(genreField.getValue());
+                    song.setGenre(genreField.getValue());
                 } else {
-                    canzone.setGenre(album.getGenre());
+                    song.setGenre(album.getGenre());
                 }
                 if (!(songField.getText().isEmpty())) {
 
@@ -145,9 +182,9 @@ public class AdministratorManageSongDetailController implements Initializable, D
                   //  canzone.setFileMp3(songField.getText());
                 }
 
-                canzone.setLyrics(lyricsField.getText());
+                song.setLyrics(lyricsField.getText());
 
-                spaceMusicUnifyService.add(canzone);
+                spaceMusicUnifyService.add(song);
             } else {
                 System.out.println("eseguo modify");
              //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
@@ -168,7 +205,15 @@ public class AdministratorManageSongDetailController implements Initializable, D
     }
 
     public void cancelModify(ActionEvent event) {
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+        switch (dispatcher.getSituation()){
+            case newobject:
+                dispatcher.setSituation(ViewSituations.modify);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+                break;
+            default:
+                dispatcher.setSituation(ViewSituations.detail);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
+        }
     }
     @FXML
     public void backToTheAlbum(){
@@ -202,8 +247,8 @@ public class AdministratorManageSongDetailController implements Initializable, D
     @FXML
     public void deleteThisSong(ActionEvent event) {
         try{
-            if (canzone.getId() != null) {
-                spaceMusicUnifyService.delete(canzone);
+            if (song.getId() != null) {
+                spaceMusicUnifyService.delete(song);
             }else{
                 System.out.println("Song not found");
             }
@@ -213,41 +258,10 @@ public class AdministratorManageSongDetailController implements Initializable, D
             dispatcher.renderError(e);
         }
     }
-    public void setView(){
-        switch (dispatcher.getSituation()){
-            case detail:
-                this.back.setVisible(true);
-                this.masterPane.getChildren().setAll(this.infoPane.getChildren()) ;
-                break;
 
-            case modify:
-                this.title.setText("Modify Artist");
-                this.confirm.setText("Modify");
-                this.masterPane.getChildren().setAll(this.modifyPane.getChildren()) ;
-                break;
-
-            case newobject:
-                this.title.setText("New Artist");
-                this.confirm.setText("Create");
-                this.masterPane.getChildren().setAll(this.modifyPane.getChildren()) ;
-                break;
-
-            case user:
-                this.deletesong.setVisible(false);
-                this.modify.setVisible(false);
-                this.back.setVisible(false);
-                this.masterPane.getChildren().setAll(this.infoPane.getChildren()) ;
-                break;
-        }
-    }
     @FXML
-    public void showModify(ActionEvent event) {
-        if(dispatcher.getSituation() == ViewSituations.detail){
-            dispatcher.setSituation(ViewSituations.modify);
-            this.setView();
-        }else {
-            dispatcher.setSituation(ViewSituations.detail);
-            this.setView();
-        }
+    public void showModify() {
+        dispatcher.setSituation(ViewSituations.modify);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
     }
 }

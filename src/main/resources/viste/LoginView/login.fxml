@@ -52,7 +52,7 @@
             </Label>
             <ImageView fitHeight="115.0" fitWidth="116.0" layoutX="486.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../AdministratorViews/AdministratorHomeView/icon/logo.png" />
+                  <Image url="@../AdministratorViews/HomeView/icon/logo.png" />
                </image>
             </ImageView>
          </children>

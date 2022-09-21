@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUsersController implements Initializable, DataInitializable<Administrator>{
+public class ManageUsersController implements Initializable, DataInitializable<Administrator>{
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
@@ -36,7 +36,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
     private TableColumn<User, String> password;
     @FXML
     private TableColumn<User, Button> viewmodify;
-    public AdministratorManageUsersController(){
+    public ManageUsersController(){
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
@@ -56,7 +56,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
             modify.setOnAction((ActionEvent event) -> {
 
                 dispatcher.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", param.getValue());
+                dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", param.getValue());
             });
             return new SimpleObjectProperty<Button>(modify);
         });
@@ -76,7 +76,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
         utente.setPassword("123456");
 
         dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", utente);
+        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", utente);
 
     }
 

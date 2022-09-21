@@ -2,10 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.value.ChangeListener;
@@ -29,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class AdministratorManageArtistDetailController implements Initializable, DataInitializable<Artist>{
+public class ManageArtistDetailController implements Initializable, DataInitializable<Artist>{
 
     private final ViewDispatcher dispatcher;
     private Artist artist;
@@ -87,7 +84,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
     private SPACEMusicUnifyService spaceMusicUnifyService;
 
     private static String imgUrl;
-    public AdministratorManageArtistDetailController() {
+    public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
@@ -96,45 +93,75 @@ public class AdministratorManageArtistDetailController implements Initializable,
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        confirm.disableProperty().bind(stageNameField.textProperty().isEmpty().or(existingLabel.visibleProperty()).or(biographyField.textProperty().isEmpty()));
+        /*confirm.disableProperty().bind(stageNameField.textProperty().isEmpty().or(existingLabel.visibleProperty()).or(biographyField.textProperty().isEmpty()));
         stageNameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 existingLabel.setVisible(false);
             }
-        });
+        });*/
         
-        for(int i=1; i<101; i++) {
-        	yearsOfActivityField.getItems().add(i);
+
+    }
+    public void setView2(){
+        switch (dispatcher.getSituation()){
+            case detail:
+                loadImages();
+
+                stageName.setText(artist.getStageName());
+                yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
+                biography.setText(artist.getBiography());
+                nationality.setText(String.valueOf(artist.getNationality()));
+                biography.setEditable(false);
+                break;
+
+            case modify:
+                for(int i=1; i<101; i++) {
+                    yearsOfActivityField.getItems().add(i);
+                }
+                nationalityField.getItems().addAll(Nationality.values());
+                scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+                scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                cancelbox.setVisible(false);
+                loadModifyImages();
+
+                stageNameField.setText(artist.getStageName());
+                yearsOfActivityField.setValue(artist.getYearsOfActivity());
+                biographyField.setText(artist.getBiography());
+                nationalityField.setValue(artist.getNationality());
+
+
+                title.setText("Modify Artist");
+                confirm.setText("Modify");
+
+                break;
+
+            case newobject:
+                for(int i=1; i<101; i++) {
+                    yearsOfActivityField.getItems().add(i);
+                }
+                nationalityField.getItems().addAll(Nationality.values());
+                scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+                scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                cancelbox.setVisible(false);
+                loadModifyImages();
+
+                stageNameField.setText(artist.getStageName());
+                yearsOfActivityField.setValue(artist.getYearsOfActivity());
+                biographyField.setText(artist.getBiography());
+                nationalityField.setValue(artist.getNationality());
+                biography.setEditable(false);
+
+                title.setText("New Artist");
+                confirm.setText("Create");
+
+                break;
         }
-        nationalityField.getItems().addAll(Nationality.values());
     }
     @Override
     public void initializeData(Artist artist) {
-	    scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-	    scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-	
-	    cancelbox.setVisible(false);
-	
-	
-	    this.setView();
-	    this.artist = artist;
-	
-	    this.loadImages();
-	
-	    this.stageName.setText(artist.getStageName());
-	    this.yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
-	    this.biography.setText(artist.getBiography());
-	    this.nationality.setText(String.valueOf(artist.getNationality()));
-	
-	
-	    this.loadModifyImages();
-	
-	    this.stageNameField.setText(artist.getStageName());
-	    this.yearsOfActivityField.setValue(artist.getYearsOfActivity());
-	    this.biographyField.setText(artist.getBiography());
-	    this.nationalityField.setValue(artist.getNationality());
-	    this.biography.setEditable(false);
+        this.artist = artist;
+	    setView2();
     }
     public void loadImages(){
         if (!(this.artist.getPictures().isEmpty())) {
@@ -227,16 +254,20 @@ public class AdministratorManageArtistDetailController implements Initializable,
     }
     @FXML
     public void cancelModify(ActionEvent event) {
-
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
-
+        switch (dispatcher.getSituation()){
+            case newobject:
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", admin);
+                break;
+            default:
+                dispatcher.setSituation(ViewSituations.detail);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artist);
+        }
     }
     @FXML
     public void manageAlbums(){
         if(dispatcher.getSituation() == ViewSituations.user){
             dispatcher.setSituation(ViewSituations.user);
         }
-        ViewDispatcher dispatcher = ViewDispatcher.getInstance();
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());
     }
     public void focusImage(String image){
@@ -314,43 +345,10 @@ public class AdministratorManageArtistDetailController implements Initializable,
             dispatcher.renderError(e);
         }
     }
-    public void setView(){
-        switch (dispatcher.getSituation()){
-            case detail:
-                masterPane.getChildren().setAll(infoPane.getChildren()) ;
-                break;
 
-            case modify:
-                title.setText("Modify Artist");
-                confirm.setText("Modify");
-                masterPane.getChildren().setAll(modifyPane.getChildren()) ;
-                break;
-
-            case newobject:
-                title.setText("New Artist");
-                confirm.setText("Create");
-                masterPane.getChildren().setAll(modifyPane.getChildren()) ;
-                break;
-
-            case user:
-                this.deleteartist.setVisible(false);
-                this.modify.setVisible(false);
-                this.albums.setText("View Artist albums");
-                dispatcher.setSituation(ViewSituations.user);
-                this.masterPane.getChildren().setAll(this.infoPane.getChildren());
-                break;
-        }
-    }
     @FXML
     public void showModify(ActionEvent event) {
-        if(dispatcher.getSituation() == ViewSituations.detail){
-            dispatcher.setSituation(ViewSituations.modify);
-            this.setView();
-        }else {
-            dispatcher.setSituation(ViewSituations.detail);
-            this.setView();
-        }
+        dispatcher.setSituation(ViewSituations.modify);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artist);
     }
-
-
 }

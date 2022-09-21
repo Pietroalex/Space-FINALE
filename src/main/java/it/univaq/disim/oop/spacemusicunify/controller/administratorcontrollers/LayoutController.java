@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class AdministratorLayoutController implements Initializable, DataInitializable<Administrator> {
+public class LayoutController implements Initializable, DataInitializable<Administrator> {
 	
 	private static final String Folder = "AdministratorViews/";
 	

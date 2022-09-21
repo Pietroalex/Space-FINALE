@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="sfondo" fx:id="masterPane" prefHeight="507.0" prefWidth="911.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.AdministratorManageUserDetailController">
+<AnchorPane id="sfondo" fx:id="masterPane" prefHeight="507.0" prefWidth="911.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageUserDetailController">
    <children>
       <ImageView fitHeight="548.0" fitWidth="911.0" pickOnBounds="true" preserveRatio="true">
          <image>

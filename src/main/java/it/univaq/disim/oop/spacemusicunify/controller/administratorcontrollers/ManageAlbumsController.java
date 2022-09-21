@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
-public class AdministratorManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
+public class ManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
 	
     private final ViewDispatcher dispatcher;
     private final SPACEMusicUnifyService spaceMusicUnifyService;
@@ -62,7 +62,7 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
     @FXML
     private Label operation;
 
-    public AdministratorManageAlbumsController(){
+    public ManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
@@ -141,8 +141,8 @@ public class AdministratorManageAlbumsController implements Initializable, DataI
         }
         picture.setPhoto(outStreamObj.toByteArray());
         newAlbum.setCover(picture);
-        dispatcher.setSituation(ViewSituations.newobject);
 
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", newAlbum);
+        dispatcher.setSituation(ViewSituations.newobject);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", newAlbum);
     }
 }

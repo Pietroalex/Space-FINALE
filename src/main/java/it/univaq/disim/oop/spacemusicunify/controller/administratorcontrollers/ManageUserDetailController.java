@@ -15,15 +15,9 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUserDetailController implements Initializable, DataInitializable<User> {
+public class ManageUserDetailController implements Initializable, DataInitializable<User> {
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
-    @FXML
-    private AnchorPane masterPane;
-    @FXML
-    private AnchorPane infoPane;
-    @FXML
-    private AnchorPane modifyPane;
     @FXML
     private Button confirm;
     @FXML
@@ -40,8 +34,10 @@ public class AdministratorManageUserDetailController implements Initializable, D
     private Label existingLabel;
     private Administrator admin;
     private User utente;
+    @FXML
+    private Button delete;
 
-    public AdministratorManageUserDetailController(){
+    public ManageUserDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
@@ -66,6 +62,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
                 this.usernameField.setText(utente.getUsername());
                 this.passwordField.setText(utente.getPassword());
                 confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+                delete.setVisible(false);
                 title.setText("New User");
                 confirm.setText("Create");
 
@@ -109,9 +106,8 @@ public class AdministratorManageUserDetailController implements Initializable, D
             } else {
 
                 spaceMusicUnifyService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
-
-                dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
             }
+            dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
         } catch (AlreadyTakenFieldException e){
             System.out.println(e.getMessage());
             existingLabel.setVisible(true);
@@ -127,12 +123,16 @@ public class AdministratorManageUserDetailController implements Initializable, D
     }
     @FXML
     public void cancelModify() {
-
-        if(dispatcher.getSituation() == ViewSituations.register){
-            dispatcher.logout();
-        }else {
-            dispatcher.setSituation(ViewSituations.detail);
-            dispatcher.renderView("AdministratorViews/ManageUsersView/detailuser", utente);
+        switch (dispatcher.getSituation()){
+            case register:
+                dispatcher.logout();
+                break;
+            case newobject:
+                dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", admin);
+                break;
+            default:
+                dispatcher.setSituation(ViewSituations.detail);
+                dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", utente);
         }
     }
     @FXML
@@ -152,7 +152,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
     @FXML
     public void showModify() {
         dispatcher.setSituation(ViewSituations.modify);
-        dispatcher.renderView("AdministratorViews/ManageUsersView/modifyuser", utente);
+        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", utente);
     }
 
 }

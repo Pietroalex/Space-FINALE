@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="masterPane" prefHeight="480.0" prefWidth="910.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageSongDetailController">
+      <Button id="b1" fx:id="modify" layoutX="119.0" layoutY="369.0" mnemonicParsing="false" onAction="#showModify" text="Modify Song">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Button>
+      <Label layoutX="523.0" layoutY="89.0" text="Length">
+      <font>
+         <Font size="21.0" />
+      </font>
+   </Label>
+      <Label contentDisplay="CENTER" layoutX="408.0" layoutY="14.0" text="Song Info">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+      <Label layoutX="96.0" layoutY="89.0" text="Title">
+      <font>
+         <Font size="21.0" />
+      </font>
+   </Label>
+      <Label fx:id="title" alignment="CENTER" layoutX="87.0" layoutY="120.0" text="Song title">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
+      <Label fx:id="length" alignment="CENTER" contentDisplay="CENTER" layoutX="513.0" layoutY="120.0" text="Song Length">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
+      <TextArea id="text2" fx:id="lyrics" layoutX="119.0" layoutY="172.0" prefHeight="159.0" prefWidth="709.0" promptText="Lyrics" />
+   <Label fx:id="genrelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="674.0" layoutY="89.0" text="Song Genre">
+      <font>
+         <Font size="21.0" />
+      </font>
+   </Label>
+   <Label fx:id="genretext" alignment="CENTER" contentDisplay="CENTER" layoutX="689.0" layoutY="120.0" text="song genre">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
+   <Button id="b1" fx:id="back" layoutX="700.0" layoutY="369.0" mnemonicParsing="false" onAction="#backToTheAlbum" text="Back to the Album">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Button>
+</AnchorPane>

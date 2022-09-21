@@ -36,7 +36,7 @@ public class ViewDispatcher {
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setTitle("Space Music UNIFY");
-		stage.getIcons().add(new Image("/viste/AdministratorViews/AdministratorHomeView/icon/logo.png"));
+		stage.getIcons().add(new Image("/viste/AdministratorViews/HomeView/icon/logo.png"));
 		stage.show();
 	}
 
@@ -62,13 +62,13 @@ public class ViewDispatcher {
 		//vista utente
 		if(utenteGenerico instanceof User) {
 		try{
-			View<User> layoutView = loadView("UserViews/UserHomeView/layout");
+			View<User> layoutView = loadView("UserViews/HomeView/layout");
 			layout = (BorderPane) layoutView.getView();
 			DataInitializable<User> layoutController = layoutView.getController();
 			layoutController.initializeData((User) utenteGenerico);
 			
 
-			renderView("UserViews/UserHomeView/home",(User) utenteGenerico);
+			renderView("UserViews/HomeView/home",(User) utenteGenerico);
 			Scene scene = new Scene(layout);
 			stage.setScene(scene);
 	} catch (ViewException e) {
@@ -77,12 +77,12 @@ public class ViewDispatcher {
 	}
 		} else {
 			try{
-				View<Administrator> layoutView = loadView("AdministratorViews/AdministratorHomeView/layout");
+				View<Administrator> layoutView = loadView("AdministratorViews/HomeView/layout");
 				DataInitializable<Administrator> layoutController = layoutView.getController();
 				layoutController.initializeData((Administrator) utenteGenerico);
 				
 				layout = (BorderPane) layoutView.getView();
-				renderView("AdministratorViews/AdministratorHomeView/home",(Administrator) utenteGenerico);
+				renderView("AdministratorViews/HomeView/home",(Administrator) utenteGenerico);
 				Scene scene = new Scene(layout);
 				stage.setScene(scene);
 			} catch (ViewException e) {

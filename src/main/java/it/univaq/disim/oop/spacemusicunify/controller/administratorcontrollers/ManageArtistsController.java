@@ -22,7 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class AdministratorManageArtistsController implements Initializable, DataInitializable<Administrator> {
+public class ManageArtistsController implements Initializable, DataInitializable<Administrator> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
 	private TableView<Artist> artistList;
@@ -46,7 +46,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 	private TableColumn<Artist, Button> viewalbums;
 
 	private ViewDispatcher dispatcher;
-	public AdministratorManageArtistsController(){
+	public ManageArtistsController(){
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
@@ -113,7 +113,7 @@ public class AdministratorManageArtistsController implements Initializable, Data
 		artista.setYearsOfActivity(1);
 
 		dispatcher.setSituation(ViewSituations.newobject);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artista);
 	}
 
 
