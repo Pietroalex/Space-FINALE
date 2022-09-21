@@ -1151,11 +1151,11 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 							utente = new User();
 
 							//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
-							List<String> songQueue = Utility.leggiArray(colonne[5]);
+/*							List<String> songQueue = Utility.leggiArray(colonne[5]);
 							List<Song> queueList = new ArrayList<>();
 							for(String string : songQueue) {
 								queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
-							}
+							}*/
 							//((User) utente).setSongQueue(queueList);
 							break;
 

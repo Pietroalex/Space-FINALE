@@ -61,7 +61,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     private MediaPlayer mediaPlayer;
     private User user;
     private MediaPlayerSettings mediaPlayerSettings;
-    private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "UserHomeView" + File.separator + "icon" + File.separator;
+    private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
 
 
     public PlayerPaneController() {

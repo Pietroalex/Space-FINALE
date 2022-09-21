@@ -99,11 +99,11 @@ public class ViewDispatcher {
 			String[] str = viewName.split("/");
 
 			switch (str[str.length-2]+"/"+str[str.length-1]){
-				case "UserHomeView/playerPane":
+				case "HomeView/playerPane":
 					layout.setBottom(view.getView());
 					break;
 
-				case "UserHomeView/playlistPane":
+				case "HomeView/playlistPane":
 					layout.setLeft(view.getView());
 					break;
 
