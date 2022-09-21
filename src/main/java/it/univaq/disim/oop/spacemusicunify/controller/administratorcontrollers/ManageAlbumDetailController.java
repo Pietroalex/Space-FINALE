@@ -30,7 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-public class AdministratorManageAlbumDetailController implements Initializable, DataInitializable<Album> {
+public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	private final ViewDispatcher dispatcher;
 	@FXML
@@ -109,7 +109,7 @@ public class AdministratorManageAlbumDetailController implements Initializable, 
 	@FXML
 	private Label existingLabel;
 
-	public AdministratorManageAlbumDetailController(){
+	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
 
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();

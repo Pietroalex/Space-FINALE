@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUsersController implements Initializable, DataInitializable<Administrator>{
+public class ManageUsersController implements Initializable, DataInitializable<Administrator>{
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
@@ -36,7 +36,7 @@ public class AdministratorManageUsersController implements Initializable, DataIn
     private TableColumn<User, String> password;
     @FXML
     private TableColumn<User, Button> viewmodify;
-    public AdministratorManageUsersController(){
+    public ManageUsersController(){
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();

@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class AdministratorManageArtistDetailController implements Initializable, DataInitializable<Artist>{
+public class ManageArtistDetailController implements Initializable, DataInitializable<Artist>{
 
     private final ViewDispatcher dispatcher;
     private Artist artist;
@@ -87,7 +87,7 @@ public class AdministratorManageArtistDetailController implements Initializable,
     private SPACEMusicUnifyService spaceMusicUnifyService;
 
     private static String imgUrl;
-    public AdministratorManageArtistDetailController() {
+    public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();

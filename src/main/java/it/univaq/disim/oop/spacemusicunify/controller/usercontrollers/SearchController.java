@@ -34,7 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 
-public class RicercaController implements Initializable, DataInitializable<User>{
+public class SearchController implements Initializable, DataInitializable<User>{
 
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
 	@FXML
@@ -88,7 +88,7 @@ public class RicercaController implements Initializable, DataInitializable<User>
 	private User utente;
 	private MediaPlayerSettings mediaPlayerSettings;
 	
-	public RicercaController() {
+	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();

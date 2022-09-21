@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 
-public class UserHomeController implements Initializable, DataInitializable<User> {
+public class HomeController implements Initializable, DataInitializable<User> {
 
 	@FXML
 	private Label benvenutoLabel;

@@ -15,7 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageUserDetailController implements Initializable, DataInitializable<User> {
+public class ManageUserDetailController implements Initializable, DataInitializable<User> {
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     private final ViewDispatcher dispatcher;
     @FXML
@@ -41,7 +41,7 @@ public class AdministratorManageUserDetailController implements Initializable, D
     private Administrator admin;
     private User utente;
 
-    public AdministratorManageUserDetailController(){
+    public ManageUserDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();

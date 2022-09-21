@@ -24,7 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdministratorManageSongDetailController implements Initializable, DataInitializable<Song> {
+public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
 
 
     private final ViewDispatcher dispatcher;
@@ -73,7 +73,7 @@ public class AdministratorManageSongDetailController implements Initializable, D
     private Song canzone;
 
 
-    public AdministratorManageSongDetailController(){
+    public ManageSongDetailController(){
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
