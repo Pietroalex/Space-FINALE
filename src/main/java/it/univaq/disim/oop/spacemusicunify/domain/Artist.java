@@ -10,6 +10,16 @@ public class Artist {
 	private int yearsOfActivity;
 	private String biography;
 	private Set<Picture> pictures = new HashSet<>();
+	private Nationality nationality;
+	private Set<Artist> bandMembers = new HashSet<>();
+	
+	public Nationality getNationality() {
+		return nationality;
+	}
+	
+	public void setNationality(Nationality nationality) {
+		this.nationality = nationality;
+	}
 
 	public String getName() {
 		return name;
@@ -49,6 +59,14 @@ public class Artist {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Set<Artist> getBandMembers() {
+		return bandMembers;
+	}
+
+	public void setBandMembers(Set<Artist> bandMembers) {
+		this.bandMembers = bandMembers;
 	}
 	
 }

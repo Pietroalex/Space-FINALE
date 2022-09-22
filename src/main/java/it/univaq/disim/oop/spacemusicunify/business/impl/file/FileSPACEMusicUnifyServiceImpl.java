@@ -177,7 +177,36 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	@Override
 	public void add(User utente) throws  BusinessException {
-		createNewUser(utente);
+		try {
+			FileData fileData = Utility.readAllRows(usersFile);
+			for (String[] colonne : fileData.getRighe()) {
+				if (colonne[2].equals(utente.getUsername())) {
+					throw new AlreadyExistingException("Already existing user");
+				}
+			}
+			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
+				long contatore = fileData.getContatore();
+				writer.println((contatore + 1));
+				for (String[] righe : fileData.getRighe()) {
+					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				}
+				StringBuilder row = new StringBuilder();
+				row.append(contatore);
+				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(utente.getUsername());
+				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(utente.getPassword());
+				row.append(Utility.SEPARATORE_COLONNA);
+				row.append("0");
+				row.append(Utility.SEPARATORE_COLONNA);
+				row.append("[]");
+				writer.println(row.toString());
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BusinessException(e);
+		}
 	}
 
 	@Override
@@ -1209,44 +1238,6 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		return utenteList;
 	}
-
-	@Override
-	public void createNewUser(User utente) throws AlreadyExistingException, BusinessException {
-		try {
-			FileData fileData = Utility.readAllRows(usersFile);
-			for (String[] colonne : fileData.getRighe()) {
-				if (colonne[2].equals(utente.getUsername())) {
-					throw new AlreadyExistingException("Already existing user");
-				}
-			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				long contatore = fileData.getContatore();
-				writer.println((contatore + 1));
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-				StringBuilder row = new StringBuilder();
-				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(utente.getUsername());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(utente.getPassword());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append("0");
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append("[]");
-				writer.println(row.toString());
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BusinessException(e);
-		}
-	}
-
-
-
-
 
 	@Override
 	public void addNewPlaylist(Playlist playlist) throws BusinessException {

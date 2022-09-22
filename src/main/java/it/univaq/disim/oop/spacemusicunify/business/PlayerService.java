@@ -5,7 +5,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-public interface PlayerService{
+public interface PlayerService {
 	
 	MediaPlayer getMediaPlayer();
 
@@ -34,4 +34,5 @@ public interface PlayerService{
     PlayerState getPlayerState();
 
 	void setPlayerState(PlayerState playerState);
+	
 }

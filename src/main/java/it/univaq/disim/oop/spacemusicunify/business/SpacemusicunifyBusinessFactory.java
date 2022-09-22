@@ -8,11 +8,14 @@ public abstract class SpacemusicunifyBusinessFactory {
 	//private static SpacemusicunifyBusinessFactory factory = new RAMSpacemusicunifyBusinessFactoryImpl();
 
 	private static SpacemusicunifyBusinessFactory factory = new FileSpacemusicunifyBusinessFactoryImpl();
+	
 	public static SpacemusicunifyBusinessFactory getInstance() {
-
 		return factory;
 	}
+	
 	public abstract SPACEMusicUnifyService getSPACEMusicUnifyService();
-
+	public abstract AlbumService getAlbumService();
+	public abstract ArtistService getArtistService();
+	public abstract ProductionService getProductionService();
 
 }
