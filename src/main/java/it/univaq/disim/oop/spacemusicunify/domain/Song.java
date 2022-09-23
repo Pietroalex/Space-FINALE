@@ -5,7 +5,7 @@ public class Song {
 	
 	private Integer id;
 	private String title;
-	private byte[] fileMp3;
+	private Audio fileMp3;
 	private String lyrics;
 	private Album album;
 	private String length;
@@ -27,11 +27,11 @@ public class Song {
 		this.title = title;
 	}
 	
-	public byte[] getFileMp3() {
+	public Audio getFileMp3() {
 		return fileMp3;
 	}
 	
-	public void setFileMp3(byte[] fileMp3){
+	public void setFileMp3(Audio fileMp3){
 			this.fileMp3 = fileMp3;
 	}
 	

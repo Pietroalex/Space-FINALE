@@ -241,6 +241,16 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
+	public List<Album> getAlbumList() throws BusinessException {
+		return null;
+	}
+
+	@Override
+	public List<Song> getSongList() throws BusinessException {
+		return null;
+	}
+
+	@Override
 	public List<Artist> findAllArtists(Album album) throws BusinessException {
 		// TODO Auto-generated method stub
 		return null;

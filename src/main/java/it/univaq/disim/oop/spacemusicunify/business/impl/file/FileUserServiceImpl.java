@@ -4,8 +4,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,10 +11,8 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
-import javafx.util.Duration;
 
-public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
+public class FileUserServiceImpl implements UserService {
 
 	private final String usersFile;
 	private final String albumsFile;
@@ -30,7 +26,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	private String ricerca;
 
-	public FileSPACEMusicUnifyServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures) {
+	public FileUserServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures) {
 		this.usersFile = fileUtenti;
 		this.albumsFile = fileAlbums;
 		this.artistsFile = fileArtisti;

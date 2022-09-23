@@ -2,11 +2,10 @@ package it.univaq.disim.oop.spacemusicunify.business;
 
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-public interface SPACEMusicUnifyService {
+public interface UserService {
 
 	void add(User utente) throws BusinessException;
 	

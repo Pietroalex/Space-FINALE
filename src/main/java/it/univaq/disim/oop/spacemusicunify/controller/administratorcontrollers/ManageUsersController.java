@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ManageUsersController implements Initializable, DataInitializable<Administrator>{
-    private final SPACEMusicUnifyService spaceMusicUnifyService;
+    private final UserService userService;
     private final ViewDispatcher dispatcher;
     @FXML
     private TableView<User> usersList;
@@ -40,7 +40,7 @@ public class ManageUsersController implements Initializable, DataInitializable<A
         dispatcher = ViewDispatcher.getInstance();
 
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,7 +64,7 @@ public class ManageUsersController implements Initializable, DataInitializable<A
     @Override
     public void initializeData(Administrator amministratore) {
 
-            List<User> utenti = spaceMusicUnifyService.getAllUsers();
+            List<User> utenti = userService.getAllUsers();
             ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
             usersList.setItems(utenteData);
 

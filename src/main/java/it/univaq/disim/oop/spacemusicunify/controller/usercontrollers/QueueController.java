@@ -2,16 +2,13 @@ package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -23,7 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class QueueController implements Initializable, DataInitializable<User> {
 	private final ViewDispatcher dispatcher;
 	private final MediaPlayerSettings mediaPlayerSettings;
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	@FXML
 	private TableView<Song> queueTable;
 	@FXML
@@ -41,7 +38,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	public QueueController(){
 		dispatcher = ViewDispatcher.getInstance();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
-		spaceMusicUnifyService = SpacemusicunifyBusinessFactory.getInstance().getSPACEMusicUnifyService();
+		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
 	}
 	
 	@Override

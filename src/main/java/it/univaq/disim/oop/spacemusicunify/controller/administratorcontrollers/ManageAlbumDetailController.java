@@ -14,8 +14,6 @@ import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,7 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	private final AlbumService albumService;
 	private final ViewDispatcher dispatcher;
 	@FXML
@@ -113,7 +111,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+		userService = factory.getUserService();
 		albumService = factory.getAlbumService();
 	}
 	private void setView2(ObservableList<Song> songData) {
@@ -144,7 +142,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				genreAlbum.setText(String.valueOf(album.getGenre()));
 				releaseAlbum.setText(String.valueOf(album.getRelease()));
 
-				Image img = new Image(new ByteArrayInputStream(album.getCover().getPhoto()));
+				Image img = new Image(new ByteArrayInputStream(album.getCover().getData()));
 
 				ImageView imgview1 = new ImageView(img);
 				imgview1.setFitHeight(150);
@@ -212,7 +210,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				genreField.setValue(album.getGenre());
 				releaseField.setValue(album.getRelease());
 
-				Image imgM = new Image(new ByteArrayInputStream(album.getCover().getPhoto()));
+				Image imgM = new Image(new ByteArrayInputStream(album.getCover().getData()));
 				ImageView imgview2 = new ImageView(imgM);
 				imgview2.setFitHeight(150);
 				imgview2.setFitWidth(150);
@@ -349,13 +347,13 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				Picture picture = new Picture();
 				ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 				outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
-				picture.setPhoto(outStreamObj.toByteArray());
+				picture.setData(outStreamObj.toByteArray());
 				album.setCover(picture);
 
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-				ImageView imgview2 = new ImageView(new Image(new ByteArrayInputStream(album.getCover().getPhoto())));
+				ImageView imgview2 = new ImageView(new Image(new ByteArrayInputStream(album.getCover().getData())));
 				imgview2.setFitHeight(150);
 				imgview2.setFitWidth(150);
 				imgview2.setCursor(Cursor.HAND);

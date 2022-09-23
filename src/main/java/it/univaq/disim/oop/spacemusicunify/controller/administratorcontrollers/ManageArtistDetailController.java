@@ -5,8 +5,6 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -82,13 +80,13 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private Label existingLabel;
 
     private Administrator admin;
-    private SPACEMusicUnifyService spaceMusicUnifyService;
+    private UserService userService;
 
     private static Picture imgUrl;
     public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
         artistService = factory.getArtistService();
     }
 
@@ -172,7 +170,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             for( Picture img: this.artist.getPictures()) {
                 ImageView imgview;
 
-                    imgview = new ImageView(new Image(new ByteArrayInputStream(img.getPhoto())));
+                    imgview = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
 
                 imgview.setFitHeight(120);
                 imgview.setFitWidth(120);
@@ -186,7 +184,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
                 ImageView imgs;
 
-                    imgs = new ImageView(new Image(new ByteArrayInputStream(img.getPhoto())));
+                    imgs = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
                     imgs.setFitHeight(120);
                     imgs.setFitWidth(120);
                     imgs.setCursor(Cursor.HAND);
@@ -292,7 +290,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     Picture picture = new Picture();
                     ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
                     outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
-                    picture.setPhoto(outStreamObj.toByteArray());
+                    picture.setData(outStreamObj.toByteArray());
                     tempimg.add(picture);
 
                 } catch (IOException e) {

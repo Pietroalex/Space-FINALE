@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 
 public class LoginController implements Initializable, DataInitializable<Object>{
 
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	@FXML
 	private TextField username;
 	@FXML
@@ -37,7 +37,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	public LoginController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+		userService = factory.getUserService();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	private void loginAction(ActionEvent event) throws ViewException {
 		
 		try {
-			GeneralUser utenteGenerico = spaceMusicUnifyService.authenticate(username.getText(), password.getText());
+			GeneralUser utenteGenerico = userService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(utenteGenerico);
 		} catch (UtenteGenericoNotFoundException e) {
 			errorLabel.setVisible(true);

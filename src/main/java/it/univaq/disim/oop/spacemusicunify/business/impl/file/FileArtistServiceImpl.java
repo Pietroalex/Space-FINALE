@@ -1,21 +1,15 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
-import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class FileArtistServiceImpl implements ArtistService {
@@ -23,12 +17,15 @@ public class FileArtistServiceImpl implements ArtistService {
 	private String artistsFile;
 	private AlbumService albumService;
 	private ProductionService productionService;
+	private MultimediaService multimediaService;
+	private Set<Artist> bandMembers = new HashSet<>();
 	
 	public FileArtistServiceImpl(String artistsFile) {
 		this.artistsFile = artistsFile;
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		albumService = factory.getAlbumService();
 		productionService = factory.getProductionService();
+		multimediaService = factory.getMultimediaService();
 	}
 	
 	@Override
@@ -43,35 +40,19 @@ public class FileArtistServiceImpl implements ArtistService {
 			}
 			
 			
-			FileData fileDataCanzoni = Utility.readAllRows(songsFile);
-			
-			FileData fileDataAlbum = Utility.readAllRows(albumsFile);
-			
-			List<String> albums = new ArrayList<>();
-			albums.add(String.valueOf(fileDataAlbum.getContatore()));
-			
-			List<String> canzoneList = new ArrayList<>();
-			canzoneList.add(String.valueOf(fileDataCanzoni.getContatore()));
+
+
 			
 			//creo l'album Inediti
 			Album album = new Album();
-			album.setTitle("Inediti");
+
 			album.setGenre(Genre.singoli);
-			/*album.setCover(saveANDstore(("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png"), "cover"));
-			*/
-			Picture picture = new Picture();
-			picture.setId(5);
-			album.setCover(picture);
+			Picture pictureAlbum = new Picture();
+			pictureAlbum.setData(UtilityObjectRetriever.byteArrayExtractor("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png"));
+			pictureAlbum.setOwnership(album);
+			album.setCover(pictureAlbum);
 			album.setRelease(LocalDate.now());
-			
-			//creo la canzone di default
-			Song canzone = new Song();
-			canzone.setTitle("Our Sympathy of "+artista.getName());
-			canzone.setLyrics("ElDlive");
-			canzone.setLength("04:02");
-			canzone.setGenre(Genre.pop);
-			/*canzone.setFileMp3(saveANDstore(("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3"), "audio"));
-			*/
+
 			//scrivo file artista
 			try (PrintWriter writerArtista = new PrintWriter(new File(artistsFile))) {
 				long contatore = fileDataArtisti.getContatore();
@@ -80,9 +61,21 @@ public class FileArtistServiceImpl implements ArtistService {
 					writerArtista.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 				}
 				List<String> imageList = new ArrayList<>();
-/*				for(String image : artista.getPictures()){
-					imageList.add(saveANDstore(image, artista.getStageName()));
-				}*/
+				for(Picture picture : artista.getPictures()){
+					multimediaService.add(picture);
+					imageList.add(String.valueOf(picture.getId()));
+				}
+				Set<Artist> band = getBandMembers();
+				List<String> bandIds = new ArrayList<>();
+				while(band.iterator().hasNext()){
+					Artist artist = band.iterator().next();
+					if(artist.getId() == null) {
+						add(artist);
+					}
+					bandIds.add(String.valueOf(artist.getId()));
+				}
+				artista.setId(Integer.parseInt(String.valueOf(contatore)));
+				album.setTitle("Inediti"+(artista.getId()));
 				StringBuilder rowArtista = new StringBuilder();
 				rowArtista.append(contatore);
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
@@ -92,59 +85,22 @@ public class FileArtistServiceImpl implements ArtistService {
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
 				rowArtista.append(artista.getBiography());
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				/*rowArtista.append(artista.getNationality());*/
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
 				rowArtista.append(imageList);
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(albums);
+				rowArtista.append(artista.getNationality());
+				rowArtista.append(Utility.SEPARATORE_COLONNA);
+				rowArtista.append(bandIds);
 				writerArtista.println(rowArtista.toString());
 			}
-			//scrivo file canzone
-			try (PrintWriter writerCanzone = new PrintWriter(new File(songsFile))) {
-				long contatore = fileDataCanzoni.getContatore();
-				writerCanzone.println(contatore + 1);
-				for (String[] righe : fileDataCanzoni.getRighe()) {
-					writerCanzone.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-				StringBuilder row = new StringBuilder();
-				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzone.getTitle());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzone.getFileMp3());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzone.getLyrics());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(fileDataAlbum.getContatore());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzone.getLength());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzone.getGenre());
-				writerCanzone.println(row.toString());
-			}
+
 			//scrivo file album
-			try (PrintWriter writerAlbum = new PrintWriter(new File(albumsFile))) {
-				long contatore = fileDataAlbum.getContatore();
-				writerAlbum.println(contatore + 1);
-				for (String[] righe : fileDataAlbum.getRighe()) {
-					writerAlbum.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-				StringBuilder row = new StringBuilder();
-				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(album.getTitle());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(album.getGenre());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(album.getCover());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(album.getRelease());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(fileDataArtisti.getContatore());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(canzoneList);
-				writerAlbum.println(row.toString());
-			}
+			albumService.add(album);
+			//creo la produzione
+			Production production = new Production();
+			production.setArtist(artista);
+			production.setAlbum(album);
+			productionService.add(production);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -322,4 +278,13 @@ public class FileArtistServiceImpl implements ArtistService {
 		return albumsFinal;
 	}
 
+	public Set<Artist> getBandMembers() {
+		Set<Artist> band = bandMembers;
+		bandMembers = null;
+		return band;
+	}
+
+	public void setBandMembers(Set<Artist> bandMembers) {
+		this.bandMembers = bandMembers;
+	}
 }

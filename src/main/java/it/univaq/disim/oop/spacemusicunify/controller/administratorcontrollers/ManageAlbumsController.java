@@ -35,7 +35,7 @@ import java.util.*;
 public class ManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
 	
     private final ViewDispatcher dispatcher;
-    private final SPACEMusicUnifyService spaceMusicUnifyService;
+    private final UserService userService;
     private Artist artist;
 
 
@@ -65,7 +65,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     public ManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
     }
 
 
@@ -84,7 +84,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
             ImageView image = new ImageView();
             if(param.getValue().getCover() != null){
 
-                image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getPhoto())));
+                image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getData())));
                 image.setFitHeight(40);
                 image.setFitWidth(40);
             }
@@ -139,7 +139,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        picture.setPhoto(outStreamObj.toByteArray());
+        picture.setData(outStreamObj.toByteArray());
         newAlbum.setCover(picture);
 
         dispatcher.setSituation(ViewSituations.newobject);

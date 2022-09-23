@@ -28,7 +28,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -47,7 +46,7 @@ import java.util.*;
 public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
 	private final ViewDispatcher dispatcher;
-    private final SPACEMusicUnifyService spaceMusicUnifyService;
+    private final UserService userService;
     @FXML
     private Button playButton, nextButton, previousButton, pauseButton, volumeButton, muteButton, queueButton, addToPlaylistButton;
     @FXML
@@ -67,7 +66,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public PlayerPaneController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
         mediaPlayerSettings = MediaPlayerSettings.getInstance();
     }
 
@@ -285,7 +284,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
             /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
             songAlbum.setText(song.getAlbum().getTitle());
-            songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
+            songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
             totalTime.setText(song.getLength());
 
             mediaPlayerSettings.setLastDuration(Duration.ZERO);
@@ -344,7 +343,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
             /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
             songAlbum.setText(song.getAlbum().getTitle());
-            songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
+            songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
             mediaPlayerSettings.setLastDuration(Duration.ZERO);
             /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
@@ -412,7 +411,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
         /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
         songAlbum.setText(song.getAlbum().getTitle());
-        songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getPhoto())));
+        songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
         if(mediaPlayerSettings.getPlayerOnPlay()) {
             pauseButton.setVisible(true);
@@ -574,7 +573,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				}
 
 				try {
-                    spaceMusicUnifyService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+                    userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -586,7 +585,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         tableView.getColumns().add(add);
 		
 		try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(spaceMusicUnifyService.getAllPlaylists(user));
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
 			e1.printStackTrace();

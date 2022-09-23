@@ -1,9 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,27 +13,48 @@ import java.util.List;
 public class FileMultimediaServiceImpl implements MultimediaService {
     private MultimediaService multimediaService;
     private String picturesFile;
+    private String audiosFile;
     private String picturesDirectory;
     private String mp3Directory;
 
-    public FileMultimediaServiceImpl(String picturesFile, String picturesDirectory, String mp3Directory){
+    public FileMultimediaServiceImpl(String picturesFile, String audiosFile, String picturesDirectory, String mp3Directory){
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         multimediaService = factory.getMultimediaService();
         this.picturesFile = picturesFile;
+        this.audiosFile = audiosFile;
         this.picturesDirectory = picturesDirectory;
         this.mp3Directory = mp3Directory;
     }
 
     @Override
-    public void add(byte[] bytes) throws BusinessException{
+    public void add(Audio audio) throws BusinessException{
         try {
-            saveANDstore(bytes, "audio");
-        } catch (UnsupportedFileExtensionException e) {
-            throw new BusinessException();
+            FileData fileData = Utility.readAllRows(audiosFile);
+            try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
+                long contatore = fileData.getContatore();
+                writer.println((contatore));
+                for (String[] righe : fileData.getRighe()) {
+                    writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+                }
+                audio.setId((int) contatore);
+
+                StringBuilder row = new StringBuilder();
+                row.append(contatore);
+                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(saveANDstore(audio.getData(), "audio"));
+                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(((Song) audio.getOwnership()).getId() );
+
+                writer.println(row.toString());
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessException(e);
         }
     }
     @Override
-    public void delete(byte[] bytes) throws BusinessException{
+    public void delete(Audio audio) throws BusinessException{
 
     }
 
@@ -43,11 +62,6 @@ public class FileMultimediaServiceImpl implements MultimediaService {
     public void add(Picture picture) throws BusinessException {
         try {
             FileData fileData = Utility.readAllRows(picturesFile);
-			for (String[] colonne : fileData.getRighe()) {
-				if (colonne[0].equals(picture.getId().toString())) {
-					throw new AlreadyExistingException("Already existing picture");
-				}
-			}
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
                 long contatore = fileData.getContatore();
                 writer.println((contatore));
@@ -59,7 +73,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 StringBuilder row = new StringBuilder();
                 row.append(contatore);
                 row.append(Utility.SEPARATORE_COLONNA);
-                row.append(saveANDstore(picture.getPhoto(), "image"));
+                row.append(saveANDstore(picture.getData(), "image"));
                 row.append(Utility.SEPARATORE_COLONNA);
                 row.append(picture.getHeight());
                 row.append(Utility.SEPARATORE_COLONNA);
@@ -86,6 +100,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
     public List<Picture> getAllPictures() throws BusinessException{
         return null;
     }
+
+    @Override
+    public List<Audio> getAllAudios() throws BusinessException {
+        return null;
+    }
+
     public String saveANDstore(byte[] bytes, String type) throws UnsupportedFileExtensionException {
         String existImage = picturesDirectory + "image";
         String existMp3 = mp3Directory + "audio";

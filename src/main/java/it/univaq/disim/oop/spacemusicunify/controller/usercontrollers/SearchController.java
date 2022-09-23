@@ -36,7 +36,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class SearchController implements Initializable, DataInitializable<User>{
 
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	@FXML
 	private TableView<Song> song;
 	@FXML
@@ -91,14 +91,14 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+		userService = factory.getUserService();
 
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.ricerca = spaceMusicUnifyService.getRicerca();
+		this.ricerca = userService.getRicerca();
 		//songTable
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
@@ -167,7 +167,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 			System.out.println(param.getValue().getCover());
 			ImageView image;
-			image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getPhoto())));
+			image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getData())));
 			image.setFitHeight(40);
         	image.setFitWidth(40);
         	return new SimpleObjectProperty<ImageView>(image);
@@ -234,12 +234,12 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 	@Override
 	public void initializeData(User utente) {
-		this.ricerca = spaceMusicUnifyService.getRicerca();
+		this.ricerca = userService.getRicerca();
 		this.utente = utente;
 
-
+		try {
 			List<Artist> artistList = new ArrayList<>();
-			for(Artist artista: spaceMusicUnifyService.getAllArtists()) {
+			for(Artist artista: userService.getAllArtists()) {
 				/*if(artista.getStageName().contains(ricerca.strip())) {
 					artistList.add(artista);
 				}*/
@@ -249,17 +249,19 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 
 			List<Song> songList = new ArrayList<>();
-			for(Song song: spaceMusicUnifyService.getAllSongs()) {
+
+			for(Song song: userService.getAllSongs()) {
 				if(song.getTitle().contains(ricerca.strip()) || song.getGenre().toString().equals(ricerca)) {
 					songList.add(song);
 				}
 			}
-			ObservableList<Song> songData = FXCollections.observableArrayList(songList);
+
+		ObservableList<Song> songData = FXCollections.observableArrayList(songList);
 			song.setItems(songData);
 
 
 			List<Album> albumList = new ArrayList<>();
-			for(Album album: spaceMusicUnifyService.getAllAlbums()) {
+			for(Album album: userService.getAllAlbums()) {
 				if(album.getTitle().contains(ricerca.strip()) || album.getGenre().toString().equals(ricerca)) {
 					albumList.add(album);
 				}
@@ -267,7 +269,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			ObservableList<Album> albumData = FXCollections.observableArrayList(albumList);
 			album.setItems(albumData);
 
-
+		} catch (BusinessException e) {
+			throw new RuntimeException(e);
+		}
 
 		song.setRowFactory( tablerow -> {
 			TableRow<Song> canzone = new TableRow<>();

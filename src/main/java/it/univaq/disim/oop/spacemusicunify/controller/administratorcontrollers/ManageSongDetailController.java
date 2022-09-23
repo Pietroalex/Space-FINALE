@@ -7,8 +7,6 @@ import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,7 +26,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
 	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
-    private final SPACEMusicUnifyService spaceMusicUnifyService;
+    private final UserService userService;
     @FXML
     private AnchorPane masterPane;
     @FXML
@@ -78,7 +76,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     public ManageSongDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
         albumService = factory.getAlbumService();
     }
     public void setView2(){

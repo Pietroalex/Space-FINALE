@@ -1,8 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -12,7 +10,6 @@ import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
-import it.univaq.disim.oop.spacemusicunify.view.ViewException;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,7 +27,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class PlaylistController implements Initializable, DataInitializable<Playlist>{
 
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	@FXML
 	private TableView<Song> playlistTable;
 	@FXML
@@ -60,7 +57,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 	public PlaylistController() {
 		dispatcher = ViewDispatcher.getInstance();
-		spaceMusicUnifyService = SpacemusicunifyBusinessFactory.getInstance().getSPACEMusicUnifyService();
+		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	
@@ -92,7 +89,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				
 				playlist.getSongList().remove(param.getValue());
 				try {
-					spaceMusicUnifyService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser());
+					userService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser());
 				} catch (BusinessException e) {
 					e.printStackTrace();
 				}
@@ -140,7 +137,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	@FXML
 	public void deletePlaylist(ActionEvent event) {
 		try {
-			spaceMusicUnifyService.deletePlaylist(playlist);
+			userService.deletePlaylist(playlist);
 		} catch (BusinessException e) {
 			e.printStackTrace();
 		}

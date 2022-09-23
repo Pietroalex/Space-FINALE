@@ -2,7 +2,6 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,7 +11,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
-public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
+public class RAMUserServiceImpl implements UserService {
 
 	private static List<User> storedUsers = new ArrayList<>();
 	private List<Playlist> storedPlaylists = new ArrayList<>();
@@ -108,19 +107,19 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			Picture picture = new Picture();
 			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"pasqualearrosto.jpg")));
-			picture.setPhoto(outStreamObj.toByteArray());
+			picture.setData(outStreamObj.toByteArray());
 			artista1img.add(picture);
 
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setPhoto(outStreamObj.toByteArray());
+			picture.setData(outStreamObj.toByteArray());
 			artista1img.add(picture);
 
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setPhoto(outStreamObj.toByteArray());
+			picture.setData(outStreamObj.toByteArray());
 			artista1img.add(picture);
 
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setPhoto(outStreamObj.toByteArray());
+			picture.setData(outStreamObj.toByteArray());
 			artista1img.add(picture);
 
 		} catch (IOException e) {
@@ -386,7 +385,7 @@ public class RAMSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			Picture picture = new Picture();
 			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"2bassists.png")));
-			picture.setPhoto(outStreamObj.toByteArray());
+			picture.setData(outStreamObj.toByteArray());
 			artista2img.add(picture);
 
 		} catch (IOException e) {

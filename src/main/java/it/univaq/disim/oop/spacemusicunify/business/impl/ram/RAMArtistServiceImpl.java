@@ -117,6 +117,11 @@ public class RAMArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
+	public List<Artist> getArtistaList() throws BusinessException {
+		return null;
+	}
+
+	@Override
 	public List<Album> findAllAlbums(Artist artist) throws BusinessException {
 		// TODO Auto-generated method stub
 		return null;

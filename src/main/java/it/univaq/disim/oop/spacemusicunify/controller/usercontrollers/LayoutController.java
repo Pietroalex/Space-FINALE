@@ -15,7 +15,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class LayoutController implements DataInitializable<User> {
 
-	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final UserService userService;
 	private ViewDispatcher dispatcher;
 	@FXML
 	private TextField searchField;
@@ -28,7 +28,7 @@ public class LayoutController implements DataInitializable<User> {
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+		userService = factory.getUserService();
 		mediaPlayerSettings = MediaPlayerSettings.getInstance();
 	}
 	@Override
@@ -58,7 +58,7 @@ public class LayoutController implements DataInitializable<User> {
 	}
 	@FXML
 	public void searchAction(ActionEvent event) {
-		spaceMusicUnifyService.setRicerca(searchField.getText());
+		userService.setRicerca(searchField.getText());
 		dispatcher.renderView("UserViews/RicercaView/ricercaView", user);
 	}
 

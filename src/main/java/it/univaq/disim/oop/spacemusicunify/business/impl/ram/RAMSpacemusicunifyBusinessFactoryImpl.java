@@ -1,29 +1,26 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
-import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
-import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
-import it.univaq.disim.oop.spacemusicunify.business.SPACEMusicUnifyService;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 
 
 public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusinessFactory {
 
-	private SPACEMusicUnifyService spaceMusicUnifyService;
+	private UserService userService;
 	private AlbumService albumService;
 	private ArtistService artistService;
 	private ProductionService productionService;
 
 	public RAMSpacemusicunifyBusinessFactoryImpl() {
-		spaceMusicUnifyService = new RAMSPACEMusicUnifyServiceImpl();
+		userService = new RAMUserServiceImpl();
 		albumService = new RAMAlbumServiceImpl();
 		artistService = new RAMArtistServiceImpl();
 		productionService = new RAMProductionServiceImpl();
 	}
 	@Override
-	public SPACEMusicUnifyService getSPACEMusicUnifyService() {
-		return spaceMusicUnifyService;
+	public UserService getUserService() {
+		return null;
 	}
+
 	@Override
 	public AlbumService getAlbumService() {
 		return albumService;
@@ -31,6 +28,11 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	@Override
 	public ArtistService getArtistService() {
 		return artistService;
+	}
+
+	@Override
+	public MultimediaService getMultimediaService() {
+		return null;
 	}
 	@Override
 	public ProductionService getProductionService() {

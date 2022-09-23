@@ -13,7 +13,7 @@ public abstract class SpacemusicunifyBusinessFactory {
 		return factory;
 	}
 	
-	public abstract SPACEMusicUnifyService getSPACEMusicUnifyService();
+	public abstract UserService getUserService();
 	public abstract AlbumService getAlbumService();
 	public abstract ArtistService getArtistService();
 	public abstract MultimediaService getMultimediaService();

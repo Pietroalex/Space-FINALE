@@ -11,12 +11,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ManageUserDetailController implements Initializable, DataInitializable<User> {
-    private final SPACEMusicUnifyService spaceMusicUnifyService;
+    private final UserService userService;
     private final ViewDispatcher dispatcher;
     @FXML
     private Button confirm;
@@ -40,7 +40,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
     public ManageUserDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        userService = factory.getUserService();
 
     }
     public void setView2(){
@@ -96,7 +96,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
             if (utente.getId() == null) {
                 utente.setUsername(usernameField.getText());
                 utente.setPassword(passwordField.getText());
-                spaceMusicUnifyService.add(utente);
+                userService.add(utente);
                 if (dispatcher.getSituation() == ViewSituations.register) {
                     dispatcher.logout();
                 } else {
@@ -105,7 +105,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
 
             } else {
 
-                spaceMusicUnifyService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
+                userService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
             }
             dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
         } catch (AlreadyTakenFieldException e){
@@ -139,7 +139,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
     public void deleteUser(){
         try{
             if (utente.getId() != null) {
-                spaceMusicUnifyService.delete(utente);
+                userService.delete(utente);
             }else{
                 System.out.println("Utente not found");
             }

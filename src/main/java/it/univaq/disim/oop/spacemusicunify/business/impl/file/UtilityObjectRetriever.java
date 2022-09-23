@@ -17,12 +17,12 @@ public class UtilityObjectRetriever extends Object {
 	private static Artist currentArtist;
 	private static Album currentAlbum;
 	private static Song currentSong;
-	private static String immaginiDirectory;
+	private static String imagesDirectory;
 	private static String filesMp3Directory;
 
 
 	public static void setDirectory(String str1, String str2){
-		immaginiDirectory = str1;
+		imagesDirectory = str1;
 		filesMp3Directory = str2;
 	}
 
@@ -84,18 +84,18 @@ public class UtilityObjectRetriever extends Object {
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
-
 				break;
-			case "pictures.txt":
-				System.out.println("pictures");
+
+			default:
+				System.out.println("pictures/audios");
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
-					for (String[] colonne : fileData.getRighe()) {
-						if(colonne[0].equals(id)) {
-							System.out.println("cerco picture");
-							object = findMultimedia(colonne);
-							System.out.println("trovato pictur");
+					for (String[] columns : fileData.getRighe()) {
+						if(columns[0].equals(id)) {
+							System.out.println("cerco picture/audio");
+							object = findMultimedia(columns);
+							System.out.println("trovato picture/audio");
 						}
 					}
 				} catch (IOException e) {
@@ -139,9 +139,10 @@ public class UtilityObjectRetriever extends Object {
 		Song song = new Song();
 		song.setId(Integer.parseInt(colonne[0]));
 		song.setTitle(colonne[1]);
-		song.setFileMp3(byteArrayExtractor(filesMp3Directory+colonne[2]));
-		song.setLyrics(colonne[3]);
 		currentSong = song;
+		song.setFileMp3((Audio)  UtilityObjectRetriever.findObjectById(colonne[2], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"audios.txt")));
+		song.setLyrics(colonne[3]);
+
 		if(currentAlbum == null) {
 			song.setAlbum((Album) UtilityObjectRetriever.findObjectById(colonne[4], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "albums.txt")));
 		}else{
@@ -171,23 +172,34 @@ public class UtilityObjectRetriever extends Object {
 		currentAlbum = null;
 		return album;
 	}
-	private static Multimedia findMultimedia(String[] colonne){
-		Multimedia multimedia;
+	private static Multimedia findMultimedia(String[] column){
+		Multimedia multimedia = null;
 
-		if(currentArtist != null){
+		if(currentArtist == null && currentAlbum == null){
+			multimedia = new Audio();
+			multimedia.setId(Integer.parseInt(column[0]));
+			multimedia.setData(byteArrayExtractor(filesMp3Directory+column[1]));
+			multimedia.setOwnership(currentSong);
+		}
+		if(currentArtist != null && currentAlbum == null){
 			multimedia = new Picture();
+			multimedia.setId(Integer.valueOf(column[0]));
+			multimedia.setData(byteArrayExtractor(imagesDirectory+column[1]));
 			multimedia.setOwnership(currentArtist);
-		}else if(currentAlbum != null){
+		}
+		if(currentArtist == null && currentAlbum != null){
 			multimedia = new Picture();
+			multimedia.setId(Integer.valueOf(column[0]));
+			multimedia.setData(byteArrayExtractor(imagesDirectory+column[1]));
 			multimedia.setOwnership(currentAlbum);
 		}
 
-		multimedia.setId(Integer.valueOf(colonne[0]));
+
 
 
 		return multimedia;
 	}
-	private static byte[] byteArrayExtractor(String source){
+	public static byte[] byteArrayExtractor(String source){
 		byte[] bytes;
 		try {
 			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
