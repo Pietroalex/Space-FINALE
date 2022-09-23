@@ -14,13 +14,13 @@ public interface SPACEMusicUnifyService {
 
 	void delete(User utente) throws BusinessException;
 	
-    List<Artist> getAllArtists();
+    List<Artist> getAllArtists() throws BusinessException;
     
-    List<Album> getAllAlbums();
+    List<Album> getAllAlbums() throws BusinessException;
 
 	void setAllDefaults();
 
-	List<Song> getAllSongs();
+	List<Song> getAllSongs() throws BusinessException;
 
 	void addNewPlaylist(Playlist playlist) throws BusinessException;
 

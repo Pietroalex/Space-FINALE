@@ -4,27 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.MediaPlayerSettings;
-import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.business.*;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 import javafx.util.Duration;
 
 public class FileAlbumServiceImpl implements AlbumService {
 	
 	private String albumsFile;
 	private String songsFile;
+	private ArtistService artistService;
 	private ProductionService productionService;
 	
 	public FileAlbumServiceImpl(String albumsFile, String songsFile) {
@@ -32,6 +24,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		this.songsFile = songsFile;
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		productionService = factory.getProductionService();
+		artistService = factory.getArtistService();
 	}
 	
 	@Override
@@ -509,11 +502,53 @@ public class FileAlbumServiceImpl implements AlbumService {
 		}
 		if(!check)throw new BusinessException("canzone inesistente");
 	}
-
+	@Override
+	public List<Album> getAlbumList() throws BusinessException {
+		List<Album> albumList = new ArrayList<>();
+		try {
+			FileData fileData = Utility.readAllRows(albumsFile);
+			System.out.println("cerco album getAll");
+			for (String[] righe : fileData.getRighe()) {
+				albumList.add((Album) UtilityObjectRetriever.findObjectById(righe[0], albumsFile));
+				System.out.println("aggiungo album getall");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BusinessException();
+		}
+		return albumList;
+	}
+	@Override
+	public List<Song> getSongList() throws BusinessException{List<Song> songList = new ArrayList<>();
+		try {
+			FileData fileData = Utility.readAllRows(songsFile);
+			System.out.println("cerco canzone");
+			for(String[] righe : fileData.getRighe()) {
+				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
+				System.out.println("aggiungo canzone");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BusinessException();
+		}
+		return songList;
+	}
 	@Override
 	public List<Artist> findAllArtists(Album album) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Artist> artists = artistService.getArtistaList();
+		List<Artist> artistsFinal = new ArrayList<>();
+		List<Production> productions = productionService.getAllProductions();
+		for (Production production : productions){
+			if (production.getAlbum().getId().intValue() == album.getId().intValue()){
+				for (Artist artist : artists){
+					if (artist.getId().intValue() == production.getArtist().getId().intValue()){
+						artistsFinal.add(artist);
+					}
+				}
+			}
+		}
+		return artistsFinal;
 	}
+
 
 }

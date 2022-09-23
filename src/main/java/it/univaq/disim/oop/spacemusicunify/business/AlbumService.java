@@ -23,7 +23,11 @@ public interface AlbumService {
 	void modify(Integer id, String title, String duration, Genre genre, byte[] mp3, String lyrics, Album album) throws BusinessException;
 
 	void delete(Song song) throws BusinessException;
-	
+
+    List<Album> getAlbumList() throws BusinessException;
+
+	List<Song> getSongList() throws BusinessException;
+
 	List<Artist> findAllArtists(Album album) throws BusinessException;
 	
 }

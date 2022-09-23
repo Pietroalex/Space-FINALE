@@ -1,29 +1,9 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
-public class Picture {
-	
-	private Integer id;
-    private byte[] photo;
+public class Picture extends Multimedia{
+
     private int height;
     private int width;
-    private String fileFormat;
-    private Object ownership;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
 
     public int getHeight() {
         return height;
@@ -41,19 +21,5 @@ public class Picture {
         this.width = width;
     }
 
-	public Object getOwnership() {
-		return ownership;
-	}
 
-	public void setOwnership(Object ownership) {
-		this.ownership = ownership;
-	}
-
-    public String getFormat() {
-        return fileFormat;
-    }
-
-    public void setFormat(String fileFormat) {
-        this.fileFormat = fileFormat;
-    }
 }

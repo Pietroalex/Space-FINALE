@@ -15,7 +15,9 @@ public interface ArtistService {
 	void modify(Integer id, String name, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images) throws BusinessException;
 
 	public void delete(Artist artist) throws BusinessException;
-	
-	List<Album> findAllAlbums(Artist artist) throws BusinessException;
+
+    List<Artist> getArtistaList() throws BusinessException;
+
+    List<Album> findAllAlbums(Artist artist) throws BusinessException;
 	
 }

@@ -16,12 +16,7 @@ import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class FileArtistServiceImpl implements ArtistService {
 	
@@ -293,47 +288,38 @@ public class FileArtistServiceImpl implements ArtistService {
 		}
 	}
 	
-	public void add(Picture picture) throws BusinessException {
-		try {
-			FileData fileData = Utility.readAllRows(picturesFile);
-/*			for (String[] colonne : fileData.getRighe()) {
-				if (colonne[0].equals(picture.getId().toString())) {
-					throw new AlreadyExistingException("Already existing picture");
-				}
-			}*/
-			try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
-				long contatore = fileData.getContatore();
-				writer.println((contatore));
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-				}
-				StringBuilder row = new StringBuilder();
-				row.append(contatore);
-				picture.setId((int) contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
-				File file = new File(String.valueOf(new ByteArrayInputStream(picture.getPhoto())));
-				row.append(saveANDstore(file.getAbsolutePath(), "cover"));
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(picture.getHeight());
-				row.append(Utility.SEPARATORE_COLONNA);
-				row.append(picture.getWidth());
-				writer.println(row.toString());
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BusinessException(e);
-		}
-	}
-	
-	public void delete(Picture picture) throws BusinessException {
-		
-	}
 
 	@Override
+	public List<Artist> getArtistaList() throws BusinessException {
+		List<Artist> artistList = new ArrayList<>();
+		try {
+			FileData fileData = Utility.readAllRows(artistsFile);
+			System.out.println("cerco artista getAll");
+			for (String[] colonne : fileData.getRighe()) {
+				artistList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
+				System.out.println("aggiungo artista getall");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return artistList;
+	}
+	@Override
 	public List<Album> findAllAlbums(Artist artist) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Album> albums = albumService.getAlbumList();
+		List<Album> albumsFinal = new ArrayList<>();
+		List<Production> productions = productionService.getAllProductions();
+		for (Production production : productions){
+			if (production.getArtist().getId().intValue() == artist.getId().intValue()){
+				for (Album album : albums){
+					if (album.getId().intValue() == production.getAlbum().getId().intValue()){
+						albumsFinal.add(album);
+					}
+				}
+			}
+		}
+		return albumsFinal;
 	}
 
 }

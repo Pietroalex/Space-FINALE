@@ -41,139 +41,7 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		this.mp3Directory = cartellaFilesMP3;
 	}
 
-	public String saveANDstore(String source, String type) throws UnsupportedFileExtensionException {
-		String existCover = picturesDirectory + "cover";
-		String existMp3 = mp3Directory + "audio";
-		String existArtistph = picturesDirectory + type;
 
-		String path = source;
-		System.out.println(path);
-		String str = path.substring(path.length()-4);
-		String newfile;
-		String product;
-		switch (str){
-
-			case ".png":
-
-				if(!(type.equals("cover"))) {
-					String newfilePng = null;
-					int numberPng = 1;
-					boolean fileNotExistPng = false;
-					while (!fileNotExistPng) {
-
-						newfilePng = existArtistph + numberPng + ".png";
-						System.out.println("iterazione " + newfilePng);
-						if (Files.exists(Paths.get(newfilePng))) {
-							System.out.println("file exist with " + numberPng);
-							numberPng++;
-						} else {
-							System.out.println("file not exist with " + numberPng);
-							fileNotExistPng = true;
-						}
-					}
-					System.out.println("last " + numberPng);
-					newfile = newfilePng;
-					product = type + numberPng + ".png";
-				}else {
-					String newfilePng = null;
-					int numberPng = 1;
-					boolean fileNotExistPng = false;
-					while (!fileNotExistPng) {
-
-						newfilePng = existCover + numberPng + ".png";
-						System.out.println("iterazione " + newfilePng);
-						if (Files.exists(Paths.get(newfilePng))) {
-							System.out.println("file exist with " + numberPng);
-							numberPng++;
-						} else {
-							System.out.println("file not exist with " + numberPng);
-							fileNotExistPng = true;
-						}
-					}
-					System.out.println("last " + numberPng);
-					newfile = newfilePng;
-					product = "cover" + numberPng + ".png";
-				}
-				break;
-
-
-			case ".jpg":
-
-				if(!(type.equals("cover"))) {
-					String newfileJpg = null;
-					int numberJpg = 1;
-					boolean fileNotExistJpg = false;
-					while (!fileNotExistJpg) {
-
-						newfileJpg = existArtistph + numberJpg + ".jpg";
-						System.out.println("iterazione " + newfileJpg);
-						if (Files.exists(Paths.get(newfileJpg))) {
-							System.out.println("file exist with " + numberJpg);
-							numberJpg++;
-						} else {
-							System.out.println("file not exist with " + numberJpg);
-							fileNotExistJpg = true;
-						}
-					}
-					System.out.println("last " + numberJpg);
-					newfile = newfileJpg;
-					product = type+numberJpg+".jpg";
-				}else {
-					String newfileJpg = null;
-					int numberJpg = 1;
-					boolean fileNotExistJpg = false;
-					while (!fileNotExistJpg) {
-
-						newfileJpg = existCover + numberJpg + ".jpg";
-						System.out.println("iterazione " + newfileJpg);
-						if (Files.exists(Paths.get(newfileJpg))) {
-							System.out.println("file exist with " + numberJpg);
-							numberJpg++;
-						} else {
-							System.out.println("file not exist with " + numberJpg);
-							fileNotExistJpg = true;
-						}
-					}
-					System.out.println("last " + numberJpg);
-					newfile = newfileJpg;
-					product = "cover" + numberJpg + ".jpg";
-				}
-				break;
-
-			case ".mp3":
-
-				String newfileMp3 = null;
-				int numberMp3 = 1;
-				boolean fileNotExistMp3 = false;
-				while (!fileNotExistMp3) {
-
-					newfileMp3 = existMp3 + numberMp3 + ".mp3";
-					System.out.println("iterazione " + newfileMp3);
-					if (Files.exists(Paths.get(newfileMp3))) {
-						System.out.println("file exist with " + numberMp3);
-						numberMp3++;
-					} else {
-						System.out.println("file not exist with " + numberMp3);
-						fileNotExistMp3 = true;
-					}
-				}
-				System.out.println("last " + numberMp3);
-				newfile = newfileMp3;
-				product = "audio"+numberMp3+".mp3";
-				break;
-
-			default:
-				throw new UnsupportedFileExtensionException();
-		}
-		try {
-			Files.copy(Paths.get(path),
-				(new File(newfile)).toPath(),
-				StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return product;
-	}
 
 	@Override
 	public void add(User utente) throws  BusinessException {
@@ -347,51 +215,28 @@ public class FileSPACEMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		
 	}
 	@Override
-	public List<Artist> getAllArtists() {
-		List<Artist> artistaList = new ArrayList<>();
+	public List<Artist> getAllArtists() throws BusinessException {
 		try {
-			FileData fileData = Utility.readAllRows(artistsFile);
-			System.out.println("cerco artista getAll");
-			for (String[] colonne : fileData.getRighe()) {
-				artistaList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
-				System.out.println("aggiungo artista getall");
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
+			return SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistaList();
+		} catch (BusinessException e) {
+			throw new BusinessException();
 		}
-
-		return artistaList;
 	}
 	@Override
-	public List<Album> getAllAlbums() {
-		List<Album> albumList = new ArrayList<>();
+	public List<Album> getAllAlbums() throws BusinessException {
 		try {
-			FileData fileData = Utility.readAllRows(albumsFile);
-			System.out.println("cerco album getAll");
-			for(String[] righe : fileData.getRighe()) {
-				albumList.add((Album) UtilityObjectRetriever.findObjectById(righe[0], albumsFile));
-				System.out.println("aggiungo album getall");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getAlbumList();
+		} catch (BusinessException e) {
+			throw new BusinessException();
 		}
-		return albumList;
 	}
 	@Override
-	public List<Song> getAllSongs() {
-		List<Song> songList = new ArrayList<>();
+	public List<Song> getAllSongs() throws BusinessException{
 		try {
-			FileData fileData = Utility.readAllRows(songsFile);
-			System.out.println("cerco canzone");
-			for(String[] righe : fileData.getRighe()) {
-				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
-				System.out.println("aggiungo canzone");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getSongList();
+		} catch (BusinessException e) {
+			throw new BusinessException();
 		}
-		return songList;
 	}
 
 
