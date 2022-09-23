@@ -32,6 +32,7 @@ import javafx.stage.FileChooser;
 
 public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
 	private final SPACEMusicUnifyService spaceMusicUnifyService;
+	private final AlbumService albumService;
 	private final ViewDispatcher dispatcher;
 	@FXML
 	private AnchorPane masterPane;
@@ -111,10 +112,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
-
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
-
+		albumService = factory.getAlbumService();
 	}
 	private void setView2(ObservableList<Song> songData) {
 		switch (dispatcher.getSituation()){
@@ -176,7 +176,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					deletesong.setOnAction((ActionEvent event) -> {
 						try{
 							if (param.getValue().getId() != null ) {
-								spaceMusicUnifyService.delete(param.getValue());
+								albumService.delete(param.getValue());
 							}else{
 								System.out.println("Song not found");
 							}
@@ -247,6 +247,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				confirm.setText("Create");
 
 				break;
+			
+			default:
+				break;
 		}
 	}
 	@Override
@@ -283,10 +286,10 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				album.setGenre(genreField.getValue());
 				album.setRelease(releaseField.getValue());
 
-				spaceMusicUnifyService.add(album);
+				albumService.add(album);
 
 			} else {
-				spaceMusicUnifyService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
+				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
 			}
 			/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
 
@@ -422,7 +425,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void deleteThisAlbum(ActionEvent event) {
 		try{
 			if (album.getId() != null) {
-				spaceMusicUnifyService.delete(album);
+				albumService.delete(album);
 			}else{
 				System.out.println("Album not found");
 			}

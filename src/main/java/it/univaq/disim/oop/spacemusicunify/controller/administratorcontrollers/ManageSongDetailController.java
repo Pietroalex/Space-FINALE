@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
 
-
+	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
     private final SPACEMusicUnifyService spaceMusicUnifyService;
     @FXML
@@ -77,9 +77,9 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
     public ManageSongDetailController(){
         dispatcher = ViewDispatcher.getInstance();
-
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
+        albumService = factory.getAlbumService();
     }
     public void setView2(){
         switch (dispatcher.getSituation()){
@@ -140,6 +140,9 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 confirm.setText("Create");
 
                 break;
+                
+            default:
+            	break;
         }
     }
     @Override
@@ -184,7 +187,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
                 song.setLyrics(lyricsField.getText());
 
-                spaceMusicUnifyService.add(song);
+                albumService.add(song);
             } else {
                 System.out.println("eseguo modify");
              //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
@@ -248,7 +251,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     public void deleteThisSong(ActionEvent event) {
         try{
             if (song.getId() != null) {
-                spaceMusicUnifyService.delete(song);
+            	albumService.delete(song);
             }else{
                 System.out.println("Song not found");
             }

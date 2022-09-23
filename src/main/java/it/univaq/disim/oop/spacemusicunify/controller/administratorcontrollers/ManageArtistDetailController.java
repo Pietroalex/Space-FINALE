@@ -29,6 +29,7 @@ import java.util.Set;
 public class ManageArtistDetailController implements Initializable, DataInitializable<Artist>{
 
     private final ViewDispatcher dispatcher;
+    private final ArtistService artistService;
     private Artist artist;
 
 
@@ -88,7 +89,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         spaceMusicUnifyService = factory.getSPACEMusicUnifyService();
-
+        artistService = factory.getArtistService();
     }
 
     @Override
@@ -156,6 +157,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 confirm.setText("Create");
 
                 break;
+                
+            default:
+            	break;
         }
     }
     @Override
@@ -233,9 +237,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
                 /*artist.setNationality(nationalityField.getValue());*/
 
-                spaceMusicUnifyService.add(artist);
+                artistService.add(artist);
             } else {
-                spaceMusicUnifyService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures());
+            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures());
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
@@ -334,7 +338,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     public void deleteThisArtist(){
         try{
             if (artist.getId() != null) {
-                spaceMusicUnifyService.delete(artist);
+            	artistService.delete(artist);
             }else{
                 System.out.println("Artist not found");
             }
