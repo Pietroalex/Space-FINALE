@@ -17,18 +17,15 @@ public class FileAlbumServiceImpl implements AlbumService {
 	
 	private String albumsFile;
 	private String songsFile;
-	private ArtistService artistService;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
 	private Set<Artist> chosenArtists = new HashSet<>();
 	
-	public FileAlbumServiceImpl(String albumsFile, String songsFile) {
+	public FileAlbumServiceImpl(String albumsFile, String songsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.albumsFile = albumsFile;
 		this.songsFile = songsFile;
-		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		productionService = factory.getProductionService();
-		artistService = factory.getArtistService();
-		multimediaService = factory.getMultimediaService();
+		this.productionService = productionService;
+		this.multimediaService = multimediaService;
 	}
 	
 	@Override
@@ -552,6 +549,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	}
 	@Override
 	public List<Artist> findAllArtists(Album album) throws BusinessException {
+		ArtistService artistService = SpacemusicunifyBusinessFactory.getInstance().getArtistService();
 		List<Artist> artists = artistService.getArtistaList();
 		List<Artist> artistsFinal = new ArrayList<>();
 		List<Production> productions = productionService.getAllProductions();

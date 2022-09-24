@@ -15,17 +15,14 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 public class FileArtistServiceImpl implements ArtistService {
 	
 	private String artistsFile;
-	private AlbumService albumService;
 	private ProductionService productionService;
 	private MultimediaService multimediaService;
 	private Set<Artist> bandMembers = new HashSet<>();
 	
-	public FileArtistServiceImpl(String artistsFile) {
+	public FileArtistServiceImpl(String artistsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.artistsFile = artistsFile;
-		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		albumService = factory.getAlbumService();
-		productionService = factory.getProductionService();
-		multimediaService = factory.getMultimediaService();
+		this.productionService = productionService;
+		this.multimediaService = multimediaService;
 	}
 	
 	@Override
@@ -94,6 +91,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			}
 
 			//scrivo file album
+			AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 			albumService.add(album);
 			//creo la produzione
 			Production production = new Production();
@@ -263,6 +261,7 @@ public class FileArtistServiceImpl implements ArtistService {
 	}
 	@Override
 	public List<Album> findAllAlbums(Artist artist) throws BusinessException {
+		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 		List<Album> albums = albumService.getAlbumList();
 		List<Album> albumsFinal = new ArrayList<>();
 		List<Production> productions = productionService.getAllProductions();

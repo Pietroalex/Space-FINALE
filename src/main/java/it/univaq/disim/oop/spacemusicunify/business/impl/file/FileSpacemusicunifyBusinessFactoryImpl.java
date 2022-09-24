@@ -6,7 +6,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 
 public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusinessFactory{
 
-	private final UserService UserService;
+	private final UserService userService;
 	private final ArtistService artistService;
 	private final AlbumService albumService;
 	private final MultimediaService multimediaService;
@@ -25,17 +25,17 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 	private static final String FILES_MP3_DIRECTORY = REPOSITORY_BASE + File.separator + "audios" + File.separator;
 	
 	public FileSpacemusicunifyBusinessFactoryImpl() {
-		UserService = new FileUserServiceImpl(USERS_FILE_NAME,ALBUMS_FILE_NAME,ARTISTS_FILE_NAME,SONGS_FILE_NAME, PLAYLISTS_FILE_NAME,PICTURES_DIRECTORY,FILES_MP3_DIRECTORY,PICTURES_FILE_NAME);
-		artistService = new FileArtistServiceImpl(ARTISTS_FILE_NAME);
-		albumService = new FileAlbumServiceImpl(ALBUMS_FILE_NAME, SONGS_FILE_NAME);
+		userService = new FileUserServiceImpl(USERS_FILE_NAME,ALBUMS_FILE_NAME,ARTISTS_FILE_NAME,SONGS_FILE_NAME, PLAYLISTS_FILE_NAME,PICTURES_DIRECTORY,FILES_MP3_DIRECTORY,PICTURES_FILE_NAME);
 		productionService = new FileProductionServiceImpl(PRODUCTIONS_FILE_NAME);
 		multimediaService = new FileMultimediaServiceImpl(PICTURES_FILE_NAME, AUDIOS_FILE_NAME, PICTURES_DIRECTORY, FILES_MP3_DIRECTORY);
+		artistService = new FileArtistServiceImpl(ARTISTS_FILE_NAME, productionService, multimediaService);
+		albumService = new FileAlbumServiceImpl(ALBUMS_FILE_NAME, SONGS_FILE_NAME, productionService, multimediaService);
 		UtilityObjectRetriever.setDirectory(PICTURES_DIRECTORY, FILES_MP3_DIRECTORY);
 	}
 
 	@Override
 	public UserService getUserService() {
-		return UserService;
+		return userService;
 	}
 
 	@Override

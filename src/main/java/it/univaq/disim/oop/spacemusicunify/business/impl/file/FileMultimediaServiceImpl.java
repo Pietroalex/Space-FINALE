@@ -11,15 +11,12 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileMultimediaServiceImpl implements MultimediaService {
-    private MultimediaService multimediaService;
     private String picturesFile;
     private String audiosFile;
     private String picturesDirectory;
     private String mp3Directory;
 
     public FileMultimediaServiceImpl(String picturesFile, String audiosFile, String picturesDirectory, String mp3Directory){
-        SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        multimediaService = factory.getMultimediaService();
         this.picturesFile = picturesFile;
         this.audiosFile = audiosFile;
         this.picturesDirectory = picturesDirectory;
