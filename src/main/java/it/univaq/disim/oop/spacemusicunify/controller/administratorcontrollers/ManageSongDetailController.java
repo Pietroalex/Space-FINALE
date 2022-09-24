@@ -26,7 +26,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
 	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
-    private final UserService userService;
+
     @FXML
     private AnchorPane masterPane;
     @FXML
@@ -76,7 +76,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     public ManageSongDetailController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        userService = factory.getUserService();
         albumService = factory.getAlbumService();
     }
     public void setView2(){

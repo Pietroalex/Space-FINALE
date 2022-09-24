@@ -86,7 +86,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        userService = factory.getUserService();
+
         artistService = factory.getArtistService();
     }
 

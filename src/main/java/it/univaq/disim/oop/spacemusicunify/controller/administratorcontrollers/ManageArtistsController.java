@@ -23,7 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ManageArtistsController implements Initializable, DataInitializable<Administrator> {
-	private final UserService userService;
+	private final ArtistService artistService;
 	@FXML
 	private TableView<Artist> artistList;
 	@FXML
@@ -49,7 +49,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 	public ManageArtistsController(){
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		userService = factory.getUserService();
+		artistService = factory.getArtistService();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 	public void initializeData(Administrator amministratore) {
 		List<Artist> artisti = null;
 		try {
-			artisti = userService.getAllArtists();
+			artisti = artistService.getArtistaList();
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
 		}

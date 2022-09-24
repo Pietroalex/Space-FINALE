@@ -5,20 +5,30 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 
 public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusinessFactory {
 
+	private SPACEMusicUnifyService spaceMusicUnifyService;
 	private UserService userService;
 	private AlbumService albumService;
 	private ArtistService artistService;
+	private MultimediaService multimediaService;
 	private ProductionService productionService;
 
 	public RAMSpacemusicunifyBusinessFactoryImpl() {
+		spaceMusicUnifyService = new RAMSpaceMusicUnifyImpl();
 		userService = new RAMUserServiceImpl();
 		albumService = new RAMAlbumServiceImpl();
 		artistService = new RAMArtistServiceImpl();
+		multimediaService = new RAMMultimediaServiceImpl();
 		productionService = new RAMProductionServiceImpl();
 	}
+
+	@Override
+	public SPACEMusicUnifyService getSPACEMusicUnifyService() {
+		return spaceMusicUnifyService;
+	}
+
 	@Override
 	public UserService getUserService() {
-		return null;
+		return userService;
 	}
 
 	@Override
@@ -32,7 +42,7 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 
 	@Override
 	public MultimediaService getMultimediaService() {
-		return null;
+		return multimediaService;
 	}
 	@Override
 	public ProductionService getProductionService() {

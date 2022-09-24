@@ -29,7 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
-	private final UserService userService;
+	/*private final UserService userService;*/
 	private final AlbumService albumService;
 	private final ViewDispatcher dispatcher;
 	@FXML
@@ -111,7 +111,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		userService = factory.getUserService();
+		/*userService = factory.getUserService();*/
 		albumService = factory.getAlbumService();
 	}
 	private void setView2(ObservableList<Song> songData) {

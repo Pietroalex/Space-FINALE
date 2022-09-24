@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify;
 
+import it.univaq.disim.oop.spacemusicunify.business.SPACEMusicUnifyService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.application.Application;
@@ -9,9 +10,8 @@ public class SpaceMusicUniFyApplication extends Application {
 
 	public static void main(String[] args) {
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		/*UserService UserService = factory.getUserService();
-		UserService.setAllDefaults();*/
-		
+		SPACEMusicUnifyService SPACEMusicUnifyService = factory.getSPACEMusicUnifyService();
+		SPACEMusicUnifyService.setAllDefaults();
 		launch(args);
 	}
 

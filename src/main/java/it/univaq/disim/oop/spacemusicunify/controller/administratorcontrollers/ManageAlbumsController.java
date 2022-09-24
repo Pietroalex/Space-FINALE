@@ -35,7 +35,7 @@ import java.util.*;
 public class ManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
 	
     private final ViewDispatcher dispatcher;
-    private final UserService userService;
+    private final ArtistService artistService;
     private Artist artist;
 
 
@@ -65,7 +65,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     public ManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        userService = factory.getUserService();
+        artistService = factory.getArtistService();
     }
 
 
