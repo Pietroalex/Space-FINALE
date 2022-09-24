@@ -11,6 +11,7 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	private ArtistService artistService;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
+	private PlayerService playerService;
 
 	public RAMSpacemusicunifyBusinessFactoryImpl() {
 		spaceMusicUnifyService = new RAMSpaceMusicUnifyImpl();
@@ -19,6 +20,7 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 		multimediaService = new RAMMultimediaServiceImpl();
 		artistService = new RAMArtistServiceImpl(multimediaService, productionService);
 		albumService = new RAMAlbumServiceImpl(multimediaService, productionService);
+		playerService = new RAMPlayerServiceImpl();
 	}
 
 	@Override
@@ -47,6 +49,10 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	@Override
 	public ProductionService getProductionService() {
 		return productionService;
+	}
+	@Override
+	public PlayerService getPlayerService() {
+		return playerService;
 	}
 	
 }

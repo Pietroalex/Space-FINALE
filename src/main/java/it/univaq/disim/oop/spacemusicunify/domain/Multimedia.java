@@ -1,5 +1,10 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Multimedia {
     private Integer id;
     private byte[] data;
@@ -17,8 +22,19 @@ public class Multimedia {
         return data;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setData(String source) {
+        byte[] bytes;
+        try {
+            ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+
+            outStreamObj.writeBytes(Files.readAllBytes(Paths.get(source)));
+            bytes = outStreamObj.toByteArray();
+
+            outStreamObj.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.data = bytes;
     }
     public Object getOwnership() {
         return ownership;

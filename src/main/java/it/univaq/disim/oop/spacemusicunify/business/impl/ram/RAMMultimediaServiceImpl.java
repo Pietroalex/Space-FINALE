@@ -43,7 +43,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                 StringBuilder row = new StringBuilder();
                 row.append(contatore);
                 row.append(Utility.SEPARATORE_COLONNA);
-                row.append(saveANDstore(audio.getData(), "audio"));
+                row.append(saveANDstore(audio.getData(), "audios.txt"));
                 row.append(Utility.SEPARATORE_COLONNA);
                 row.append(((Song) audio.getOwnership()).getId() );
 
@@ -110,7 +110,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
 
     public String saveANDstore(byte[] bytes, String type) throws UnsupportedFileExtensionException {
         String existImage = picturesDirectory + "image";
-        String existMp3 = mp3Directory + "audio";
+        String existMp3 = mp3Directory + "audios.txt";
 
 
 
@@ -142,7 +142,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
 
                 break;
 
-            case "audio":
+            case "audios.txt":
 
                 String newfileMp3 = null;
                 int numberMp3 = 1;
@@ -161,7 +161,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                 }
                 System.out.println("last " + numberMp3);
                 newfile = newfileMp3;
-                product = "audio"+numberMp3+".mp3";
+                product = "audios.txt"+numberMp3+".mp3";
                 break;
         }
 /*        try {

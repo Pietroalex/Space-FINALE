@@ -110,7 +110,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 stageName.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
                 biography.setText(artist.getBiography());
-                /*nationality.setText(String.valueOf(artist.getNationality()));*/
+                nationality.setText(String.valueOf(artist.getNationality()));
                 biography.setEditable(false);
                 break;
 
@@ -127,7 +127,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
-                /*nationalityField.setValue(artist.getNationality());*/
+                nationalityField.setValue(artist.getNationality());
 
 
                 title.setText("Modify Artist");
@@ -148,8 +148,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
-                /*nationalityField.setValue(artist.getNationality());*/
-                biography.setEditable(false);
+                nationalityField.setValue(artist.getNationality());
+
 
                 title.setText("New Artist");
                 confirm.setText("Create");
@@ -286,16 +286,12 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             if(path.endsWith(".png") || path.endsWith(".jpg")){
                 existingLabel.setVisible(false);
                 Set<Picture> tempimg = this.artist.getPictures();
-                try {
+
                     Picture picture = new Picture();
-                    ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-                    outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
-                    picture.setData(outStreamObj.toByteArray());
+
+                    picture.setData(path);
                     tempimg.add(picture);
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
                 modifyImages.getChildren().clear();
                 this.artist.setPictures(tempimg);
                 this.loadModifyImages();

@@ -23,13 +23,13 @@ public class LayoutController implements DataInitializable<User> {
 	private MenuButton menu;
 
 	private User user;
-	private MediaPlayerSettings mediaPlayerSettings;
+	private PlayerService playerService;
 
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		userService = factory.getUserService();
-		mediaPlayerSettings = MediaPlayerSettings.getInstance();
+		/*playerService = PlayerService.getInstance();*/
 	}
 	@Override
 	public void initializeData(User utente) {
@@ -41,7 +41,7 @@ public class LayoutController implements DataInitializable<User> {
 		}
 
 		this.user = utente;
-		mediaPlayerSettings.setPlayerState(PlayerState.started);
+		playerService.setPlayerState(PlayerState.started);
 		dispatcher.renderView("UserViews/HomeView/playerPane", utente);
 		dispatcher.renderView("UserViews/HomeView/playlistPane", utente);
 
@@ -50,16 +50,16 @@ public class LayoutController implements DataInitializable<User> {
 	@FXML
 	public void logout(MouseEvent event) {
 		dispatcher.logout();
-		if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-			mediaPlayerSettings.getMediaPlayer().stop();
-			mediaPlayerSettings.getMediaPlayer().dispose();
-			mediaPlayerSettings.setPlayerOnPlay(false);
+		if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+			playerService.getMediaPlayer().stop();
+			playerService.getMediaPlayer().dispose();
+			playerService.setPlayerOnPlay(false);
 		}
 	}
 	@FXML
 	public void searchAction(ActionEvent event) {
 		userService.setRicerca(searchField.getText());
-		dispatcher.renderView("UserViews/RicercaView/ricercaView", user);
+		dispatcher.renderView("UserViews/SearchView/searchView", user);
 	}
 
 

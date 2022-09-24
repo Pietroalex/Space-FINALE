@@ -59,7 +59,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     private MediaPlayer mediaPlayer;
     private User user;
-    private MediaPlayerSettings mediaPlayerSettings;
+    private PlayerService playerService;
     private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
 
 
@@ -67,7 +67,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         userService = factory.getUserService();
-        mediaPlayerSettings = MediaPlayerSettings.getInstance();
+        /*playerService = PlayerService.getInstance();*/
     }
 
     @Override
@@ -84,8 +84,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void initializeData(User utente) {
         this.user = utente;
 
-        if(mediaPlayerSettings.getPlayerOnPlay() == null) {
-        	mediaPlayerSettings.setPlayerOnPlay(false);
+        if(playerService.getPlayerOnPlay() == null) {
+            playerService.setPlayerOnPlay(false);
         }
         addToPlaylistButton.setDisable(true);
 
@@ -96,10 +96,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         nextButton.setDisable(true);
         previousButton.setDisable(true);
 
-        if(mediaPlayerSettings.getMediaPlayer() == null) {
-        	mediaPlayerSettings.setPlayerVolume(volumeSlider.getValue());
+        if(playerService.getMediaPlayer() == null) {
+            playerService.setPlayerVolume(volumeSlider.getValue());
         } else {
-        	volumeSlider.setValue(mediaPlayerSettings.getPlayerVolume());
+        	volumeSlider.setValue(playerService.getPlayerVolume());
         }
         
         currentTime.setText("00:00");
@@ -107,7 +107,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
 
 
-            switch (mediaPlayerSettings.getPlayerState()){
+            switch (playerService.getPlayerState()){
                 case searchDoubleClick:
                     System.out.println("cambio effettuato");
                     this.loadSong();
@@ -125,10 +125,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
                 case queueControllerLoad:
                     System.out.println("canzone corrente cancellata");
-                    mediaPlayerSettings.setLastDuration(Duration.ZERO);
-                    System.out.println(mediaPlayerSettings.getLastDuration());
+                    playerService.setLastDuration(Duration.ZERO);
+                    System.out.println(playerService.getLastDuration());
                     this.loadSong();
-                    System.out.println(mediaPlayerSettings.getLastDuration());
+                    System.out.println(playerService.getLastDuration());
                     break;
 
                 case queueControllerResume:
@@ -197,7 +197,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (mediaPlayer != null) {
                     mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
-                    mediaPlayerSettings.setPlayerVolume(volumeSlider.getValue());
+                    playerService.setPlayerVolume(volumeSlider.getValue());
 
                 }
             }
@@ -254,8 +254,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
                 progressSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
 
-                if(mediaPlayerSettings.getLastDuration() != null) {
-                    Duration duration = mediaPlayerSettings.getLastDuration();
+                if(playerService.getLastDuration() != null) {
+                    Duration duration = playerService.getLastDuration();
                     int minTime = (int) duration.toMinutes();
                     int secTime = (int) duration.toSeconds();
                     currentTime.setText(String.valueOf(minTime % 60)+":"+String.valueOf(secTime % 60));
@@ -268,7 +268,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             }
         });
         
-        if(mediaPlayerSettings.getPlayerOnPlay()) {
+        if(playerService.getPlayerOnPlay()) {
             mediaPlayer.play();
         }
 
@@ -287,10 +287,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
             totalTime.setText(song.getLength());
 
-            mediaPlayerSettings.setLastDuration(Duration.ZERO);
+            playerService.setLastDuration(Duration.ZERO);
          //->   mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
             /*Files.newInputStream(Paths.get(user.getcurrentSong().getFileMp3()))*/
-            mediaPlayer = mediaPlayerSettings.getMediaPlayer();
+            mediaPlayer = playerService.getMediaPlayer();
 
             this.mediaPlayerModulesInitializer();
 
@@ -311,7 +311,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             pauseButton.setDisable(false);
             pauseButton.setVisible(false);
             mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
-            mediaPlayerSettings.setMute(false);
+            playerService.setMute(false);
 
            /* if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
                 nextButton.setDisable(false);
@@ -326,8 +326,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
             System.out.println("last song: " + mediaPlayerSettings.getLastSong());
         	System.out.println("current: " + user.getcurrentSong());*/
-            mediaPlayerSettings.setLastSong(song);
-            System.out.println("update last: " + mediaPlayerSettings.getLastSong());
+            playerService.setLastSong(song);
+            System.out.println("update last: " + playerService.getLastSong());
             return true;
         }
 
@@ -345,9 +345,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
-            mediaPlayerSettings.setLastDuration(Duration.ZERO);
+            playerService.setLastDuration(Duration.ZERO);
             /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
-            mediaPlayer = mediaPlayerSettings.getMediaPlayer();
+            mediaPlayer = playerService.getMediaPlayer();
 
 
 
@@ -355,7 +355,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
             totalTime.setText(song.getLength());
 
-            if(mediaPlayerSettings.isMute()) {
+            if(playerService.isMute()) {
                 Image img = null;
                 try {
                     img = new Image(Files.newInputStream(Paths.get(path+"mute.png")));
@@ -395,7 +395,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 previousButton.setDisable(true);
             }*/
 
-            if(mediaPlayerSettings.getPlayerOnPlay()) {
+            if(playerService.getPlayerOnPlay()) {
                 pauseButton.setVisible(true);
                 playButton.setVisible(false);
             }else{
@@ -413,7 +413,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         songAlbum.setText(song.getAlbum().getTitle());
         songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
-        if(mediaPlayerSettings.getPlayerOnPlay()) {
+        if(playerService.getPlayerOnPlay()) {
             pauseButton.setVisible(true);
             playButton.setVisible(false);
         }else{
@@ -422,11 +422,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }
 
         /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
-        mediaPlayer = mediaPlayerSettings.getMediaPlayer();
+        mediaPlayer = playerService.getMediaPlayer();
 
 
         
-	        if(mediaPlayerSettings.isMute()) {
+	        if(playerService.isMute()) {
 	            Image img = null;
 	            try {
 	                img = new Image(Files.newInputStream(Paths.get(path+"mute.png")));
@@ -466,7 +466,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }*/
         playButton.setDisable(false);
         pauseButton.setDisable(false);
-        volumeSlider.setValue(mediaPlayerSettings.getPlayerVolume());
+        volumeSlider.setValue(playerService.getPlayerVolume());
         totalTime.setText(song.getLength());
         
     }
@@ -482,7 +482,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             volumeImg.setImage(img);
             volumeSlider.setDisable(false);
             mediaPlayer.setMute(false);
-            mediaPlayerSettings.setMute(false);
+            playerService.setMute(false);
         }else{
             Image img = null;
             try {
@@ -493,14 +493,14 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             volumeImg.setImage(img);
             volumeSlider.setDisable(true);
             mediaPlayer.setMute(true);
-            mediaPlayerSettings.setMute(true);
+            playerService.setMute(true);
         }
 
     }
 
     public void pauseSong(ActionEvent event) {
 
-    	mediaPlayerSettings.setPlayerOnPlay(false);
+        playerService.setPlayerOnPlay(false);
         mediaPlayer.pause();
         playButton.setVisible(true);
         pauseButton.setVisible(false);
@@ -509,7 +509,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void previousSong(ActionEvent event) {
         /*mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);*/
-    	mediaPlayerSettings.setPlayerOnPlay(true);
+        playerService.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
         mediaPlayer.dispose();
@@ -523,7 +523,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
        /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
-    	mediaPlayerSettings.setPlayerOnPlay(true);
+        playerService.setPlayerOnPlay(true);
 
         mediaPlayer.stop();
         mediaPlayer.dispose();
@@ -534,7 +534,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void playSong(ActionEvent event) {
-    	mediaPlayerSettings.setPlayerOnPlay(true);
+        playerService.setPlayerOnPlay(true);
         mediaPlayer.play();
         playButton.setVisible(false);
         pauseButton.setVisible(true);

@@ -343,16 +343,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 
 
-				try {
+
 				Picture picture = new Picture();
-				ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-				outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path)));
-				picture.setData(outStreamObj.toByteArray());
+
+				picture.setData(path);
 				album.setCover(picture);
 
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
 				ImageView imgview2 = new ImageView(new Image(new ByteArrayInputStream(album.getCover().getData())));
 				imgview2.setFitHeight(150);
 				imgview2.setFitWidth(150);

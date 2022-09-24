@@ -35,17 +35,13 @@ public class FileArtistServiceImpl implements ArtistService {
 					throw new AlreadyExistingException();
 				}
 			}
-			
-			
 
-
-			
 			//creo l'album Inediti
 			Album album = new Album();
 
 			album.setGenre(Genre.singoli);
 			Picture pictureAlbum = new Picture();
-			pictureAlbum.setData(UtilityObjectRetriever.byteArrayExtractor("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png"));
+			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
 			pictureAlbum.setOwnership(album);
 			album.setCover(pictureAlbum);
 			album.setRelease(LocalDate.now());
@@ -91,8 +87,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			}
 
 			//scrivo file album
-			AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
-			albumService.add(album);
+			SpacemusicunifyBusinessFactory.getInstance().getAlbumService().add(album);
 			//creo la produzione
 			Production production = new Production();
 			production.setArtist(artista);

@@ -53,12 +53,12 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 
 	
-	private MediaPlayerSettings mediaPlayerSettings;
+	private PlayerService playerService;
 	
 	public PlaylistController() {
 		dispatcher = ViewDispatcher.getInstance();
 		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
-		mediaPlayerSettings = MediaPlayerSettings.getInstance();
+		/*playerService = PlayerService.getInstance();*/
 	}
 	
 	@Override
@@ -126,11 +126,11 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 			}*/
 		}
 
-		if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-			mediaPlayerSettings.getMediaPlayer().stop();
-			mediaPlayerSettings.getMediaPlayer().dispose();
+		if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+			playerService.getMediaPlayer().stop();
+			playerService.getMediaPlayer().dispose();
 		}
-		mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
+		playerService.setPlayerState(PlayerState.searchSingleClick);
 		dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
 	}
 	

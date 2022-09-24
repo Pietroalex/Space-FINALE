@@ -19,7 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class QueueController implements Initializable, DataInitializable<User> {
 	private final ViewDispatcher dispatcher;
-	private final MediaPlayerSettings mediaPlayerSettings;
+	/*private final PlayerService playerService;*/
 	private final UserService userService;
 	@FXML
 	private TableView<Song> queueTable;
@@ -37,7 +37,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	
 	public QueueController(){
 		dispatcher = ViewDispatcher.getInstance();
-		mediaPlayerSettings = MediaPlayerSettings.getInstance();
+		/*playerService = PlayerService.getInstance();*/
 		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
 	}
 	

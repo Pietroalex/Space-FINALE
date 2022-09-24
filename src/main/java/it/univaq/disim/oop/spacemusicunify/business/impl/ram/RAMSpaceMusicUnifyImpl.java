@@ -42,28 +42,24 @@ public class RAMSpaceMusicUnifyImpl implements SPACEMusicUnifyService {
 		artista1.setNationality(Nationality.italian);*/
 		artista1.setYearsOfActivity(6);
 		Set<Picture> artista1img = new HashSet<>();
-		try {
+
 			Picture picture = new Picture();
-			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"pasqualearrosto.jpg")));
-			picture.setData(outStreamObj.toByteArray());
+
+			picture.setData(path+"pasqualearrosto.jpg");
 			artista1img.add(picture);
 
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setData(outStreamObj.toByteArray());
+
+			picture.setData(path+"group4.jpg");
 			artista1img.add(picture);
 
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setData(outStreamObj.toByteArray());
+
+			picture.setData(path+"group4.jpg");
 			artista1img.add(picture);
 
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"group4.jpg")));
-			picture.setData(outStreamObj.toByteArray());
+
+			picture.setData(path+"group4.jpg");
 			artista1img.add(picture);
 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 
 		artista1.setPictures(artista1img);
 
@@ -320,16 +316,12 @@ public class RAMSpaceMusicUnifyImpl implements SPACEMusicUnifyService {
 		artista2.setNationality(Nationality.british);
 		artista2.setYearsOfActivity(10);*/
 		Set<Picture> artista2img = new HashSet<>();
-		try {
-			Picture picture = new Picture();
-			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(path+"2bassists.png")));
-			picture.setData(outStreamObj.toByteArray());
-			artista2img.add(picture);
 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+			Picture picture2 = new Picture();
+			picture2.setData(path+"2bassists.png");
+			artista2img.add(picture2);
+
+
 
 		/*artista2.setPictures(artista2img);*/
 
@@ -481,11 +473,11 @@ public class RAMSpaceMusicUnifyImpl implements SPACEMusicUnifyService {
 		utente.setPassword("123456");
 
 
-		/*try {
-			this.add(utente);
+		try {
+			SpacemusicunifyBusinessFactory.getInstance().getUserService().add(utente);
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
-		}*/
+		}
 
 //		storedSongs.addAll(canzoni);
 //		storedAlbums.addAll(albums);

@@ -62,9 +62,8 @@ public class FileAlbumServiceImpl implements AlbumService {
 			}
 
 			Audio audio = new Audio();
-			audio.setData(UtilityObjectRetriever.byteArrayExtractor("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3"));
+			audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
 			audio.setOwnership(canzone);
-			multimediaService.add(audio);
 			canzone.setFileMp3(audio);
 
 
@@ -96,7 +95,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				writerAlbum.println(row.toString());
 			}
 			add(canzone);
-
+			multimediaService.add(audio);
 				Set<Artist> artists = getChosenArtists();
 			for(Artist artist : artists){
 				Production production = new Production();
@@ -270,7 +269,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				for (String[] righe : fileData.getRighe()) {
 					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 				}
-				/*String tempMp3 = saveANDstore(canzone.getFileMp3(), "audio");
+				/*String tempMp3 = saveANDstore(canzone.getFileMp3(), "audios.txt");
 				canzone.setFileMp3(cartellaFilesMP3+tempMp3);*/
 
 				StringBuilder row = new StringBuilder();
@@ -297,7 +296,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			for(String[] righe: fileData.getRighe()) {
 				if(righe[0].equals(album.getId().toString())) {
 					check = true;
-					List<String> listaCanzoni = Utility.leggiArray(righe[6]);
+					List<String> listaCanzoni = Utility.leggiArray(righe[4]);
 					listaCanzoni.add(canzone.getId().toString());
 					Set<Song> canzoneList = album.getSongList();
 					canzoneList.add(canzone);
@@ -347,7 +346,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 						row = new String[]{id.toString(), title, righe[2], lyrics, righe[4], length, genre.toString()};
 					}else{
 						/*Files.delete(Paths.get(mp3Directory+righe[2]));*
-						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audio")*, lyrics, righe[4], length, genre.toString()};
+						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audios.txt")*, lyrics, righe[4], length, genre.toString()};
 					}
 				*/
 					Set<Song> list = album.getSongList();

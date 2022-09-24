@@ -86,14 +86,14 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private ViewDispatcher dispatcher;
 	private String ricerca;
 	private User utente;
-	private MediaPlayerSettings mediaPlayerSettings;
+	private PlayerService playerService;
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		userService = factory.getUserService();
 
-		mediaPlayerSettings = MediaPlayerSettings.getInstance();
+		/*playerService = PlayerService.getInstance();*/
 	}
 	
 	@Override
@@ -200,11 +200,11 @@ public class SearchController implements Initializable, DataInitializable<User>{
 					}*/
 				}
 
-				if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-					mediaPlayerSettings.getMediaPlayer().stop();
-					mediaPlayerSettings.getMediaPlayer().dispose();
+				if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+					playerService.getMediaPlayer().stop();
+					playerService.getMediaPlayer().dispose();
 				}
-				mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
+				playerService.setPlayerState(PlayerState.searchSingleClick);
 				dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
 			});
 			return new SimpleObjectProperty<Button>(addButton);
@@ -240,9 +240,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		try {
 			List<Artist> artistList = new ArrayList<>();
 			for(Artist artista: userService.getAllArtists()) {
-				/*if(artista.getStageName().contains(ricerca.strip())) {
+				if(artista.getName().contains(ricerca.strip())) {
 					artistList.add(artista);
-				}*/
+				}
 			}
 			ObservableList<Artist> artistData = FXCollections.observableArrayList(artistList);
 			artist.setItems(artistData);

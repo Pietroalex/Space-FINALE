@@ -1,8 +1,10 @@
 package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
@@ -55,7 +57,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
-		stageName.setCellValueFactory(new PropertyValueFactory<>("stageName"));
+		stageName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		yearsofActivity.setCellValueFactory(new PropertyValueFactory<>("yearsOfActivity"));
 		biography.setCellValueFactory(new PropertyValueFactory<>("biography"));
 		nationality.setCellValueFactory(new PropertyValueFactory<>("nationality"));
@@ -111,14 +113,19 @@ public class ManageArtistsController implements Initializable, DataInitializable
 
 	@FXML
 	public void newArtist(ActionEvent event) {
-		Artist artista = new Artist();
-		artista.setName("test group");
-		artista.setBiography("test bio");
-		/*artista.setNationality(Nationality.british);*/
-		artista.setYearsOfActivity(1);
+		Artist artist = new Artist();
+		artist.setName("test group");
+		artist.setYearsOfActivity(1);
+		artist.setBiography("test bio");
+		Set<Picture> pictures = new HashSet<>();
+		artist.setPictures(pictures);
+		artist.setNationality(Nationality.british);
+		Set<Artist> artists = new HashSet<>();
+		artist.setBandMembers(artists);
+
 
 		dispatcher.setSituation(ViewSituations.newobject);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artista);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artist);
 	}
 
 

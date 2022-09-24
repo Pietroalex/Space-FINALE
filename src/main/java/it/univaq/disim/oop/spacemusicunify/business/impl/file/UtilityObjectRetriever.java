@@ -93,9 +93,9 @@ public class UtilityObjectRetriever extends Object {
 
 					for (String[] columns : fileData.getRighe()) {
 						if(columns[0].equals(id)) {
-							System.out.println("cerco picture/audio");
+							System.out.println("cerco picture/audios");
 							object = findMultimedia(columns);
-							System.out.println("trovato picture/audio");
+							System.out.println("trovato picture/audios");
 						}
 					}
 				} catch (IOException e) {
@@ -122,6 +122,7 @@ public class UtilityObjectRetriever extends Object {
 			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
 		}
 		artist.setPictures(pictures);
+		System.out.println("nazionalità "+colonne[5]);
 		artist.setNationality(Nationality.valueOf(colonne[5]));
 		Set<Artist> bandMembers = new HashSet<>();
 		List<String> bandMembersIds = Utility.leggiArray(colonne[6]);
@@ -178,40 +179,23 @@ public class UtilityObjectRetriever extends Object {
 		if(currentArtist == null && currentAlbum == null){
 			multimedia = new Audio();
 			multimedia.setId(Integer.parseInt(column[0]));
-			multimedia.setData(byteArrayExtractor(filesMp3Directory+column[1]));
+			multimedia.setData(filesMp3Directory+column[1]);
 			multimedia.setOwnership(currentSong);
 		}
 		if(currentArtist != null && currentAlbum == null){
 			multimedia = new Picture();
 			multimedia.setId(Integer.valueOf(column[0]));
-			multimedia.setData(byteArrayExtractor(imagesDirectory+column[1]));
+			multimedia.setData(imagesDirectory+column[1]);
 			multimedia.setOwnership(currentArtist);
 		}
 		if(currentArtist == null && currentAlbum != null){
 			multimedia = new Picture();
 			multimedia.setId(Integer.valueOf(column[0]));
-			multimedia.setData(byteArrayExtractor(imagesDirectory+column[1]));
+			multimedia.setData(imagesDirectory+column[1]);
 			multimedia.setOwnership(currentAlbum);
 		}
-
-
-
-
 		return multimedia;
 	}
-	public static byte[] byteArrayExtractor(String source){
-		byte[] bytes;
-		try {
-			ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
 
-			outStreamObj.writeBytes(Files.readAllBytes(Paths.get(source)));
-			bytes = outStreamObj.toByteArray();
-
-			outStreamObj.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return bytes;
-	}
 }
 

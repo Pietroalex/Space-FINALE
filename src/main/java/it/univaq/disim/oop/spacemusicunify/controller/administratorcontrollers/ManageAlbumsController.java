@@ -133,13 +133,8 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     	newAlbum.setRelease(LocalDate.now());
 	    newAlbum.setArtist(artist);*/
         Picture picture = new Picture();
-        ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-        try {
-            outStreamObj.writeBytes(Files.readAllBytes(Paths.get("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"dati"+ File.separator+"RAMfiles"+ File.separator+"cover.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        picture.setData(outStreamObj.toByteArray());
+
+        picture.setData("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"dati"+ File.separator+"RAMfiles"+ File.separator+"cover.png");
         newAlbum.setCover(picture);
 
         dispatcher.setSituation(ViewSituations.newobject);

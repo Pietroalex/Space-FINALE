@@ -156,7 +156,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 }
                 System.out.println("last " + numberMp3);
                 newfile = newfileMp3;
-                product = "audio"+numberMp3+".mp3";
+                product = type+numberMp3+".mp3";
                 break;
         }
 /*        try {
@@ -169,7 +169,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         }*/
 
         try {
-            Files.write(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati"+File.separator+type+"s"+File.separator+newfile), bytes);
+            Files.write(Paths.get(newfile), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
