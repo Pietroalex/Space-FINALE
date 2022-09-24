@@ -9,6 +9,8 @@ import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
+import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
+import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
@@ -24,6 +26,13 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	private static List<Song> storedSongs = new ArrayList<>();
 	private static Integer idAlbum = 1;
 	private static Integer idSong = 1;
+	private MultimediaService multimediaService;
+	private ProductionService productionService;
+	
+	public RAMAlbumServiceImpl(MultimediaService multimediaService, ProductionService productionService) {
+		this.multimediaService = multimediaService;
+		this.productionService = productionService;
+	}
 
 	@Override
 	public void add(Album album) throws BusinessException {

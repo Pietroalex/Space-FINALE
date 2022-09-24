@@ -11,6 +11,8 @@ import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
+import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
+import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Artist;
@@ -23,12 +25,12 @@ public class RAMArtistServiceImpl implements ArtistService {
 
 	private static List<Artist> storedArtists = new ArrayList<>();
 	private static int idArtists = 1;
-	private AlbumService albumService;
+	private MultimediaService multimediaService;
+	private ProductionService productionService;
 	
-	public RAMArtistServiceImpl() {
-		
-		this.albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
-		
+	public RAMArtistServiceImpl(MultimediaService multimediaService, ProductionService productionService) {
+		this.multimediaService = multimediaService;
+		this.productionService = productionService;
 	}
 	
 	@Override

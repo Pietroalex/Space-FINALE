@@ -15,10 +15,10 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	public RAMSpacemusicunifyBusinessFactoryImpl() {
 		spaceMusicUnifyService = new RAMSpaceMusicUnifyImpl();
 		userService = new RAMUserServiceImpl();
-		albumService = new RAMAlbumServiceImpl();
-		artistService = new RAMArtistServiceImpl();
-		multimediaService = new RAMMultimediaServiceImpl();
 		productionService = new RAMProductionServiceImpl();
+		multimediaService = new RAMMultimediaServiceImpl();
+		artistService = new RAMArtistServiceImpl(multimediaService, productionService);
+		albumService = new RAMAlbumServiceImpl(multimediaService, productionService);
 	}
 
 	@Override

@@ -58,6 +58,11 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 		return productionService;
 	}
 
+	@Override
+	public SPACEMusicUnifyService getSPACEMusicUnifyService() {
+		return null; //mmmmmmmmhhhhh
+	}
+
 
 
 }
