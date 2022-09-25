@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.business.impl.file.UtilityObjectRetriever;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
@@ -21,9 +22,10 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
+public class ManageSongDetailController implements Initializable, DataInitializable<List<Object>> {
 
 	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
@@ -72,6 +74,8 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     private Song song;
     @FXML
     private Button mp3button;
+    private Production production;
+    private List<Object> objectlist;
 
 
     public ManageSongDetailController(){
@@ -128,7 +132,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                     genreField.setDisable(true);
                 }
                 genreField.setValue(song.getGenre());
-                this.album = song.getAlbum();
                 if(album.getSongList().size() == 1){
                     deletesong.setDisable(true);
                 }
@@ -156,9 +159,11 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
     }
     @Override
-    public void initializeData(Song song) {
-        this.song = song;
-        this.album = song.getAlbum();
+    public void initializeData(List<Object> list) {
+        objectlist = list;
+        song = (Song) list.get(1);
+        production = (Production) list.get(0);
+        album = production.getAlbum();
         setView2();
     }
     @FXML
@@ -191,7 +196,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
              //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
             }
             dispatcher.setSituation(ViewSituations.detail);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
 
         } catch (AlreadyTakenFieldException e) {
             existingLabel.setText("This song title is already taken");
@@ -209,16 +214,16 @@ public class ManageSongDetailController implements Initializable, DataInitializa
         switch (dispatcher.getSituation()){
             case newobject:
                 dispatcher.setSituation(ViewSituations.modify);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
                 break;
             default:
                 dispatcher.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objectlist);
         }
     }
     @FXML
     public void backToTheAlbum(){
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
     }
 
     @FXML
@@ -253,7 +258,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
             }else{
                 System.out.println("Song not found");
             }
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
 
         } catch (BusinessException e) {
             dispatcher.renderError(e);
@@ -263,6 +268,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     @FXML
     public void showModify() {
         dispatcher.setSituation(ViewSituations.modify);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objectlist);
     }
 }

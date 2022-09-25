@@ -6,20 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.SpaceMusicUniFyApplication;
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMArtistServiceImpl implements ArtistService {
 
@@ -85,7 +77,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images)
+	public void modify(Integer id, String stageName, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images, Set<Artist> addMembers, Artist artist)
 			throws BusinessException {
 		/*for (Artist artista : storedArtists) {
 			if (artista.getStageName().equals(stageName) && artista.getId().intValue() != id.intValue()) {
@@ -119,14 +111,29 @@ public class RAMArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public List<Artist> getArtistaList() throws BusinessException {
+	public Set<Artist> getArtistList() throws BusinessException {
 		return null;
 	}
 
 	@Override
-	public List<Album> findAllAlbums(Artist artist) throws BusinessException {
+	public Set<Album> findAllAlbums(Artist artist) throws BusinessException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
+		return null;
+	}
+
+	@Override
+	public Set<Artist> getModifiedMembers() {
+		return null;
+	}
+
+	@Override
+	public void setModifieMembers(Set<Artist> bandMembers) {
+
 	}
 
 }

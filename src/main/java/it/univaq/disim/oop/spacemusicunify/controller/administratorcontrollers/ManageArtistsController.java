@@ -79,16 +79,24 @@ public class ManageArtistsController implements Initializable, DataInitializable
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.detail);
-				/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue().getDiscography());*/
+				try {
+					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(param.getValue()));
+				} catch (BusinessException e) {
+					throw new RuntimeException(e);
+				}
 			});
 			return new SimpleObjectProperty<Button>(modify);
 		});
 		songNumber.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> param) -> {
 			int count = 0;
 
-			/*for (Album album : param.getValue().getDiscography()) {
-				count = count + album.getSongList().size();
-			}*/
+			try {
+				for (Production production : artistService.findAllProductions(param.getValue())) {
+					count = count + production.getAlbum().getSongList().size();
+				}
+			} catch (BusinessException e) {
+				throw new RuntimeException(e);
+			}
 			String number = String.valueOf(count);
 			return new SimpleStringProperty(number);
 		});
@@ -96,14 +104,14 @@ public class ManageArtistsController implements Initializable, DataInitializable
 	}
 
 	@Override
-	public void initializeData(Administrator amministratore) {
-		List<Artist> artisti = null;
+	public void initializeData(Administrator admin) {
+		Set<Artist> artists = null;
 		try {
-			artisti = artistService.getArtistaList();
+			artists = artistService.getArtistList();
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
 		}
-		ObservableList<Artist> artistaData = FXCollections.observableArrayList(artisti);
+		ObservableList<Artist> artistaData = FXCollections.observableArrayList(artists);
 			artistList.setItems(artistaData);
 		
 

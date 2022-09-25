@@ -211,15 +211,15 @@ public class FileUserServiceImpl implements UserService {
 		
 	}
 	@Override
-	public List<Artist> getAllArtists() throws BusinessException {
+	public Set<Artist> getAllArtists() throws BusinessException {
 		try {
-			return SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistaList();
+			return SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistList();
 		} catch (BusinessException e) {
 			throw new BusinessException();
 		}
 	}
 	@Override
-	public List<Album> getAllAlbums() throws BusinessException {
+	public Set<Album> getAllAlbums() throws BusinessException {
 		try {
 			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getAlbumList();
 		} catch (BusinessException e) {
@@ -227,7 +227,7 @@ public class FileUserServiceImpl implements UserService {
 		}
 	}
 	@Override
-	public List<Song> getAllSongs() throws BusinessException{
+	public Set<Song> getAllSongs() throws BusinessException{
 		try {
 			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getSongList();
 		} catch (BusinessException e) {

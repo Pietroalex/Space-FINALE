@@ -11,7 +11,6 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import javafx.util.Duration;
 
 public class FileAlbumServiceImpl implements AlbumService {
 	
@@ -19,7 +18,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	private String songsFile;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
-	private Set<Artist> chosenArtists = new HashSet<>();
+	private Set<Artist> choosenArtists = new HashSet<>();
 	
 	public FileAlbumServiceImpl(String albumsFile, String songsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.albumsFile = albumsFile;
@@ -33,7 +32,6 @@ public class FileAlbumServiceImpl implements AlbumService {
 		//album: title, genre, release, artist, cover
 		for (Album album1 : getAlbumList()) {
 			if (album1.getTitle().equals(album.getTitle())) {
-				System.out.println("controllo");
 				throw new AlreadyExistingException();
 			}
 		}
@@ -46,9 +44,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 		FileData fileData;
 		//scrivo il file album
 		try {
-			multimediaService.add(album.getCover());
+
 			fileData = Utility.readAllRows(albumsFile);
 			album.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
+			multimediaService.add(album.getCover());
 			//creo la canzone
 			Song canzone = new Song();
 			canzone.setAlbum(album);
@@ -95,8 +94,8 @@ public class FileAlbumServiceImpl implements AlbumService {
 				writerAlbum.println(row.toString());
 			}
 			add(canzone);
-			multimediaService.add(audio);
-				Set<Artist> artists = getChosenArtists();
+
+				Set<Artist> artists = getChoosenArtists();
 			for(Artist artist : artists){
 				Production production = new Production();
 				production.setArtist(artist);
@@ -134,7 +133,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, Set<Song> songlist) throws BusinessException {
 		String oldGenre = null;
 		try {
-			System.out.println("Modifico Album");
+
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] colonne: fileData.getRighe()) {
 				if(genre != Genre.singoli) {
@@ -151,10 +150,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 					String[] row;
 					/*if(cover.contains(righe[3])){
-						System.out.println("contiene");
+
 						 row = new String[]{righe[0], title, String.valueOf(genre), righe[3], String.valueOf(release), righe[5], righe[6]};
 					}else{
-						System.out.println("non contiene");
+
 						Files.deleteIfExists(Paths.get(cartellaImmagini+righe[3]));
 						row = new String[]{righe[0], title, String.valueOf(genre), saveANDstore(cover, "cover"), String.valueOf(release), righe[5], righe[6]};
 					}*/
@@ -193,7 +192,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void delete(Album album) throws BusinessException {
 		boolean check = false;
-		System.out.println("album da eliminare: "+album.getId());
+
 		/*for(Album albumCheck : album.getArtist().getDiscography()) {
 
 			if(album.getId().intValue() == albumCheck.getId().intValue()) {
@@ -265,6 +264,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				long contatore = fileData.getContatore();
 				canzone.setId(Integer.parseInt(String.valueOf(contatore)));
+				multimediaService.add(canzone.getFileMp3());
 				writer.println(contatore + 1);
 				for (String[] righe : fileData.getRighe()) {
 					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
@@ -324,10 +324,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, String length, Genre genre, byte[] mp3, String lyrics, Album album)
 			throws BusinessException {
-		System.out.println("in esecuzione modify");
+
 		boolean check = false;
 		try {
-			System.out.println("Modifico Canzone");
+
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] colonne: fileData.getRighe()) {
 				if (colonne[1].equals(title) && !colonne[0].equals(id.toString())) {
@@ -383,9 +383,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void delete(Song canzone) throws BusinessException {
 		/*boolean check = false;
-		System.out.println("canzone da eliminare: "+canzone.getId());
+
 		for(Song song : getSongList()) {
-			System.out.println("canzone in file: "+song.getId());
+
 			if(canzone.getId().intValue() == song.getId().intValue()) {
 				check = true;
 				try {
@@ -476,11 +476,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 									}
 								}else{																				//canzone in corso diversa da quella selezionata
 
-									System.out.println("canzone prima di quella selezionata");
+
 									for(int i = 0; i < listaCanzoni.size(); i++ ){
 										if(listaCanzoni.get(i).equals(canzone.getId().toString())){
 											if (Integer.parseInt(righe[4]) > i ){
-												System.out.println("canzone prima trovata ");
+
 
 												righe[4] = String.valueOf(Integer.parseInt(righe[4]) - 1);
 												break;
@@ -516,14 +516,14 @@ public class FileAlbumServiceImpl implements AlbumService {
 		if(!check)throw new BusinessException("canzone inesistente");*/
 	}
 	@Override
-	public List<Album> getAlbumList() throws BusinessException {
-		List<Album> albumList = new ArrayList<>();
+	public Set<Album> getAlbumList() throws BusinessException {
+		Set<Album> albumList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(albumsFile);
-			System.out.println("cerco album getAll");
+
 			for (String[] righe : fileData.getRighe()) {
 				albumList.add((Album) UtilityObjectRetriever.findObjectById(righe[0], albumsFile));
-				System.out.println("aggiungo album getall");
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -532,13 +532,12 @@ public class FileAlbumServiceImpl implements AlbumService {
 		return albumList;
 	}
 	@Override
-	public List<Song> getSongList() throws BusinessException{List<Song> songList = new ArrayList<>();
+	public Set<Song> getSongList() throws BusinessException {
+		Set<Song> songList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(songsFile);
-			System.out.println("cerco canzone");
 			for(String[] righe : fileData.getRighe()) {
 				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
-				System.out.println("aggiungo canzone");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -547,11 +546,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 		return songList;
 	}
 	@Override
-	public List<Artist> findAllArtists(Album album) throws BusinessException {
+	public Set<Artist> findAllArtists(Album album) throws BusinessException {
 		ArtistService artistService = SpacemusicunifyBusinessFactory.getInstance().getArtistService();
-		List<Artist> artists = artistService.getArtistaList();
-		List<Artist> artistsFinal = new ArrayList<>();
-		List<Production> productions = productionService.getAllProductions();
+		Set<Artist> artists = artistService.getArtistList();
+		Set<Artist> artistsFinal = new HashSet<>();
+		Set<Production> productions = productionService.getAllProductions();
 		for (Production production : productions){
 			if (production.getAlbum().getId().intValue() == album.getId().intValue()){
 				for (Artist artist : artists){
@@ -563,15 +562,27 @@ public class FileAlbumServiceImpl implements AlbumService {
 		}
 		return artistsFinal;
 	}
+	@Override
+	public Set<Production> findAllProductions(Album album) throws BusinessException {
+		ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
+		Set<Production> productions = productionService.getAllProductions();
+		Set<Production> productionList = new HashSet<>();
+		for (Production production : productions){
+			if (production.getAlbum().getId().intValue() == album.getId().intValue()){
+				productionList.add(production);
+			}
+		}
 
-
-	public Set<Artist> getChosenArtists() {
-		Set<Artist> artists = chosenArtists;
-		chosenArtists = null;
+		return productionList;
+	}
+	@Override
+	public Set<Artist> getChoosenArtists() {
+		Set<Artist> artists = choosenArtists;
+		choosenArtists = null;
 		return artists;
 	}
-
-	public void setChosenArtists(Set<Artist> chosenArtists) {
-		this.chosenArtists = chosenArtists;
+	@Override
+	public void setChoosenArtists(Set<Artist> choosenArtists) {
+		this.choosenArtists = choosenArtists;
 	}
 }

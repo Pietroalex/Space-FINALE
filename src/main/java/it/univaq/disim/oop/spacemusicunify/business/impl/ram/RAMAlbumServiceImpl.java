@@ -250,19 +250,34 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public List<Album> getAlbumList() throws BusinessException {
+	public Set<Album> getAlbumList() throws BusinessException {
 		return null;
 	}
 
 	@Override
-	public List<Song> getSongList() throws BusinessException {
+	public Set<Song> getSongList() throws BusinessException {
 		return null;
 	}
 
 	@Override
-	public List<Artist> findAllArtists(Album album) throws BusinessException {
+	public Set<Artist> findAllArtists(Album album) throws BusinessException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<Production> findAllProductions(Album album) throws BusinessException {
+		return null;
+	}
+
+	@Override
+	public Set<Artist> getChoosenArtists() {
+		return null;
+	}
+
+	@Override
+	public void setChoosenArtists(Set<Artist> choosenArtists) {
+
 	}
 
 }

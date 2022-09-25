@@ -29,12 +29,12 @@ public class UtilityObjectRetriever extends Object {
 	public static Object findObjectById(String id, String file ) {
 
 		Object object = null;
-		System.out.println(file);
+
 		String str = file.substring(file.indexOf("dati"+ File.separator)+ 5);
-		System.out.println(str);
+
 		switch(str) {
 			case "songs.txt":
-				System.out.println("canzone");
+
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
@@ -51,17 +51,17 @@ public class UtilityObjectRetriever extends Object {
 				
 				break;
 			case "albums.txt":
-				System.out.println("album");
+
 
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
 					for (String[] colonne : fileData.getRighe()) {
-						System.out.println("album ctr"+colonne[0]+" id "+ id);
+
 						if(colonne[0].equals(id)) {
-							System.out.println("cerco album");
+
 							object = findAlbum(colonne, file);
-							System.out.println("trovato album");
+
 						}
 					}
 				} catch (IOException e) {
@@ -70,15 +70,15 @@ public class UtilityObjectRetriever extends Object {
 
 				break;
 			case "artists.txt":
-				System.out.println("artista");
+
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
 					for (String[] colonne : fileData.getRighe()) {
 						if(colonne[0].equals(id)) {
-							System.out.println("cerco artista");
+
 							object = findArtist(colonne, file);
-							System.out.println("trovato artista");
+
 						}
 					}
 				} catch (IOException e) {
@@ -87,15 +87,15 @@ public class UtilityObjectRetriever extends Object {
 				break;
 
 			default:
-				System.out.println("pictures/audios");
+
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
 					for (String[] columns : fileData.getRighe()) {
 						if(columns[0].equals(id)) {
-							System.out.println("cerco picture/audios");
+
 							object = findMultimedia(columns);
-							System.out.println("trovato picture/audios");
+
 						}
 					}
 				} catch (IOException e) {
@@ -104,7 +104,7 @@ public class UtilityObjectRetriever extends Object {
 				break;
 
 		}
-		System.out.println("finito");
+
 		return object;
 	}
 
@@ -122,7 +122,7 @@ public class UtilityObjectRetriever extends Object {
 			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
 		}
 		artist.setPictures(pictures);
-		System.out.println("nazionalità "+colonne[5]);
+
 		artist.setNationality(Nationality.valueOf(colonne[5]));
 		Set<Artist> bandMembers = new HashSet<>();
 		List<String> bandMembersIds = Utility.leggiArray(colonne[6]);
@@ -165,7 +165,6 @@ public class UtilityObjectRetriever extends Object {
 		Set<Song> canzoneList = new HashSet<>();
 
 		for(String canzoni: Utility.leggiArray(colonne[4])){
-			System.out.println("id "+canzoni);
 			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
 		}
 		album.setSongList(canzoneList);
@@ -176,23 +175,33 @@ public class UtilityObjectRetriever extends Object {
 	private static Multimedia findMultimedia(String[] column){
 		Multimedia multimedia = null;
 
-		if(currentArtist == null && currentAlbum == null){
+		if(currentArtist == null && currentAlbum == null && currentSong != null){
 			multimedia = new Audio();
 			multimedia.setId(Integer.parseInt(column[0]));
 			multimedia.setData(filesMp3Directory+column[1]);
 			multimedia.setOwnership(currentSong);
 		}
-		if(currentArtist != null && currentAlbum == null){
+		if(currentArtist != null && currentAlbum == null && currentSong == null){
 			multimedia = new Picture();
 			multimedia.setId(Integer.valueOf(column[0]));
 			multimedia.setData(imagesDirectory+column[1]);
+			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
+			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
 			multimedia.setOwnership(currentArtist);
 		}
-		if(currentArtist == null && currentAlbum != null){
+		if(currentArtist == null && currentAlbum != null && currentSong == null){
 			multimedia = new Picture();
 			multimedia.setId(Integer.valueOf(column[0]));
 			multimedia.setData(imagesDirectory+column[1]);
+			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
+			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
 			multimedia.setOwnership(currentAlbum);
+		}
+		if(currentArtist == null && currentAlbum != null && currentSong != null){
+			multimedia = new Audio();
+			multimedia.setId(Integer.parseInt(column[0]));
+			multimedia.setData(filesMp3Directory+column[1]);
+			multimedia.setOwnership(currentSong);
 		}
 		return multimedia;
 	}

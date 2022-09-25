@@ -8,6 +8,7 @@ import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,10 +18,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -78,11 +81,18 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private VBox cancelbox;
     @FXML
     private Label existingLabel;
+    @FXML
+    private MenuButton members;
 
     private Administrator admin;
     private UserService userService;
 
     private static Picture imgUrl;
+    @FXML
+    private MenuButton membersModify;
+    @FXML
+    private Set<Artist> addMembers ;
+
     public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
@@ -106,7 +116,20 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         switch (dispatcher.getSituation()){
             case detail:
                 loadImages();
+                if(!(artist.getBandMembers().isEmpty())) {
+                    members.setVisible(true);
+                    for (Artist artistCtrl : artist.getBandMembers()) {
+                        MenuItem menuItem = new MenuItem();
+                        menuItem.setText(artistCtrl.getName());
+                        menuItem.setOnAction((ActionEvent event) -> {
+                            dispatcher.setSituation(ViewSituations.detail);
+                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+                            System.out.println("andato");
 
+                        });
+                        members.getItems().add(menuItem);
+                    }
+                }
                 stageName.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
                 biography.setText(artist.getBiography());
@@ -117,6 +140,32 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             case modify:
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
+                }
+                if(!(artist.getBandMembers().isEmpty())) {
+                    membersModify.setVisible(true);
+                    addMembers = new HashSet<>(artist.getBandMembers());
+                    for (Artist artistCtrl : artist.getBandMembers()) {
+                        MenuItem menuItem = new MenuItem();
+                        Button delete = new Button("Delete");
+                        delete.setCursor(Cursor.HAND);
+                        delete.setOnAction((ActionEvent event) -> {
+                            addMembers.remove(artistCtrl);
+                            membersModify.getItems().remove(menuItem);
+                        });
+                        Label name = new Label(artistCtrl.getName());
+                        HBox hBox = new HBox();
+                        hBox.getChildren().add(name);
+                        hBox.getChildren().add(delete);
+
+                        menuItem.setGraphic(hBox);
+                        menuItem.setOnAction((ActionEvent event) -> {
+                            dispatcher.setSituation(ViewSituations.detail);
+                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+                            System.out.println("andato");
+
+                        });
+                        membersModify.getItems().add(menuItem);
+                    }
                 }
                 nationalityField.getItems().addAll(Nationality.values());
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -139,6 +188,55 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
+
+                membersModify.setVisible(true);
+                try {
+                    Set<Artist> artists = artistService.getArtistList();
+                    addMembers = new HashSet<>();
+                    Set<Artist> singleArtist = new HashSet<>(artists);
+                    Set<Artist> band = new HashSet<>();
+                    for(Artist artistCheck : artists){
+                        if(!(artistCheck.getBandMembers().isEmpty())){
+                            singleArtist.remove(artistCheck);
+                            band.add(artistCheck);
+                        }
+                    }
+                    for(Artist bandctr : band){
+                        for(Artist art : bandctr.getBandMembers()){
+                            for(Artist single2 : singleArtist) {
+
+                                if (art.getId().intValue() == single2.getId().intValue()) {
+                                    artists.remove(single2);
+                                }
+
+                            }
+                        }
+                    }
+                    for(Artist removeBand : band){
+                        artists.remove(removeBand);
+                    }
+
+                    for (Artist artistCtrl : artists) {
+                        MenuItem menuItem = new MenuItem();
+                        Button add = new Button("Add");
+                        add.setCursor(Cursor.HAND);
+                        add.setOnAction((ActionEvent event) -> {
+                            addMembers.add(artistCtrl);
+                            add.setDisable(true);
+                        });
+                        Label name = new Label(artistCtrl.getName());
+                        HBox hBox = new HBox();
+                        hBox.getChildren().add(name);
+                        hBox.getChildren().add(add);
+
+                        menuItem.setGraphic(hBox);
+
+                        membersModify.getItems().add(menuItem);
+                    }
+                } catch (BusinessException e) {
+                    throw new RuntimeException(e);
+                }
+
                 nationalityField.getItems().addAll(Nationality.values());
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
                 scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -233,11 +331,11 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 artist.setName(stageNameField.getText());
                 artist.setBiography(biographyField.getText());
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
-                /*artist.setNationality(nationalityField.getValue());*/
-
+                artist.setNationality(nationalityField.getValue());
+                artistService.setModifieMembers(addMembers);
                 artistService.add(artist);
             } else {
-            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures());
+            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures(), addMembers, artist);
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
@@ -269,7 +367,11 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         if(dispatcher.getSituation() == ViewSituations.user){
             dispatcher.setSituation(ViewSituations.user);
         }
-        /*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", this.artist.getDiscography());*/
+        try {
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
+        } catch (BusinessException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void focusImage(Picture image){
         imgUrl = image;
@@ -288,7 +390,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 Set<Picture> tempimg = this.artist.getPictures();
 
                     Picture picture = new Picture();
-
+                    picture.setOwnership(artist);
+                    picture.setHeight(120);
+                    picture.setWidth(120);
                     picture.setData(path);
                     tempimg.add(picture);
 

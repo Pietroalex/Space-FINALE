@@ -58,14 +58,10 @@ public class FileArtistServiceImpl implements ArtistService {
 					multimediaService.add(picture);
 					imageList.add(String.valueOf(picture.getId()));
 				}
-				Set<Artist> band = getBandMembers();
+
 				List<String> bandIds = new ArrayList<>();
-				while(band.iterator().hasNext()){
-					Artist artist = band.iterator().next();
-					if(artist.getId() == null) {
-						add(artist);
-					}
-					bandIds.add(String.valueOf(artist.getId()));
+				for(Artist artist : getModifiedMembers()){
+					bandIds.add(artist.getId().toString());
 				}
 				artista.setId(Integer.parseInt(String.valueOf(contatore)));
 				album.setTitle("Inediti"+(artista.getId()));
@@ -96,13 +92,14 @@ public class FileArtistServiceImpl implements ArtistService {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 	}
 
 	@Override
-	public void modify(Integer id, String name, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images) throws BusinessException {
+	public void modify(Integer id, String name, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images, Set<Artist> addMembers, Artist artist) throws BusinessException {
 		try {
-			System.out.println("Modifico artista");
+
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] colonne: fileData.getRighe()) {
 				if(colonne[1].equals(name) && !colonne[0].equals(id.toString())) {
@@ -117,22 +114,22 @@ public class FileArtistServiceImpl implements ArtistService {
 					List<String> removedImages = new ArrayList<>();
 					List<String> toAddImages = new ArrayList<>();
 					/*for(Picture newImage : images){
-						System.out.println("current new image "+ newImage+ " current image "+savedImages);
+
 						for(String string : savedImages) {
 							if (newImage.contains(string)) {
-								System.out.println("già c'è");
+
 								imagelist.add(string);
 							}
 						}
 					}*/
 
 					for(String image : savedImages){
-						System.out.println("current check image "+ image+ " current image "+savedImages);
+
 						boolean checktoremove = true;
 						for(String string : imagelist) {
 
 							if (string.contains(image)) {
-								System.out.println(string+" presente");
+
 								checktoremove = false;
 								break;
 							}
@@ -143,12 +140,12 @@ public class FileArtistServiceImpl implements ArtistService {
 					}
 
 					/*for(String image : images){
-						System.out.println("current check image "+ image+ " current image "+savedImages);
+
 						boolean checktoadd = true;
 						for(String string : savedImages) {
 
 							if (image.contains(string)) {
-								System.out.println(string+" presente");
+
 								checktoadd = false;
 								break;
 							}
@@ -161,15 +158,13 @@ public class FileArtistServiceImpl implements ArtistService {
 						images.removeIf(image::equals);
 						Files.deleteIfExists(Paths.get(cartellaImmagini+image));
 					}
-					System.out.println("lista finale "+imagelist);
-					System.out.println("lista finale delete "+removedImages);
-					System.out.println("lista finale toadd "+toAddImages);
+
 					for (String toAdd : toAddImages) {
 						imagelist.add(saveANDstore(toAdd, stageName));
 					}*/
 					String[] row = new String[]{righe[0], name,  String.valueOf(yearsOfActivity), biography, String.valueOf(nationality), imagelist.toString(), righe[6]};
 					fileData.getRighe().set(cont, row);
-					System.out.println("row "+row[5]);
+
 
 					break;
 				}
@@ -190,7 +185,7 @@ public class FileArtistServiceImpl implements ArtistService {
 	@Override
 	public void delete(Artist artist) throws BusinessException {
 		boolean check = false;
-		System.out.println("artista da eliminare: "+artist.getId());
+
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] righeCheck: fileData.getRighe()) {
@@ -239,14 +234,12 @@ public class FileArtistServiceImpl implements ArtistService {
 	
 
 	@Override
-	public List<Artist> getArtistaList() throws BusinessException {
-		List<Artist> artistList = new ArrayList<>();
+	public Set<Artist> getArtistList() throws BusinessException {
+		Set<Artist> artistList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			System.out.println("cerco artista getAll");
 			for (String[] colonne : fileData.getRighe()) {
 				artistList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
-				System.out.println("aggiungo artista getall");
 			}
 
 		} catch (IOException e) {
@@ -255,30 +248,41 @@ public class FileArtistServiceImpl implements ArtistService {
 		return artistList;
 	}
 	@Override
-	public List<Album> findAllAlbums(Artist artist) throws BusinessException {
+	public Set<Album> findAllAlbums(Artist artist) throws BusinessException {
 		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
-		List<Album> albums = albumService.getAlbumList();
-		List<Album> albumsFinal = new ArrayList<>();
-		List<Production> productions = productionService.getAllProductions();
+		Set<Album> albums = albumService.getAlbumList();
+		Set<Album> albumsFinal = new HashSet<>();
+		/*List<Production> productions = findAllProductions(artist);
 		for (Production production : productions){
-			if (production.getArtist().getId().intValue() == artist.getId().intValue()){
-				for (Album album : albums){
-					if (album.getId().intValue() == production.getAlbum().getId().intValue()){
-						albumsFinal.add(album);
-					}
+			for (Album album : albums){
+				if (album.getId().intValue() == production.getAlbum().getId().intValue()){
+					albumsFinal.add(album);
 				}
 			}
-		}
+		}*/
 		return albumsFinal;
 	}
+	@Override
+	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
+		ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
+		Set<Production> productions = productionService.getAllProductions();
+		Set<Production> productionList = new HashSet<>();
+		for (Production production : productions){
+			if (production.getArtist().getId().intValue() == artist.getId().intValue()){
+				productionList.add(production);
+			}
+		}
 
-	public Set<Artist> getBandMembers() {
+		return productionList;
+	}
+	@Override
+	public Set<Artist> getModifiedMembers() {
 		Set<Artist> band = bandMembers;
 		bandMembers = null;
 		return band;
 	}
-
-	public void setBandMembers(Set<Artist> bandMembers) {
+	@Override
+	public void setModifieMembers(Set<Artist> bandMembers) {
 		this.bandMembers = bandMembers;
 	}
 }

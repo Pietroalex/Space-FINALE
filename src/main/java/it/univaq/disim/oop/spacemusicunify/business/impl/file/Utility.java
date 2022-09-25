@@ -42,7 +42,6 @@ public class Utility {
 			return lists;
 		}
 		String[] array = colonnaArray.split(",");
-		System.out.println(Arrays.toString(array));
 		for(String element : array ) {
 			if (element.contains("[")) {
 				element = element.substring(1);

@@ -29,7 +29,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
             FileData fileData = Utility.readAllRows(audiosFile);
             try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
                 long contatore = fileData.getContatore();
-                writer.println((contatore));
+                writer.println((contatore + 1));
                 for (String[] righe : fileData.getRighe()) {
                     writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
                 }
@@ -61,7 +61,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
             FileData fileData = Utility.readAllRows(picturesFile);
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
                 long contatore = fileData.getContatore();
-                writer.println((contatore));
+                writer.println((contatore + 1));
                 for (String[] righe : fileData.getRighe()) {
                     writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
                 }

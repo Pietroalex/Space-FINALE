@@ -4,11 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public interface AlbumService {
 	
@@ -24,10 +20,15 @@ public interface AlbumService {
 
 	void delete(Song song) throws BusinessException;
 
-    List<Album> getAlbumList() throws BusinessException;
+    Set<Album> getAlbumList() throws BusinessException;
 
-	List<Song> getSongList() throws BusinessException;
+	Set<Song> getSongList() throws BusinessException;
 
-	List<Artist> findAllArtists(Album album) throws BusinessException;
-	
+	Set<Artist> findAllArtists(Album album) throws BusinessException;
+
+    Set<Production> findAllProductions(Album album) throws BusinessException;
+
+    Set<Artist> getChoosenArtists();
+
+	void setChoosenArtists(Set<Artist> choosenArtists);
 }

@@ -3,11 +3,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -544,18 +540,18 @@ public class RAMUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Artist> getAllArtists() {
+	public Set<Artist> getAllArtists() {
 		return null;
 	}
 
 
 	@Override
-	public List<Album> getAllAlbums() {
+	public Set<Album> getAllAlbums() {
 		return null;
 	}
 
 	@Override
-	public List<Song> getAllSongs() {
+	public Set<Song> getAllSongs() {
 		return null;
 	}
 

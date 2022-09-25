@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
@@ -28,16 +27,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
-	/*private final UserService userService;*/
+import javax.swing.*;
+
+public class ManageAlbumDetailController implements Initializable, DataInitializable<Production> {
+	private final ArtistService artistService;
 	private final AlbumService albumService;
 	private final ViewDispatcher dispatcher;
-	@FXML
-	private AnchorPane masterPane;
-	@FXML
-	private AnchorPane modifyPane;
-	@FXML
-	private AnchorPane infoPane;
+
 	@FXML
 	private Button confirm;
 	@FXML
@@ -94,9 +90,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private VBox coverAlbum;
 	@FXML
 	private VBox cancelBox;
-	private Album album;
 
-	private Administrator admin;
 	private String imageUrl;
 	@FXML
 	private Button newSong;
@@ -107,11 +101,30 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private Button deletealbum;
 	@FXML
 	private Label existingLabel;
+	private Album album;
+	private Picture tempPicture;
+	private Administrator admin;
+	private Production albumProduction;
+
+	List<Object> objects = new ArrayList<>();
+	private Set<Artist> artistSet = new HashSet<>();
+	@FXML
+	private Label titleView;
+	@FXML
+	private Label table_label;
+	@FXML
+	private TableView<Artist> artistTable;
+	@FXML
+	private TableColumn<Artist, Integer> artist_id;
+	@FXML
+	private TableColumn<Artist, String> artist_name;
+	@FXML
+	private TableColumn<Artist, Button> artist_add;
 
 	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		/*userService = factory.getUserService();*/
+		artistService = factory.getArtistService();
 		albumService = factory.getAlbumService();
 	}
 	private void setView2(ObservableList<Song> songData) {
@@ -132,8 +145,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						}else{
 							dispatcher.setSituation(ViewSituations.detail);
 						}
-
-						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
+						objects.add(param.getValue());
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
 					});
 					return new SimpleObjectProperty<Button>(modify);
 				});
@@ -145,8 +158,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				Image img = new Image(new ByteArrayInputStream(album.getCover().getData()));
 
 				ImageView imgview1 = new ImageView(img);
-				imgview1.setFitHeight(150);
-				imgview1.setFitWidth(150);
+				imgview1.setFitHeight(album.getCover().getHeight());
+				imgview1.setFitWidth(album.getCover().getWidth());
 
 				coverAlbum.getChildren().add(imgview1);
 				albumsongs.setItems(songData);
@@ -179,7 +192,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 								System.out.println("Song not found");
 							}
 							dispatcher.setSituation(ViewSituations.modify);
-							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", albumProduction);
 
 						} catch (BusinessException e) {
 							dispatcher.renderError(e);
@@ -193,7 +206,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					modify.setCursor(Cursor.HAND);
 					modify.setOnAction((ActionEvent event) -> {
 						dispatcher.setSituation(ViewSituations.detail);
-						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
+						objects.add(param.getValue());
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
 					});
 					return new SimpleObjectProperty<Button>(modify);
 				});
@@ -212,8 +226,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 				Image imgM = new Image(new ByteArrayInputStream(album.getCover().getData()));
 				ImageView imgview2 = new ImageView(imgM);
-				imgview2.setFitHeight(150);
-				imgview2.setFitWidth(150);
+				imgview2.setFitHeight(album.getCover().getHeight());
+				imgview2.setFitWidth(album.getCover().getWidth());
 				imgview2.setCursor(Cursor.HAND);
 				imgview2.setOnMouseClicked(event -> {
 					this.focusImage(String.valueOf(album.getCover().getId()));
@@ -234,14 +248,56 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						confirm.setText("Modify Album");
 					}
 				}
+				titleView.setText("Modify Album");
 				modifyalbumsongs.setItems(songData);
 				break;
 
 			case newobject:
+				modifyalbumsongs.setVisible(false);
+				table_label.setVisible(false);
+				cancelBox.setVisible(false);
+				artistTable.setVisible(true);
+
+				artist_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+				artist_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+				artist_add.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
+					final Button add = new Button("Add");
+					add.setCursor(Cursor.HAND);
+					add.setOnAction((ActionEvent event) -> {
+						artistSet.add(param.getValue());
+						add.setDisable(true);
+					});
+					return new SimpleObjectProperty<Button>(add);
+				});
+
+				try {
+					Set<Artist> artists = artistService.getArtistList();
+					artists.removeIf((Artist artist) -> artist.getId().intValue() == artista.getId().intValue());
+					ObservableList<Artist> artistsData = FXCollections.observableArrayList(artists);
+					artistTable.getItems().addAll(artistsData);
+				} catch (BusinessException e) {
+					throw new RuntimeException(e);
+				}
+
+				newSong.setVisible(false);
+				deletealbum.setVisible(false);
 				genreField.getItems().addAll(Genre.values());
 				genreField.getItems().remove(Genre.singoli);
+				titleField.setText(album.getTitle());
+				genreField.setValue(album.getGenre());
+				releaseField.setValue(album.getRelease());
+				Image imgs = new Image(new ByteArrayInputStream(album.getCover().getData()));
+				ImageView imgsv = new ImageView(imgs);
+				imgsv.setFitHeight(album.getCover().getHeight());
+				imgsv.setFitWidth(album.getCover().getWidth());
+				imgsv.setCursor(Cursor.HAND);
+				imgsv.setOnMouseClicked(event -> {
+					this.focusImage(String.valueOf(album.getCover().getId()));
+				});
+				artistSet.add(artista);
+				coverField.getChildren().add(imgsv);
 
-				title.setText("New Album");
+				titleView.setText("New Album");
 				confirm.setText("Create");
 
 				break;
@@ -263,9 +319,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 	}
 	@Override
-	public void initializeData(Album album) {
-		this.album = album;
-		/*this.artista = album.getArtist();*/
+	public void initializeData(Production production) {
+		objects.add(production);
+		albumProduction = production;
+		album = production.getAlbum();
+		artista = production.getArtist();
+
 
 		Set<Song> songs = album.getSongList();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
@@ -277,28 +336,29 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 	@FXML
 	public void confirmAlbum(ActionEvent event) {
-		System.out.println("inizio modifica album");
+
 		try {
 			if (album.getId() == null) {
 				album.setTitle(titleField.getText());
 				album.setGenre(genreField.getValue());
 				album.setRelease(releaseField.getValue());
-
+				if(tempPicture != null ) album.setCover(tempPicture);
+				albumService.setChoosenArtists(artistSet);
 				albumService.add(album);
 
 			} else {
-				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), album.getCover(), album.getSongList());
+				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), tempPicture, album.getSongList());
 			}
-			/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
 
 		} catch (AlreadyTakenFieldException e){
 			existingLabel.setText("This album title is already taken");
 			existingLabel.setVisible(true);
-			System.out.println("eccezione1");
+
 		}catch (AlreadyExistingException e){
 			existingLabel.setText("This album already exists");
 			existingLabel.setVisible(true);
-			System.out.println("eccezione2");
+
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
@@ -307,11 +367,15 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void cancelModify(ActionEvent event) {
 		switch (dispatcher.getSituation()){
 			case newobject:
-				/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
+				try {
+					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
+				} catch (BusinessException e) {
+					throw new RuntimeException(e);
+				}
 				break;
 			default:
 				dispatcher.setSituation(ViewSituations.detail);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", albumProduction);
 		}
 
 	}
@@ -322,7 +386,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	public void focusImage(String image){
 		imageUrl = image;
-		System.out.println(imageUrl);
+
 		cancelBox.setVisible(true);
 	}
 	@FXML
@@ -341,17 +405,16 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			if(path.endsWith(".png") || path.endsWith(".jpg")){
 				existingLabel.setVisible(false);
 
+				tempPicture = new Picture();
 
+				tempPicture.setData(path);
+				tempPicture.setHeight(140);
+				tempPicture.setWidth(140);
+				tempPicture.setOwnership(album);
 
-
-				Picture picture = new Picture();
-
-				picture.setData(path);
-				album.setCover(picture);
-
-				ImageView imgview2 = new ImageView(new Image(new ByteArrayInputStream(album.getCover().getData())));
-				imgview2.setFitHeight(150);
-				imgview2.setFitWidth(150);
+				ImageView imgview2 = new ImageView(new Image(new ByteArrayInputStream(tempPicture.getData())));
+				imgview2.setFitHeight(tempPicture.getHeight());
+				imgview2.setFitWidth(tempPicture.getWidth());
 				imgview2.setCursor(Cursor.HAND);
 				imgview2.setOnMouseClicked(event -> {
 					this.focusImage(path);
@@ -382,13 +445,13 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			imgAdd.setFitHeight(150);
-			imgAdd.setFitWidth(150);
+			imgAdd.setFitHeight(140);
+			imgAdd.setFitWidth(140);
 			imgAdd.setOnMouseClicked(event2 -> {
 				this.focusAdd();
 			});
 
-			coverAlbum.getChildren().clear();
+
 			coverField.getChildren().clear();
 
 			coverField.getChildren().add(imgAdd);
@@ -412,7 +475,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			canzone.setGenre(album.getGenre());
 		}
 		dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", canzone);
+		objects.add(canzone);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objects);
 
 	}
 	@FXML
@@ -423,7 +487,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}else{
 				System.out.println("Album not found");
 			}
-			/*dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artista.getDiscography());*/
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
@@ -435,7 +499,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	public void showModify(ActionEvent event) {
 		dispatcher.setSituation(ViewSituations.modify);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", albumProduction);
 	}
 
 }

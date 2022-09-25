@@ -13,13 +13,13 @@ public interface UserService {
 
 	void delete(User utente) throws BusinessException;
 	
-    List<Artist> getAllArtists() throws BusinessException;
+    Set<Artist> getAllArtists() throws BusinessException;
     
-    List<Album> getAllAlbums() throws BusinessException;
+    Set<Album> getAllAlbums() throws BusinessException;
 
 	void setAllDefaults();
 
-	List<Song> getAllSongs() throws BusinessException;
+	Set<Song> getAllSongs() throws BusinessException;
 
 	void addNewPlaylist(Playlist playlist) throws BusinessException;
 

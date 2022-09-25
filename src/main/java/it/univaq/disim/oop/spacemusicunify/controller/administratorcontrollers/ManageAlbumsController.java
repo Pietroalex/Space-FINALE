@@ -23,20 +23,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
-public class ManageAlbumsController implements Initializable, DataInitializable<Set<Album>> {
+public class ManageAlbumsController implements Initializable, DataInitializable<Set<Production>> {
 	
     private final ViewDispatcher dispatcher;
     private final ArtistService artistService;
     private Artist artist;
+
 
 
     @FXML
@@ -61,6 +58,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     private Button newAlbumButton;
     @FXML
     private Label operation;
+    private Set<Production> productionSet;
 
     public ManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
@@ -85,8 +83,11 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
             if(param.getValue().getCover() != null){
 
                 image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getData())));
-                image.setFitHeight(40);
-                image.setFitWidth(40);
+                int height = param.getValue().getCover().getHeight()/4;
+                int width = param.getValue().getCover().getWidth()/4;
+
+                image.setFitHeight(height);
+                image.setFitWidth(width);
             }
         	return new SimpleObjectProperty<ImageView>(image);
         });
@@ -101,8 +102,8 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
                 } else {
                     dispatcher.setSituation(ViewSituations.detail);
                 }
+                findANDnav(param.getValue());
 
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
             });
             return new SimpleObjectProperty<Button>(modify);
         });
@@ -111,33 +112,52 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
             page.setMaxHeight(500);
         }
     }
-    @Override
-    public void initializeData(Set<Album> discography) {
-       /* this.artist = discography.iterator().next().getArtist();
 
-        stageName.setText(this.artist.getStageName());*/
+    private void findANDnav(Album value) {
+        for(Production production : productionSet){
+            if(production.getAlbum().getId().intValue() == value.getId().intValue()){
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
+            }
+        }
+    }
+
+    @Override
+    public void initializeData(Set<Production> productions) {
+        productionSet = productions;
+        artist = productions.iterator().next().getArtist();
+
+        stageName.setText(this.artist.getName());
         if(dispatcher.getSituation() == ViewSituations.user) {
         	newAlbumButton.setVisible(false);
         	operation.setText("View");
         }
 
-        List<Album> albums = new ArrayList<>(discography);
+        List<Album> albums = new ArrayList<>();
+        for(Production production : productions){
+            albums.add(production.getAlbum());
+        }
+
         ObservableList<Album> albumsData = FXCollections.observableArrayList(albums);
         albumList.setItems(albumsData);
     }
     @FXML
     public void createNewAlbum(){
     	Album newAlbum = new Album();
-    	/*newAlbum.setTitle("new album of "+artist.getStageName());
+    	newAlbum.setTitle("new album of "+artist.getName());
     	newAlbum.setGenre(Genre.rock);
     	newAlbum.setRelease(LocalDate.now());
-	    newAlbum.setArtist(artist);*/
         Picture picture = new Picture();
-
+        picture.setHeight(140);
+        picture.setWidth(140);
         picture.setData("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"dati"+ File.separator+"RAMfiles"+ File.separator+"cover.png");
+        picture.setOwnership(newAlbum);
         newAlbum.setCover(picture);
 
+        Production production = new Production();
+        production.setArtist(artist);
+        production.setAlbum(newAlbum);
+
         dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", newAlbum);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
     }
 }

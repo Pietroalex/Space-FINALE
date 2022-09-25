@@ -14,11 +14,11 @@ import java.util.*;
 
 public class RAMProductionServiceImpl implements ProductionService {
 	
-	private static List<Production> storedProductions = new ArrayList<>();
+	private static Set<Production> storedProductions = new HashSet<>();
 	private static Integer idProduction = 1;
 
 	@Override
-	public List<Production> getAllProductions() throws BusinessException {
+	public Set<Production> getAllProductions() throws BusinessException {
 		return storedProductions;
 	}
 
