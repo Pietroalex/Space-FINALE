@@ -11,14 +11,7 @@ import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Artist;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Picture;
-import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Production;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
-import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
 	
@@ -125,11 +118,10 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	}
 
-
 	@Override
-	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, Set<Song> songlist) throws BusinessException {
-		for (Album album : storedAlbums) {
-			if (album.getTitle().equals(title) && album.getId().intValue() != id.intValue()) {
+	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
+		for (Album albums : storedAlbums) {
+			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
 			}
@@ -152,6 +144,8 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			}
 		}
 	}
+
+
 
 	@Override
 	public void delete(Album album) throws BusinessException {
@@ -204,8 +198,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, String length, Genre genre, byte[] mp3, String lyrics, Album album)
-			throws AlreadyTakenFieldException {
+	public void modify(Integer id, String title, Audio mp3, String lyrics, Album album, String length, Genre genre, Song song) throws BusinessException {
 		for (Song canzone : storedSongs) {
 			if (canzone.getTitle().equals(title) && canzone.getId().intValue() != id.intValue()) {
 				System.out.println("controllo");
@@ -222,8 +215,8 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 			}
 		}
-
 	}
+
 
 	@Override
 	public void delete(Song canzone) throws BusinessException {

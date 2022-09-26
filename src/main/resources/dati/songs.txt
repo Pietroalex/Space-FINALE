@@ -1,1 +1,11 @@
-1
+12
+1§new song of 'Inediti1'§1§Lyrics§1§04:02§pop
+2§new song of 'Inediti2'§2§Lyrics§2§04:02§pop
+3§new song of 'Inediti3'§3§Lyrics§3§04:02§pop
+4§new song of 'Inediti4'§4§Lyrics§4§04:02§pop
+5§new song of 'Inediti5'§5§Lyrics§5§04:02§pop
+7§Nuova canzone§8§add Lyric§4§00:00§pop
+8§new song of 'new album of test groupas'§9§Lyrics§6§04:02§rock
+9§new song of 'new album of test groupa'§10§Lyrics§7§04:02§acoustic
+10§Nuova canzonesdasaas§11§add Lyric§2§00:00§pop
+11§Nuova canzones§14§add Lyric§7§00:20§acoustic

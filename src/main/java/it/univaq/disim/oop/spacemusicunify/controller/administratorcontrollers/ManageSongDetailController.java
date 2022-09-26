@@ -3,10 +3,7 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.business.impl.file.UtilityObjectRetriever;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Production;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
-import it.univaq.disim.oop.spacemusicunify.domain.Genre;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.event.ActionEvent;
@@ -76,6 +73,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     private Button mp3button;
     private Production production;
     private List<Object> objectlist;
+    private Audio tempAudio;
 
 
     public ManageSongDetailController(){
@@ -102,8 +100,10 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 titleField.setText(song.getTitle());
                 lengthField.setText(song.getLength());
                 lyricsField.setText(song.getLyrics());
-                if(song.getId() != null) {
-                    //songField.setText(canzone.getFileMp3());
+                if(song.getFileMp3() == null){
+                    songField.setText("No MP3 Audio File selected");
+                } else {
+                    songField.setText("MP3 Audio File loaded");
                 }
                 if(album.getGenre() == Genre.singoli) {
                     genreField.setDisable(false);
@@ -123,9 +123,13 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 titleField.setText(song.getTitle());
                 lengthField.setText(song.getLength());
                 lyricsField.setText(song.getLyrics());
-                if(song.getId() != null) {
-                    //songField.setText(canzone.getFileMp3());
+
+                if(song.getFileMp3() == null){
+                    songField.setText("No MP3 Audio File selected");
+                } else {
+                    songField.setText("MP3 Audio File loaded");
                 }
+
                 if(album.getGenre() == Genre.singoli) {
                     genreField.setDisable(false);
                 }else{
@@ -174,26 +178,20 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
                 song.setTitle(titleField.getText());
                 song.setLength(lengthField.getText());
+                song.setLyrics(lyricsField.getText());
                 if (album.getGenre() == Genre.singoli) {
                     song.setGenre(genreField.getValue());
                 } else {
-                    song.setGenre(album.getGenre());
-                }
-                if (!(songField.getText().isEmpty())) {
-
-                   // canzone.setFileMp3(songField.getText());
-
-                } else {
-                    this.changeSong();
-                  //  canzone.setFileMp3(songField.getText());
+                        song.setGenre(album.getGenre());
                 }
 
-                song.setLyrics(lyricsField.getText());
+                if (tempAudio != null) song.setFileMp3(tempAudio);
+
 
                 albumService.add(song);
             } else {
                 System.out.println("eseguo modify");
-             //   spaceMusicUnifyService.modify(canzone.getId(), titleField.getText(), lengthField.getText(), genreField.getValue(), songField.getText(), lyricsField.getText(), album);
+              albumService.modify(song.getId(), titleField.getText(),  tempAudio, lyricsField.getText(), album, lengthField.getText(), genreField.getValue(), song);
             }
             dispatcher.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
@@ -227,7 +225,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     }
 
     @FXML
-    public void changeSong(){
+    public void pickMP3(){
 
             FileChooser fileChoose = new FileChooser();
             File file =  fileChoose.showOpenDialog(null);
@@ -236,16 +234,22 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 String path = file.getPath();
 
                 if(path.endsWith(".mp3")){
-                    songField.setText(path);
+                    tempAudio = new Audio();
+                    tempAudio.setData(path);
+                    tempAudio.setOwnership(song);
+                    songField.setText("MP3 Audio File loaded");
                     existingLabel.setVisible(false);
+
                 }else{
                     existingLabel.setText("Wrong File type, Only .mp3 are allowed");
                     existingLabel.setVisible(true);
+
                 }
 
             }else{
                 existingLabel.setText("Please choose an .mp3 File to continue");
                 existingLabel.setVisible(true);
+
             }
 
 

@@ -347,7 +347,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				albumService.add(album);
 
 			} else {
-				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), releaseField.getValue(), tempPicture, album.getSongList());
+				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), tempPicture, album.getSongList(), releaseField.getValue(), album);
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
 
@@ -474,6 +474,10 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}else{
 			canzone.setGenre(album.getGenre());
 		}
+		Audio audio = new Audio();
+		audio.setOwnership(canzone);
+		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "unravel.mp3");
+		canzone.setFileMp3(audio);
 		dispatcher.setSituation(ViewSituations.newobject);
 		objects.add(canzone);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objects);
