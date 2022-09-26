@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,12 +34,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				throw new AlreadyExistingException();
 			}
 		}
-/*		try {
-			cover = saveANDstore(album.getCover(), "cover");
-			album.setCover(cartellaImmagini+cover);
-		} catch (UnsupportedFileExtensionException e1) {
-			e1.printStackTrace();
-		}*/
+
 		FileData fileData;
 		//scrivo il file album
 		try {
@@ -64,12 +58,6 @@ public class FileAlbumServiceImpl implements AlbumService {
 			audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
 			audio.setOwnership(canzone);
 			canzone.setFileMp3(audio);
-
-
-
-/*			Set<Album> albumSet = album.getArtist().getDiscography();
-			albumSet.add(album);
-			album.getArtist().setDiscography(albumSet);*/
 
 			try (PrintWriter writerAlbum = new PrintWriter(new File(albumsFile))) {
 				long contatore = fileData.getContatore();
@@ -102,35 +90,14 @@ public class FileAlbumServiceImpl implements AlbumService {
 				production.setAlbum(album);
 				productionService.add(production);
 			}
-				//aggiorno il file degli artisti
-				/*fileData = Utility.readAllRows(artistsFile);
-				Artist artista = album.getArtist();
-				int cont = 0;
-				/*for (String[] righe : fileData.getRighe()) {
-					if (righe[0].equals(artista.getId().toString())) {
-						String[] row;
-						List<String> albums = Utility.leggiArray(righe[6]);
-						albums.add(album.getId().toString());
-						row = new String[]{righe[0], righe[1], righe[2], righe[3], righe[4], righe[5], albums.toString()};
 
-						fileData.getRighe().set(cont, row);
-						break;
-					}
-					cont++;
-				}
-				try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
-					writer.println(fileData.getContatore());
-					for (String[] righe : fileData.getRighe()) {
-						writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
-					}
-				}*/
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 	}
 
 	@Override
-	public void modify(Integer id, String title, Genre genre, LocalDate release, Picture cover, Set<Song> songlist) throws BusinessException {
+	public void modify(Integer id, String title, Genre genre, Picture tempPicture,  Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		String oldGenre = null;
 		try {
 
@@ -148,19 +115,18 @@ public class FileAlbumServiceImpl implements AlbumService {
 				if (righe[0].equals(id.toString())) {
 					oldGenre = righe[2];
 
+					Picture savePicture;
+
 					String[] row;
-					/*if(cover.contains(righe[3])){
-
-						 row = new String[]{righe[0], title, String.valueOf(genre), righe[3], String.valueOf(release), righe[5], righe[6]};
+					if(tempPicture != null){
+						savePicture = tempPicture;
+						multimediaService.delete(album.getCover());
+						multimediaService.add(tempPicture);
 					}else{
-
-						Files.deleteIfExists(Paths.get(cartellaImmagini+righe[3]));
-						row = new String[]{righe[0], title, String.valueOf(genre), saveANDstore(cover, "cover"), String.valueOf(release), righe[5], righe[6]};
-					}*/
-					row = new String[]{righe[0], title, String.valueOf(genre), String.valueOf(cover.getId()), String.valueOf(release), righe[5], righe[6]};
+						savePicture = album.getCover();
+					}
+					row = new String[]{righe[0], title, String.valueOf(genre), savePicture.getId().toString(), righe[4],String.valueOf(release)};
 					fileData.getRighe().set(cont, row);
-
-
 					break;
 				}
 				cont++;
@@ -176,14 +142,14 @@ public class FileAlbumServiceImpl implements AlbumService {
 				if (!oldGenre.equals(String.valueOf(genre)) ) {
 					for (Song canzone : songlist) {
 						canzone.setGenre(genre);
-						modify(canzone.getId(), canzone.getTitle(), canzone.getLength(), canzone.getGenre(), canzone.getFileMp3().getData(), canzone.getLyrics(), canzone.getAlbum());
+						modify(canzone.getId(), canzone.getTitle(), null, canzone.getLyrics(), canzone.getAlbum(), canzone.getLength(), canzone.getGenre(), canzone);
 					}
 				}
 			}
-			songlist.iterator().next().getAlbum().setCover(cover);
+			/*songlist.iterator().next().getAlbum().setCover(tempPicture);
 			songlist.iterator().next().getAlbum().setTitle(title);
 			songlist.iterator().next().getAlbum().setGenre(genre);
-			songlist.iterator().next().getAlbum().setRelease(release);
+			songlist.iterator().next().getAlbum().setRelease(release);*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -269,8 +235,6 @@ public class FileAlbumServiceImpl implements AlbumService {
 				for (String[] righe : fileData.getRighe()) {
 					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 				}
-				/*String tempMp3 = saveANDstore(canzone.getFileMp3(), "audios.txt");
-				canzone.setFileMp3(cartellaFilesMP3+tempMp3);*/
 
 				StringBuilder row = new StringBuilder();
 				row.append(contatore);
@@ -309,6 +273,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				cont++;
 			}
 			if(!check)throw new BusinessException("album non trovato");
+
 			try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
 				writer.println(fileData.getContatore());
 				for (String[] righe : fileData.getRighe()) {
@@ -322,7 +287,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, String length, Genre genre, byte[] mp3, String lyrics, Album album)
+	public void modify(Integer id, String title, Audio tempAudio,String lyrics,Album album,String length,Genre genre, Song song)
 			throws BusinessException {
 
 		boolean check = false;
@@ -337,37 +302,33 @@ public class FileAlbumServiceImpl implements AlbumService {
 			int cont = 0;
 			for(String[] righe: fileData.getRighe()) {
 				if(righe[0].equals(id.toString())) {
-					String tempMp3 = righe[2];
+					Audio saveAudio;
 
 					check = true;
 					String[] row;
-				/**
-					if(mp3.contains(righe[2])){ 
-						row = new String[]{id.toString(), title, righe[2], lyrics, righe[4], length, genre.toString()};
+					if(tempAudio != null){
+						saveAudio = tempAudio;
+						multimediaService.delete(song.getFileMp3());
+						multimediaService.add(tempAudio);
 					}else{
-						/*Files.delete(Paths.get(mp3Directory+righe[2]));*
-						row = new String[]{id.toString(), title, tempMp3 /*= saveANDstore(mp3, "audios.txt")*, lyrics, righe[4], length, genre.toString()};
+						saveAudio = song.getFileMp3();
 					}
-				*/
-					Set<Song> list = album.getSongList();
-					for(Song canzone: list){
-						if(canzone.getId() == id){
-							canzone.setId(id);
-							canzone.setTitle(title);
-							canzone.setLength(length);
-							canzone.setGenre(genre);
-							/*canzone.setFileMp3(mp3Directory+tempMp3);*/
-							canzone.setLyrics(lyrics);
-							canzone.setAlbum(album);
-						}
-					}
-					album.setSongList(list);
-					//fileData.getRighe().set(cont, row);
+					row = new String[]{righe[0], title, saveAudio.getId().toString(), lyrics, righe[4], length, String.valueOf(genre)};
+					fileData.getRighe().set(cont, row);
+
+					song.setId(id);
+					song.setTitle(title);
+					song.setLength(length);
+					song.setGenre(genre);
+					song.setFileMp3(saveAudio);
+					song.setLyrics(lyrics);
+					song.setAlbum(album);
 					break;
 				}
 				cont++;
 			}
 			if(!check)throw new BusinessException("canzone non trovata");
+
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				writer.println(fileData.getContatore());
 				for (String[] righe : fileData.getRighe()) {

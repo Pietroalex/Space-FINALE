@@ -1,1 +1,8 @@
-1
+8
+1§Inediti1§singoli§1§[1, 6]§2022-09-25
+2§Inediti2§singoli§4§[2, 10]§2022-09-26
+3§Inediti3§singoli§6§[3]§2022-09-26
+4§Inediti4§singoli§9§[4, 7]§2022-09-26
+5§Inediti5§singoli§11§[5]§2022-09-26
+6§new album of test groupas§rock§15§[8]§2022-09-26
+7§new album of test groupad§acoustic§18§[9, 11]§2022-09-26

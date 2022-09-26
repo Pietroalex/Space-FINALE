@@ -92,6 +92,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private MenuButton membersModify;
     @FXML
     private Set<Artist> addMembers ;
+    private Set<Picture> tempPictures;
+
 
     public ManageArtistDetailController() {
         dispatcher = ViewDispatcher.getInstance();
@@ -115,13 +117,14 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     public void setView2(){
         switch (dispatcher.getSituation()){
             case detail:
-                loadImages();
+                loadImages(artist.getPictures());
                 if(!(artist.getBandMembers().isEmpty())) {
                     members.setVisible(true);
                     for (Artist artistCtrl : artist.getBandMembers()) {
                         MenuItem menuItem = new MenuItem();
                         menuItem.setText(artistCtrl.getName());
                         menuItem.setOnAction((ActionEvent event) -> {
+                            members.hide();
                             dispatcher.setSituation(ViewSituations.detail);
                             dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
                             System.out.println("andato");
@@ -171,7 +174,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
                 scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 cancelbox.setVisible(false);
-                loadModifyImages();
+                loadModifyImages(artist.getPictures());
 
                 stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
@@ -241,7 +244,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
                 scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 cancelbox.setVisible(false);
-                loadModifyImages();
+                loadModifyImages(artist.getPictures());
 
                 stageNameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
@@ -263,28 +266,28 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         this.artist = artist;
 	    setView2();
     }
-    public void loadImages(){
-        if (!(this.artist.getPictures().isEmpty())) {
-            for( Picture img: this.artist.getPictures()) {
+    public void loadImages(Set<Picture> pictures){
+        if (!(pictures.isEmpty())) {
+            for( Picture img: pictures) {
                 ImageView imgview;
 
                     imgview = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
 
-                imgview.setFitHeight(120);
-                imgview.setFitWidth(120);
-                this.images.getChildren().add(imgview);
+                imgview.setFitHeight(img.getHeight());
+                imgview.setFitWidth(img.getWidth());
+                images.getChildren().add(imgview);
             }
         }
     }
-    public void loadModifyImages() {
-        if (!(this.artist.getPictures().isEmpty()) ) {
-            for (Picture img : this.artist.getPictures()) {
+    public void loadModifyImages(Set<Picture> pictures) {
+        if (!(pictures.isEmpty()) ) {
+            for (Picture img : pictures) {
 
                 ImageView imgs;
 
                     imgs = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
-                    imgs.setFitHeight(120);
-                    imgs.setFitWidth(120);
+                    imgs.setFitHeight(img.getHeight());
+                    imgs.setFitWidth(img.getWidth());
                     imgs.setCursor(Cursor.HAND);
 
                     imgs.setOnMouseClicked( (mouseEvent) -> {
@@ -306,7 +309,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             imgAdd.setOnMouseClicked(event -> {
                 this.focusAdd();
             });
-            this.modifyImages.getChildren().add(imgAdd);
+            modifyImages.getChildren().add(imgAdd);
         }else{
             ImageView imgAdd;
             try {
@@ -333,9 +336,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
                 artist.setNationality(nationalityField.getValue());
                 artistService.setModifieMembers(addMembers);
+                if(tempPictures != null ) artist.setPictures(tempPictures);
                 artistService.add(artist);
             } else {
-            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), artist.getPictures(), addMembers, artist);
+            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), tempPictures, addMembers, artist);
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
@@ -375,7 +379,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     }
     public void focusImage(Picture image){
         imgUrl = image;
-        System.out.println(imgUrl);
         cancelbox.setVisible(true);
     }
     public void focusAdd(){
@@ -387,18 +390,18 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             String path = file.getPath();
             if(path.endsWith(".png") || path.endsWith(".jpg")){
                 existingLabel.setVisible(false);
-                Set<Picture> tempimg = this.artist.getPictures();
+                if(tempPictures == null) tempPictures = new HashSet<>(artist.getPictures());
 
-                    Picture picture = new Picture();
-                    picture.setOwnership(artist);
-                    picture.setHeight(120);
-                    picture.setWidth(120);
-                    picture.setData(path);
-                    tempimg.add(picture);
+                Picture picture = new Picture();
+                picture.setOwnership(artist);
+                picture.setHeight(120);
+                picture.setWidth(120);
+                picture.setData(path);
+                tempPictures.add(picture);
 
                 modifyImages.getChildren().clear();
-                this.artist.setPictures(tempimg);
-                this.loadModifyImages();
+                /*artist.setPictures(tempPictures);*/
+                loadModifyImages(tempPictures);
             }else{
                 existingLabel.setText("Wrong image File type, Only .png or .jpg are allowed");
                 existingLabel.setVisible(true);
@@ -412,19 +415,23 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     }
     @FXML
     public void deleteThisImage(ActionEvent event){
-        Set<Picture> tempimg = this.artist.getPictures();
+        if(tempPictures == null) tempPictures = new HashSet<>(artist.getPictures());
 
-        for(Picture img: tempimg){
-            if(imgUrl.equals(img.getId().toString())){
-                tempimg.remove(img);
+        tempPictures.removeIf((Picture picture) -> picture.equals(imgUrl));
+        modifyImages.getChildren().clear();
+        loadModifyImages(tempPictures);
+        cancelbox.setVisible(false);
+/*        for(Picture img: tempPictures){
+            if(imgUrl.getId().intValue() == img.getId().intValue()){
+                tempPictures.remove(img);
                 modifyImages.getChildren().clear();
-                this.artist.setPictures(tempimg);
-                this.loadModifyImages();
+                *//*artist.setPictures(tempPictures);*//*
+                loadModifyImages(tempPictures);
                 cancelbox.setVisible(false);
 
                 break;
             }
-        }
+        }*/
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){

@@ -43,6 +43,8 @@ public class FileArtistServiceImpl implements ArtistService {
 			Picture pictureAlbum = new Picture();
 			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
 			pictureAlbum.setOwnership(album);
+			pictureAlbum.setHeight(140);
+			pictureAlbum.setWidth(140);
 			album.setCover(pictureAlbum);
 			album.setRelease(LocalDate.now());
 
@@ -53,6 +55,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				for (String[] righe : fileDataArtisti.getRighe()) {
 					writerArtista.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 				}
+				artista.setId(Integer.parseInt(String.valueOf(contatore)));
 				List<String> imageList = new ArrayList<>();
 				for(Picture picture : artista.getPictures()){
 					multimediaService.add(picture);
@@ -63,7 +66,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				for(Artist artist : getModifiedMembers()){
 					bandIds.add(artist.getId().toString());
 				}
-				artista.setId(Integer.parseInt(String.valueOf(contatore)));
+
 				album.setTitle("Inediti"+(artista.getId()));
 				StringBuilder rowArtista = new StringBuilder();
 				rowArtista.append(contatore);
@@ -109,62 +112,54 @@ public class FileArtistServiceImpl implements ArtistService {
 			int cont = 0;
 			for (String[] righe : fileData.getRighe()) {
 				if (righe[0].equals(id.toString())) {
-					List<String> imagelist = new ArrayList<>();
-					List<String> savedImages = Utility.leggiArray(righe[5]);
-					List<String> removedImages = new ArrayList<>();
-					List<String> toAddImages = new ArrayList<>();
-					/*for(Picture newImage : images){
-
-						for(String string : savedImages) {
-							if (newImage.contains(string)) {
-
-								imagelist.add(string);
+					List<String> imagesIds = new ArrayList<>();
+					if (images != null) {
+						Set<Picture> toAddPictures = new HashSet<>();
+						Set<Picture> toRemovePictures = new HashSet<>();
+						Set<Picture> toCheckPictures = new HashSet<>();
+						for (Picture newPic : images) {
+							if (newPic.getId() == null) {
+								toAddPictures.add(newPic);
+							}else{
+								toCheckPictures.add(newPic);
 							}
 						}
-					}*/
+						for(Picture image : artist.getPictures()) {
 
-					for(String image : savedImages){
+							boolean checktoremove = true;
+							for (Picture img : toCheckPictures) {
 
-						boolean checktoremove = true;
-						for(String string : imagelist) {
-
-							if (string.contains(image)) {
-
-								checktoremove = false;
-								break;
+								if (image.getId().intValue() == img.getId().intValue()) {
+									checktoremove = false;
+									break;
+								}
+							}
+							if (checktoremove) {
+								toRemovePictures.add(image);
 							}
 						}
-						if(checktoremove){
-							removedImages.add(image);
+						for (Picture picture : toRemovePictures){
+							multimediaService.delete(picture);
 						}
-					}
-
-					/*for(String image : images){
-
-						boolean checktoadd = true;
-						for(String string : savedImages) {
-
-							if (image.contains(string)) {
-
-								checktoadd = false;
-								break;
-							}
+						for (Picture picture : toAddPictures){
+							multimediaService.add(picture);
 						}
-						if(checktoadd){
-							toAddImages.add(image);
+						for(Picture picture : images){
+							imagesIds.add(picture.getId().toString());
 						}
+					}else{
+						imagesIds.addAll(Utility.leggiArray(righe[4]));
 					}
-					for(String image : removedImages){
-						images.removeIf(image::equals);
-						Files.deleteIfExists(Paths.get(cartellaImmagini+image));
+					List<String> membersIds = new ArrayList<>();
+					if(addMembers != null){
+						for(Artist artistCtrl : addMembers){
+							membersIds.add(artistCtrl.getId().toString());
+						}
+					}else{
+						membersIds.addAll(Utility.leggiArray(righe[6]));
 					}
-
-					for (String toAdd : toAddImages) {
-						imagelist.add(saveANDstore(toAdd, stageName));
-					}*/
-					String[] row = new String[]{righe[0], name,  String.valueOf(yearsOfActivity), biography, String.valueOf(nationality), imagelist.toString(), righe[6]};
+					String[] row = new String[]{righe[0], name,  String.valueOf(yearsOfActivity), biography, imagesIds.toString(),String.valueOf(nationality),  membersIds.toString()};
 					fileData.getRighe().set(cont, row);
-
 
 					break;
 				}

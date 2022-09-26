@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileMultimediaServiceImpl implements MultimediaService {
@@ -52,7 +53,34 @@ public class FileMultimediaServiceImpl implements MultimediaService {
     }
     @Override
     public void delete(Audio audio) throws BusinessException{
+        boolean check = false;
 
+        try {
+            FileData fileData = Utility.readAllRows(audiosFile);
+            for(String[] righeCheck: fileData.getRighe()) {
+                if(righeCheck[0].equals(audio.getId().toString())) {
+                    Files.deleteIfExists(Paths.get(mp3Directory+File.separator+righeCheck[1]));
+                    check = true;
+                    //aggiorno il file audios.txt
+                    try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
+                        writer.println(fileData.getContatore());
+                        for (String[] righe : fileData.getRighe()) {
+                            if (righe[0].equals(audio.getId().toString())) {
+                                //jump line
+                                continue;
+                            } else {
+                                writer.println(String.join("§", righe));
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+            if(!check)throw new BusinessException("audio inesistente");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,7 +119,34 @@ public class FileMultimediaServiceImpl implements MultimediaService {
     }
     @Override
     public void delete(Picture picture) throws BusinessException {
+        boolean check = false;
 
+        try {
+            FileData fileData = Utility.readAllRows(picturesFile);
+            for(String[] righeCheck: fileData.getRighe()) {
+                if(righeCheck[0].equals(picture.getId().toString())) {
+                    Files.deleteIfExists(Paths.get(picturesDirectory+File.separator+righeCheck[1]));
+                    check = true;
+                    //aggiorno il file pictures.txt
+                    try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
+                        writer.println(fileData.getContatore());
+                        for (String[] righe : fileData.getRighe()) {
+                            if (righe[0].equals(picture.getId().toString())) {
+                                //jump line
+                                continue;
+                            } else {
+                                writer.println(String.join("§", righe));
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+            if(!check)throw new BusinessException("picture inesistente");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public List<Picture> getAllPictures() throws BusinessException{

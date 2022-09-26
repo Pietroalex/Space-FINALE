@@ -53,8 +53,8 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 				FileWriter writer = new FileWriter(new File(usersFile));
 				writer.write("3" + "\n");
-				writer.write("1§amministratore§admin§admin" + "\n");
-				writer.write("2§utente§utente§123456§0§[]");
+				writer.write("1§admin§admin§admin" + "\n");
+				writer.write("2§user§utente§123456");
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();

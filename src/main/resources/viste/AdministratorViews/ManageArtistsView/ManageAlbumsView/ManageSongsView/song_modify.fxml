@@ -41,12 +41,12 @@
          <Font size="16.0" />
       </font>
    </Button>
-   <TextArea id="text2" fx:id="lyricsField" layoutX="49.0" layoutY="201.0" prefHeight="149.0" prefWidth="780.0" promptText="Lyrics">
+   <TextArea id="text2" fx:id="lyricsField" layoutX="49.0" layoutY="126.0" prefHeight="195.0" prefWidth="780.0" promptText="Lyrics">
       <font>
          <Font size="14.0" />
       </font>
    </TextArea>
-   <Button id="b1" fx:id="mp3button" layoutX="607.0" layoutY="135.0" mnemonicParsing="false" onAction="#changeSong" text="Change MP3 file">
+   <Button id="b1" fx:id="mp3button" layoutX="251.0" layoutY="332.0" mnemonicParsing="false" onAction="#pickMP3" text="Change MP3 file">
       <font>
          <Font size="14.0" />
       </font>
@@ -54,7 +54,7 @@
          <Cursor fx:constant="HAND" />
       </cursor>
    </Button>
-   <TextField id="text" fx:id="songField" alignment="CENTER" editable="false" layoutX="103.0" layoutY="136.0" prefHeight="32.0" prefWidth="472.0" promptText="File mp3">
+   <TextField id="text" fx:id="songField" alignment="CENTER" editable="false" layoutX="49.0" layoutY="333.0" prefHeight="32.0" prefWidth="196.0" promptText="File mp3">
       <font>
          <Font size="14.0" />
       </font>
