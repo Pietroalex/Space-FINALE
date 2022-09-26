@@ -55,10 +55,10 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         });
     }
     @Override
-    public void initializeData(User utente) {
-        this.user = utente;
+    public void initializeData(User user) {
+        this.user = user;
         try {
-            List<Playlist> result = userService.getAllPlaylists(utente);
+            List<Playlist> result = userService.getAllPlaylists(user);
             ObservableList<Playlist> playlistData = FXCollections.observableArrayList(result);
             playlistView.setItems(playlistData);
 
@@ -90,7 +90,6 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         createButton.setCursor(Cursor.HAND);
 
         createButton.setOnAction(e -> {
-
             playlist.setTitle(title.getText());
             playlist.setUser(this.user);
             // aggiungere la playlist alla TableView
@@ -99,7 +98,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             } catch (BusinessException e1) {
                 dispatcher.renderError(e1);
             }
-            dispatcher.renderView("UserViews/UserHomeView/playlistPane", this.user);
+            dispatcher.renderView("UserViews/HomeView/playlistPane", this.user);
             //refresh table
 
             popupwindow.close();

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Artist;
@@ -14,6 +13,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
@@ -36,7 +36,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class SearchController implements Initializable, DataInitializable<User>{
 
-	private final UserService userService;
+	private UserService userService;
 	@FXML
 	private TableView<Song> song;
 	@FXML
@@ -87,13 +87,16 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private String ricerca;
 	private User utente;
 	private PlayerService playerService;
+	private ArtistService artistService;
+	private AlbumService albumService;
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		userService = factory.getUserService();
-
-		/*playerService = PlayerService.getInstance();*/
+		playerService = factory.getPlayerService();
+		artistService = factory.getArtistService();
+		albumService = factory.getAlbumService();
 	}
 	
 	@Override
@@ -199,11 +202,18 @@ public class SearchController implements Initializable, DataInitializable<User>{
 						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
 					}*/
 				}
-
-				if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-					playerService.getMediaPlayer().stop();
-					playerService.getMediaPlayer().dispose();
+				SpacemusicunifyPlayer spacemusicunifyPlayer;
+				try {
+					spacemusicunifyPlayer = playerService.getPlayer(utente);
+					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+					spacemusicunifyPlayer.getMediaPlayer().stop();
+					spacemusicunifyPlayer.getMediaPlayer().dispose();
 				}
+				} catch (BusinessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				playerService.setPlayerState(PlayerState.searchSingleClick);
 				dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
 			});
@@ -239,7 +249,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 		try {
 			List<Artist> artistList = new ArrayList<>();
-			for(Artist artista: userService.getAllArtists()) {
+			for(Artist artista: artistService.getArtistList()) {
 				if(artista.getName().contains(ricerca.strip())) {
 					artistList.add(artista);
 				}
@@ -250,7 +260,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 			List<Song> songList = new ArrayList<>();
 
-			for(Song song: userService.getAllSongs()) {
+			for(Song song: albumService.getSongList()) {
 				if(song.getTitle().contains(ricerca.strip()) || song.getGenre().toString().equals(ricerca)) {
 					songList.add(song);
 				}
@@ -261,7 +271,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 
 			List<Album> albumList = new ArrayList<>();
-			for(Album album: userService.getAllAlbums()) {
+			for(Album album: albumService.getAlbumList()) {
 				if(album.getTitle().contains(ricerca.strip()) || album.getGenre().toString().equals(ricerca)) {
 					albumList.add(album);
 				}

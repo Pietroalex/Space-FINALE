@@ -250,13 +250,13 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public Set<Album> getAlbumList() throws BusinessException {
-		return null;
+	public List<Album> getAlbumList() throws BusinessException {
+		return storedAlbums;
 	}
 
 	@Override
-	public Set<Song> getSongList() throws BusinessException {
-		return null;
+	public List<Song> getSongList() throws BusinessException {
+		return storedSongs;
 	}
 
 	@Override

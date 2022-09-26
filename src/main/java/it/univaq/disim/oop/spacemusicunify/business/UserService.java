@@ -12,19 +12,10 @@ public interface UserService {
 	void modify(Integer id, String username, String password) throws BusinessException;
 
 	void delete(User utente) throws BusinessException;
-	
-    Set<Artist> getAllArtists() throws BusinessException;
-    
-    Set<Album> getAllAlbums() throws BusinessException;
-
-	void setAllDefaults();
-
-	Set<Song> getAllSongs() throws BusinessException;
 
 	void addNewPlaylist(Playlist playlist) throws BusinessException;
 
-	void modify(Integer id, String title, Set<Song> songlist, User user)
-			throws BusinessException;
+	void modify(Integer id, String title, Set<Song> songlist, User user) throws BusinessException;
 
 	List<Playlist> getAllPlaylists(User utente) throws BusinessException;
 	

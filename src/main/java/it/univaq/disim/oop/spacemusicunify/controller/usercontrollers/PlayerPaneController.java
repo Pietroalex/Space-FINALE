@@ -39,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -296,7 +297,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             totalTime.setText(song.getLength());
 
             spacemusicunifyPlayer.setDuration(Duration.ZERO);
-           // spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer());
+            spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer(getMediaFromBytes(song)));
+            
          //->   mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
             /*Files.newInputStream(Paths.get())*/
 
@@ -610,6 +612,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", user.getcurrentSong());
         }*/
     }
+    
     public boolean checkForClones(Playlist playlist){
         for(Song canzone : playlist.getSongList()){
            /* if(canzone.getId().equals( user.getcurrentSong().getId())){
@@ -619,4 +622,20 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
         return false;
     }
+    
+    public Media getMediaFromBytes(Song song) {
+    	try {
+			File tempMp3 = File.createTempFile("tempmp3", ".mp3", null);
+			tempMp3.deleteOnExit();
+			FileOutputStream fos = new FileOutputStream(tempMp3);
+			fos.write(song.getFileMp3().getData());
+			fos.close();
+			return new Media(tempMp3.toURI().toURL().toString());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+    	
+    }
+    
 }

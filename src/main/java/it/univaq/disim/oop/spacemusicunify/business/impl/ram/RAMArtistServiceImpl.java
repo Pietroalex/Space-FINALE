@@ -111,8 +111,8 @@ public class RAMArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public Set<Artist> getArtistList() throws BusinessException {
-		return null;
+	public List<Artist> getArtistList() throws BusinessException {
+		return storedArtists;
 	}
 
 	@Override

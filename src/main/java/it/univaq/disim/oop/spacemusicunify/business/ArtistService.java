@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
+import java.util.List;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.domain.*;
@@ -12,7 +13,7 @@ public interface ArtistService {
 
 	public void delete(Artist artist) throws BusinessException;
 
-    Set<Artist> getArtistList() throws BusinessException;
+    List<Artist> getArtistList() throws BusinessException;
 
     Set<Album> findAllAlbums(Artist artist) throws BusinessException;
 
