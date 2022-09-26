@@ -1,14 +1,19 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -18,9 +23,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class QueueController implements Initializable, DataInitializable<User> {
-	private final ViewDispatcher dispatcher;
-	/*private final PlayerService playerService;*/
-	private final UserService userService;
+
+	private PlayerService playerService;
+	private UserService userService;
 	@FXML
 	private TableView<Song> queueTable;
 	@FXML
@@ -33,12 +38,11 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	private TableColumn<Song, String> duration;
 	@FXML
 	private TableColumn<Song, Button> delete;
-	private User utente;
 	
 	public QueueController(){
-		dispatcher = ViewDispatcher.getInstance();
-		/*playerService = PlayerService.getInstance();*/
-		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
+		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
+		playerService = factory.getPlayerService();
+		userService = factory.getUserService();
 	}
 	
 	@Override
@@ -55,8 +59,8 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		delete.setStyle("-fx-alignment: CENTER;");
 	}
 	@Override
-	public void initializeData(User utente) {
-		this.utente = utente;
+	public void initializeData(User user) {
+		
 		delete.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
@@ -121,5 +125,15 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		queueTable.getItems().addAll(utente.getSongQueue());
 	*/
 		return null;});
-}
+		SpacemusicunifyPlayer spacemusicunifyPlayer;
+		try {
+			spacemusicunifyPlayer = playerService.getPlayer(user);
+			List<Song> songsList = spacemusicunifyPlayer.getQueue();
+			ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
+			queueTable.setItems(songData);
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
