@@ -10,7 +10,6 @@ public interface AlbumService {
 	
 	void add(Album album) throws BusinessException;
 
-
 	void modify(Integer id, String title, Genre genre, Picture tempPicture,  Set<Song> songlist, LocalDate release, Album album) throws BusinessException;
 
 	void delete(Album album) throws BusinessException;
