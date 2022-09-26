@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,15 +25,22 @@ public class LayoutController implements DataInitializable<User> {
 
 	private User user;
 	private PlayerService playerService;
+	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		userService = factory.getUserService();
-		/*playerService = PlayerService.getInstance();*/
+		playerService = factory.getPlayerService();
 	}
 	@Override
-	public void initializeData(User utente) {
+	public void initializeData(User user) {
+		
+		try {
+			spacemusicunifyPlayer = playerService.getPlayer(user);
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
 		for(Genre genre: Genre.values()){
 			MenuItem menuItem = new MenuItem();
 			menuItem.setText(genre.toString());
@@ -40,20 +48,20 @@ public class LayoutController implements DataInitializable<User> {
 			menu.getItems().add(menuItem);
 		}
 
-		this.user = utente;
+		this.user = user;
 		playerService.setPlayerState(PlayerState.started);
-		dispatcher.renderView("UserViews/HomeView/playerPane", utente);
-		dispatcher.renderView("UserViews/HomeView/playlistPane", utente);
+		dispatcher.renderView("UserViews/HomeView/playerPane", user);
+		dispatcher.renderView("UserViews/HomeView/playlistPane", user);
 
 		
 	}
 	@FXML
 	public void logout(MouseEvent event) {
 		dispatcher.logout();
-		if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-			playerService.getMediaPlayer().stop();
-			playerService.getMediaPlayer().dispose();
-			playerService.setPlayerOnPlay(false);
+		if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+			spacemusicunifyPlayer.getMediaPlayer().stop();
+			spacemusicunifyPlayer.getMediaPlayer().dispose();
+			spacemusicunifyPlayer.setPlay(false);
 		}
 	}
 	@FXML
@@ -61,7 +69,5 @@ public class LayoutController implements DataInitializable<User> {
 		userService.setRicerca(searchField.getText());
 		dispatcher.renderView("UserViews/SearchView/searchView", user);
 	}
-
-
 
 }

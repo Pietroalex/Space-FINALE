@@ -14,7 +14,7 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	private PlayerService playerService;
 
 	public RAMSpacemusicunifyBusinessFactoryImpl() {
-		spaceMusicUnifyService = new RAMSpaceMusicUnifyImpl();
+		spaceMusicUnifyService = new RAMSpaceMusicUnifyServiceImpl();
 		userService = new RAMUserServiceImpl();
 		productionService = new RAMProductionServiceImpl();
 		multimediaService = new RAMMultimediaServiceImpl();

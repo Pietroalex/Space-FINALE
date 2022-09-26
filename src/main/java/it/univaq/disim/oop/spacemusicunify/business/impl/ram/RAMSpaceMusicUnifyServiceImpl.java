@@ -2,6 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RAMSpaceMusicUnifyImpl implements SPACEMusicUnifyService {
+public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 	private static List<User> storedUsers = new ArrayList<>();
 	private List<Playlist> storedPlaylists = new ArrayList<>();
@@ -468,13 +469,13 @@ public class RAMSpaceMusicUnifyImpl implements SPACEMusicUnifyService {
 		/*artisti.add(artista2);*/
 		albums.add(artista2album1);
 
-		User utente = new User();
-		utente.setUsername("utente");
-		utente.setPassword("123456");
-
-
+		User user = new User();
+		user.setUsername("utente");
+		user.setPassword("123456");
+		SpacemusicunifyPlayer spacemusicunifyPlayer = new SpacemusicunifyPlayer(user);
+		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().getAllPlayers().add(spacemusicunifyPlayer);
 		try {
-			SpacemusicunifyBusinessFactory.getInstance().getUserService().add(utente);
+			SpacemusicunifyBusinessFactory.getInstance().getUserService().add(user);
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
 		}

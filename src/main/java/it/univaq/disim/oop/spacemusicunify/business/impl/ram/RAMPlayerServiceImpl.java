@@ -1,78 +1,20 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerService;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 public class RAMPlayerServiceImpl implements PlayerService {
 
-	private MediaPlayer mediaPlayer;
-	private Duration lastDuration;
-	private boolean playerOnPlay;
-	private Double volume;
-	private boolean mute;
-	private Song lastSong;
 	private PlayerState playerState;
-
-	private static RAMPlayerServiceImpl instance;
-
-	public static RAMPlayerServiceImpl getInstance() {
-		if(instance == null) { instance = new RAMPlayerServiceImpl();}
-		return instance;
-	}
-	@Override
-	public MediaPlayer getMediaPlayer() {
-		return mediaPlayer;
-	}
-	@Override
-	public void startMediaPlayer(Media media) {
-		this.mediaPlayer = new MediaPlayer(media);
-	}
-	@Override
-	public Duration getLastDuration() {
-		return lastDuration;
-	}
-	@Override
-	public void setLastDuration(Duration lastDuration) {
-		this.lastDuration = lastDuration;
-
-	}
-	@Override
-	public Boolean getPlayerOnPlay() {
-		return playerOnPlay;
-	}
-	@Override
-	public void setPlayerOnPlay(Boolean playerOnPlay) {
-		this.playerOnPlay = playerOnPlay;
-	}
-	@Override
-	public Double getPlayerVolume() {
-		return volume;
-	}
-	@Override
-	public void setPlayerVolume(Double volume) {
-		this.volume = volume;
-	}
-	@Override
-	public Boolean isMute() {
-		return mute;
-	}
-	@Override
-	public void setMute(Boolean mute) {
-		this.mute = mute;
-	}
-	@Override
-	public Song getLastSong() {
-		return lastSong;
-	}
-	@Override
-	public void setLastSong(Song song) {
-		this.lastSong = song;
-	}
+	private List<SpacemusicunifyPlayer> playerList = new ArrayList<>();
+	
 	@Override
 	public PlayerState getPlayerState() {
 		return playerState;
@@ -81,22 +23,43 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	public void setPlayerState(PlayerState playerState) {
 		this.playerState = playerState;
 	}
-
 	@Override
-	public void addSongToQueue(User utente, Song canzone) {
-		//utente.getSongQueue().add(canzone);
+	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
+		boolean check = false;
+		for(Song song : player.getQueue()) {
+			if(song == newSong) {
+				check = true;
+			}
+		}
+		if(!check) player.getQueue().add(newSong);
+		else throw new BusinessException("canzone già presente in coda");
 	}
 	@Override
-	public void deleteSongFromQueue(User utente, Song canzone) {
-		//utente.getSongQueue().remove(canzone);
+	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
+		if(!player.getQueue().remove(song)) throw new BusinessException("canzone non presente in coda");
 	}
 	@Override
-	public void updateCurrentSong(User utente, int position) {
-		//utente.setcurrentPosition(position);
+	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("impossibile scorrere la coda");
+		player.setCurrentSong(position);
 	}
 	@Override
-	public void replaceCurrentSong(User utente, Song canzone) {
-		//utente.getSongQueue().set(utente.getcurrentPosition(), canzone);
+	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
+		player.getQueue().set(player.getCurrentSong(), song); 
+		//throw new BusinessException();
+	}
+	@Override
+	public List<SpacemusicunifyPlayer> getAllPlayers() {
+		return playerList;
+	}
+	@Override
+	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
+		for(SpacemusicunifyPlayer player : getAllPlayers()) {
+			if(player.getUser() == user) {
+				return player;
+			}
+		}
+		throw new BusinessException("player non trovato");
 	}
 	
 }

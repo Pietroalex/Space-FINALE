@@ -9,6 +9,7 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -51,14 +52,13 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 	private ViewDispatcher dispatcher;
 	
-
-	
 	private PlayerService playerService;
 	
 	public PlaylistController() {
 		dispatcher = ViewDispatcher.getInstance();
-		userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
-		/*playerService = PlayerService.getInstance();*/
+		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
+		userService = factory.getUserService();
+		playerService = factory.getPlayerService();
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	
 	@FXML
 	public void addPlaylistToQueue() {
-		User utente = playlist.getUser();
+		User user = playlist.getUser();
 		Set<Song> lista = playlist.getSongList();
 		for(Song canzonePlaylist: lista) {
 			Boolean alreadyAdded = false;
@@ -125,13 +125,22 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				utente.getSongQueue().add(canzonePlaylist);
 			}*/
 		}
-
-		if(playerService.getMediaPlayer() != null && playerService.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-			playerService.getMediaPlayer().stop();
-			playerService.getMediaPlayer().dispose();
+		
+		SpacemusicunifyPlayer spacemusicunifyPlayer;
+		try {
+			spacemusicunifyPlayer = playerService.getPlayer(user);
+			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+				spacemusicunifyPlayer.getMediaPlayer().stop();
+				spacemusicunifyPlayer.getMediaPlayer().dispose();
+			}
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		
 		playerService.setPlayerState(PlayerState.searchSingleClick);
-		dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
+		dispatcher.renderView("UserViews/UserHomeView/playerPane", user);
 	}
 	
 	@FXML
