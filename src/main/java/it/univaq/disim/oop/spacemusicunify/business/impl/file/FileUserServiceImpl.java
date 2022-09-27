@@ -11,6 +11,7 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 public class FileUserServiceImpl implements UserService {
 
@@ -243,6 +244,11 @@ public class FileUserServiceImpl implements UserService {
 		}
 
 		return utenteList;
+	}
+
+	@Override
+	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
+		return null;
 	}
 
 	@Override

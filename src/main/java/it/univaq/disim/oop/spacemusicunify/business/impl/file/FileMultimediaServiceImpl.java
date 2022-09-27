@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 public class FileMultimediaServiceImpl implements MultimediaService {
     private String picturesFile;
@@ -149,12 +148,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         }
     }
     @Override
-    public List<Picture> getAllPictures() throws BusinessException{
+    public Set<Picture> getAllPictures() throws BusinessException{
         return null;
     }
 
     @Override
-    public List<Audio> getAllAudios() throws BusinessException {
+    public Set<Audio> getAllAudios() throws BusinessException {
         return null;
     }
 

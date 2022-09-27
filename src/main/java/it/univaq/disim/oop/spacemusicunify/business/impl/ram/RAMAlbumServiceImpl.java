@@ -111,7 +111,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		
 		add(song);
 
-		album.getSongList().add(song);
+		album.getSongs().add(song);
 
 		storedAlbums.add(album);
 

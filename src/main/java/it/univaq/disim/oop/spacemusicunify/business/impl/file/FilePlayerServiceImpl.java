@@ -88,7 +88,7 @@ public class FilePlayerServiceImpl implements PlayerService {
             return playerState;
         }
     */
-	@Override
+/*	@Override
 	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
 		return null;
 	}
@@ -96,7 +96,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 	@Override
 	public List<SpacemusicunifyPlayer> getAllPlayers() {
 		return null;
-	}
+	}*/
 
 	@Override
 	public void setPlayerState(PlayerState playerState) {
