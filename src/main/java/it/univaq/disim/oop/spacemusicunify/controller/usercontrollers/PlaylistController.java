@@ -128,7 +128,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 		
 		SpacemusicunifyPlayer spacemusicunifyPlayer;
 		try {
-			spacemusicunifyPlayer = playerService.getPlayer(user);
+			spacemusicunifyPlayer = userService.getPlayer(user);
 			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 				spacemusicunifyPlayer.getMediaPlayer().stop();
 				spacemusicunifyPlayer.getMediaPlayer().dispose();

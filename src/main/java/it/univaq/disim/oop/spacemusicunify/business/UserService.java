@@ -1,6 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 import java.util.List;
 import java.util.Set;
@@ -28,5 +29,7 @@ public interface UserService {
 	GeneralUser authenticate(String username, String password) throws BusinessException;
 	
 	List<User> getAllUsers();
+	
+	SpacemusicunifyPlayer getPlayer(User user) throws BusinessException;
 	
 }
