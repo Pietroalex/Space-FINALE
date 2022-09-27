@@ -1,10 +1,15 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.domain.Album;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
+import it.univaq.disim.oop.spacemusicunify.domain.Audio;
+import it.univaq.disim.oop.spacemusicunify.domain.Genre;
+import it.univaq.disim.oop.spacemusicunify.domain.Picture;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 
 public interface AlbumService {
 	

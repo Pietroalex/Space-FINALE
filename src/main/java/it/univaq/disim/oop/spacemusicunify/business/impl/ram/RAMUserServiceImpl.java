@@ -2,15 +2,16 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.*;
 
 public class RAMUserServiceImpl implements UserService {
 
 	private static Set<User> storedUsers = new HashSet<>();
-	private Set<Playlist> storedPlaylists = new HashSet<>();
+	private static Set<Playlist> storedPlaylists = new HashSet<>();
+	private static Set<SpacemusicunifyPlayer> storedPlayers = new HashSet<>();
 	private static int idUser = 1;
 	private String ricerca;
 	private static int id = 1; // da capire cos'è
@@ -18,19 +19,20 @@ public class RAMUserServiceImpl implements UserService {
 	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
 	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
 
-
 	@Override
-	public void add(User utente) throws BusinessException {
+	public void add(User newUser) throws BusinessException {
 		// controllo se l'utente già è presente
 		for (User user : storedUsers) {
-			if (user.getUsername().equals(utente.getUsername())) {
+			if (user.getUsername().equals(user.getUsername())) {
 				throw new AlreadyExistingException();
 			}
 		}
 		// utente nuovo
 
-		utente.setId(idUser++);
-		storedUsers.add(utente);
+		newUser.setId(idUser++);
+		storedUsers.add(newUser);
+		SpacemusicunifyPlayer spacemusicunifyPlayer = new SpacemusicunifyPlayer(newUser);
+		storedPlayers.add(spacemusicunifyPlayer);
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class RAMUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void delete(User utente) {
+	public void delete(User utente) throws BusinessException {
 
 		Set<User> utenti = getAllUsers();
 		Set<Playlist> playlists = null;
@@ -70,18 +72,17 @@ public class RAMUserServiceImpl implements UserService {
 				break;
 			}
 		}
+		
+		
 		Set<Playlist> playlistList = playlists;
 		for (Playlist playlist : playlistList) {
 			if (playlist.getUser().equals(utente)) {
-				try {
-					deletePlaylist(playlist);
-				} catch (BusinessException e) {
-					e.printStackTrace();
-				}
+				deletePlaylist(playlist);
 			}
 		}
-
-		System.out.println(playlists);
+		
+		SpacemusicunifyPlayer player = getPlayer(utente);
+		storedPlayers.remove(player);
 	}
 
 	@Override
@@ -111,6 +112,7 @@ public class RAMUserServiceImpl implements UserService {
 		playlist.setId(id++);
 		if(!storedPlaylists.add(playlist)) throw new BusinessException();
 	}
+	
 	@Override
 	public void modify(Integer id, String title, Set<Song> songlist, User user)
 			throws AlreadyTakenFieldException {
@@ -124,6 +126,7 @@ public class RAMUserServiceImpl implements UserService {
 		}
 
 	}
+	
 	@Override
 	public void deletePlaylist(Playlist playlist) throws BusinessException {
 		boolean controllo = false;
@@ -139,6 +142,7 @@ public class RAMUserServiceImpl implements UserService {
 			throw new BusinessException();
 		}
 	}
+	
 	@Override
 	public Set<Playlist> getAllPlaylists(User utente) throws BusinessException {
 
@@ -167,9 +171,20 @@ public class RAMUserServiceImpl implements UserService {
 	public String getRicerca() {
 		return ricerca;
 	}
+	
 	@Override
 	public void setRicerca(String ricerca) {
 		this.ricerca = ricerca;
+	}
+	
+	@Override
+	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
+		for(SpacemusicunifyPlayer player : storedPlayers) {
+			if(player.getUser() == user) {
+				return player;
+			}
+		}
+		throw new BusinessException("player non trovato");
 	}
 	
 }

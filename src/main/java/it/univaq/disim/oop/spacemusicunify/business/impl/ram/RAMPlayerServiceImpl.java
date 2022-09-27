@@ -13,7 +13,6 @@ import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 public class RAMPlayerServiceImpl implements PlayerService {
 
 	private PlayerState playerState;
-	private List<SpacemusicunifyPlayer> playerList = new ArrayList<>();
 	
 	@Override
 	public PlayerState getPlayerState() {
@@ -47,19 +46,6 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
 		player.getQueue().set(player.getCurrentSong(), song); 
 		//throw new BusinessException();
-	}
-	@Override
-	public List<SpacemusicunifyPlayer> getAllPlayers() {
-		return playerList;
-	}
-	@Override
-	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
-		for(SpacemusicunifyPlayer player : getAllPlayers()) {
-			if(player.getUser() == user) {
-				return player;
-			}
-		}
-		throw new BusinessException("player non trovato");
 	}
 	
 }

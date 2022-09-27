@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Audio;
 import it.univaq.disim.oop.spacemusicunify.domain.Picture;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MultimediaService {
 
@@ -15,6 +16,8 @@ public interface MultimediaService {
 
     void delete(Picture picture) throws BusinessException;
 
-    List<Picture> getAllPictures() throws BusinessException;
-    List<Audio> getAllAudios() throws BusinessException;
+    Set<Picture> getAllPictures() throws BusinessException;
+    
+    Set<Audio> getAllAudios() throws BusinessException;
+    
 }

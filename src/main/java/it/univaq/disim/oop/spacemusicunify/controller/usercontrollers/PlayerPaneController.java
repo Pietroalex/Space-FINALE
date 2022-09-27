@@ -87,7 +87,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void initializeData(User user) {
         this.user = user;
         try {
-			this.spacemusicunifyPlayer = playerService.getPlayer(user);
+			this.spacemusicunifyPlayer = userService.getPlayer(user);
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -413,7 +413,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
     public void resume() {
         Song song = null;
-       /* Song song = user.getcurrentSong();*/
+        song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
         songTitle.setText(song.getTitle());
 
         /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/

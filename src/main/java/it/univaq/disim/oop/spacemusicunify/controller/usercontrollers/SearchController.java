@@ -12,6 +12,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
@@ -89,6 +90,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private PlayerService playerService;
 	private ArtistService artistService;
 	private AlbumService albumService;
+	private ProductionService productionService;
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
@@ -97,6 +99,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		playerService = factory.getPlayerService();
 		artistService = factory.getArtistService();
 		albumService = factory.getAlbumService();
+		productionService = factory.getProductionService();
 	}
 	
 	@Override
@@ -122,7 +125,19 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.user);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", param.getValue());
+				List<Object> fakeList = new ArrayList<>();
+				try {
+					for(Production prod : productionService.getAllProductions()) {
+						if(prod.getAlbum().equals(param.getValue().getAlbum())) {
+							fakeList.add(prod);
+							break;
+						}
+					}
+				} catch (BusinessException e) {
+					e.printStackTrace();
+				}
+				fakeList.add(param.getValue());
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", fakeList);
 			});
 			return new SimpleObjectProperty<Button>(info);
 		});
@@ -151,7 +166,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		});
 
 		//artistaTable
-		artistName.setCellValueFactory(new PropertyValueFactory<>("stageName"));
+		artistName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		artistNationality.setCellValueFactory(new PropertyValueFactory<>("nationality"));
 		artistYears.setCellValueFactory(new PropertyValueFactory<>("yearsOfActivity"));
 		artistInfo.setStyle("-fx-alignment: CENTER;");
@@ -204,7 +219,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				}
 				SpacemusicunifyPlayer spacemusicunifyPlayer;
 				try {
-					spacemusicunifyPlayer = playerService.getPlayer(utente);
+					spacemusicunifyPlayer = userService.getPlayer(utente);
 					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 					spacemusicunifyPlayer.getMediaPlayer().stop();
 					spacemusicunifyPlayer.getMediaPlayer().dispose();
