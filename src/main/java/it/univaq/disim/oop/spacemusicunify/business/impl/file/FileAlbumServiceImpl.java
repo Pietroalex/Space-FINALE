@@ -447,7 +447,6 @@ public class FileAlbumServiceImpl implements AlbumService {
 				productionList.add(production);
 			}
 		}
-
 		return productionList;
 	}
 	@Override
