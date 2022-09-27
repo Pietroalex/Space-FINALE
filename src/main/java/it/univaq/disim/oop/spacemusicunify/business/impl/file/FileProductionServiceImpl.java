@@ -3,6 +3,8 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +42,7 @@ public class FileProductionServiceImpl implements ProductionService {
 				Album album = (Album) UtilityObjectRetriever.findObjectById(colonne[2], albumsFileName);
 
 				production.setId(Integer.parseInt(colonne[0]));
-
+				System.out.println("art "+artist);
 				production.setArtist(artist);
 				production.setAlbum(album);
 				productionList.add(production);
@@ -87,7 +89,34 @@ public class FileProductionServiceImpl implements ProductionService {
 
 	@Override
 	public void delete(Production production) throws BusinessException {
-		// TODO Auto-generated method stub
+		boolean check = false;
+
+		try {
+			FileData fileData = Utility.readAllRows(productionsFile);
+			for(String[] righeCheck: fileData.getRighe()) {
+				if(righeCheck[0].equals(production.getId().toString())) {
+
+					check = true;
+					//aggiorno il file productions.txt
+					try (PrintWriter writer = new PrintWriter(new File(productionsFile))) {
+						writer.println(fileData.getContatore());
+						for (String[] righe : fileData.getRighe()) {
+							if (righe[0].equals(production.getId().toString())) {
+								//jump line
+								continue;
+							} else {
+								writer.println(String.join("§", righe));
+							}
+						}
+					}
+
+					break;
+				}
+			}
+			if(!check)throw new BusinessException("production inesistente");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 

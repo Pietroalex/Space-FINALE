@@ -180,13 +180,24 @@ public class FileArtistServiceImpl implements ArtistService {
 	@Override
 	public void delete(Artist artist) throws BusinessException {
 		boolean check = false;
-
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] righeCheck: fileData.getRighe()) {
 				if(righeCheck[0].equals(artist.getId().toString())) {
 
 					check = true;
+
+					Set<Album> albumList = findAllAlbums(artist);
+					//aggiorno il file album.txt
+					for (Album albumCtrl : albumList) {
+						if(SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl).size() <= 1){
+							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);System.out.println("1");
+						}
+					}
+					for(Production production : findAllProductions(artist)){
+						productionService.delete(production);
+					}
+
 					//aggiorno il file artisti.txt
 					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
 						writer.println(fileData.getContatore());
@@ -199,34 +210,24 @@ public class FileArtistServiceImpl implements ArtistService {
 							}
 						}
 					}
-					List<Album> albumList = new ArrayList<>();
-					//aggiorno il file album.txt
-					/*for (Album controllo : artista.getDiscography()) {
-						Album album = new Album();
-						album.setId(controllo.getId());
-						album.setArtist(controllo.getArtist());
-						album.setCover(controllo.getCover());
-						album.setTitle(controllo.getTitle());
-						album.setGenre(controllo.getGenre());
-						album.setSongList(controllo.getSongList());
-						album.setRelease(controllo.getRelease());
-						albumList.add(album);
-					}*/
-					for(Album album : albumList){
-//						delete(album);
+
+
+
+					System.out.println("artista id "+ artist.getId());
+
+					for(Picture picture : artist.getPictures()){
+						multimediaService.delete(picture);
 					}
-					/*for(String immagini : artista.getPictures()){
-						Files.deleteIfExists(Paths.get(immagini));
-					}*/
 					break;
 				}
 			}
 			if(!check)throw new BusinessException("artista inesistente");
 		} catch (IOException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
-	
+
+
 
 	@Override
 	public Set<Artist> getArtistList() throws BusinessException {
@@ -244,22 +245,19 @@ public class FileArtistServiceImpl implements ArtistService {
 	}
 	@Override
 	public Set<Album> findAllAlbums(Artist artist) throws BusinessException {
-		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
-		Set<Album> albums = albumService.getAlbumList();
+
 		Set<Album> albumsFinal = new HashSet<>();
-		/*List<Production> productions = findAllProductions(artist);
+		Set<Production> productions = findAllProductions(artist);
 		for (Production production : productions){
-			for (Album album : albums){
-				if (album.getId().intValue() == production.getAlbum().getId().intValue()){
-					albumsFinal.add(album);
-				}
-			}
-		}*/
+
+				albumsFinal.add(production.getAlbum());
+
+
+		}
 		return albumsFinal;
 	}
 	@Override
 	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
-		ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
 		Set<Production> productions = productionService.getAllProductions();
 		Set<Production> productionList = new HashSet<>();
 		for (Production production : productions){

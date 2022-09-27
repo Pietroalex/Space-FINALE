@@ -48,11 +48,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Song, String> titleModify;
 	@FXML
 	private TableColumn<Song, String> lengthModify;
-
 	@FXML
-	private TableColumn<Song, String> artistsModify;
-	@FXML
-	private TableColumn<Song, Button> detailSongModify;
+	private TableColumn<Song, Genre> genreModify;
 	@FXML
 	private TableColumn<Song, Button> managesong;
 //tabella a destra
@@ -65,9 +62,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Song, String> title;
 	@FXML
 	private TableColumn<Song, String> length;
-
 	@FXML
-	private TableColumn<Song, String> artists;
+	private TableColumn<Song, Genre> genretab;
 	@FXML
 	private TableColumn<Song, Button> detailSong;
 	private Artist artista;
@@ -94,6 +90,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private String imageUrl;
 	@FXML
 	private Button newSong;
+	@FXML
+	private MenuButton artistS;
 	@FXML
 	private Button cancel1;
 
@@ -133,8 +131,28 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				id.setCellValueFactory(new PropertyValueFactory<>("id"));
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
+				genretab.setCellValueFactory(new PropertyValueFactory<>("genre"));
+				try {
+					Set<Artist> artistsSet = albumService.findAllArtists(album);
+					artistS.setVisible(true);
+					for (Artist artistCtrl : artistsSet) {
+						MenuItem menuItem = new MenuItem();
+						menuItem.setText(artistCtrl.getName());
+						menuItem.setOnAction((ActionEvent event) -> {
+							artistS.hide();
+							dispatcher.setSituation(ViewSituations.detail);
+							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+						});
+						artistS.getItems().add(menuItem);
+					}
+				} catch (BusinessException e) {
+					throw new RuntimeException(e);
+				}
 
-				artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(/*album.getArtist().getStageName()*/ ));
+
+
+
+				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
@@ -174,14 +192,14 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				idModify.setCellValueFactory(new PropertyValueFactory<>("id"));
 				titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
 				lengthModify.setCellValueFactory(new PropertyValueFactory<>("length"));
-
-				artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(/*album.getArtist().getStageName()*/));
-
+				genreModify.setCellValueFactory(new PropertyValueFactory<>("genre"));
+				/*artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//*));
+*/
 				managesong.setStyle("-fx-alignment: CENTER;");
 				managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button deletesong = new Button("Delete");
 					deletesong.setCursor(Cursor.HAND);
-					if(album.getSongList().size() == 1){
+					if(album.getSongs().size() == 1){
 						deletesong.setDisable(true);
 					}
 					deletesong.setOnAction((ActionEvent event) -> {
@@ -200,7 +218,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					});
 					return new SimpleObjectProperty<Button>(deletesong);
 				});
-				detailSongModify.setStyle("-fx-alignment: CENTER;");
+				/*detailSongModify.setStyle("-fx-alignment: CENTER;");
 				detailSongModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
 					modify.setCursor(Cursor.HAND);
@@ -210,7 +228,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
 					});
 					return new SimpleObjectProperty<Button>(modify);
-				});
+				});*/
 
 				if(this.album.getGenre() == Genre.singoli){
 					deletealbum.setDisable(true);
@@ -326,7 +344,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		artista = production.getArtist();
 
 
-		Set<Song> songs = album.getSongList();
+		Set<Song> songs = album.getSongs();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
 		setView2(songData);
 
@@ -347,7 +365,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				albumService.add(album);
 
 			} else {
-				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), tempPicture, album.getSongList(), releaseField.getValue(), album);
+				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), tempPicture, album.getSongs(), releaseField.getValue(), album);
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
 

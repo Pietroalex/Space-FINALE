@@ -167,7 +167,7 @@ public class UtilityObjectRetriever extends Object {
 		for(String canzoni: Utility.leggiArray(colonne[4])){
 			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
 		}
-		album.setSongList(canzoneList);
+		album.setSongs(canzoneList);
 		album.setRelease(LocalDate.parse(colonne[5]));
 		currentAlbum = null;
 		return album;

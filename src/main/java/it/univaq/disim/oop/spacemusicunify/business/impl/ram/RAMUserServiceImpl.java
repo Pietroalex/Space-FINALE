@@ -9,8 +9,8 @@ import java.util.*;
 
 public class RAMUserServiceImpl implements UserService {
 
-	private static List<User> storedUsers = new ArrayList<>();
-	private List<Playlist> storedPlaylists = new ArrayList<>();
+	private static Set<User> storedUsers = new HashSet<>();
+	private Set<Playlist> storedPlaylists = new HashSet<>();
 	private static int idUser = 1;
 	private String ricerca;
 	private static int id = 1; // da capire cos'è
@@ -35,7 +35,7 @@ public class RAMUserServiceImpl implements UserService {
 
 	@Override
 	public void modify(Integer id, String username, String password) throws AlreadyTakenFieldException {
-		List<User> utenti = getAllUsers();
+		Set<User> utenti = getAllUsers();
 
 		for (User user : utenti) {
 			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
@@ -55,8 +55,8 @@ public class RAMUserServiceImpl implements UserService {
 	@Override
 	public void delete(User utente) {
 
-		List<User> utenti = getAllUsers();
-		List<Playlist> playlists = null;
+		Set<User> utenti = getAllUsers();
+		Set<Playlist> playlists = null;
 		try {
 			playlists = getAllPlaylists(utente);
 			System.out.println(playlists);
@@ -70,7 +70,7 @@ public class RAMUserServiceImpl implements UserService {
 				break;
 			}
 		}
-		List<Playlist> playlistList = playlists;
+		Set<Playlist> playlistList = playlists;
 		for (Playlist playlist : playlistList) {
 			if (playlist.getUser().equals(utente)) {
 				try {
@@ -102,12 +102,12 @@ public class RAMUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
+	public Set<User> getAllUsers() {
 		return storedUsers;
 	}
 
 	@Override
-	public void addNewPlaylist(Playlist playlist) throws BusinessException {
+	public void add(Playlist playlist) throws BusinessException {
 		playlist.setId(id++);
 		if(!storedPlaylists.add(playlist)) throw new BusinessException();
 	}
@@ -140,7 +140,7 @@ public class RAMUserServiceImpl implements UserService {
 		}
 	}
 	@Override
-	public List<Playlist> getAllPlaylists(User utente) throws BusinessException {
+	public Set<Playlist> getAllPlaylists(User utente) throws BusinessException {
 
 		boolean controllo = false;
 		for(User user: getAllUsers()) {
@@ -150,7 +150,7 @@ public class RAMUserServiceImpl implements UserService {
 			}
 		}
 		if(controllo) {
-			List<Playlist> userPlaylists = new ArrayList<>();
+			Set<Playlist> userPlaylists = new HashSet<>();
 			//prendere solo le playlist dell'utente passato
 
 			for(Playlist playList: storedPlaylists) {

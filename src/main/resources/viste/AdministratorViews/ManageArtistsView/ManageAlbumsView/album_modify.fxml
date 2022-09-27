@@ -45,11 +45,10 @@
 		   </placeholder>
      <columns>
        <TableColumn fx:id="idModify" prefWidth="75.0" text="ID" />
-       <TableColumn fx:id="titleModify" prefWidth="305.9999694824219" text="Title" />
-         <TableColumn fx:id="lengthModify" prefWidth="81.0" text="Length" />
-         <TableColumn fx:id="artistsModify" prefWidth="185.0" text="Artists" />
-         <TableColumn fx:id="detailSongModify" prefWidth="101.0" />
-         <TableColumn fx:id="managesong" prefWidth="160.0" />
+       <TableColumn fx:id="titleModify" prefWidth="466.0" text="Title" />
+         <TableColumn fx:id="lengthModify" prefWidth="102.0" text="Length" />
+         <TableColumn fx:id="genreModify" prefWidth="139.0" text="Genre" />
+         <TableColumn fx:id="managesong" prefWidth="113.0" text="Delete Song" />
      </columns>
    </TableView>
    <Label fx:id="table_label" layoutX="24.0" layoutY="174.0" text=" Manage this album Songs" />

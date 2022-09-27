@@ -13,7 +13,7 @@ public interface ArtistService {
 
 	public void delete(Artist artist) throws BusinessException;
 
-    List<Artist> getArtistList() throws BusinessException;
+    Set<Artist> getArtistList() throws BusinessException;
 
     Set<Album> findAllAlbums(Artist artist) throws BusinessException;
 

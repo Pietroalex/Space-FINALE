@@ -189,7 +189,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
-				Set<Song> lista = param.getValue().getSongList();
+				Set<Song> lista = param.getValue().getSongs();
 				for(Song canzoneAlbum: lista) {
 					Boolean alreadyAdded = false;
 					/*for(Song canzone: utente.getSongQueue()) {

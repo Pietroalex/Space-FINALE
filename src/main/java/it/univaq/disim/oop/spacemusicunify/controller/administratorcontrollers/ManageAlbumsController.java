@@ -72,7 +72,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         title.setCellValueFactory(new PropertyValueFactory<>("title"));
         songNumber.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> param) -> {
 
-            int count = param.getValue().getSongList().size();
+            int count = param.getValue().getSongs().size();
 
             String number = String.valueOf(count);
             return new SimpleStringProperty(number);

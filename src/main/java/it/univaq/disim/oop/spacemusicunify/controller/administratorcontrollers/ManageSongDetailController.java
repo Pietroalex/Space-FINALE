@@ -112,7 +112,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 }
                 genreField.setValue(song.getGenre());
 
-                if(album.getSongList().size() == 1){
+                if(album.getSongs().size() == 1){
                     deletesong.setDisable(true);
                 }
                 break;
@@ -123,11 +123,12 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 titleField.setText(song.getTitle());
                 lengthField.setText(song.getLength());
                 lyricsField.setText(song.getLyrics());
+                deletesong.setVisible(false);
 
                 if(song.getFileMp3() == null){
                     songField.setText("No MP3 Audio File selected");
                 } else {
-                    songField.setText("MP3 Audio File loaded");
+                    songField.setText("MP3 Audio loaded");
                 }
 
                 if(album.getGenre() == Genre.singoli) {
@@ -136,7 +137,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                     genreField.setDisable(true);
                 }
                 genreField.setValue(song.getGenre());
-                if(album.getSongList().size() == 1){
+                if(album.getSongs().size() == 1){
                     deletesong.setDisable(true);
                 }
                 confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
@@ -193,8 +194,8 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 System.out.println("eseguo modify");
               albumService.modify(song.getId(), titleField.getText(),  tempAudio, lyricsField.getText(), album, lengthField.getText(), genreField.getValue(), song);
             }
-            dispatcher.setSituation(ViewSituations.detail);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
+            dispatcher.setSituation(ViewSituations.modify);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
 
         } catch (AlreadyTakenFieldException e) {
             existingLabel.setText("This song title is already taken");
@@ -262,6 +263,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
             }else{
                 System.out.println("Song not found");
             }
+            dispatcher.setSituation(ViewSituations.detail);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
 
         } catch (BusinessException e) {

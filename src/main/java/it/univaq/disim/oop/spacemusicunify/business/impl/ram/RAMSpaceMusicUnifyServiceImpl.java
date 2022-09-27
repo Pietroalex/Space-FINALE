@@ -142,9 +142,9 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		canzoni.add(artista1album1canzone1);
 
 		// aggiungo la canzone all'album dell'artista1
-		Set<Song> canzone = artista1album1.getSongList();
+		Set<Song> canzone = artista1album1.getSongs();
 		canzone.add(artista1album1canzone1);
-		artista1album1.setSongList(canzone);
+		artista1album1.setSongs(canzone);
 
 		Song artista1album1canzone2 = new Song();
 		//artista1album1canzone2.setId(idSongs++);
@@ -295,9 +295,9 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		canzoni.add(artista1album1canzone2);
 
-		canzone = artista1album1.getSongList();
+		canzone = artista1album1.getSongs();
 		canzone.add(artista1album1canzone2);
-		artista1album1.setSongList(canzone);
+		artista1album1.setSongs(canzone);
 
 		// creo il set di albums per l'artista1
 		Set<Album> artista1Albums = new HashSet<>();
@@ -456,9 +456,9 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		canzoni.add(artista2album1canzone1);
 
 		// aggiungo la canzone all'album dell'artista2
-		canzone = artista2album1.getSongList();
+		canzone = artista2album1.getSongs();
 		canzone.add(artista2album1canzone1);
-		artista2album1.setSongList(canzone);
+		artista2album1.setSongs(canzone);
 
 		Set<Album> artista2albums = new HashSet<>();
 

@@ -21,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class ManageUsersController implements Initializable, DataInitializable<Administrator>{
     private final UserService userService;
@@ -64,7 +65,7 @@ public class ManageUsersController implements Initializable, DataInitializable<A
     @Override
     public void initializeData(Administrator amministratore) {
 
-            List<User> utenti = userService.getAllUsers();
+            Set<User> utenti = userService.getAllUsers();
             ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
             usersList.setItems(utenteData);
 

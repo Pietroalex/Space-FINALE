@@ -92,7 +92,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 
 			try {
 				for (Production production : artistService.findAllProductions(param.getValue())) {
-					count = count + production.getAlbum().getSongList().size();
+					count = count + production.getAlbum().getSongs().size();
 				}
 			} catch (BusinessException e) {
 				throw new RuntimeException(e);

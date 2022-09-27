@@ -20,9 +20,9 @@ public interface AlbumService {
 
 	void delete(Song song) throws BusinessException;
 
-    List<Album> getAlbumList() throws BusinessException;
+    Set<Album> getAlbumList() throws BusinessException;
 
-	List<Song> getSongList() throws BusinessException;
+	Set<Song> getSongList() throws BusinessException;
 
 	Set<Artist> findAllArtists(Album album) throws BusinessException;
 

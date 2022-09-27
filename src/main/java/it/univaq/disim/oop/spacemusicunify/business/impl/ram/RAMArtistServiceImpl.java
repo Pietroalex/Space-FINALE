@@ -15,7 +15,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMArtistServiceImpl implements ArtistService {
 
-	private static List<Artist> storedArtists = new ArrayList<>();
+	private static Set<Artist> storedArtists = new HashSet<>();
 	private static int idArtists = 1;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
@@ -57,9 +57,9 @@ public class RAMArtistServiceImpl implements ArtistService {
 		//canzone.setFileMp3(pathmp3+"our_sympathy.mp3");
 
 		// aggiungo la canzone all'album dell'artista1
-		Set<Song> canzoneList = album.getSongList();
+		Set<Song> canzoneList = album.getSongs();
 		canzoneList.add(canzone);
-		album.setSongList(canzoneList);
+		album.setSongs(canzoneList);
 
 		// creo la produzione tra l'album e l'artista1
 		Set<Album> artista1albums = new HashSet<>();
@@ -111,7 +111,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public List<Artist> getArtistList() throws BusinessException {
+	public Set<Artist> getArtistList() throws BusinessException {
 		return storedArtists;
 	}
 

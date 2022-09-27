@@ -2,6 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,8 +16,8 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
 	
-	private static List<Album> storedAlbums = new ArrayList<>();
-	private static List<Song> storedSongs = new ArrayList<>();
+	private static Set<Album> storedAlbums = new HashSet<>();
+	private static Set<Song> storedSongs = new HashSet<>();
 	private static Integer idAlbum = 1;
 	private static Integer idSong = 1;
 	private MultimediaService multimediaService;
@@ -131,12 +132,12 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				albumcheck.setRelease(release);
 				albumcheck.setTitle(title);
 				if (albumcheck.getGenre() != genre && genre != Genre.singoli) {
-					Set<Song> toChangeGenreSongs = albumcheck.getSongList();
+					Set<Song> toChangeGenreSongs = albumcheck.getSongs();
 					for (Song canzone : toChangeGenreSongs) {
 						canzone.setGenre(genre);
 					}
-					albumcheck.setSongList(null);
-					albumcheck.setSongList(toChangeGenreSongs);
+					albumcheck.setSongs(null);
+					albumcheck.setSongs(toChangeGenreSongs);
 					albumcheck.setGenre(genre);
 
 				}
@@ -149,7 +150,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void delete(Album album) throws BusinessException {
-		Set<Song> songs = album.getSongList();
+		Set<Song> songs = album.getSongs();
 		boolean controllo = false;
 		for (Album albums : storedAlbums) {
 			if (albums.getId().intValue() == album.getId().intValue()) {
@@ -188,10 +189,10 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		}
 
 		canzone.setId(idSong++);
-		Set<Song> canzoniAlbum = album.getSongList();
+		Set<Song> canzoniAlbum = album.getSongs();
 
 		canzoniAlbum.add(canzone);
-		album.setSongList(canzoniAlbum);
+		album.setSongs(canzoniAlbum);
 
 		storedSongs.add(canzone);
 
@@ -231,7 +232,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			storedSongs.removeIf((Song canzonecheck) -> canzonecheck == canzone);
 
 			storedAlbums.forEach(
-					(Album albums) -> canzone.getAlbum().getSongList().removeIf((Song canzonecheck) -> canzonecheck == canzone));
+					(Album albums) -> canzone.getAlbum().getSongs().removeIf((Song canzonecheck) -> canzonecheck == canzone));
 
 //			for(User utente : getAllUsers()) {
 //				getAllPlaylists(utente).forEach(
@@ -243,12 +244,12 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public List<Album> getAlbumList() throws BusinessException {
+	public Set<Album> getAlbumList() throws BusinessException {
 		return storedAlbums;
 	}
 
 	@Override
-	public List<Song> getSongList() throws BusinessException {
+	public Set<Song> getSongList() throws BusinessException {
 		return storedSongs;
 	}
 

@@ -39,11 +39,11 @@ public class Album {
 		this.genre = genre;
 	}
 	
-	public Set<Song> getSongList() {
+	public Set<Song> getSongs() {
 		return songList;
 	}
 	
-	public void setSongList(Set<Song> songList) {
+	public void setSongs(Set<Song> songList) {
 		this.songList = songList;
 	}
 	

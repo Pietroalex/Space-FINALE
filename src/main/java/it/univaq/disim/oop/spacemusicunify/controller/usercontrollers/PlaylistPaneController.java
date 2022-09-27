@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class PlaylistPaneController implements Initializable, DataInitializable<User> {
     private final ViewDispatcher dispatcher;
@@ -58,7 +59,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     public void initializeData(User user) {
         this.user = user;
         try {
-            List<Playlist> result = userService.getAllPlaylists(user);
+            Set<Playlist> result = userService.getAllPlaylists(user);
             ObservableList<Playlist> playlistData = FXCollections.observableArrayList(result);
             playlistView.setItems(playlistData);
 
@@ -94,7 +95,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             playlist.setUser(this.user);
             // aggiungere la playlist alla TableView
             try {
-                userService.addNewPlaylist(playlist);
+                userService.add(playlist);
             } catch (BusinessException e1) {
                 dispatcher.renderError(e1);
             }

@@ -131,7 +131,7 @@ public class FileUserServiceImpl implements UserService {
 					}
 				}
 				//eliminazione delle playlists
-				List<Playlist> playlists = getAllPlaylists(utente);
+				Set<Playlist> playlists = getAllPlaylists(utente);
 				for(Playlist playlist : playlists) {
 					deletePlaylist(playlist);
 				}
@@ -147,70 +147,8 @@ public class FileUserServiceImpl implements UserService {
 	
 
 	
-	@Override
-	public void setAllDefaults() {
-		Path path = Paths.get(usersFile);
-		if (Files.notExists(path)) {
-			try {
-				if (new File(usersFile).createNewFile()) System.out.println("file utenti creato");
 
-				FileWriter writer = new FileWriter(new File(usersFile));
-				writer.write("3" + "\n");
-				writer.write("1§amministratore§admin§admin" + "\n");
-				writer.write("2§utente§utente§123456§0§[]");
-				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		path = Paths.get(albumsFile);
-		if (Files.notExists(path)) {
-			try {
-				if (new File(albumsFile).createNewFile()) System.out.println("file album creato correttamente");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		path = Paths.get(artistsFile);
-		if (Files.notExists(path)) {
-			try {
-				if (new File(artistsFile).createNewFile()) System.out.println("file artisti creato correttamente");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		path = Paths.get(picturesFile);
-		if (Files.notExists(path)) {
-			try {
-				if (new File(picturesFile).createNewFile()) System.out.println("file pictures creato correttamente");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		path = Paths.get(songsFile);
-		if (Files.notExists(path)) {
-			try {
-				if (new File(songsFile).createNewFile()) System.out.println("file canzoni creato correttamente");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		path = Paths.get(picturesDirectory);
-		if (Files.notExists(path)) {
-			if (new File(picturesDirectory).mkdirs()) System.out.println("cartella immagini creata correttamente");
-		}
-		
-		path = Paths.get(mp3Directory);
-		if (Files.notExists(path)) {
-			if (new File(mp3Directory).mkdirs()) System.out.println("cartella filesMP3 creata correttamente");
-		}
-		
-	}
-	@Override
+/*	@Override
 	public Set<Artist> getAllArtists() throws BusinessException {
 		try {
 			return SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistList();
@@ -233,7 +171,7 @@ public class FileUserServiceImpl implements UserService {
 		} catch (BusinessException e) {
 			throw new BusinessException();
 		}
-	}
+	}*/
 
 
 	@Override
@@ -279,8 +217,8 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
-		List<User> utenteList = new ArrayList<>();
+	public Set<User> getAllUsers() {
+		Set<User> utenteList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			fileData.getRighe().remove(0);
@@ -308,7 +246,7 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void addNewPlaylist(Playlist playlist) throws BusinessException {
+	public void add(Playlist playlist) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			for (String[] colonne : fileData.getRighe()) {
@@ -404,8 +342,8 @@ public class FileUserServiceImpl implements UserService {
 
 	}
 	@Override
-	public List<Playlist> getAllPlaylists(User utente) {
-		List<Playlist> playlistsUtente = new ArrayList<>();
+	public Set<Playlist> getAllPlaylists(User utente) {
+		Set<Playlist> playlistsUtente = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 

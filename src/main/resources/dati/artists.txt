@@ -1,6 +1,1 @@
-6
-1§test group§1§test bio§[13]§british§[]
-2§test groupf§1§test bio§[]§british§[]
-3§test groupas§1§test bio§[5]§british§[]
-4§test groupsda§1§test bio§[7, 8]§british§[]
-5§test groupdsds§1§test bio§[]§british§[4, 2]
+1
