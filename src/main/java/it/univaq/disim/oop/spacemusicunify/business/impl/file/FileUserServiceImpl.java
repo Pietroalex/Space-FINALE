@@ -134,7 +134,7 @@ public class FileUserServiceImpl implements UserService {
 				//eliminazione delle playlists
 				Set<Playlist> playlists = getAllPlaylists(utente);
 				for(Playlist playlist : playlists) {
-					deletePlaylist(playlist);
+					delete(playlist);
 				}
 			}else{
 				throw new BusinessException("Not existing User");
@@ -317,7 +317,7 @@ public class FileUserServiceImpl implements UserService {
 		}
 	}
 	@Override
-	public void deletePlaylist(Playlist playlist) throws BusinessException {
+	public void delete(Playlist playlist) throws BusinessException {
 		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);

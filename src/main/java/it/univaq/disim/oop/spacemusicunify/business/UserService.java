@@ -18,10 +18,10 @@ public interface UserService {
 
 	void modify(Integer id, String title, Set<Song> songlist, User user) throws BusinessException;
 
+	void delete(Playlist playlist) throws BusinessException;
+
 	Set<Playlist> getAllPlaylists(User utente) throws BusinessException;
-	
-	void deletePlaylist(Playlist playlist) throws BusinessException;
-	
+
 	String getRicerca();
 	
 	void setRicerca(String ricerca);

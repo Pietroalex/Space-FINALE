@@ -213,14 +213,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 product = type+numberMp3+".mp3";
                 break;
         }
-/*        try {
 
-            Files.copy(Paths.get(path),
-                    (new File(newfile)).toPath(),
-                    StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
 
         try {
             Files.write(Paths.get(newfile), bytes);
