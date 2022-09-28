@@ -146,7 +146,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	@FXML
 	public void deletePlaylist(ActionEvent event) {
 		try {
-			userService.deletePlaylist(playlist);
+			userService.delete(playlist);
 		} catch (BusinessException e) {
 			e.printStackTrace();
 		}

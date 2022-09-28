@@ -77,7 +77,7 @@ public class RAMUserServiceImpl implements UserService {
 		Set<Playlist> playlistList = playlists;
 		for (Playlist playlist : playlistList) {
 			if (playlist.getUser().equals(utente)) {
-				deletePlaylist(playlist);
+				delete(playlist);
 			}
 		}
 		
@@ -128,7 +128,7 @@ public class RAMUserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void deletePlaylist(Playlist playlist) throws BusinessException {
+	public void delete(Playlist playlist) throws BusinessException {
 		boolean controllo = false;
 		for(Playlist play : storedPlaylists) {
 			if(play.getId().intValue() == playlist.getId().intValue()) {
