@@ -45,10 +45,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 			//creo la canzone
 			Song canzone = new Song();
 			canzone.setAlbum(album);
-			canzone.setTitle("new song of '" + album.getTitle() + "'");
+			if(album.getSongs() == null)canzone.setTitle("Default"+album.getTitle());
+			else canzone.setTitle("Default "+album.getTitle());
 			canzone.setLyrics("Lyrics");
 			canzone.setLength("04:02");
-			if(album.getGenre() == Genre.singoli){
+			if(album.getGenre() == Genre.singles){
 				canzone.setGenre(Genre.pop);
 			} else {
 				canzone.setGenre(album.getGenre());
@@ -105,7 +106,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] colonne: fileData.getRighe()) {
-				if(genre != Genre.singoli) {
+				if(genre != Genre.singles) {
 					if (colonne[1].equals(title) && !colonne[0].equals(id.toString())) {
 						throw new AlreadyTakenFieldException();
 					}
@@ -140,7 +141,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 			}
 
-			if(oldGenre != null && genre != Genre.singoli) {
+			if(oldGenre != null && genre != Genre.singles) {
 				if (!oldGenre.equals(String.valueOf(genre)) ) {
 					for (Song canzone : songlist) {
 						canzone.setGenre(genre);
@@ -205,16 +206,19 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Song canzone) throws BusinessException {
 		try {
+
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] righe: fileData.getRighe()) {
-				if(righe[1].equals(canzone.getTitle())) {
+				if(righe[1].equals(canzone.getTitle()) || canzone.getTitle().contains("DefaultSingles") && canzone.getAlbum().getSongs() != null) {
 					throw new AlreadyExistingException();
 				}
 			}
+
+			canzone.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
+			multimediaService.add(canzone.getFileMp3());
+
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				long contatore = fileData.getContatore();
-				canzone.setId(Integer.parseInt(String.valueOf(contatore)));
-				multimediaService.add(canzone.getFileMp3());
 				writer.println(contatore + 1);
 				for (String[] righe : fileData.getRighe()) {
 					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
@@ -246,7 +250,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 					check = true;
 					List<String> listaCanzoni = Utility.leggiArray(righe[4]);
 					listaCanzoni.add(canzone.getId().toString());
-					Set<Song> canzoneList = album.getSongs();
+					Set<Song> canzoneList;
+					if(album.getSongs() == null) canzoneList = new HashSet<>();
+					else canzoneList = album.getSongs();
 					canzoneList.add(canzone);
 					album.setSongs(canzoneList);
 
@@ -267,7 +273,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
@@ -292,8 +298,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 					String[] row;
 					if(tempAudio != null){
 						saveAudio = tempAudio;
-						multimediaService.delete(song.getFileMp3());
+
 						multimediaService.add(tempAudio);
+						multimediaService.delete(song.getFileMp3());
 					}else{
 						saveAudio = song.getFileMp3();
 					}
@@ -320,7 +327,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 
 	}
@@ -411,8 +418,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 	public Set<Song> getSongList() throws BusinessException {
 		Set<Song> songList = new HashSet<>();
 		try {
+
 			FileData fileData = Utility.readAllRows(songsFile);
+
 			for(String[] righe : fileData.getRighe()) {
+
 				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
 			}
 		} catch (IOException e) {
@@ -420,6 +430,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			throw new BusinessException();
 		}
 		return songList;
+
 	}
 	@Override
 	public Set<Artist> findAllArtists(Album album) throws BusinessException {

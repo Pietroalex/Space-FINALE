@@ -146,6 +146,8 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     	newAlbum.setTitle("new album of "+artist.getName());
     	newAlbum.setGenre(Genre.rock);
     	newAlbum.setRelease(LocalDate.now());
+        Set<Song> songs = new HashSet<>();
+        newAlbum.setSongs(songs);
         Picture picture = new Picture();
         picture.setHeight(140);
         picture.setWidth(140);

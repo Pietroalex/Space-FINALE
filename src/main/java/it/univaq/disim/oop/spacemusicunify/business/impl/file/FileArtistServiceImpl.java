@@ -39,7 +39,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			//creo l'album Inediti
 			Album album = new Album();
 
-			album.setGenre(Genre.singoli);
+			album.setGenre(Genre.singles);
 			Picture pictureAlbum = new Picture();
 			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
 			pictureAlbum.setOwnership(album);
@@ -47,6 +47,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			pictureAlbum.setWidth(140);
 			album.setCover(pictureAlbum);
 			album.setRelease(LocalDate.now());
+			album.setSongs(null);
 
 			//scrivo file artista
 			try (PrintWriter writerArtista = new PrintWriter(new File(artistsFile))) {
@@ -67,7 +68,7 @@ public class FileArtistServiceImpl implements ArtistService {
 					bandIds.add(artist.getId().toString());
 				}
 
-				album.setTitle("Inediti"+(artista.getId()));
+				album.setTitle("Singles"+(artista.getId()));
 				StringBuilder rowArtista = new StringBuilder();
 				rowArtista.append(contatore);
 				rowArtista.append(Utility.SEPARATORE_COLONNA);
@@ -85,13 +86,13 @@ public class FileArtistServiceImpl implements ArtistService {
 				writerArtista.println(rowArtista.toString());
 			}
 
+			AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
+			Set<Artist> artistSet = new HashSet<>();
+			artistSet.add(artista);
+			albumService.setChoosenArtists(artistSet);
 			//scrivo file album
-			SpacemusicunifyBusinessFactory.getInstance().getAlbumService().add(album);
-			//creo la produzione
-			Production production = new Production();
-			production.setArtist(artista);
-			production.setAlbum(album);
-			productionService.add(production);
+			albumService.add(album);
+
 
 		} catch (IOException e) {
 			e.printStackTrace();

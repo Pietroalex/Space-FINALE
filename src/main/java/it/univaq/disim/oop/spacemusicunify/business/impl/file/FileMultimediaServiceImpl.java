@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 
 public class FileMultimediaServiceImpl implements MultimediaService {
@@ -25,7 +26,27 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
     @Override
     public void add(Audio audio) throws BusinessException{
+        AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
         try {
+            for(Song song : albumService.getSongList()) {
+
+                if (song.getId().intValue() != ((Song) audio.getOwnership()).getId().intValue()) {
+
+                    //canzone "DefaultSingles" di qualsiasi album "Singles" che ha genere "singles" può avere il file mp3 uguale a quelle di altri album "Singles" e diverso invece rispetto a tutte le altre canzoni in altri album.
+                    if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
+                        if (!(song.getTitle().contains("DefaultSingles")) && song.getFileMp3().getData() == audio.getData()) {
+                            throw new AlreadyExistingException();
+                        }
+                    } else {
+                        //canzone non "DefaultSingles" di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
+                        if (song.getFileMp3().getData() == audio.getData()) {
+                            throw new AlreadyExistingException();
+                        }
+                    }
+
+                }
+            }
+
             FileData fileData = Utility.readAllRows(audiosFile);
             try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
                 long contatore = fileData.getContatore();
@@ -76,7 +97,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new BusinessException("audio inesistente");
+            if(!check)throw new BusinessException("audio not exist");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,7 +105,35 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
     @Override
     public void add(Picture picture) throws BusinessException {
+        AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
         try {
+            if(picture.getOwnership() instanceof Artist) {
+                for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
+                    if(pictureCheck.getData() == picture.getData()){
+                        throw new AlreadyExistingException();
+                    }
+                }
+            } else {
+
+                for(Album album : albumService.getAlbumList()) {
+                    if (album.getId().intValue() != ((Album) picture.getOwnership()).getId().intValue()) {
+
+                        //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
+                        if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
+                            if (album.getGenre() != Genre.singles && album.getCover().getData() == picture.getData()) {
+                                throw new AlreadyExistingException();
+                            }
+                        } else {
+                            //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
+                            if (album.getCover().getData() == picture.getData()) {
+                                throw new AlreadyExistingException();
+                            }
+                        }
+
+                    }
+                }
+            }
+
             FileData fileData = Utility.readAllRows(picturesFile);
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
                 long contatore = fileData.getContatore();
@@ -142,22 +191,33 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new BusinessException("picture inesistente");
+            if(!check)throw new ObjectNotFoundException("picture not exist");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException(e);
         }
     }
     @Override
     public Set<Picture> getAllPictures() throws BusinessException{
-        return null;
+        Set<Picture> pictures = new HashSet<>();
+        for(Artist artist : SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistList()){
+            pictures.addAll(artist.getPictures());
+        }
+        for(Album album : SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getAlbumList()){
+            pictures.add(album.getCover());
+        }
+        return pictures;
     }
 
     @Override
     public Set<Audio> getAllAudios() throws BusinessException {
-        return null;
+        Set<Audio> audios = new HashSet<>();
+        for(Song song : SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getSongList()){
+            audios.add(song.getFileMp3());
+        }
+        return audios;
     }
 
-    public String saveANDstore(byte[] bytes, String type) throws UnsupportedFileExtensionException {
+    public String saveANDstore(byte[] bytes, String type) {
         String existImage = picturesDirectory + "image";
         String existMp3 = mp3Directory + "audio";
 

@@ -52,7 +52,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 		// creo l'album dell'artista
 		Album album = new Album();
 		album.setTitle("Inediti");
-		album.setGenre(Genre.singoli);
+		album.setGenre(Genre.singles);
 		album.setRelease(LocalDate.now());
 
 		Picture picture = new Picture();

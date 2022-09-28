@@ -175,19 +175,66 @@ public class UtilityObjectRetriever extends Object {
 	private static Multimedia findMultimedia(String[] column){
 		Multimedia multimedia = null;
 
-		if(currentArtist == null && currentAlbum == null && currentSong != null){
-			multimedia = new Audio();
-			multimedia.setId(Integer.parseInt(column[0]));
-			multimedia.setData(filesMp3Directory+column[1]);
-			multimedia.setOwnership(currentSong);
-		}
-		if(currentArtist != null && currentAlbum == null && currentSong == null){
+		if(currentArtist == null){
+			if(currentAlbum == null){
+				multimedia = new Audio();
+				multimedia.setId(Integer.parseInt(column[0]));
+				multimedia.setData(filesMp3Directory+column[1]);
+				multimedia.setOwnership(currentSong);
+				return multimedia;
+			}else {
+				if(currentAlbum.getCover() == null){
+					multimedia = new Picture();
+					multimedia.setId(Integer.valueOf(column[0]));
+					multimedia.setData(imagesDirectory+column[1]);
+					((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
+					((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
+					multimedia.setOwnership(currentAlbum);
+					return multimedia;
+				}else{
+					multimedia = new Audio();
+					multimedia.setId(Integer.parseInt(column[0]));
+					multimedia.setData(filesMp3Directory+column[1]);
+					multimedia.setOwnership(currentSong);
+					return multimedia;
+				/*if(currentSong != null && currentSong.getFileMp3() != null){
+
+				}else{
+					multimedia = new Audio();
+					multimedia.setId(Integer.parseInt(column[0]));
+					multimedia.setData(filesMp3Directory+column[1]);
+					multimedia.setOwnership(currentSong);
+					return multimedia;
+				}*/}
+			}
+			/*if(currentArtist == null && currentAlbum == null && currentSong != null){
+
+			}*/
+			/*if(currentArtist == null && currentAlbum != null && currentSong != null){
+				multimedia = new Audio();
+				multimedia.setId(Integer.parseInt(column[0]));
+				multimedia.setData(filesMp3Directory+column[1]);
+				multimedia.setOwnership(currentSong);
+				return multimedia;
+			}*/
+		} else{
 			multimedia = new Picture();
 			multimedia.setId(Integer.valueOf(column[0]));
 			multimedia.setData(imagesDirectory+column[1]);
 			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
 			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
 			multimedia.setOwnership(currentArtist);
+			return multimedia;
+		}
+
+		/*if(currentArtist != null && currentAlbum == null && currentSong == null){
+			multimedia = new Picture();
+			multimedia.setId(Integer.valueOf(column[0]));
+			multimedia.setData(imagesDirectory+column[1]);
+			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
+			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
+			multimedia.setOwnership(currentArtist);
+			return multimedia;
 		}
 		if(currentArtist == null && currentAlbum != null && currentSong == null){
 			multimedia = new Picture();
@@ -196,14 +243,20 @@ public class UtilityObjectRetriever extends Object {
 			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
 			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
 			multimedia.setOwnership(currentAlbum);
+			return multimedia;
+		}*/
+
+		/*if(currentArtist == null && currentAlbum != null && currentSong != null && currentSong.getFileMp3() != null){
+			multimedia = new Picture();
+			multimedia.setId(Integer.valueOf(column[0]));
+			multimedia.setData(imagesDirectory+column[1]);
+			((Picture) multimedia).setHeight(Integer.parseInt(column[2]));
+			((Picture) multimedia).setWidth(Integer.parseInt(column[3]));
+			multimedia.setOwnership(currentAlbum);
+			return multimedia;
 		}
-		if(currentArtist == null && currentAlbum != null && currentSong != null){
-			multimedia = new Audio();
-			multimedia.setId(Integer.parseInt(column[0]));
-			multimedia.setData(filesMp3Directory+column[1]);
-			multimedia.setOwnership(currentSong);
-		}
-		return multimedia;
+*/
+		/*return multimedia;*/
 	}
 
 }

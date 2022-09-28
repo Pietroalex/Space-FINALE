@@ -1,9 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -176,7 +173,7 @@ public class FileUserServiceImpl implements UserService {
 
 
 	@Override
-	public GeneralUser authenticate(String username, String password) throws UtenteGenericoNotFoundException, BusinessException {
+	public GeneralUser authenticate(String username, String password) throws ObjectNotFoundException, BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for(String[] colonne : fileData.getRighe()) {
@@ -210,7 +207,7 @@ public class FileUserServiceImpl implements UserService {
 					return utente;
 				}
 			}
-			throw new UtenteGenericoNotFoundException();
+			throw new ObjectNotFoundException();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BusinessException();

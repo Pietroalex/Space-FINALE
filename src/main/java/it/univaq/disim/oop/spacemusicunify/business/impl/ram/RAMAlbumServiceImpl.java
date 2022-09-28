@@ -111,8 +111,6 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		
 		add(song);
 
-		album.getSongs().add(song);
-
 		storedAlbums.add(album);
 
 	}
@@ -129,7 +127,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			if (albumcheck.getId().equals(id)) {
 				albumcheck.setRelease(release);
 				albumcheck.setTitle(title);
-				if (albumcheck.getGenre() != genre && genre != Genre.singoli) {
+				if (albumcheck.getGenre() != genre && genre != Genre.singles) {
 					Set<Song> toChangeGenreSongs = albumcheck.getSongs();
 					for (Song canzone : toChangeGenreSongs) {
 						canzone.setGenre(genre);

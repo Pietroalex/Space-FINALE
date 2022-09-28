@@ -187,7 +187,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				cancelBox.setVisible(false);
 
 				genreField.getItems().addAll(Genre.values());
-				genreField.getItems().remove(Genre.singoli);
+				genreField.getItems().remove(Genre.singles);
 
 				idModify.setCellValueFactory(new PropertyValueFactory<>("id"));
 				titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -230,7 +230,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					return new SimpleObjectProperty<Button>(modify);
 				});*/
 
-				if(this.album.getGenre() == Genre.singoli){
+				if(this.album.getGenre() == Genre.singles){
 					deletealbum.setDisable(true);
 					titleField.setDisable(true);
 					releaseField.setDisable(true);
@@ -252,7 +252,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				});
 
 				coverField.getChildren().add(imgview2);
-				if(album.getGenre() == Genre.singoli){
+				if(album.getGenre() == Genre.singles){
 					genreField.setDisable(true);
 
 				}else {
@@ -300,7 +300,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				newSong.setVisible(false);
 				deletealbum.setVisible(false);
 				genreField.getItems().addAll(Genre.values());
-				genreField.getItems().remove(Genre.singoli);
+				genreField.getItems().remove(Genre.singles);
 				titleField.setText(album.getTitle());
 				genreField.setValue(album.getGenre());
 				releaseField.setValue(album.getRelease());
@@ -487,7 +487,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		canzone.setTitle("Nuova canzone");
 		canzone.setLyrics("add Lyric");
 		canzone.setLength("00:00");
-		if(album.getGenre() == Genre.singoli) {
+		if(album.getGenre() == Genre.singles) {
 			canzone.setGenre(Genre.pop);
 		}else{
 			canzone.setGenre(album.getGenre());

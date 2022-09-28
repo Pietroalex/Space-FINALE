@@ -36,8 +36,17 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
 
     @Override
     public void add(Picture picture) throws BusinessException {
-        picture.setId(idPictures++);
-        storedPictures.add(picture);
+        boolean check = false;
+        for(Picture pictures : storedPictures) {
+            if(pictures.getData() == picture.getData()) {
+                check = true;
+            }
+        }
+        if(check)throw new BusinessException("picture exist");
+        else {
+            picture.setId(idPictures++);
+            storedPictures.add(picture);
+        }
     }
     
     @Override

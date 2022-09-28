@@ -53,7 +53,7 @@ public class LoginController implements Initializable, DataInitializable<Object>
 		try {
 			GeneralUser utenteGenerico = userService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(utenteGenerico);
-		} catch (UtenteGenericoNotFoundException e) {
+		} catch (ObjectNotFoundException e) {
 			errorLabel.setVisible(true);
 
 		} catch (BusinessException e) {

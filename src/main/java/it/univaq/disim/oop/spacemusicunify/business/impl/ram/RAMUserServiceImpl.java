@@ -99,7 +99,7 @@ public class RAMUserServiceImpl implements UserService {
 				}
 			}
 		}
-		throw new UtenteGenericoNotFoundException();
+		throw new ObjectNotFoundException();
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
@@ -50,7 +51,7 @@ public class FileProductionServiceImpl implements ProductionService {
 
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new BusinessException(e);
 		}
 
 
@@ -61,7 +62,12 @@ public class FileProductionServiceImpl implements ProductionService {
 	@Override
 	public void add(Production production) throws BusinessException {
 		try {
-			FileData fileData = Utility.readAllRows(productionsFile);
+				FileData fileData = Utility.readAllRows(productionsFile);
+				for(String[] colonne: fileData.getRighe()) {
+					if (colonne[1].equals( production.getArtist().getId().toString() ) && colonne[2].equals(production.getAlbum().getId().toString())) {
+						throw new AlreadyExistingException();
+					}
+				}
 			try (PrintWriter writer = new PrintWriter(new File(productionsFile))) {
 				long contatore = fileData.getContatore();
 				writer.println((contatore + 1));

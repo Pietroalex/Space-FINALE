@@ -93,7 +93,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
             case modify:
                 genreField.getItems().addAll(Genre.values());
-                genreField.getItems().remove(Genre.singoli);
+                genreField.getItems().remove(Genre.singles);
                 titleView.setText("Modify Song");
                 confirm.setText("Modify");
                 mp3button.setText("Change mp3 file");
@@ -105,7 +105,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 } else {
                     songField.setText("MP3 Audio File loaded");
                 }
-                if(album.getGenre() == Genre.singoli) {
+                if(album.getGenre() == Genre.singles) {
                     genreField.setDisable(false);
                 }else{
                     genreField.setDisable(true);
@@ -119,7 +119,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
             case newobject:
                 genreField.getItems().addAll(Genre.values());
-                genreField.getItems().remove(Genre.singoli);
+                genreField.getItems().remove(Genre.singles);
                 titleField.setText(song.getTitle());
                 lengthField.setText(song.getLength());
                 lyricsField.setText(song.getLyrics());
@@ -131,7 +131,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                     songField.setText("MP3 Audio loaded");
                 }
 
-                if(album.getGenre() == Genre.singoli) {
+                if(album.getGenre() == Genre.singles) {
                     genreField.setDisable(false);
                 }else{
                     genreField.setDisable(true);
@@ -180,7 +180,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 song.setTitle(titleField.getText());
                 song.setLength(lengthField.getText());
                 song.setLyrics(lyricsField.getText());
-                if (album.getGenre() == Genre.singoli) {
+                if (album.getGenre() == Genre.singles) {
                     song.setGenre(genreField.getValue());
                 } else {
                         song.setGenre(album.getGenre());
