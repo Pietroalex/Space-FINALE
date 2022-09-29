@@ -12,6 +12,7 @@ import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.ArtistService;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
+import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
@@ -123,7 +124,8 @@ public class RAMArtistServiceImpl implements ArtistService {
 
 	@Override
 	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
-		return null;
+		throw new ObjectNotFoundException("artist not found");
+		//return null;
 	}
 
 	@Override

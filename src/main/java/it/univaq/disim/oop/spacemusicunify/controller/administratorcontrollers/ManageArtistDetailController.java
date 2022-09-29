@@ -394,13 +394,17 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     @FXML
     public void manageAlbums(){
         if(dispatcher.getSituation() == ViewSituations.user){
-            dispatcher.setSituation(ViewSituations.user);
+            dispatcher.setSituation(ViewSituations.user);	//????? Non ha senso, la situation sta già a user
+            // deve visualizzare gli album nella tabella album della ricerca
         }
         try {
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
+        
+        } catch (ObjectNotFoundException o) {
+        	//visualizzare errore
         } catch (BusinessException e) {
-            throw new RuntimeException(e);
-        }
+            dispatcher.renderError(e);
+        } 
     }
     public void focusImage(Picture image){
         imgUrl = image;

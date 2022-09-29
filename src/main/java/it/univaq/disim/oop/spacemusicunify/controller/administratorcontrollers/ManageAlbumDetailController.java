@@ -453,7 +453,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	@FXML
 	public void backToTheArtist(ActionEvent event) {
-		dispatcher.setSituation(ViewSituations.detail);
+		//dispatcher.setSituation(ViewSituations.detail);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artist);
 	}
 	public void focusImage(String image){
