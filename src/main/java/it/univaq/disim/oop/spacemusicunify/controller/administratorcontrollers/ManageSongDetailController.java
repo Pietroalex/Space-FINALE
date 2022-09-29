@@ -180,7 +180,8 @@ public class ManageSongDetailController implements Initializable, DataInitializa
         });*/
     	
     	if(dispatcher.getSituation() == ViewSituations.modify)
-    		confirm.disableProperty().bind(songField.textProperty().isEqualTo("No MP3 File selected"));
+    		confirm.disableProperty().bind(songField.textProperty().isEqualTo("No MP3 File selected")); //OK
+    		//confirm.disableProperty().bind(songField.textProperty().isEqualTo("MP3 Audio File loaded")); -> per prova
     }
     @Override
     public void initializeData(List<Object> list) {
