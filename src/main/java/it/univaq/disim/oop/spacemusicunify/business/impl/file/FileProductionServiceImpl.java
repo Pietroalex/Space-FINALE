@@ -43,7 +43,7 @@ public class FileProductionServiceImpl implements ProductionService {
 				Album album = (Album) UtilityObjectRetriever.findObjectById(colonne[2], albumsFileName);
 
 				production.setId(Integer.parseInt(colonne[0]));
-				System.out.println("art "+artist);
+
 				production.setArtist(artist);
 				production.setAlbum(album);
 				productionList.add(production);

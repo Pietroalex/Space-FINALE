@@ -546,10 +546,10 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}else{
 			canzone.setGenre(album.getGenre());
 		}
-		Audio audio = new Audio();
+/*		Audio audio = new Audio();
 		audio.setOwnership(canzone);
 		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "unravel.mp3");
-		canzone.setFileMp3(audio);
+		canzone.setFileMp3(audio);*/
 		dispatcher.setSituation(ViewSituations.newobject);
 		objects.add(canzone);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objects);

@@ -192,7 +192,7 @@ public class FileArtistServiceImpl implements ArtistService {
 					//aggiorno il file album.txt
 					for (Album albumCtrl : albumList) {
 						if(SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl).size() <= 1){
-							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);System.out.println("1");
+							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);
 						}
 					}
 					for(Production production : findAllProductions(artist)){
@@ -214,7 +214,7 @@ public class FileArtistServiceImpl implements ArtistService {
 
 
 
-					System.out.println("artista id "+ artist.getId());
+
 
 					for(Picture picture : artist.getPictures()){
 						multimediaService.delete(picture);

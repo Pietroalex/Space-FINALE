@@ -206,17 +206,18 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Song canzone) throws BusinessException {
 		try {
-
+			System.out.println("add");
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] righe: fileData.getRighe()) {
 				if(righe[1].equals(canzone.getTitle()) || canzone.getTitle().contains("DefaultSingles") && canzone.getAlbum().getSongs() != null) {
+					System.out.println("add esiste");
 					throw new AlreadyExistingException();
 				}
 			}
-
+			System.out.println("addpassa");
 			canzone.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
 			multimediaService.add(canzone.getFileMp3());
-
+			System.out.println("add ji affancul");
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				long contatore = fileData.getContatore();
 				writer.println(contatore + 1);

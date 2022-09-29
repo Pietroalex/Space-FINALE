@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,13 +35,15 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
                     //canzone "DefaultSingles" di qualsiasi album "Singles" che ha genere "singles" può avere il file mp3 uguale a quelle di altri album "Singles" e diverso invece rispetto a tutte le altre canzoni in altri album.
                     if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
-                        if (!(song.getTitle().contains("DefaultSingles")) && song.getFileMp3().getData() == audio.getData()) {
-                            throw new AlreadyExistingException();
+                        if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
+                            System.out.println("add stucazz");
+                            throw new AlreadyExistingException("audio");
                         }
                     } else {
-                        //canzone non "DefaultSingles" di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
-                        if (song.getFileMp3().getData() == audio.getData()) {
-                            throw new AlreadyExistingException();
+                        //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
+                        if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
+                            System.out.println("add stucazz2");
+                            throw new AlreadyExistingException("audio");
                         }
                     }
 
