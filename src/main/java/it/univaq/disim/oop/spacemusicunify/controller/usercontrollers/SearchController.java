@@ -241,8 +241,17 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			final Button info = new Button("info");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
+				Production production = new Production();
+				try {
+					for(Production prod : productionService.getAllProductions()) {
+						if(prod.getAlbum() == param.getValue()) production = prod;
+						break;
+					}
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
 				dispatcher.setSituation(ViewSituations.user);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
 			});
 			return new SimpleObjectProperty<Button>(info);
 		});

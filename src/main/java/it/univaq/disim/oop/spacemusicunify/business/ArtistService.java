@@ -1,9 +1,12 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
-import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.domain.Album;
+import it.univaq.disim.oop.spacemusicunify.domain.Artist;
+import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
+import it.univaq.disim.oop.spacemusicunify.domain.Picture;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
 
 public interface ArtistService {
 	

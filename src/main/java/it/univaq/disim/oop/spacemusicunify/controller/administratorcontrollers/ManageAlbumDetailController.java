@@ -66,7 +66,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Song, Genre> genretab;
 	@FXML
 	private TableColumn<Song, Button> detailSong;
-	private Artist artista;
+	private Artist artist;
 
 	@FXML
 	private TextField titleField;
@@ -148,9 +148,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				} catch (BusinessException e) {
 					throw new RuntimeException(e);
 				}
-
-
-
 
 				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
 				detailSong.setStyle("-fx-alignment: CENTER;");
@@ -290,7 +287,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 				try {
 					Set<Artist> artists = artistService.getArtistList();
-					artists.removeIf((Artist artist) -> artist.getId().intValue() == artista.getId().intValue());
+					artists.removeIf((Artist artist2) -> artist2.getId().intValue() == artist.getId().intValue());
 					ObservableList<Artist> artistsData = FXCollections.observableArrayList(artists);
 					artistTable.getItems().addAll(artistsData);
 				} catch (BusinessException e) {
@@ -312,12 +309,69 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				imgsv.setOnMouseClicked(event -> {
 					this.focusImage(String.valueOf(album.getCover().getId()));
 				});
-				artistSet.add(artista);
+				artistSet.add(artist);
 				coverField.getChildren().add(imgsv);
 
 				titleView.setText("New Album");
 				confirm.setText("Create");
 
+				break;
+				
+			case user:
+				id.setCellValueFactory(new PropertyValueFactory<>("id"));
+				title.setCellValueFactory(new PropertyValueFactory<>("title"));
+				length.setCellValueFactory(new PropertyValueFactory<>("length"));
+				genretab.setCellValueFactory(new PropertyValueFactory<>("genre"));
+				try {
+					Set<Artist> artistsSet = albumService.findAllArtists(album);
+					artistS.setVisible(true);
+					for (Artist artistCtrl : artistsSet) {
+						MenuItem menuItem = new MenuItem();
+						menuItem.setText(artistCtrl.getName());
+						menuItem.setOnAction((ActionEvent event) -> {
+							artistS.hide();
+							dispatcher.setSituation(ViewSituations.detail);
+							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+						});
+						artistS.getItems().add(menuItem);
+					}
+				} catch (BusinessException e) {
+					throw new RuntimeException(e);
+				}
+
+
+
+
+				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
+				detailSong.setStyle("-fx-alignment: CENTER;");
+				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+					final Button modify = new Button("Detail");
+					modify.setCursor(Cursor.HAND);
+					modify.setOnAction((ActionEvent event) -> {
+						if(dispatcher.getSituation() == ViewSituations.user){
+							dispatcher.setSituation(ViewSituations.user);
+						}else{
+							dispatcher.setSituation(ViewSituations.detail);
+						}
+						objects.add(param.getValue());
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
+					});
+					return new SimpleObjectProperty<Button>(modify);
+				});
+
+				titleAlbum.setText(album.getTitle());
+				genreAlbum.setText(String.valueOf(album.getGenre()));
+				releaseAlbum.setText(String.valueOf(album.getRelease()));
+
+				Image img2 = new Image(new ByteArrayInputStream(album.getCover().getData()));
+
+				ImageView imgview3 = new ImageView(img2);
+				imgview3.setFitHeight(album.getCover().getHeight());
+				imgview3.setFitWidth(album.getCover().getWidth());
+
+				coverAlbum.getChildren().add(imgview3);
+				albumsongs.setItems(songData);
+				modify.setVisible(false);
 				break;
 			
 			default:
@@ -341,7 +395,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		objects.add(production);
 		albumProduction = production;
 		album = production.getAlbum();
-		artista = production.getArtist();
+		artist = production.getArtist();
 
 
 		Set<Song> songs = album.getSongs();
@@ -367,7 +421,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			} else {
 				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), tempPicture, album.getSongs(), releaseField.getValue(), album);
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
 
 		} catch (AlreadyTakenFieldException e){
 			existingLabel.setText("This album title is already taken");
@@ -386,7 +440,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		switch (dispatcher.getSituation()){
 			case newobject:
 				try {
-					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
+					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
 				} catch (BusinessException e) {
 					throw new RuntimeException(e);
 				}
@@ -400,7 +454,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	public void backToTheArtist(ActionEvent event) {
 		dispatcher.setSituation(ViewSituations.detail);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artista);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artist);
 	}
 	public void focusImage(String image){
 		imageUrl = image;
@@ -509,7 +563,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}else{
 				System.out.println("Album not found");
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artista));
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);

@@ -257,6 +257,31 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
                 break;
                 
+            case user:
+                loadImages(artist.getPictures());
+                if(!(artist.getBandMembers().isEmpty())) {
+                    members.setVisible(true);
+                    for (Artist artistCtrl : artist.getBandMembers()) {
+                        MenuItem menuItem = new MenuItem();
+                        menuItem.setText(artistCtrl.getName());
+                        menuItem.setOnAction((ActionEvent event) -> {
+                            members.hide();
+                            dispatcher.setSituation(ViewSituations.detail);
+                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+                            System.out.println("andato");
+
+                        });
+                        members.getItems().add(menuItem);
+                    }
+                }
+                stageName.setText(artist.getName());
+                yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
+                biography.setText(artist.getBiography());
+                nationality.setText(String.valueOf(artist.getNationality()));
+                biography.setEditable(false);
+                modify.setVisible(false);
+                break;
+                
             default:
             	break;
         }

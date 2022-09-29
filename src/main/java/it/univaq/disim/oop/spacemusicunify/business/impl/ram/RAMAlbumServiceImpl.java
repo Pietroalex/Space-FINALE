@@ -12,7 +12,9 @@ import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
+import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
 import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
+import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
@@ -251,7 +253,21 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public Set<Artist> findAllArtists(Album album) throws BusinessException {
-		return null;
+		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
+		boolean check = false;
+		for(Album albumCheck : albumService.getAlbumList()) {
+			if(albumCheck == album) {
+				check = true;
+				break;
+			}
+		}
+		if(!check) throw new ObjectNotFoundException("album not found");
+		
+		Set<Artist> albumArtists = new HashSet<>();
+		for(Production production : productionService.getAllProductions()) {
+			if(production.getAlbum() == album) albumArtists.add(production.getArtist());
+		}
+		return albumArtists;
 	}
 
 	@Override
