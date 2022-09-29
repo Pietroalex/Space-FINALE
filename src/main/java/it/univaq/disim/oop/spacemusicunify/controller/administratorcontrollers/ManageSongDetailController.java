@@ -1,15 +1,23 @@
 package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
-import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.business.impl.file.UtilityObjectRetriever;
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
+import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
+import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
+import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
+import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.domain.Album;
+import it.univaq.disim.oop.spacemusicunify.domain.Audio;
+import it.univaq.disim.oop.spacemusicunify.domain.Genre;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,11 +28,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-
-import java.io.File;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
 
 public class ManageSongDetailController implements Initializable, DataInitializable<List<Object>> {
 
@@ -175,8 +178,9 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 existingLabel.setVisible(false);
             }
         });*/
-
-
+    	
+    	if(dispatcher.getSituation() == ViewSituations.modify)
+    		confirm.disableProperty().bind(songField.textProperty().isEqualTo("No MP3 File selected"));
     }
     @Override
     public void initializeData(List<Object> list) {
