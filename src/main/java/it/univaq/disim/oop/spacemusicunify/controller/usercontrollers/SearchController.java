@@ -12,6 +12,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Artist;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
 import it.univaq.disim.oop.spacemusicunify.domain.Nationality;
+import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
 import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
@@ -24,8 +25,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -33,7 +37,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class SearchController implements Initializable, DataInitializable<User>{
 
@@ -104,7 +111,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		this.ricerca = userService.getRicerca();
+		this.ricerca = RunTimeService.getSearch();
 		//songTable
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
@@ -183,7 +190,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		//albumTable
 		albumCover.setCellValueFactory((TableColumn.CellDataFeatures<Album,ImageView> param) -> {
 
-			System.out.println(param.getValue().getCover());
 			ImageView image;
 			image = new ImageView(new Image(new ByteArrayInputStream(param.getValue().getCover().getData())));
 			image.setFitHeight(40);
@@ -219,14 +225,15 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				}
 				SpacemusicunifyPlayer spacemusicunifyPlayer;
 				try {
-					spacemusicunifyPlayer = userService.getPlayer(utente);
+					spacemusicunifyPlayer = playerService.getPlayer(utente);
 					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-					spacemusicunifyPlayer.getMediaPlayer().stop();
-					spacemusicunifyPlayer.getMediaPlayer().dispose();
-				}
+						spacemusicunifyPlayer.getMediaPlayer().stop();
+						spacemusicunifyPlayer.getMediaPlayer().dispose();
+					}
+				} catch (ObjectNotFoundException o) {
+					//show label
 				} catch (BusinessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					dispatcher.renderError(e);
 				}
 
 				playerService.setPlayerState(PlayerState.searchSingleClick);
@@ -260,7 +267,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			final Button addButton = new Button("Add to playlist");
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
-				/*showPopupSelectPlaylist(param.getValue());*/
+				showPopupSelectPlaylist(param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -268,7 +275,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 	@Override
 	public void initializeData(User utente) {
-		this.ricerca = userService.getRicerca();
+		this.ricerca = RunTimeService.getSearch();
 		this.utente = utente;
 
 		try {
@@ -311,7 +318,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			TableRow<Song> canzone = new TableRow<>();
 			canzone.setOnMouseClicked((MouseEvent event) -> {
 				if(event.getClickCount() == 2) {
-					System.out.println("doppio click!");
 
 					/*if(this.utente.getcurrentSong() != null) {
 						mediaPlayerSettings.setPlayerState(PlayerState.searchDoubleClick);
@@ -356,7 +362,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		return false;
 	}*/
 
-	/*private void showPopupSelectPlaylist(Album selectedAlbum) {
+	private void showPopupSelectPlaylist(Album selectedAlbum) {
 		Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
 		Label title = new Label("Seleziona la playlist");
@@ -370,8 +376,8 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			final Button addButton = new Button("add");
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiunto album alla playlist
-				List<Song> lista = param.getValue().getSongList();
-				for(Song canzoneAlbum: selectedAlbum.getSongList()) {
+				Set<Song> lista = param.getValue().getSongList();
+				for(Song canzoneAlbum: selectedAlbum.getSongs()) {
 					Boolean alreadyAdded = false;
 					for(Song canzonePlaylist: lista) {
 						if(canzoneAlbum.getId().intValue() == canzonePlaylist.getId().intValue()) {
@@ -384,7 +390,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 					}
 				}
 				try {
-					spaceMusicUnifyService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -394,9 +400,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 		tableView.getColumns().addAll(name, add);
-*/
-		/*try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(spaceMusicUnifyService.getAllPlaylists(utente));
+
+		try {
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(utente));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
 			e1.printStackTrace();
@@ -406,7 +412,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderPlaylists("UserViews/UserHomeView/playlistPane", utente);
+			dispatcher.renderView("UserViews/UserHomeView/playlistPane", utente);
 			popupwindow.close();
 		});
 
@@ -418,7 +424,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		popupwindow.setResizable(false);
 		popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");
 		popupwindow.showAndWait();
-	}*/
+	}
 
 
 	@FXML

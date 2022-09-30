@@ -87,7 +87,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void initializeData(User user) {
         this.user = user;
         try {
-			this.spacemusicunifyPlayer = userService.getPlayer(user);
+			this.spacemusicunifyPlayer = playerService.getPlayer(user);
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,6 +104,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         pauseButton.setVisible(false);
         nextButton.setDisable(true);
         previousButton.setDisable(true);
+        progressSlider.setDisable(true);
 
         if(spacemusicunifyPlayer.getMediaPlayer() == null) {
         	//spacemusicunifyPlayer.setVolume(volumeSlider.getValue());

@@ -127,7 +127,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		return null;});
 		SpacemusicunifyPlayer spacemusicunifyPlayer;
 		try {
-			spacemusicunifyPlayer = userService.getPlayer(user);
+			spacemusicunifyPlayer = playerService.getPlayer(user);
 			List<Song> songsList = spacemusicunifyPlayer.getQueue();
 			ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
 			queueTable.setItems(songData);

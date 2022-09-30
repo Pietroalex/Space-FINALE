@@ -37,7 +37,7 @@ public class LayoutController implements DataInitializable<User> {
 	public void initializeData(User user) {
 		
 		try {
-			spacemusicunifyPlayer = userService.getPlayer(user);
+			spacemusicunifyPlayer = playerService.getPlayer(user);
 		} catch (BusinessException e) {
 			e.printStackTrace();
 		}
@@ -66,7 +66,7 @@ public class LayoutController implements DataInitializable<User> {
 	}
 	@FXML
 	public void searchAction(ActionEvent event) {
-		userService.setRicerca(searchField.getText());
+		RunTimeService.setSearch(searchField.getText());
 		dispatcher.renderView("UserViews/SearchView/searchView", user);
 	}
 

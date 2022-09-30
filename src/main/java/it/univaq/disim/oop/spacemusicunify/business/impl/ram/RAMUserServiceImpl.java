@@ -11,9 +11,7 @@ public class RAMUserServiceImpl implements UserService {
 
 	private static Set<User> storedUsers = new HashSet<>();
 	private static Set<Playlist> storedPlaylists = new HashSet<>();
-	private static Set<SpacemusicunifyPlayer> storedPlayers = new HashSet<>();
 	private static int idUser = 1;
-	private String ricerca;
 	private static int id = 1; // da capire cos'è
 
 	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
@@ -31,8 +29,7 @@ public class RAMUserServiceImpl implements UserService {
 
 		newUser.setId(idUser++);
 		storedUsers.add(newUser);
-		SpacemusicunifyPlayer spacemusicunifyPlayer = new SpacemusicunifyPlayer(newUser);
-		storedPlayers.add(spacemusicunifyPlayer);
+		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().add(newUser);
 	}
 
 	@Override
@@ -81,8 +78,7 @@ public class RAMUserServiceImpl implements UserService {
 			}
 		}
 		
-		SpacemusicunifyPlayer player = getPlayer(utente);
-		storedPlayers.remove(player);
+		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(utente);
 	}
 
 	@Override
@@ -95,6 +91,7 @@ public class RAMUserServiceImpl implements UserService {
 		} else {
 			for (User user : storedUsers) {
 				if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+					RunTimeService.setCurrentUser(user);
 					return user;
 				}
 			}
@@ -165,26 +162,6 @@ public class RAMUserServiceImpl implements UserService {
 			return userPlaylists;
 		}
 		throw new BusinessException();
-	}
-
-	@Override
-	public String getRicerca() {
-		return ricerca;
-	}
-	
-	@Override
-	public void setRicerca(String ricerca) {
-		this.ricerca = ricerca;
-	}
-	
-	@Override
-	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
-		for(SpacemusicunifyPlayer player : storedPlayers) {
-			if(player.getUser() == user) {
-				return player;
-			}
-		}
-		throw new BusinessException("player non trovato");
 	}
 	
 }

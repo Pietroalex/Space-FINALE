@@ -22,14 +22,8 @@ public interface UserService {
 
 	Set<Playlist> getAllPlaylists(User utente) throws BusinessException;
 
-	String getRicerca();
-	
-	void setRicerca(String ricerca);
-
 	GeneralUser authenticate(String username, String password) throws BusinessException;
 	
 	Set<User> getAllUsers();
-	
-	SpacemusicunifyPlayer getPlayer(User user) throws BusinessException;
 	
 }

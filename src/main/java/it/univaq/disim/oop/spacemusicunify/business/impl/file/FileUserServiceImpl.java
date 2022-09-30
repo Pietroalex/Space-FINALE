@@ -21,9 +21,6 @@ public class FileUserServiceImpl implements UserService {
 	private final String picturesDirectory;
 	private final String mp3Directory;
 
-
-	private String ricerca;
-
 	public FileUserServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures) {
 		this.usersFile = fileUtenti;
 		this.albumsFile = fileAlbums;
@@ -244,11 +241,6 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
-		return null;
-	}
-
-	@Override
 	public void add(Playlist playlist) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
@@ -377,17 +369,6 @@ public class FileUserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		return playlistsUtente;
-	}
-
-
-
-	@Override
-	public String getRicerca() {
-		return ricerca;
-	}
-	@Override
-	public void setRicerca(String ricerca) {
-		this.ricerca = ricerca;
 	}
 
 }

@@ -123,6 +123,24 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 	}
 
+	@Override
+	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void add(User user) throws BusinessException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(User user) throws BusinessException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/*@Override
 	public void addSongToQueue(User utente, Song canzone) {
 

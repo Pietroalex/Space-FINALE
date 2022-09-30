@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,70 +15,83 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
-      <Button id="b1" fx:id="modify" layoutX="14.0" layoutY="404.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
-      <cursor>
-         <Cursor fx:constant="HAND" />
-      </cursor>
-      <font>
-         <Font size="16.0" />
-      </font>
-   </Button>
-      <Label layoutX="585.0" layoutY="79.0" text="Genre">
-      <font>
-         <Font size="21.0" />
-      </font>
-   </Label>
-      <Label contentDisplay="CENTER" layoutX="361.0" layoutY="19.0" text="Album Info">
+<AnchorPane fx:id="masterPane" prefHeight="450.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
+   <children>
+         <Button id="b1" fx:id="modify" layoutX="14.0" layoutY="391.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
          <font>
-            <Font size="32.0" />
+            <Font size="16.0" />
+         </font>
+      </Button>
+         <Label layoutX="585.0" layoutY="79.0" text="Genre">
+         <font>
+            <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="747.0" layoutY="79.0" text="Release date">
-      <font>
-         <Font size="21.0" />
-      </font>
-   </Label>
-      <Label fx:id="genreAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="573.0" layoutY="110.0" text="Album genre">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
-      <Label fx:id="releaseAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="757.0" layoutY="110.0" text="Album release">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
-   <TableView fx:id="albumsongs" layoutX="14.0" layoutY="200.0" prefHeight="194.0" prefWidth="898.0">
-      <placeholder>
-  	<Label text="album is empty" />
-			</placeholder>
-      <columns>
-         <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
-         <TableColumn fx:id="title" prefWidth="474.0" text="Title" />
-         <TableColumn fx:id="genretab" prefWidth="118.0" text="Genre" />
-         <TableColumn fx:id="length" prefWidth="121.0" text="Length" />
-         <TableColumn fx:id="detailSong" minWidth="0.0" prefWidth="97.0" text="Detail song" />
-      </columns>
-   </TableView>
-   <VBox fx:id="coverAlbum" layoutX="36.0" layoutY="47.0" prefHeight="127.0" prefWidth="141.0" />
-   <Button id="b1" fx:id="cancel1" layoutX="734.0" layoutY="404.0" mnemonicParsing="false" onAction="#backToTheArtist" text="Back to the artist">
-      <cursor>
-         <Cursor fx:constant="HAND" />
-      </cursor>
-      <font>
-         <Font size="16.0" />
-      </font>
-   </Button>
-      <Label layoutX="218.0" layoutY="79.0" text="Title">
-      <font>
-         <Font size="21.0" />
-      </font>
-   </Label>
-      <Label fx:id="titleAlbum" alignment="CENTER" layoutX="217.0" layoutY="110.0" text="Album title">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
-   <MenuButton fx:id="artistS" layoutX="707.0" layoutY="149.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="158.0" text="Artists" visible="false" />
+         <Label contentDisplay="CENTER" layoutX="361.0" layoutY="19.0" text="Album Info">
+            <font>
+               <Font size="32.0" />
+            </font>
+         </Label>
+         <Label layoutX="747.0" layoutY="79.0" text="Release date">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+         <Label fx:id="genreAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="573.0" layoutY="110.0" text="Album genre">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+         <Label fx:id="releaseAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="757.0" layoutY="110.0" text="Album release">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TableView fx:id="albumsongs" layoutX="14.0" layoutY="193.0" prefHeight="180.0" prefWidth="898.0">
+         <placeholder>
+     	<Label text="album is empty" />
+   			</placeholder>
+         <columns>
+            <TableColumn fx:id="id" prefWidth="58.0" text="ID" />
+            <TableColumn fx:id="title" prefWidth="411.0" text="Title" />
+            <TableColumn fx:id="genretab" prefWidth="111.0" text="Genre" />
+            <TableColumn fx:id="length" prefWidth="75.0" text="Length" />
+            <TableColumn fx:id="detailSong" prefWidth="96.0" text="Info" />
+            <TableColumn fx:id="addSongToQueue" prefWidth="134.0" />
+         </columns>
+      </TableView>
+      <VBox fx:id="coverAlbum" layoutX="33.0" layoutY="31.0" prefHeight="127.0" prefWidth="141.0" />
+      <Button id="b1" fx:id="cancel1" layoutX="757.0" layoutY="391.0" mnemonicParsing="false" onAction="#backToTheArtist" text="Back to the artist">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+         <Label layoutX="218.0" layoutY="79.0" text="Title">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+         <Label fx:id="titleAlbum" alignment="CENTER" layoutX="217.0" layoutY="110.0" text="Album title">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <MenuButton fx:id="artistS" layoutX="707.0" layoutY="149.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="158.0" text="Artists" visible="false" />
+      <Button id="b1" fx:id="addToPlaylist" layoutX="227.0" layoutY="391.0" mnemonicParsing="false" onAction="#addAlbumToPlaylist" text="Add album to playlist">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button id="b1" fx:id="addToQueue" layoutX="493.0" layoutY="391.0" mnemonicParsing="false" onAction="#addAlbumToQueue" text="Add album to queue">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>

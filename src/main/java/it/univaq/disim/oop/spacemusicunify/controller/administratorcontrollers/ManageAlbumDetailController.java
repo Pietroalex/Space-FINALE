@@ -9,6 +9,7 @@ import java.util.*;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,14 +19,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import javax.swing.*;
 
@@ -57,7 +63,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableView<Song> albumsongs;
 	@FXML
 	private TableColumn<Song, String> id;
-
 	@FXML
 	private TableColumn<Song, String> title;
 	@FXML
@@ -66,8 +71,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Song, Genre> genretab;
 	@FXML
 	private TableColumn<Song, Button> detailSong;
-	private Artist artist;
-
+	@FXML
+	private TableColumn<Song, Button> addSongToQueue;
 	@FXML
 	private TextField titleField;
 	@FXML
@@ -86,19 +91,23 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private VBox coverAlbum;
 	@FXML
 	private VBox cancelBox;
-
-	private String imageUrl;
+	@FXML
+	private Button addToPlaylist;
 	@FXML
 	private Button newSong;
 	@FXML
 	private MenuButton artistS;
 	@FXML
 	private Button cancel1;
-
+	@FXML
+	private Button addToQueue;
 	@FXML
 	private Button deletealbum;
 	@FXML
 	private Label existingLabel;
+	
+	private String imageUrl;
+	private Artist artist;
 	private Album album;
 	private Picture tempPicture;
 	private Administrator admin;
@@ -128,6 +137,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private void setView2(ObservableList<Song> songData) {
 		switch (dispatcher.getSituation()){
 			case detail:
+				addToPlaylist.setVisible(false);
+				addToQueue.setVisible(false);
+				addSongToQueue.setVisible(false);
 				id.setCellValueFactory(new PropertyValueFactory<>("id"));
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
@@ -164,6 +176,30 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
 					});
 					return new SimpleObjectProperty<Button>(modify);
+				});
+				
+				addSongToQueue.setStyle("-fx-alignment: CENTER;");
+				addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+
+					final Button addButton = new Button("Add to queue");
+					addButton.setCursor(Cursor.HAND);
+
+					/*if(this.checkForClones(param.getValue())){
+						addButton.setDisable(true);
+					}
+
+					addButton.setOnAction((ActionEvent event) -> {
+						spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
+						if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+							mediaPlayerSettings.getMediaPlayer().stop();
+							mediaPlayerSettings.getMediaPlayer().dispose();
+						}
+						song.refresh();
+						mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
+						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+					});
+		*/
+					return new SimpleObjectProperty<Button>(addButton);
 				});
 
 				titleAlbum.setText(album.getTitle());
@@ -318,6 +354,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				break;
 				
 			case user:
+				addToPlaylist.setVisible(true);
+				addToQueue.setVisible(true);
+				addSongToQueue.setVisible(true);
 				id.setCellValueFactory(new PropertyValueFactory<>("id"));
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
@@ -359,6 +398,30 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					return new SimpleObjectProperty<Button>(modify);
 				});
 
+				addSongToQueue.setStyle("-fx-alignment: CENTER;");
+				addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+
+					final Button addButton = new Button("Add to queue");
+					addButton.setCursor(Cursor.HAND);
+
+					/*if(this.checkForClones(param.getValue())){
+						addButton.setDisable(true);
+					}
+
+					addButton.setOnAction((ActionEvent event) -> {
+						spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
+						if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+							mediaPlayerSettings.getMediaPlayer().stop();
+							mediaPlayerSettings.getMediaPlayer().dispose();
+						}
+						song.refresh();
+						mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
+						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+					});
+		*/
+					return new SimpleObjectProperty<Button>(addButton);
+				});
+				
 				titleAlbum.setText(album.getTitle());
 				genreAlbum.setText(String.valueOf(album.getGenre()));
 				releaseAlbum.setText(String.valueOf(album.getRelease()));
@@ -570,7 +633,109 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}
 	}
 
+	@FXML
+	public void addAlbumToQueue(ActionEvent event) {
+		//aggiungere la canzone alla coda di riproduzione dell'utente
+		User user = RunTimeService.getCurrentUser();
+		PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+		Set<Song> lista = album.getSongs();
+		for(Song canzoneAlbum: lista) {
+			Boolean alreadyAdded = false;
+			/*for(Song canzone: utente.getSongQueue()) {
+				if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
+					alreadyAdded = true;
+					break;
+				}
+			}
+			if(!alreadyAdded) {
+				spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
+			}*/
+		}
+		SpacemusicunifyPlayer spacemusicunifyPlayer;
+		try {
+			spacemusicunifyPlayer = playerService.getPlayer(user);
+			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+				spacemusicunifyPlayer.getMediaPlayer().stop();
+				spacemusicunifyPlayer.getMediaPlayer().dispose();
+			}
+		} catch (ObjectNotFoundException o) {
+			//show label
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
 
+		playerService.setPlayerState(PlayerState.searchSingleClick);
+		dispatcher.renderView("UserViews/UserHomeView/playerPane", user);
+	}
+	@FXML
+	public void addAlbumToPlaylist(ActionEvent event) {
+		User user = RunTimeService.getCurrentUser();
+		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
+		PlayerService playerService = factory.getPlayerService();
+		UserService userService = factory.getUserService();
+		
+		Stage popupwindow = new Stage();
+		popupwindow.initModality(Modality.APPLICATION_MODAL);
+		Label title = new Label("Seleziona la playlist");
+		title.setAlignment(Pos.CENTER);
+		//selezione multipla playlist
+		TableView<Playlist> tableView = new TableView<>();
+		TableColumn<Playlist, String> name = new TableColumn<Playlist,String>("Title");
+		TableColumn<Playlist, Button> add = new TableColumn<Playlist, Button>();
+		name.setCellValueFactory(new PropertyValueFactory<>("title"));
+		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
+			final Button addButton = new Button("add");
+			addButton.setOnAction((actionEvent) -> {
+				//aggiunto album alla playlist
+				Set<Song> lista = param.getValue().getSongList();
+				for(Song canzoneAlbum: album.getSongs()) {
+					Boolean alreadyAdded = false;
+					for(Song canzonePlaylist: lista) {
+						if(canzoneAlbum.getId().intValue() == canzonePlaylist.getId().intValue()) {
+							alreadyAdded = true;
+							break;
+						}
+					}
+					if(!alreadyAdded) {
+						lista.add(canzoneAlbum);
+					}
+				}
+				try {
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+				} catch (BusinessException e) {
+					 e.printStackTrace();
+				}
+
+				addButton.setDisable(true);
+			});
+			return new SimpleObjectProperty<Button>(addButton);
+		});
+		tableView.getColumns().addAll(name, add);
+
+		try {
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
+			tableView.setItems(observableList);
+		} catch (BusinessException e1) {
+			e1.printStackTrace();
+		}
+
+		// operazione annulla
+		Button closeButton = new Button("Cancel");
+		closeButton.setCursor(Cursor.HAND);
+		closeButton.setOnAction(e -> {
+			dispatcher.renderView("UserViews/UserHomeView/playlistPane", user);
+			popupwindow.close();
+		});
+
+		VBox layout = new VBox(10);
+		layout.getChildren().addAll(title, tableView, closeButton);
+		layout.setAlignment(Pos.CENTER);
+		Scene scene1 = new Scene(layout, 300, 150);
+		popupwindow.setScene(scene1);
+		popupwindow.setResizable(false);
+		popupwindow.setTitle("Add " + album.getTitle() + " to playlist?");
+		popupwindow.showAndWait();
+	}
 	
 	@FXML
 	public void showModify(ActionEvent event) {

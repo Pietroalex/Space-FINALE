@@ -51,8 +51,8 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	private void loginAction(ActionEvent event) throws ViewException {
 		
 		try {
-			GeneralUser utenteGenerico = userService.authenticate(username.getText(), password.getText());
-			dispatcher.loggedIn(utenteGenerico);
+			GeneralUser generalUser = userService.authenticate(username.getText(), password.getText());
+			dispatcher.loggedIn(generalUser);
 		} catch (ObjectNotFoundException e) {
 			errorLabel.setVisible(true);
 
