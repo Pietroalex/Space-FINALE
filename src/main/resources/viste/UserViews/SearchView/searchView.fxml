@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -8,7 +12,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.SearchController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.SearchController">
    <children>
       <ToggleButton id="toggle" fx:id="tb1" layoutX="51.0" layoutY="18.0" mnemonicParsing="false" onAction="#songView" prefHeight="25.0" prefWidth="114.0" selected="true" text="Songs">
          <toggleGroup>
@@ -26,7 +30,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></ToggleButton>
-      <TableView fx:id="artist" layoutX="-6.0" layoutY="61.0" prefHeight="424.0" prefWidth="918.0" visible="false" AnchorPane.leftAnchor="-6.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="61.0">
+      <TableView fx:id="artist" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
         <placeholder>
         	<Label text="artist not found" />
         </placeholder>
@@ -37,7 +41,7 @@
             <TableColumn fx:id="artistInfo" prefWidth="117.0" text="Info" />
          </columns>
       </TableView>
-      <TableView fx:id="song" layoutX="-2.0" layoutY="71.0" prefHeight="424.0" prefWidth="910.0" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="61.0">
+      <TableView fx:id="song" layoutY="71.0" prefHeight="364.0" prefWidth="910.0">
          <placeholder>
         	<Label text="song not found" />
         </placeholder>
@@ -51,7 +55,7 @@
             <TableColumn fx:id="addSongToQueue" prefWidth="104.0" />
          </columns>
       </TableView>
-      <TableView fx:id="album" layoutX="-2.0" layoutY="71.0" prefHeight="424.0" prefWidth="910.0" visible="false" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="61.0">
+      <TableView fx:id="album" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
          <placeholder>
         	<Label text="album not found" />
         </placeholder>
