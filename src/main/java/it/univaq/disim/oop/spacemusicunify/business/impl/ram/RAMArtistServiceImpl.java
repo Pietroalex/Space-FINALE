@@ -124,8 +124,15 @@ public class RAMArtistServiceImpl implements ArtistService {
 
 	@Override
 	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
-		throw new ObjectNotFoundException("artist not found");
-		//return null;
+		ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
+		Set<Production> artistProductions = new HashSet<>();
+		for(Production production : productionService.getAllProductions()) {
+			if(production.getArtist() == artist) {
+				artistProductions.add(production);
+			}
+		}
+		if(artistProductions.size() == 0) throw new ObjectNotFoundException("productions not found");
+		return artistProductions;
 	}
 
 	@Override

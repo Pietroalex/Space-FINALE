@@ -399,7 +399,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
-		tableView.getColumns().addAll(name, add);
+		
+		tableView.getColumns().add(name);
+		tableView.getColumns().add(add);
 
 		try {
 			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(utente));

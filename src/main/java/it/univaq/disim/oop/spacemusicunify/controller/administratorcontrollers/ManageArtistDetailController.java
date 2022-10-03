@@ -33,7 +33,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private final ArtistService artistService;
     private Artist artist;
 
-
     @FXML
     private TextField stageNameField;
     @FXML
@@ -114,6 +113,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         
 
     }
+    
     public void setView2(){
         switch (dispatcher.getSituation()){
             case detail:
@@ -291,6 +291,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         this.artist = artist;
 	    setView2();
     }
+    
     public void loadImages(Set<Picture> pictures){
         if (!(pictures.isEmpty())) {
             for( Picture img: pictures) {
@@ -304,6 +305,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             }
         }
     }
+    
     public void loadModifyImages(Set<Picture> pictures) {
         if (!(pictures.isEmpty()) ) {
             for (Picture img : pictures) {
@@ -392,24 +394,22 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         }
     }
     @FXML
-    public void manageAlbums(){
-        if(dispatcher.getSituation() == ViewSituations.user){
-            dispatcher.setSituation(ViewSituations.user);	//????? Non ha senso, la situation sta già a user
-            // deve visualizzare gli album nella tabella album della ricerca
-        }
+    public void manageAlbums(ActionEvent event) {
         try {
+        	System.out.println("vado a vedere gli album dell'artista");
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
-        
         } catch (ObjectNotFoundException o) {
-        	//visualizzare errore
+        	System.out.println("non trovo l'oggetto");
         } catch (BusinessException e) {
             dispatcher.renderError(e);
         } 
     }
+    
     public void focusImage(Picture image){
         imgUrl = image;
         cancelbox.setVisible(true);
     }
+    
     public void focusAdd(){
         cancelbox.setVisible(false);
         FileChooser fileChoose = new FileChooser();
@@ -482,10 +482,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             dispatcher.renderError(e);
         }
     }
-
     @FXML
     public void showModify(ActionEvent event) {
         dispatcher.setSituation(ViewSituations.modify);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artist);
     }
+    
 }

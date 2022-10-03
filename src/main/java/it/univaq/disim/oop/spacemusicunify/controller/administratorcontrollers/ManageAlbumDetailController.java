@@ -375,7 +375,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						artistS.getItems().add(menuItem);
 					}
 				} catch (BusinessException e) {
-					throw new RuntimeException(e);
+					dispatcher.renderError(e);
 				}
 
 
