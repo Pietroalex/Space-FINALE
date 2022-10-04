@@ -57,7 +57,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				return player;
 			}
 		}
-		throw new BusinessException("player non trovato");
+		throw new ObjectNotFoundException("player non trovato");
 	}
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {

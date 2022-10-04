@@ -30,6 +30,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -93,7 +94,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private TableColumn<Album, Button> albumInfo;
 	private ViewDispatcher dispatcher;
 	private String ricerca;
-	private User utente;
+	private User user;
 	private PlayerService playerService;
 	private ArtistService artistService;
 	private AlbumService albumService;
@@ -115,8 +116,17 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		//songTable
 		songTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		songArtist.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-			return new SimpleStringProperty(/*param.getValue().getAlbum().getArtist().getStageName()*/);
+			String artists = "";
+			try {
+				Set<Artist> artistsSet = albumService.findAllArtists(param.getValue().getAlbum());
+				for (Artist artistCtrl : artistsSet) {
+					artists = artists + artistCtrl.getName() + ", ";
+				}
+				artists = artists.substring(0, artists.length()-2);
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+			return new SimpleStringProperty(artists);
 		});
 		songAlbum.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
@@ -198,8 +208,17 @@ public class SearchController implements Initializable, DataInitializable<User>{
         });
 		albumName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		albumArtists.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> param) -> {
-
-			return new SimpleStringProperty(/*param.getValue().getArtist().getStageName()*/);
+			String artists = "";
+			try {
+				Set<Artist> artistsSet = albumService.findAllArtists(param.getValue());
+				for (Artist artistCtrl : artistsSet) {
+					artists = artists + artistCtrl.getName() + ", ";
+				}
+				artists = artists.substring(0, artists.length()-2);
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+			return new SimpleStringProperty(artists);
 		});
 		albumGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
 		albumRelease.setCellValueFactory(new PropertyValueFactory<>("release"));
@@ -210,34 +229,39 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
-				Set<Song> lista = param.getValue().getSongs();
-				for(Song canzoneAlbum: lista) {
-					Boolean alreadyAdded = false;
-					/*for(Song canzone: utente.getSongQueue()) {
-						if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
-							alreadyAdded = true;
-							break;
-						}
-					}
-					if(!alreadyAdded) {
-						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
-					}*/
-				}
-				SpacemusicunifyPlayer spacemusicunifyPlayer;
+				SpacemusicunifyPlayer player;
 				try {
-					spacemusicunifyPlayer = playerService.getPlayer(utente);
-					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-						spacemusicunifyPlayer.getMediaPlayer().stop();
-						spacemusicunifyPlayer.getMediaPlayer().dispose();
+					player = playerService.getPlayer(user);
+					System.out.println(player);
+					Set<Song> lista = param.getValue().getSongs();
+					for(Song canzoneAlbum: lista) {
+						/*Boolean alreadyAdded = false;
+						for(Song canzone: utente.getSongQueue()) {
+							if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
+								alreadyAdded = true;
+								break;
+							}
+						}
+						if(!alreadyAdded) {
+							spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
+						}*/
+						playerService.addSongToQueue(player, canzoneAlbum);
+					}
+					
+					if(player.getMediaPlayer() != null && player.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+							player.getMediaPlayer().stop();
+							player.getMediaPlayer().dispose();
 					}
 				} catch (ObjectNotFoundException o) {
-					//show label
-				} catch (BusinessException e) {
-					dispatcher.renderError(e);
+					//text
+				} catch (BusinessException b) {
+					dispatcher.renderError(b);
 				}
-
-				playerService.setPlayerState(PlayerState.searchSingleClick);
-				dispatcher.renderView("UserViews/UserHomeView/playerPane", utente);
+				
+				/*
+				 * playerService.setPlayerState(PlayerState.searchSingleClick);
+				 * dispatcher.renderView("UserViews/HomeView/playerPane", user);
+				 */
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -274,9 +298,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	}
 
 	@Override
-	public void initializeData(User utente) {
+	public void initializeData(User user) {
 		this.ricerca = RunTimeService.getSearch();
-		this.utente = utente;
+		this.user = user;
 
 		try {
 			List<Artist> artistList = new ArrayList<>();
@@ -404,17 +428,17 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		tableView.getColumns().add(add);
 
 		try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(utente));
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
-			e1.printStackTrace();
+			dispatcher.renderError(e1);
 		}
 
 		// operazione annulla
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/UserHomeView/playlistPane", utente);
+			dispatcher.renderView("UserViews/HomeView/playlistPane", user);
 			popupwindow.close();
 		});
 

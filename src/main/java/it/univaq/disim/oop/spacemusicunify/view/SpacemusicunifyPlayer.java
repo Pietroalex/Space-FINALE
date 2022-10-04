@@ -1,5 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ public class SpacemusicunifyPlayer {
 	private Duration duration = Duration.ZERO; //current time of played song
 	private boolean mute = false; //player is mute or not
 	private boolean play = false; //player is playing or paused
-	private List<Song> queue = new ArrayList<>(); //songs to play
+	private ObservableList<Song> queue = FXCollections.observableArrayList(); //songs to play
 	private int currentSong = 0; //current song loaded
 	private User user;
 	
@@ -62,13 +64,13 @@ public class SpacemusicunifyPlayer {
 		}
 	}
 
-	public List<Song> getQueue() {
+	public ObservableList<Song> getQueue() {
 		return queue;
 	}
 
-	public void setQueue(List<Song> queue) {
-		this.queue = queue;
-	}
+	/*
+	 * public void setQueue(List<Song> queue) { this.queue = queue; }
+	 */
 
 	public int getCurrentSong() {
 		return currentSong;

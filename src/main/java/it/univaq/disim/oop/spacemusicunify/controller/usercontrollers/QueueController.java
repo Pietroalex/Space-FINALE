@@ -3,6 +3,7 @@ package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
@@ -11,6 +12,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +28,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 
 	private PlayerService playerService;
 	private UserService userService;
+	private AlbumService albumService;
 	@FXML
 	private TableView<Song> queueTable;
 	@FXML
@@ -43,14 +46,24 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		playerService = factory.getPlayerService();
 		userService = factory.getUserService();
+		albumService = factory.getAlbumService();
 	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		songName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		artistName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-
-			return new SimpleStringProperty(/*param.getValue().getAlbum().getArtist().getStageName()*/);
+			String artists = "";
+			try {
+				Set<Artist> artistsSet = albumService.findAllArtists(param.getValue().getAlbum());
+				for (Artist artistCtrl : artistsSet) {
+					artists = artists + artistCtrl.getName() + ", ";
+				}
+				artists = artists.substring(0, artists.length()-2);
+			} catch (BusinessException e) {
+				ViewDispatcher.getInstance().renderError(e);
+			}
+			return new SimpleStringProperty(artists);
 		});
 		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
 			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
@@ -124,15 +137,19 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		System.out.println("songqueue: " + utente.getSongQueue());
 		queueTable.getItems().addAll(utente.getSongQueue());
 	*/
-		return null;});
+			return new SimpleObjectProperty<Button>(deleteButton);
+		});
+		
 		SpacemusicunifyPlayer spacemusicunifyPlayer;
 		try {
 			spacemusicunifyPlayer = playerService.getPlayer(user);
 			List<Song> songsList = spacemusicunifyPlayer.getQueue();
 			ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
 			queueTable.setItems(songData);
+		} catch (ObjectNotFoundException e) {
+			//text
 		} catch (BusinessException e) {
-			e.printStackTrace();
+			ViewDispatcher.getInstance().renderError(e);
 		}
 		
 	}

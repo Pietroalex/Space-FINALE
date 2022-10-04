@@ -102,7 +102,12 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			"深い愛を 光の刃で flash flash flash\n" +
 			"Start！ Transfer ahh");
 		song.setLength("04:02");
-		song.setGenre(album.getGenre());
+		if(album.getGenre() != Genre.singles) {
+			song.setGenre(album.getGenre());
+		} else {
+			song.setGenre(Genre.pop);
+		}
+		
 		Audio audio = new Audio();
 		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator +"our_sympathy.mp3");
 		audio.setOwnership(song);

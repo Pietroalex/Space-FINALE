@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -85,19 +86,45 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
     @Override
     public void initializeData(User user) {
+    	
         this.user = user;
         try {
 			this.spacemusicunifyPlayer = playerService.getPlayer(user);
+			System.out.println(spacemusicunifyPlayer);
+			
+			spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
+				System.out.println("vedo modifica : " + spacemusicunifyPlayer.getQueue().get(0));
+				
+				if(spacemusicunifyPlayer.getQueue().get(0) != null) {
+					//viene riabilitato il player
+					addToPlaylistButton.setDisable(false);
+					playButton.setDisable(false);
+			        pauseButton.setDisable(false);
+			        nextButton.setDisable(false);
+			        previousButton.setDisable(false);
+			        progressSlider.setDisable(false);
+			        volumeButton.setDisable(false);
+		        	volumeSlider.setDisable(false);
+				} else {
+					addToPlaylistButton.setDisable(true);
+					playButton.setDisable(true);
+			        pauseButton.setDisable(true);
+			        nextButton.setDisable(true);
+			        previousButton.setDisable(true);
+			        progressSlider.setDisable(true);
+			        volumeButton.setDisable(true);
+		        	volumeSlider.setDisable(true);
+				}
+				
+			});
 		} catch (BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			dispatcher.renderError(e);
 		}
 		/*
 		 * if(playerService.getPlayerOnPlay() == null) {
 		 * playerService.setPlayerOnPlay(false); }
 		 */
         addToPlaylistButton.setDisable(true);
-
         playButton.setDisable(true);
         playButton.setVisible(true);
         pauseButton.setDisable(true);

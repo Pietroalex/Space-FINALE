@@ -158,7 +158,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						artistS.getItems().add(menuItem);
 					}
 				} catch (BusinessException e) {
-					throw new RuntimeException(e);
+					dispatcher.renderError(e);
 				}
 
 				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
@@ -710,8 +710,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
-		tableView.getColumns().addAll(name, add);
-
+		tableView.getColumns().add(name);
+		tableView.getColumns().add(add);
 		try {
 			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
 			tableView.setItems(observableList);
@@ -723,7 +723,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/UserHomeView/playlistPane", user);
+			dispatcher.renderView("UserViews/HomeView/playlistPane", RunTimeService.getCurrentUser());
 			popupwindow.close();
 		});
 

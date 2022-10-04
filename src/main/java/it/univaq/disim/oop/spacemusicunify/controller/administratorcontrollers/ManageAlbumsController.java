@@ -228,7 +228,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/UserHomeView/playlistPane", RunTimeService.getCurrentUser());
+			dispatcher.renderView("UserViews/HomeView/playlistPane", RunTimeService.getCurrentUser());
 			popupwindow.close();
 		});
 
