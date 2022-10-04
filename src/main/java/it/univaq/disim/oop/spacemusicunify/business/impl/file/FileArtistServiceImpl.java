@@ -35,6 +35,12 @@ public class FileArtistServiceImpl implements ArtistService {
 					throw new AlreadyExistingException();
 				}
 			}
+			artista.setId(Integer.parseInt(String.valueOf(fileDataArtisti.getContatore())));
+			List<String> imageList = new ArrayList<>();
+			for(Picture picture : artista.getPictures()){
+				multimediaService.add(picture);
+				imageList.add(String.valueOf(picture.getId()));
+			}
 
 			//creo l'album Inediti
 			Album album = new Album();
@@ -56,12 +62,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				for (String[] righe : fileDataArtisti.getRighe()) {
 					writerArtista.println(String.join(Utility.SEPARATORE_COLONNA, righe));
 				}
-				artista.setId(Integer.parseInt(String.valueOf(contatore)));
-				List<String> imageList = new ArrayList<>();
-				for(Picture picture : artista.getPictures()){
-					multimediaService.add(picture);
-					imageList.add(String.valueOf(picture.getId()));
-				}
+
 
 				List<String> bandIds = new ArrayList<>();
 				for(Artist artist : getModifiedMembers()){

@@ -15,9 +15,5 @@ public interface MultimediaService {
     void add(Picture picture) throws BusinessException;
 
     void delete(Picture picture) throws BusinessException;
-
-    Set<Picture> getAllPictures() throws BusinessException;
-    
-    Set<Audio> getAllAudios() throws BusinessException;
     
 }

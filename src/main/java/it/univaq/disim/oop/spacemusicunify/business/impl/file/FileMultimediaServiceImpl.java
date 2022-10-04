@@ -123,12 +123,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
                         //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
                         if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
-                            if (album.getGenre() != Genre.singles && album.getCover().getData() == picture.getData()) {
+                            if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 throw new AlreadyExistingException();
                             }
                         } else {
                             //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
-                            if (album.getCover().getData() == picture.getData()) {
+                            if (Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 throw new AlreadyExistingException();
                             }
                         }
@@ -198,26 +198,6 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         } catch (IOException e) {
             throw new BusinessException(e);
         }
-    }
-    @Override
-    public Set<Picture> getAllPictures() throws BusinessException{
-        Set<Picture> pictures = new HashSet<>();
-        for(Artist artist : SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistList()){
-            pictures.addAll(artist.getPictures());
-        }
-        for(Album album : SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getAlbumList()){
-            pictures.add(album.getCover());
-        }
-        return pictures;
-    }
-
-    @Override
-    public Set<Audio> getAllAudios() throws BusinessException {
-        Set<Audio> audios = new HashSet<>();
-        for(Song song : SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getSongList()){
-            audios.add(song.getFileMp3());
-        }
-        return audios;
     }
 
     public String saveANDstore(byte[] bytes, String type) {
