@@ -33,7 +33,7 @@ public interface AlbumService {
 
     Set<Production> findAllProductions(Album album) throws BusinessException;
 
-    Set<Artist> getChoosenArtists();
+    Set<Artist> getChosenArtists();
 
-	void setChoosenArtists(Set<Artist> choosenArtists);
+	void setChosenArtists(Set<Artist> chosenArtists);
 }

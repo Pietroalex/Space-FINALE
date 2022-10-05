@@ -22,12 +22,17 @@ public class RAMProductionServiceImpl implements ProductionService {
 
 	@Override
 	public Set<Production> getAllProductions() throws BusinessException {
+		if(storedProductions == null) throw new BusinessException();
 		return storedProductions;
 	}
 
 	@Override
 	public void add(Production production) throws BusinessException {
-
+		for (Production productions : storedProductions) {
+			if (productions.getArtist().getId().toString().equals( production.getArtist().getId().toString() ) && productions.getAlbum().getId().toString().equals(production.getAlbum().getId().toString())) {
+				throw new AlreadyExistingException();
+			}
+		}
 		production.setId(idProduction++);
 		storedProductions.add(production);
 

@@ -2,9 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
@@ -28,7 +26,8 @@ public class RAMArtistServiceImpl implements ArtistService {
 	private static int idArtists = 1;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
-	
+
+
 	public RAMArtistServiceImpl(MultimediaService multimediaService, ProductionService productionService) {
 		this.multimediaService = multimediaService;
 		this.productionService = productionService;
@@ -37,44 +36,42 @@ public class RAMArtistServiceImpl implements ArtistService {
 	@Override
 	public void add(Artist artist) throws BusinessException {
 
-		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		AlbumService albumService = factory.getAlbumService();
-
 		for (Artist storedArtist : storedArtists) {
-			if (artist.getName().equals(storedArtist.getName())) {
-				System.out.println("controllo");
+			if (artist.getName().equals(storedArtist.getName()) || artist.getName().contains("Singles")) {
 				throw new AlreadyExistingException();
 			}
 		}
 
-		Production production = new Production();
-		production.setArtist(artist);
+		artist.setId(idArtists++);
 
-		// creo l'album dell'artista
+		for(Picture picture : artist.getPictures()){
+			multimediaService.add(picture);
+		}
+
+		//creo l'album Inediti
 		Album album = new Album();
-		album.setTitle("Inediti");
+
+		album.setTitle("Singles"+(artist.getId()));
 		album.setGenre(Genre.singles);
+		Picture pictureAlbum = new Picture();
+		pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
+		pictureAlbum.setOwnership(album);
+		pictureAlbum.setHeight(140);
+		pictureAlbum.setWidth(140);
+		album.setCover(pictureAlbum);
 		album.setRelease(LocalDate.now());
+		album.setSongs(null);
 
-		Picture picture = new Picture();
-		picture.setData("src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
-		picture.setHeight(140);
-		picture.setWidth(140);
-		picture.setOwnership(album);
 
-		multimediaService.add(picture);
-
-		album.setCover(picture);
+		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
+		Set<Artist> artistSet = new HashSet<>();
+		artistSet.add(artist);
+		albumService.setChosenArtists(artistSet);
 
 		albumService.add(album);
 
-		production.setAlbum(album);
 
-		productionService.add(production);
-
-		artist.setId(idArtists++);
 		storedArtists.add(artist);
-
 	}
 
 	@Override
@@ -113,36 +110,30 @@ public class RAMArtistServiceImpl implements ArtistService {
 
 	@Override
 	public Set<Artist> getArtistList() throws BusinessException {
-		return storedArtists;
+		if(storedArtists == null) throw new ObjectNotFoundException();
+		Set<Artist> artists = new HashSet<>(storedArtists);
+		return artists;
 	}
 
 	@Override
 	public Set<Album> findAllAlbums(Artist artist) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Album> albums = new HashSet<>();
+		for(Production production : findAllProductions(artist)) {
+			albums.add(production.getAlbum());
+		}
+		if(albums.isEmpty()) throw new ObjectNotFoundException("no albums for this artist");
+		return albums;
 	}
 
 	@Override
 	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
-		ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
-		Set<Production> artistProductions = new HashSet<>();
+		Set<Production> productions = new HashSet<>();
 		for(Production production : productionService.getAllProductions()) {
-			if(production.getArtist() == artist) {
-				artistProductions.add(production);
+			if(production.getArtist().getId().intValue() == artist.getId().intValue()) {
+				productions.add(production);
 			}
 		}
-		if(artistProductions.size() == 0) throw new ObjectNotFoundException("productions not found");
-		return artistProductions;
+		if(productions.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
+		return productions;
 	}
-
-	@Override
-	public Set<Artist> getModifiedMembers() {
-		return null;
-	}
-
-	@Override
-	public void setModifieMembers(Set<Artist> bandMembers) {
-
-	}
-
 }

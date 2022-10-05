@@ -30,7 +30,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	public void add(Album album) throws BusinessException {
 		//album: title, genre, release, artist, cover
 		for (Album album1 : getAlbumList()) {
-			if (album1.getTitle().equals(album.getTitle())) {
+			if (album1.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getSongs() != null) {
 				throw new AlreadyExistingException();
 			}
 		}
@@ -40,7 +40,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 
 			fileData = Utility.readAllRows(albumsFile);
-			album.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
+			album.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 			multimediaService.add(album.getCover());
 			//creo la canzone
 			Song canzone = new Song();
@@ -61,22 +61,22 @@ public class FileAlbumServiceImpl implements AlbumService {
 			canzone.setFileMp3(audio);
 
 			try (PrintWriter writerAlbum = new PrintWriter(new File(albumsFile))) {
-				long contatore = fileData.getContatore();
+				long contatore = fileData.getCounter();
 				writerAlbum.println(contatore + 1);
-				for (String[] righe : fileData.getRighe()) {
-					writerAlbum.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				for (String[] righe : fileData.getRows()) {
+					writerAlbum.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 				StringBuilder row = new StringBuilder();
 				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(album.getTitle());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(album.getGenre());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(album.getCover().getId());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append("[]");
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(album.getRelease());
 
 
@@ -84,7 +84,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			}
 			add(canzone);
 
-				Set<Artist> artists = getChoosenArtists();
+				Set<Artist> artists = getChosenArtists();
 				if(artists != null) {
 					for (Artist artist : artists) {
 						Production production = new Production();
@@ -105,7 +105,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 
 			FileData fileData = Utility.readAllRows(albumsFile);
-			for(String[] colonne: fileData.getRighe()) {
+			for(String[] colonne: fileData.getRows()) {
 				if(genre != Genre.singles) {
 					if (colonne[1].equals(title) && !colonne[0].equals(id.toString())) {
 						throw new AlreadyTakenFieldException();
@@ -114,7 +114,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			}
 
 			int cont = 0;
-			for (String[] righe : fileData.getRighe()) {
+			for (String[] righe : fileData.getRows()) {
 				if (righe[0].equals(id.toString())) {
 					oldGenre = righe[2];
 
@@ -129,15 +129,15 @@ public class FileAlbumServiceImpl implements AlbumService {
 						savePicture = album.getCover();
 					}
 					row = new String[]{righe[0], title, String.valueOf(genre), savePicture.getId().toString(), righe[4],String.valueOf(release)};
-					fileData.getRighe().set(cont, row);
+					fileData.getRows().set(cont, row);
 					break;
 				}
 				cont++;
 			}
 			try (PrintWriter writer = new PrintWriter(new File(albumsFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				writer.println(fileData.getCounter());
+				for (String[] righe : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 			}
 
@@ -180,8 +180,8 @@ public class FileAlbumServiceImpl implements AlbumService {
 					FileData fileData = Utility.readAllRows(albumsFile);
 					//aggiorno il file album.txt
 					try (PrintWriter writer = new PrintWriter(new File(albumsFile))) {
-						writer.println(fileData.getContatore());
-						for (String[] righe : fileData.getRighe()) {
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
 							if (righe[0].equals(album.getId().toString())) {
 								//jump line
 								continue;
@@ -208,35 +208,35 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
-			for(String[] righe: fileData.getRighe()) {
+			for(String[] righe: fileData.getRows()) {
 				if(righe[1].equals(canzone.getTitle()) || canzone.getTitle().contains("DefaultSingles") && canzone.getAlbum().getSongs() != null) {
 					throw new AlreadyExistingException();
 				}
 			}
 
-			canzone.setId(Integer.parseInt(String.valueOf(fileData.getContatore())));
+			canzone.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 			multimediaService.add(canzone.getFileMp3());
 
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
-				long contatore = fileData.getContatore();
+				long contatore = fileData.getCounter();
 				writer.println(contatore + 1);
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				for (String[] righe : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 
 				StringBuilder row = new StringBuilder();
 				row.append(contatore);
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getTitle());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getFileMp3().getId());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getLyrics());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getAlbum().getId());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getLength());
-				row.append(Utility.SEPARATORE_COLONNA);
+				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(canzone.getGenre());
 				writer.println(row.toString());
 			}
@@ -245,10 +245,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 			fileData = Utility.readAllRows(albumsFile);
 			boolean check = false;
 			int cont = 0;
-			for(String[] righe: fileData.getRighe()) {
+			for(String[] righe: fileData.getRows()) {
 				if(righe[0].equals(album.getId().toString())) {
 					check = true;
-					List<String> listaCanzoni = Utility.leggiArray(righe[4]);
+					List<String> listaCanzoni = Utility.readArray(righe[4]);
 					listaCanzoni.add(canzone.getId().toString());
 					Set<Song> canzoneList;
 					if(album.getSongs() == null) canzoneList = new HashSet<>();
@@ -257,7 +257,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 					album.setSongs(canzoneList);
 
 					String[] row = {album.getId().toString(),album.getTitle(),album.getGenre().toString(), String.valueOf(album.getCover().getId()),listaCanzoni.toString(),album.getRelease().toString()};
-					fileData.getRighe().set(cont, row);
+					fileData.getRows().set(cont, row);
 					break;
 				}
 				cont++;
@@ -265,9 +265,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 			if(!check)throw new BusinessException("album non trovato");
 
 			try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				writer.println(fileData.getCounter());
+				for (String[] righe : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 			}
 		} catch (IOException e) {
@@ -284,13 +284,13 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
-			for(String[] colonne: fileData.getRighe()) {
+			for(String[] colonne: fileData.getRows()) {
 				if (colonne[1].equals(title) && !colonne[0].equals(id.toString())) {
 					throw new AlreadyTakenFieldException();
 				}
 			}
 			int cont = 0;
-			for(String[] righe: fileData.getRighe()) {
+			for(String[] righe: fileData.getRows()) {
 				if(righe[0].equals(id.toString())) {
 					Audio saveAudio;
 
@@ -305,7 +305,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 						saveAudio = song.getFileMp3();
 					}
 					row = new String[]{righe[0], title, saveAudio.getId().toString(), lyrics, righe[4], length, String.valueOf(genre)};
-					fileData.getRighe().set(cont, row);
+					fileData.getRows().set(cont, row);
 
 					song.setId(id);
 					song.setTitle(title);
@@ -321,9 +321,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 			if(!check)throw new BusinessException("canzone non trovata");
 
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				writer.println(fileData.getCounter());
+				for (String[] righe : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 			}
 		} catch (IOException e) {
@@ -345,8 +345,8 @@ public class FileAlbumServiceImpl implements AlbumService {
 					FileData fileData = Utility.readAllRows(songsFile);
 					//aggiorno il file canzoni.txt
 					try (PrintWriter writer = new PrintWriter(new File(songsFile))) {
-						writer.println(fileData.getContatore());
-						for (String[] righe : fileData.getRighe()) {
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
 							if (righe[0].equals(canzone.getId().toString())) {
 								//jump line
 								continue;
@@ -359,24 +359,24 @@ public class FileAlbumServiceImpl implements AlbumService {
 					//aggiorno il file albums.txt
 					fileData = Utility.readAllRows(albumsFile);
 					int cont = 0;
-					for(String[] righe: fileData.getRighe()) {
+					for(String[] righe: fileData.getRows()) {
 						if(righe[0].equals(album.getId().toString())) {
-							List<String> songList = Utility.leggiArray(righe[4]);
+							List<String> songList = Utility.readArray(righe[4]);
 							songList.remove(canzone.getId().toString());
 							Set<Song> canzoneList = album.getSongs();
 							canzoneList.remove(canzone);
 							album.setSongs(canzoneList);
 
 							String[] row = {righe[0], righe[1], righe[2], righe[3], songList.toString(),righe[5]};
-							fileData.getRighe().set(cont, row);
+							fileData.getRows().set(cont, row);
 							break;
 						}
 						cont++;
 					}
 					try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
-						writer.println(fileData.getContatore());
-						for (String[] righe : fileData.getRighe()) {
-							writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
+							writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 						}
 					}
 					UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
@@ -404,7 +404,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 			FileData fileData = Utility.readAllRows(albumsFile);
 
-			for (String[] righe : fileData.getRighe()) {
+			for (String[] righe : fileData.getRows()) {
 				albumList.add((Album) UtilityObjectRetriever.findObjectById(righe[0], albumsFile));
 
 			}
@@ -421,7 +421,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 
-			for(String[] righe : fileData.getRighe()) {
+			for(String[] righe : fileData.getRows()) {
 
 				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
 			}
@@ -434,40 +434,32 @@ public class FileAlbumServiceImpl implements AlbumService {
 	}
 	@Override
 	public Set<Artist> findAllArtists(Album album) throws BusinessException {
-		ArtistService artistService = SpacemusicunifyBusinessFactory.getInstance().getArtistService();
-		Set<Artist> artists = artistService.getArtistList();
-		Set<Artist> artistsFinal = new HashSet<>();
-		Set<Production> productions = productionService.getAllProductions();
-		for (Production production : productions){
-			if (production.getAlbum().getId().intValue() == album.getId().intValue()){
-				for (Artist artist : artists){
-					if (artist.getId().intValue() == production.getArtist().getId().intValue()){
-						artistsFinal.add(artist);
-					}
-				}
-			}
+		Set<Artist> artists = new HashSet<>();
+		for (Production production : findAllProductions(album)){
+			artists.add(production.getArtist());
 		}
-		return artistsFinal;
+		if(artists.isEmpty()) throw new ObjectNotFoundException("no artists for this album");
+		return artists;
 	}
 	@Override
 	public Set<Production> findAllProductions(Album album) throws BusinessException {
-		Set<Production> productions = productionService.getAllProductions();
 		Set<Production> productionList = new HashSet<>();
-		for (Production production : productions){
+		for (Production production : productionService.getAllProductions()){
 			if (production.getAlbum().getId().intValue() == album.getId().intValue()){
 				productionList.add(production);
 			}
 		}
+		if(productionList.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
 		return productionList;
 	}
 	@Override
-	public Set<Artist> getChoosenArtists() {
+	public Set<Artist> getChosenArtists() {
 		Set<Artist> artists = choosenArtists;
 		choosenArtists = null;
 		return artists;
 	}
 	@Override
-	public void setChoosenArtists(Set<Artist> choosenArtists) {
-		this.choosenArtists = choosenArtists;
+	public void setChosenArtists(Set<Artist> chosenArtists) {
+		this.choosenArtists = chosenArtists;
 	}
 }

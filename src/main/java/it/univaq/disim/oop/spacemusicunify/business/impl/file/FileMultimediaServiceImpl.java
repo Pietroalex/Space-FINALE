@@ -9,8 +9,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class FileMultimediaServiceImpl implements MultimediaService {
     private String picturesFile;
@@ -36,13 +34,13 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     //canzone "DefaultSingles" di qualsiasi album "Singles" che ha genere "singles" può avere il file mp3 uguale a quelle di altri album "Singles" e diverso invece rispetto a tutte le altre canzoni in altri album.
                     if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
                         if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
-                            System.out.println("add stucazz");
+                            ((Song) audio.getOwnership()).setId(null);
                             throw new AlreadyExistingException("audio");
                         }
                     } else {
                         //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
                         if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
-                            System.out.println("add stucazz2");
+                            ((Song) audio.getOwnership()).setId(null);
                             throw new AlreadyExistingException("audio");
                         }
                     }
@@ -52,18 +50,18 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(audiosFile);
             try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
-                long contatore = fileData.getContatore();
+                long contatore = fileData.getCounter();
                 writer.println((contatore + 1));
-                for (String[] righe : fileData.getRighe()) {
-                    writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+                for (String[] righe : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
                 }
                 audio.setId((int) contatore);
 
                 StringBuilder row = new StringBuilder();
                 row.append(contatore);
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(audio.getData(), "audio"));
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 row.append(((Song) audio.getOwnership()).getId() );
 
                 writer.println(row.toString());
@@ -80,14 +78,14 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
         try {
             FileData fileData = Utility.readAllRows(audiosFile);
-            for(String[] righeCheck: fileData.getRighe()) {
+            for(String[] righeCheck: fileData.getRows()) {
                 if(righeCheck[0].equals(audio.getId().toString())) {
                     Files.deleteIfExists(Paths.get(mp3Directory+File.separator+righeCheck[1]));
                     check = true;
                     //aggiorno il file audios.txt
                     try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
-                        writer.println(fileData.getContatore());
-                        for (String[] righe : fileData.getRighe()) {
+                        writer.println(fileData.getCounter());
+                        for (String[] righe : fileData.getRows()) {
                             if (righe[0].equals(audio.getId().toString())) {
                                 //jump line
                                 continue;
@@ -113,7 +111,8 @@ public class FileMultimediaServiceImpl implements MultimediaService {
             if(picture.getOwnership() instanceof Artist) {
                 for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
                     if(pictureCheck.getData() == picture.getData()){
-                        throw new AlreadyExistingException();
+                        ((Artist) picture.getOwnership()).setId(null);
+                        throw new AlreadyExistingException("artist_picture");
                     }
                 }
             } else {
@@ -124,12 +123,14 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                         //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
                         if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                             if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
-                                throw new AlreadyExistingException();
+                                ((Album) picture.getOwnership()).setId(null);
+                                throw new AlreadyExistingException("album_picture");
                             }
                         } else {
                             //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                             if (Arrays.equals(album.getCover().getData(), picture.getData())) {
-                                throw new AlreadyExistingException();
+                                ((Album) picture.getOwnership()).setId(null);
+                                throw new AlreadyExistingException("album_picture");
                             }
                         }
 
@@ -139,22 +140,22 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(picturesFile);
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
-                long contatore = fileData.getContatore();
+                long contatore = fileData.getCounter();
                 writer.println((contatore + 1));
-                for (String[] righe : fileData.getRighe()) {
-                    writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+                for (String[] righe : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
                 }
                 picture.setId((int) contatore);
 
                 StringBuilder row = new StringBuilder();
                 row.append(contatore);
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(picture.getData(), "image"));
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 row.append(picture.getHeight());
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 row.append(picture.getWidth());
-                row.append(Utility.SEPARATORE_COLONNA);
+                row.append(Utility.COLUMN_SEPARATOR);
                 if(picture.getOwnership() instanceof Artist) {
                     row.append(((Artist) picture.getOwnership()).getId() );
                 } else {
@@ -174,14 +175,14 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
         try {
             FileData fileData = Utility.readAllRows(picturesFile);
-            for(String[] righeCheck: fileData.getRighe()) {
+            for(String[] righeCheck: fileData.getRows()) {
                 if(righeCheck[0].equals(picture.getId().toString())) {
                     Files.deleteIfExists(Paths.get(picturesDirectory+File.separator+righeCheck[1]));
                     check = true;
                     //aggiorno il file pictures.txt
                     try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
-                        writer.println(fileData.getContatore());
-                        for (String[] righe : fileData.getRighe()) {
+                        writer.println(fileData.getCounter());
+                        for (String[] righe : fileData.getRows()) {
                             if (righe[0].equals(picture.getId().toString())) {
                                 //jump line
                                 continue;

@@ -22,7 +22,4 @@ public interface ArtistService {
 
     Set<Production> findAllProductions(Artist artist) throws BusinessException;
 
-    Set<Artist> getModifiedMembers();
-
-    void setModifieMembers(Set<Artist> bandMembers);
 }

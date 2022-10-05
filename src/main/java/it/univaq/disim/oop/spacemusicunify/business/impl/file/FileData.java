@@ -3,19 +3,19 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 import java.util.List;
 
 public class FileData {
-	private long contatore;
-	private List<String[]> righe;
+	private long counter;
+	private List<String[]> rows;
 	
-	public long getContatore() {
-		return contatore;
+	public long getCounter() {
+		return counter;
 	}
-	public void setContatore(long contatore) {
-		this.contatore = contatore;
+	public void setCounter(long counter) {
+		this.counter = counter;
 	}
-	public List<String[]> getRighe() {
-		return righe;
+	public List<String[]> getRows() {
+		return rows;
 	}
-	public void setRighe(List<String[]> righe) {
-		this.righe = righe;
+	public void setRows(List<String[]> rows) {
+		this.rows = rows;
 	}
 }

@@ -3,6 +3,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
+import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,42 +29,50 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		AlbumService albumService = factory.getAlbumService();
 		UserService userService = factory.getUserService();
 
-		List<Artist> artisti = new ArrayList<>();
+		List<Artist> artists = new ArrayList<>();
 		List<Album> albums = new ArrayList<>();
-		List<Song> canzoni = new ArrayList<>();
+		List<Song> songs = new ArrayList<>();
+
 
 		// creo l'artista1
-		Artist artista1 = new Artist();
-		//artista1.setId(idArtists++);
-		artista1.setName("Pasquale Arrosto");
-		artista1.setBiography("Sono Pasquale Arrosto, suono la musica elettronica");
-		artista1.setNationality(Nationality.italian);
-		artista1.setYearsOfActivity(6);
+		Artist artist1 = new Artist();
+		artist1.setName("Pasquale Arrosto");
+		artist1.setBiography("Sono Pasquale Arrosto, suono la musica elettronica");
+		artist1.setNationality(Nationality.italian);
+		artist1.setYearsOfActivity(6);
 		Set<Picture> artista1img = new HashSet<>();
 
-			Picture picture = new Picture();
+		Picture picture1 = new Picture();
+		picture1.setData(path+"pasqualearrosto.jpg");
+		picture1.setHeight(120);
+		picture1.setWidth(120);
+		artista1img.add(picture1);
 
-			picture.setData(path+"pasqualearrosto.jpg");
-			artista1img.add(picture);
+		Picture picture2 = new Picture();
+		picture2.setData(path+"group4.jpg");
+		picture2.setHeight(120);
+		picture2.setWidth(120);
+		artista1img.add(picture2);
+
+		Picture picture3 = new Picture();
+		picture3.setData(path+"group4.jpg");
+		picture3.setHeight(120);
+		picture3.setWidth(120);
+		artista1img.add(picture3);
+
+		Picture picture4 = new Picture();
+		picture4.setData(path+"group4.jpg");
+		picture4.setHeight(120);
+		picture4.setWidth(120);
+		artista1img.add(picture4);
 
 
-			picture.setData(path+"group4.jpg");
-			artista1img.add(picture);
+		artist1.setPictures(artista1img);
 
-
-			picture.setData(path+"group4.jpg");
-			artista1img.add(picture);
-
-
-			picture.setData(path+"group4.jpg");
-			artista1img.add(picture);
-
-
-		artista1.setPictures(artista1img);
 		try {
-			artistService.add(artista1);
+			artistService.add(artist1);
 		} catch (BusinessException e1) {
-			e1.printStackTrace();
+			ViewDispatcher.getInstance().renderError(e1);
 		}
 		
 		

@@ -255,7 +255,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         productionSet = productions;
         artist = productions.iterator().next().getArtist();
 
-        stageName.setText(this.artist.getName());
+        stageName.setText(artist.getName());
         if(dispatcher.getSituation() == ViewSituations.user) {
         	newAlbumButton.setVisible(false);
         	operation.setText("View");

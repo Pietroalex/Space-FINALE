@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Utility {
-	public static final String SEPARATORE_COLONNA = "§";
+	public static final String COLUMN_SEPARATOR = "§";
 	
 	public static final String[] trim(String[] s) {
 		for(int i = 0; i<s.length; i++) {
@@ -22,26 +21,26 @@ public class Utility {
 			FileData result = new FileData();
 			
 			try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-				List<String []> righe = new ArrayList<>();
-				long contatore = Long.parseLong(reader.readLine());
-				result.setContatore(contatore);
-				String linea;
-				while((linea=reader.readLine()) != null) {
-					righe.add(trim(linea.split(SEPARATORE_COLONNA)));
+				List<String []> rows = new ArrayList<>();
+				long counter = Long.parseLong(reader.readLine());
+				result.setCounter(counter);
+				String row;
+				while((row = reader.readLine()) != null) {
+					rows.add(trim(row.split(COLUMN_SEPARATOR)));
 				}
 				
-				result.setRighe(righe);
+				result.setRows(rows);
 			}
 
 			return result;
 		}
 	
-	public static List<String> leggiArray(String colonnaArray) {
+	public static List<String> readArray(String arrayColumn) {
 		List<String> lists = new ArrayList<>();
-		if("[]".equals(colonnaArray)){
+		if("[]".equals(arrayColumn)){
 			return lists;
 		}
-		String[] array = colonnaArray.split(",");
+		String[] array = arrayColumn.split(",");
 		for(String element : array ) {
 			if (element.contains("[")) {
 				element = element.substring(1);

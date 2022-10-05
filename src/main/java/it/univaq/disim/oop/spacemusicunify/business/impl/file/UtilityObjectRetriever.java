@@ -1,10 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +35,7 @@ public class UtilityObjectRetriever extends Object {
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
-					for (String[] colonne : fileData.getRighe()) {
+					for (String[] colonne : fileData.getRows()) {
 						if (colonne[0].equals(id)){
 							object = findSong(colonne, file);
 						}
@@ -56,7 +53,7 @@ public class UtilityObjectRetriever extends Object {
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
-					for (String[] colonne : fileData.getRighe()) {
+					for (String[] colonne : fileData.getRows()) {
 
 						if(colonne[0].equals(id)) {
 
@@ -74,7 +71,7 @@ public class UtilityObjectRetriever extends Object {
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
-					for (String[] colonne : fileData.getRighe()) {
+					for (String[] colonne : fileData.getRows()) {
 						if(colonne[0].equals(id)) {
 
 							object = findArtist(colonne, file);
@@ -91,7 +88,7 @@ public class UtilityObjectRetriever extends Object {
 				try {
 					FileData fileData = Utility.readAllRows(file);
 
-					for (String[] columns : fileData.getRighe()) {
+					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) {
 
 							object = findMultimedia(columns);
@@ -117,7 +114,7 @@ public class UtilityObjectRetriever extends Object {
 		artist.setBiography(colonne[3]);
 		currentArtist = artist;
 		Set<Picture> pictures = new HashSet<>();
-		List<String> picturesSource = Utility.leggiArray(colonne[4]);
+		List<String> picturesSource = Utility.readArray(colonne[4]);
 		for(String pictureId : picturesSource){
 			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
 		}
@@ -125,7 +122,7 @@ public class UtilityObjectRetriever extends Object {
 
 		artist.setNationality(Nationality.valueOf(colonne[5]));
 		Set<Artist> bandMembers = new HashSet<>();
-		List<String> bandMembersIds = Utility.leggiArray(colonne[6]);
+		List<String> bandMembersIds = Utility.readArray(colonne[6]);
 		for(String artistId : bandMembersIds){
 			bandMembers.add( (Artist) UtilityObjectRetriever.findObjectById(artistId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "artists.txt")));
 		}
@@ -164,7 +161,7 @@ public class UtilityObjectRetriever extends Object {
 		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(colonne[3], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"pictures.txt"))));
 		Set<Song> canzoneList = new HashSet<>();
 
-		for(String canzoni: Utility.leggiArray(colonne[4])){
+		for(String canzoni: Utility.readArray(colonne[4])){
 			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
 		}
 		album.setSongs(canzoneList);

@@ -13,7 +13,6 @@ import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,14 +25,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import javax.swing.*;
 
 public class ManageAlbumDetailController implements Initializable, DataInitializable<Production> {
 	private final ArtistService artistService;
@@ -345,7 +341,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				imgsv.setOnMouseClicked(event -> {
 					this.focusImage(String.valueOf(album.getCover().getId()));
 				});
-				artistSet.add(artist);
 				coverField.getChildren().add(imgsv);
 
 				titleView.setText("New Album");
@@ -478,7 +473,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				album.setGenre(genreField.getValue());
 				album.setRelease(releaseField.getValue());
 				if(tempPicture != null ) album.setCover(tempPicture);
-				albumService.setChoosenArtists(artistSet);
+				artistSet.add(artist);
+				albumService.setChosenArtists(artistSet);
 				albumService.add(album);
 
 			} else {

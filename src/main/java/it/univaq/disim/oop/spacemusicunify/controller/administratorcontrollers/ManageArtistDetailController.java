@@ -362,7 +362,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 artist.setBiography(biographyField.getText());
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
                 artist.setNationality(nationalityField.getValue());
-                artistService.setModifieMembers(addMembers);
+                artist.setBandMembers(addMembers);
                 if(tempPictures != null ) artist.setPictures(tempPictures);
                 artistService.add(artist);
             } else {

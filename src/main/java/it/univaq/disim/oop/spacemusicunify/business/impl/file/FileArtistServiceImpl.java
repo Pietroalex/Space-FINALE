@@ -26,25 +26,25 @@ public class FileArtistServiceImpl implements ArtistService {
 	}
 	
 	@Override
-	public void add(Artist artista) throws BusinessException {
+	public void add(Artist artist) throws BusinessException {
 		
 		try {
-			FileData fileDataArtisti = Utility.readAllRows(artistsFile);
-			for(String[] colonne: fileDataArtisti.getRighe()) {
-				if(colonne[1].equals(artista.getName())) {
+			FileData fileData = Utility.readAllRows(artistsFile);
+			for(String[] column: fileData.getRows()) {
+				if(column[1].equals(artist.getName())) {
 					throw new AlreadyExistingException();
 				}
 			}
-			artista.setId(Integer.parseInt(String.valueOf(fileDataArtisti.getContatore())));
+			artist.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 			List<String> imageList = new ArrayList<>();
-			for(Picture picture : artista.getPictures()){
+			for(Picture picture : artist.getPictures()){
 				multimediaService.add(picture);
 				imageList.add(String.valueOf(picture.getId()));
 			}
 
 			//creo l'album Inediti
 			Album album = new Album();
-
+			album.setTitle("Singles"+(artist.getId()));
 			album.setGenre(Genre.singles);
 			Picture pictureAlbum = new Picture();
 			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
@@ -56,47 +56,47 @@ public class FileArtistServiceImpl implements ArtistService {
 			album.setSongs(null);
 
 			//scrivo file artista
-			try (PrintWriter writerArtista = new PrintWriter(new File(artistsFile))) {
-				long contatore = fileDataArtisti.getContatore();
-				writerArtista.println(contatore + 1);
-				for (String[] righe : fileDataArtisti.getRighe()) {
-					writerArtista.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+			try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
+				long counter = fileData.getCounter();
+				writer.println(counter + 1);
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
 
 
 				List<String> bandIds = new ArrayList<>();
-				for(Artist artist : getModifiedMembers()){
-					bandIds.add(artist.getId().toString());
+				if(!(artist.getBandMembers().isEmpty())) {
+					for (Artist artists : artist.getBandMembers()) {
+						bandIds.add(artists.getId().toString());
+					}
 				}
 
-				album.setTitle("Singles"+(artista.getId()));
-				StringBuilder rowArtista = new StringBuilder();
-				rowArtista.append(contatore);
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getName());
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getYearsOfActivity());
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getBiography());
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(imageList);
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(artista.getNationality());
-				rowArtista.append(Utility.SEPARATORE_COLONNA);
-				rowArtista.append(bandIds);
-				writerArtista.println(rowArtista.toString());
+				StringBuilder row = new StringBuilder();
+				row.append(counter);
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(artist.getName());
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(artist.getYearsOfActivity());
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(artist.getBiography());
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(imageList);
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(artist.getNationality());
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(bandIds);
+				writer.println(row.toString());
 			}
 
 			AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 			Set<Artist> artistSet = new HashSet<>();
-			artistSet.add(artista);
-			albumService.setChoosenArtists(artistSet);
+			artistSet.add(artist);
+			albumService.setChosenArtists(artistSet);
 			//scrivo file album
 			albumService.add(album);
 
 
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}
@@ -106,13 +106,13 @@ public class FileArtistServiceImpl implements ArtistService {
 		try {
 
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for(String[] colonne: fileData.getRighe()) {
+			for(String[] colonne: fileData.getRows()) {
 				if(colonne[1].equals(name) && !colonne[0].equals(id.toString())) {
 					throw new AlreadyTakenFieldException();
 				}
 			}
 			int cont = 0;
-			for (String[] righe : fileData.getRighe()) {
+			for (String[] righe : fileData.getRows()) {
 				if (righe[0].equals(id.toString())) {
 					List<String> imagesIds = new ArrayList<>();
 					if (images != null) {
@@ -150,7 +150,7 @@ public class FileArtistServiceImpl implements ArtistService {
 							imagesIds.add(picture.getId().toString());
 						}
 					}else{
-						imagesIds.addAll(Utility.leggiArray(righe[4]));
+						imagesIds.addAll(Utility.readArray(righe[4]));
 					}
 					List<String> membersIds = new ArrayList<>();
 					if(addMembers != null){
@@ -158,19 +158,19 @@ public class FileArtistServiceImpl implements ArtistService {
 							membersIds.add(artistCtrl.getId().toString());
 						}
 					}else{
-						membersIds.addAll(Utility.leggiArray(righe[6]));
+						membersIds.addAll(Utility.readArray(righe[6]));
 					}
 					String[] row = new String[]{righe[0], name,  String.valueOf(yearsOfActivity), biography, imagesIds.toString(),String.valueOf(nationality),  membersIds.toString()};
-					fileData.getRighe().set(cont, row);
+					fileData.getRows().set(cont, row);
 
 					break;
 				}
 				cont++;
 			}
 			try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+				writer.println(fileData.getCounter());
+				for (String[] righe : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 			}
 		} catch (IOException e) {
@@ -184,7 +184,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for(String[] righeCheck: fileData.getRighe()) {
+			for(String[] righeCheck: fileData.getRows()) {
 				if(righeCheck[0].equals(artist.getId().toString())) {
 
 					check = true;
@@ -202,8 +202,8 @@ public class FileArtistServiceImpl implements ArtistService {
 
 					//aggiorno il file artisti.txt
 					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
-						writer.println(fileData.getContatore());
-						for (String[] righe : fileData.getRighe()) {
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
 							if (righe[0].equals(artist.getId().toString())) {
 								//jump line
 								continue;
@@ -236,7 +236,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		Set<Artist> artistList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for (String[] colonne : fileData.getRighe()) {
+			for (String[] colonne : fileData.getRows()) {
 				artistList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
 			}
 
@@ -248,36 +248,24 @@ public class FileArtistServiceImpl implements ArtistService {
 	@Override
 	public Set<Album> findAllAlbums(Artist artist) throws BusinessException {
 
-		Set<Album> albumsFinal = new HashSet<>();
+		Set<Album> albums = new HashSet<>();
 		Set<Production> productions = findAllProductions(artist);
 		for (Production production : productions){
-
-				albumsFinal.add(production.getAlbum());
-
-
+			albums.add(production.getAlbum());
 		}
-		return albumsFinal;
+		if(albums.isEmpty()) throw new ObjectNotFoundException("no albums for this artist");
+		return albums;
 	}
 	@Override
 	public Set<Production> findAllProductions(Artist artist) throws BusinessException {
-		Set<Production> productions = productionService.getAllProductions();
 		Set<Production> productionList = new HashSet<>();
-		for (Production production : productions){
+		for (Production production : productionService.getAllProductions()){
 			if (production.getArtist().getId().intValue() == artist.getId().intValue()){
 				productionList.add(production);
 			}
 		}
-
+		if(productionList.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
 		return productionList;
 	}
-	@Override
-	public Set<Artist> getModifiedMembers() {
-		Set<Artist> band = bandMembers;
-		bandMembers = null;
-		return band;
-	}
-	@Override
-	public void setModifieMembers(Set<Artist> bandMembers) {
-		this.bandMembers = bandMembers;
-	}
+
 }
