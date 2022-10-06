@@ -99,6 +99,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private ArtistService artistService;
 	private AlbumService albumService;
 	private ProductionService productionService;
+	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
@@ -151,7 +152,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 						}
 					}
 				} catch (BusinessException e) {
-					e.printStackTrace();
+					dispatcher.renderError(e);
 				}
 				fakeList.add(param.getValue());
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", fakeList);
@@ -163,22 +164,29 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 			final Button addButton = new Button("Add to queue");
 			addButton.setCursor(Cursor.HAND);
-
-			/*if(this.checkForClones(param.getValue())){
-				addButton.setDisable(true);
-			}
-
 			addButton.setOnAction((ActionEvent event) -> {
-				spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
-				if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-					mediaPlayerSettings.getMediaPlayer().stop();
-					mediaPlayerSettings.getMediaPlayer().dispose();
+				//aggiungere la canzone alla coda di riproduzione dell'utente
+				try {
+					
+					playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
+					/*
+					 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
+					 * spacemusicunifyPlayer.getMediaPlayer().getStatus() !=
+					 * MediaPlayer.Status.STOPPED){ spacemusicunifyPlayer.getMediaPlayer().stop();
+					 * spacemusicunifyPlayer.getMediaPlayer().dispose(); }
+					 */
+				} catch (AlreadyExistingException o) {
+					System.out.println(o.getMessage());
+				} catch (BusinessException b) {
+					dispatcher.renderError(b);
 				}
-				song.refresh();
-				mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
-				dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+				
+				/*
+				 * playerService.setPlayerState(PlayerState.searchSingleClick);
+				 * dispatcher.renderView("UserViews/HomeView/playerPane", user);
+				 */
 			});
-*/
+			
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -229,31 +237,19 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
-				SpacemusicunifyPlayer player;
 				try {
-					player = playerService.getPlayer(user);
-					System.out.println(player);
 					Set<Song> lista = param.getValue().getSongs();
 					for(Song canzoneAlbum: lista) {
-						/*Boolean alreadyAdded = false;
-						for(Song canzone: utente.getSongQueue()) {
-							if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
-								alreadyAdded = true;
-								break;
-							}
-						}
-						if(!alreadyAdded) {
-							spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
-						}*/
-						playerService.addSongToQueue(player, canzoneAlbum);
+						playerService.addSongToQueue(spacemusicunifyPlayer, canzoneAlbum);
 					}
-					
-					if(player.getMediaPlayer() != null && player.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-							player.getMediaPlayer().stop();
-							player.getMediaPlayer().dispose();
-					}
-				} catch (ObjectNotFoundException o) {
-					//text
+					/*
+					 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
+					 * spacemusicunifyPlayer.getMediaPlayer().getStatus() !=
+					 * MediaPlayer.Status.STOPPED){ spacemusicunifyPlayer.getMediaPlayer().stop();
+					 * spacemusicunifyPlayer.getMediaPlayer().dispose(); }
+					 */
+				} catch (AlreadyExistingException o) {
+					System.out.println(o.getMessage());
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}
@@ -301,7 +297,13 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	public void initializeData(User user) {
 		this.ricerca = RunTimeService.getSearch();
 		this.user = user;
-
+		try {
+			this.spacemusicunifyPlayer = playerService.getPlayer(user);
+		} catch (ObjectNotFoundException o) {
+			//text
+		} catch (BusinessException b) {
+			dispatcher.renderError(b);
+		}
 		try {
 			List<Artist> artistList = new ArrayList<>();
 			for(Artist artista: artistService.getArtistList()) {
@@ -321,7 +323,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				}
 			}
 
-		ObservableList<Song> songData = FXCollections.observableArrayList(songList);
+			ObservableList<Song> songData = FXCollections.observableArrayList(songList);
 			song.setItems(songData);
 
 
@@ -335,7 +337,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			album.setItems(albumData);
 
 		} catch (BusinessException e) {
-			throw new RuntimeException(e);
+			dispatcher.renderError(e);
 		}
 
 		song.setRowFactory( tablerow -> {

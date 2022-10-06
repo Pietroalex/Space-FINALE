@@ -68,7 +68,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 			}
 		}
 		if(!check) player.getQueue().add(newSong);
-		else throw new BusinessException("canzone già presente in coda");
+		else throw new AlreadyExistingException("canzone già presente in coda");
 	}
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
