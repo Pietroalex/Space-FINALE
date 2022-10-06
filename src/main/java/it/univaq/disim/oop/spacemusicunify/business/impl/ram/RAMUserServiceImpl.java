@@ -20,7 +20,7 @@ public class RAMUserServiceImpl implements UserService {
 	public void add(User newUser) throws BusinessException {
 		// controllo se l'utente già è presente
 		for (User user : storedUsers) {
-			if (user.getUsername().equals(user.getUsername())) {
+			if (user.getUsername().equals(newUser.getUsername())) {
 				throw new AlreadyExistingException();
 			}
 		}

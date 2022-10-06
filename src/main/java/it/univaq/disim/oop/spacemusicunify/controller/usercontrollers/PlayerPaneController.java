@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
+import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
@@ -12,6 +13,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,10 +51,11 @@ import java.util.*;
 
 public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
+
 	private final ViewDispatcher dispatcher;
     private final UserService userService;
     @FXML
-    private Button playButton, nextButton, previousButton, pauseButton, volumeButton, muteButton, queueButton, addToPlaylistButton;
+    private Button playButton, nextButton, previousButton, pauseButton, volumeButton, queueButton, addToPlaylistButton;
     @FXML
     private Slider progressSlider, volumeSlider;
     @FXML
@@ -64,7 +67,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     private SpacemusicunifyPlayer spacemusicunifyPlayer;
     private User user;
     private PlayerService playerService;
-    private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+    private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+    private static final String volumeEnabled = path + "volume-up.png";
+    private static final String volumeDisabled = path + "mute.png";
 
 
     public PlayerPaneController() {
@@ -86,25 +91,24 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
     @Override
     public void initializeData(User user) {
-    	
+    	currentTime.setText("00:00");
+        totalTime.setText("00:00");
         this.user = user;
         try {
 			this.spacemusicunifyPlayer = playerService.getPlayer(user);
-			System.out.println(spacemusicunifyPlayer);
 			
 			spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
-				System.out.println("vedo modifica : " + spacemusicunifyPlayer.getQueue().get(0));
-				
 				if(spacemusicunifyPlayer.getQueue().get(0) != null) {
 					//viene riabilitato il player
 					addToPlaylistButton.setDisable(false);
 					playButton.setDisable(false);
 			        pauseButton.setDisable(false);
-			        nextButton.setDisable(false);
-			        previousButton.setDisable(false);
 			        progressSlider.setDisable(false);
 			        volumeButton.setDisable(false);
 		        	volumeSlider.setDisable(false);
+		        	if(spacemusicunifyPlayer.getMediaPlayer() == null) {
+		        		loadSong();
+		        	}
 				} else {
 					addToPlaylistButton.setDisable(true);
 					playButton.setDisable(true);
@@ -116,6 +120,15 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		        	volumeSlider.setDisable(true);
 				}
 				
+				if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
+					nextButton.setDisable(true);
+				} else {
+					nextButton.setDisable(false);
+				}
+
+				if(c.next() == c.wasAdded()) {
+
+				}
 			});
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
@@ -124,28 +137,37 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		 * if(playerService.getPlayerOnPlay() == null) {
 		 * playerService.setPlayerOnPlay(false); }
 		 */
-        addToPlaylistButton.setDisable(true);
-        playButton.setDisable(true);
-        playButton.setVisible(true);
-        pauseButton.setDisable(true);
-        pauseButton.setVisible(false);
-        nextButton.setDisable(true);
-        previousButton.setDisable(true);
-        progressSlider.setDisable(true);
-
         if(spacemusicunifyPlayer.getMediaPlayer() == null) {
-        	//spacemusicunifyPlayer.setVolume(volumeSlider.getValue());
+	        addToPlaylistButton.setDisable(true);
+	        playButton.setDisable(true);
+	        playButton.setVisible(true);
+	        pauseButton.setDisable(true);
+	        pauseButton.setVisible(false);
+	        nextButton.setDisable(true);
+	        previousButton.setDisable(true);
+	        progressSlider.setDisable(true);
         	volumeButton.setDisable(true);
         	volumeSlider.setDisable(true);
         } else {
-        	volumeSlider.setValue(spacemusicunifyPlayer.getVolume());
+        	Duration lastDuration = spacemusicunifyPlayer.getDuration();
+        	double lastVolume = spacemusicunifyPlayer.getVolume() * 100;
+        	boolean isPaused = !spacemusicunifyPlayer.isPlay();
+        	addToPlaylistButton.setDisable(false);
+	        playButton.setDisable(false);
+	        pauseButton.setDisable(false);
+	        if(spacemusicunifyPlayer.getCurrentSong() > 0) previousButton.setDisable(false); else previousButton.setDisable(true);
+	        if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(false); else nextButton.setDisable(true);
+	        progressSlider.setDisable(false);
+        	loadSong();
+        	if(isPaused) {
+        		spacemusicunifyPlayer.setPlay(false);
+        		playButton.setVisible(true);
+        		pauseButton.setVisible(false);
+        	}
+        	spacemusicunifyPlayer.setDuration(lastDuration);
+        	volumeSlider.setValue(lastVolume);
         }
-        
-        currentTime.setText("00:00");
-        totalTime.setText("00:00");
-
-
-
+/*
             switch (playerService.getPlayerState()){
                 case searchDoubleClick:
                     System.out.println("cambio effettuato");
@@ -159,7 +181,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					 * System.out.println("aggiunta start"); this.startPlayer(); }else{
 					 * System.out.println("aggiunta resume");
 					 * mediaPlayerSettings.setLastSong(user.getcurrentSong()); this.resume(); }
-					 */
+					 *
                     break;
 
                 case queueControllerLoad:
@@ -185,12 +207,14 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					 * } else { System.out.println("resume");
 					 * 
 					 * this.resume(); }
-					 */
+					 *
                     break;
             }
 
-
+ 		*/
     }
+
+    /*
     public void startPlayer(){
             if(this.loadFirstSong()) {
                 System.out.println("carico prima canzone");
@@ -223,7 +247,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 volumeButton.setDisable(true);
             }
         }
-
+	*/
     @FXML
     public void showQueue(ActionEvent event) {
         dispatcher.renderView("UserViews/QueueView/queueView", user);
@@ -231,12 +255,14 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     public void mediaPlayerModulesInitializer(){
 
+    	spacemusicunifyPlayer.getMediaPlayer().setVolume(volumeSlider.getValue() * 0.01);
+
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (spacemusicunifyPlayer.getMediaPlayer() != null) {
+               // if (spacemusicunifyPlayer.getMediaPlayer() != null) {
                 	spacemusicunifyPlayer.setVolume(volumeSlider.getValue() * 0.01);
-                }
+               // }
             }
         });
         spacemusicunifyPlayer.getMediaPlayer().currentTimeProperty().addListener(new ChangeListener<Duration>() {
@@ -247,6 +273,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 int minTime = (int) current.toMinutes();
                 int secTime = (int) current.toSeconds();
                 currentTime.setText(String.valueOf(minTime % 60)+":"+String.valueOf(secTime%60));
+                spacemusicunifyPlayer.setDuration(current);
 				/*
 				 * if(user.getcurrentSong() == mediaPlayerSettings.getLastSong()) {
 				 * if(current.toSeconds() != 0){ mediaPlayerSettings.setLastDuration(current);
@@ -304,14 +331,13 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 }
             }
         });
-        
+        /*
         if(spacemusicunifyPlayer.isPlay()) {
         	spacemusicunifyPlayer.setPlay(true);
         }
-
-        spacemusicunifyPlayer.setVolume(volumeSlider.getValue() * 0.01);
+         */
     }
-    
+    /*
     private boolean loadFirstSong() {
         Song song = null;
         song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
@@ -319,7 +345,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         if(song != null) {
             songTitle.setText(song.getTitle());
 
-            /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
+            /*songArtist.setText(song.getAlbum().getArtist().getStageName());*
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
             totalTime.setText(song.getLength());
@@ -328,7 +354,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer(getMediaFromBytes(song)));
             
          //->   mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));
-            /*Files.newInputStream(Paths.get())*/
+            /*Files.newInputStream(Paths.get())*
 
             this.mediaPlayerModulesInitializer();
 
@@ -363,7 +389,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             }
 
             System.out.println("last song: " + mediaPlayerSettings.getLastSong());
-        	System.out.println("current: " + user.getcurrentSong());*/
+        	System.out.println("current: " + user.getcurrentSong());*
           //  playerService.setLastSong(song);
           //  System.out.println("update last: " + playerService.getLastSong());
             return true;
@@ -372,24 +398,37 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         return false;
 
     }
+    */
     public void loadSong() {
-        Song song = null;
-        song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
+		if (spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+			spacemusicunifyPlayer.getMediaPlayer().stop();
+			spacemusicunifyPlayer.getMediaPlayer().dispose();
+		}
+        Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
 
         if(song != null) {
             songTitle.setText(song.getTitle());
-
-            /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
+            ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
+            String artists = "";
+            try {
+				for(Production production : productionService.getAllProductions()){
+					if(production.getAlbum() == song.getAlbum()) {
+						artists = artists + production.getArtist().getName() + ", ";
+					}
+				}
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+            songArtist.setText(artists.substring(0, artists.length() - 2));
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
-         //   playerService.setLastDuration(Duration.ZERO);
-            /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
+            spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer(getMediaFromBytes(song)));
 
             this.mediaPlayerModulesInitializer();
 
             totalTime.setText(song.getLength());
-
+            /*
             if(spacemusicunifyPlayer.isMute()) {
                 Image img = null;
                 try {
@@ -413,11 +452,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 volumeSlider.setDisable(false);
                 spacemusicunifyPlayer.setMute(false);
             }
-
-            addToPlaylistButton.setDisable(false);
-
-            playButton.setDisable(false);
-            pauseButton.setDisable(false);
+            */
 
            /* if(user.getSongQueue().size() > user.getcurrentPosition() + 1) {
                 nextButton.setDisable(false);
@@ -430,21 +465,28 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
                 previousButton.setDisable(true);
             }*/
 
-            if(spacemusicunifyPlayer.isPlay()) {
-                pauseButton.setVisible(true);
-                playButton.setVisible(false);
-            }else{
-                pauseButton.setVisible(false);
-                playButton.setVisible(true);
-            }
+            spacemusicunifyPlayer.setDuration(Duration.ZERO);
+            spacemusicunifyPlayer.setPlay(true);
+            pauseButton.setVisible(true);
+            playButton.setVisible(false);
+            if(spacemusicunifyPlayer.isMute()) {
+        		spacemusicunifyPlayer.setMute(true);
+        		try {
+					volumeImg.setImage(new Image(Files.newInputStream(Paths.get(volumeDisabled))));
+				} catch (IOException e) {
+					dispatcher.renderError(e);
+				}
+        		volumeSlider.setDisable(true);
+        	}
         }
     }
+    /*
     public void resume() {
         Song song = null;
         song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
         songTitle.setText(song.getTitle());
 
-        /*songArtist.setText(song.getAlbum().getArtist().getStageName());*/
+        /*songArtist.setText(song.getAlbum().getArtist().getStageName());*
         songAlbum.setText(song.getAlbum().getTitle());
         songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
 
@@ -456,7 +498,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             playButton.setVisible(true);
         }
 
-        /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*/
+        /*mediaPlayerSettings.startMediaPlayer(new Media(Paths.get(user.getcurrentSong().getFileMp3()).toUri().toString()));*
         
 	        if(spacemusicunifyPlayer.isMute()) {
 	            Image img = null;
@@ -495,19 +537,19 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             previousButton.setDisable(false);
         }else {
             previousButton.setDisable(true);
-        }*/
+        }*
         playButton.setDisable(false);
         pauseButton.setDisable(false);
         volumeSlider.setValue(spacemusicunifyPlayer.getVolume());
         totalTime.setText(song.getLength());
         
     }
-    
+    */
     public void muteSong(ActionEvent event) {
         if(spacemusicunifyPlayer.isMute()){
             Image img = null;
             try {
-                img = new Image(Files.newInputStream(Paths.get(path+"volume-up.png")));
+                img = new Image(Files.newInputStream(Paths.get(volumeEnabled)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -517,7 +559,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }else{
             Image img = null;
             try {
-                img = new Image(Files.newInputStream(Paths.get(path+"mute.png")));
+                img = new Image(Files.newInputStream(Paths.get(volumeDisabled)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -529,7 +571,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void pauseSong(ActionEvent event) {
-
     	spacemusicunifyPlayer.setPlay(false);
         playButton.setVisible(true);
         pauseButton.setVisible(false);
@@ -540,23 +581,25 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
     	spacemusicunifyPlayer.getMediaPlayer().dispose();
+    	spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() - 1);
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
         nextButton.setDisable(false);
         System.out.println("precedente");
+        if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
     }
 
     public void nextSong(ActionEvent event) {
-
        /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
     	spacemusicunifyPlayer.getMediaPlayer().dispose();
+    	spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() + 1);
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
         System.out.println("prossima");
         previousButton.setDisable(false);
-
+        if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
     }
 
     public void playSong(ActionEvent event) {
@@ -641,7 +684,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }*/
     }
     
-    public boolean checkForClones(Playlist playlist){
+    private boolean checkForClones(Playlist playlist){
         for(Song canzone : playlist.getSongList()){
            /* if(canzone.getId().equals( user.getcurrentSong().getId())){
                 return true;
@@ -651,7 +694,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         return false;
     }
     
-    public Media getMediaFromBytes(Song song) {
+    private Media getMediaFromBytes(Song song) {
     	try {
 			File tempMp3 = File.createTempFile("tempmp3", ".mp3", null);
 			tempMp3.deleteOnExit();

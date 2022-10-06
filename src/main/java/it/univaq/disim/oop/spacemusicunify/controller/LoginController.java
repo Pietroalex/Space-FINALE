@@ -67,12 +67,8 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	
 	@FXML
 	private void signupAction(ActionEvent event) {
-		User utente = new User();
-		utente.setUsername("utente");
-		utente.setPassword("123456");
-
 		dispatcher.setSituation(ViewSituations.register);
-		dispatcher.renderView("RegisterView/user_detail", utente);
+		dispatcher.renderView("RegisterView/user_detail", new User());
 	}
 
 }
