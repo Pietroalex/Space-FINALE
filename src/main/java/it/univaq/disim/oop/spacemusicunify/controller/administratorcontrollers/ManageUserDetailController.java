@@ -68,26 +68,23 @@ public class ManageUserDetailController implements Initializable, DataInitializa
 
                 break;
             case register:
-                this.usernameField.setText(utente.getUsername());
-                this.passwordField.setText(utente.getPassword());
                 confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
                 title.setText("Register");
                 confirm.setText("Create");
-
                 break;
+                
+             default:
+            	 break;
         }
     }
     @Override
     public void initializeData(User utente) {
         this.utente = utente;
         this.setView2();
-
-
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
+    	
     }
     @FXML
     public void confirmUser() {

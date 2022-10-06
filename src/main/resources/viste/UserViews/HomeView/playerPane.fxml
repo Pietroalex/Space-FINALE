@@ -128,18 +128,6 @@
                      </image>
                   </ImageView>
                </graphic>
-            </Button>
-            <Button id="b1" fx:id="muteButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" visible="false" GridPane.columnIndex="6">
-               <font>
-                  <Font size="21.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@icon/mute.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

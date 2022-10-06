@@ -51,10 +51,11 @@ import java.util.*;
 
 public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
+    
 	private final ViewDispatcher dispatcher;
     private final UserService userService;
     @FXML
-    private Button playButton, nextButton, previousButton, pauseButton, volumeButton, muteButton, queueButton, addToPlaylistButton;
+    private Button playButton, nextButton, previousButton, pauseButton, volumeButton, queueButton, addToPlaylistButton;
     @FXML
     private Slider progressSlider, volumeSlider;
     @FXML
@@ -66,8 +67,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     private SpacemusicunifyPlayer spacemusicunifyPlayer;
     private User user;
     private PlayerService playerService;
-    private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
-
+    private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+    private static final String volumeEnabled = path + "volume-up.png";
+    private static final String volumeDisabled = path + "mute.png";
+    
+    
     public PlayerPaneController() {
         dispatcher = ViewDispatcher.getInstance();
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
@@ -154,8 +158,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 	        if(spacemusicunifyPlayer.getCurrentSong() > 0) previousButton.setDisable(false); else previousButton.setDisable(true);
 	        if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(false); else nextButton.setDisable(true);
 	        progressSlider.setDisable(false);
-        	volumeButton.setDisable(false);
-        	volumeSlider.setDisable(false);
         	loadSong();
         	if(isPaused) {
         		spacemusicunifyPlayer.setPlay(false);
@@ -164,12 +166,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         	}
         	spacemusicunifyPlayer.setDuration(lastDuration);
         	volumeSlider.setValue(lastVolume);
-        	if(spacemusicunifyPlayer.isMute()) {
-        		spacemusicunifyPlayer.setMute(true);
-        		volumeButton.setVisible(false);
-        		muteButton.setVisible(true);
-        		volumeSlider.setDisable(true);
-        	}
         }
 /*
             switch (playerService.getPlayerState()){
@@ -259,7 +255,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     public void mediaPlayerModulesInitializer(){
     	
-    	spacemusicunifyPlayer.getMediaPlayer().setVolume(0.5);
+    	spacemusicunifyPlayer.getMediaPlayer().setVolume(volumeSlider.getValue() * 0.01);
     	
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -473,6 +469,15 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             spacemusicunifyPlayer.setPlay(true);
             pauseButton.setVisible(true);
             playButton.setVisible(false);
+            if(spacemusicunifyPlayer.isMute()) {
+        		spacemusicunifyPlayer.setMute(true);
+        		try {
+					volumeImg.setImage(new Image(Files.newInputStream(Paths.get(volumeDisabled))));
+				} catch (IOException e) {
+					dispatcher.renderError(e);
+				}
+        		volumeSlider.setDisable(true);
+        	}
         }
     }
     /*
@@ -544,7 +549,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         if(spacemusicunifyPlayer.isMute()){
             Image img = null;
             try {
-                img = new Image(Files.newInputStream(Paths.get(path+"volume-up.png")));
+                img = new Image(Files.newInputStream(Paths.get(volumeEnabled)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -554,7 +559,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         }else{
             Image img = null;
             try {
-                img = new Image(Files.newInputStream(Paths.get(path+"mute.png")));
+                img = new Image(Files.newInputStream(Paths.get(volumeDisabled)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -576,26 +581,25 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() - 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
     	spacemusicunifyPlayer.getMediaPlayer().dispose();
+    	spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() - 1);
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
         nextButton.setDisable(false);
         System.out.println("precedente");
-        if(spacemusicunifyPlayer.getCurrentSong() == 0) {
-        	previousButton.setDisable(true);
-        }
+        if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
     }
 
     public void nextSong(ActionEvent event) {
-
        /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
     	spacemusicunifyPlayer.getMediaPlayer().dispose();
+    	spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() + 1);
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
         System.out.println("prossima");
         previousButton.setDisable(false);
-
+        if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
     }
 
     public void playSong(ActionEvent event) {
