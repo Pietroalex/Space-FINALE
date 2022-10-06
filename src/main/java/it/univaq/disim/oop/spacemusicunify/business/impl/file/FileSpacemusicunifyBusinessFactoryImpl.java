@@ -14,7 +14,7 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 	private PlayerService playerService;
 
 	
-	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati";
+	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
 	private static final String ALBUMS_FILE_NAME = REPOSITORY_BASE + File.separator + "albums.txt";
 	private static final String ARTISTS_FILE_NAME = REPOSITORY_BASE + File.separator + "artists.txt";
 	private static final String PLAYLISTS_FILE_NAME = REPOSITORY_BASE + File.separator + "playlists.txt";

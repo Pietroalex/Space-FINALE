@@ -23,7 +23,7 @@ public class RAMProductionServiceImpl implements ProductionService {
 	@Override
 	public Set<Production> getAllProductions() throws BusinessException {
 		if(storedProductions == null) throw new BusinessException();
-		return storedProductions;
+		return new HashSet<>(storedProductions);
 	}
 
 	@Override
@@ -45,13 +45,12 @@ public class RAMProductionServiceImpl implements ProductionService {
 		for(Production productions : storedProductions) {
 			if(productions.getId().intValue() == production.getId().intValue()) {
 				check = true;
-				storedProductions.remove(production);
 				break;
 			}
 		}
 
 		if(!check)throw new BusinessException("production not exist");
-
+		else storedProductions.removeIf((Production productionCheck) -> productionCheck.getId().intValue() == production.getId().intValue());
 	}
 
 }

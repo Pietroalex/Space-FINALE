@@ -1,17 +1,16 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.MultimediaService;
-import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
-import it.univaq.disim.oop.spacemusicunify.business.ProductionService;
+import it.univaq.disim.oop.spacemusicunify.business.*;
+import it.univaq.disim.oop.spacemusicunify.business.impl.file.FileData;
+import it.univaq.disim.oop.spacemusicunify.business.impl.file.Utility;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
@@ -32,7 +31,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(album.getTitle())|| album.getTitle().contains("Singles") && album.getSongs() != null) {
+			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getSongs() != null) {
 
 				throw new AlreadyExistingException();
 			}
@@ -109,7 +108,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		}
 
 		Audio audio = new Audio();
-		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
+		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "our_sympathy.mp3");
 		audio.setOwnership(song);
 		song.setFileMp3(audio);
 		
@@ -132,24 +131,33 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue()) {
-				System.out.println("controllo");
+			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue() || album.getTitle().contains("Singles") && album.getSongs() != null){
 				throw new AlreadyTakenFieldException();
 			}
 		}
-		for (Album albumcheck : storedAlbums) {
-			if (albumcheck.getId().equals(id)) {
-				albumcheck.setRelease(release);
-				albumcheck.setTitle(title);
-				if (albumcheck.getGenre() != genre && genre != Genre.singles) {
-					Set<Song> toChangeGenreSongs = albumcheck.getSongs();
-					for (Song canzone : toChangeGenreSongs) {
-						canzone.setGenre(genre);
-					}
-					albumcheck.setSongs(null);
-					albumcheck.setSongs(toChangeGenreSongs);
-					albumcheck.setGenre(genre);
+		for (Album albumCheck : storedAlbums) {
+			if (albumCheck.getId().equals(id)) {
+				albumCheck.setTitle(title);
 
+				if (albumCheck.getGenre() != genre && genre != Genre.singles) {
+					albumCheck.setGenre(genre);
+					Set<Song> toChangeGenreSongs = albumCheck.getSongs();
+					for (Song song : toChangeGenreSongs) {
+						modify(song.getId(), song.getTitle(), null, song.getLyrics(), album, song.getLength(), genre, song);
+					}
+					Picture savePicture;
+					if(tempPicture != null){
+						savePicture = tempPicture;
+
+						multimediaService.add(savePicture);
+						multimediaService.delete(album.getCover());
+					}else{
+						savePicture = album.getCover();
+					}
+					albumCheck.setCover(savePicture);
+					albumCheck.setSongs(toChangeGenreSongs);
+
+					albumCheck.setRelease(release);
 				}
 				break;
 			}
@@ -160,32 +168,26 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void delete(Album album) throws BusinessException {
-		Set<Song> songs = album.getSongs();
-		boolean controllo = false;
-		for (Album albums : storedAlbums) {
-			if (albums.getId().intValue() == album.getId().intValue()) {
-				controllo = true;
+		boolean check = false;
+
+		for(Album albumCheck : getAlbumList()) {
+
+			if(albumCheck.getId().intValue() ==  album.getId().intValue()) {
+				check = true;
+
+				for(Song song : album.getSongs()){
+					delete(song);
+				}
+
+				for(Production production : productionService.getAllProductions()){
+					if(production.getAlbum().getId().intValue() == album.getId().intValue()) productionService.delete(production);
+				}
+				multimediaService.delete(album.getCover());
+				storedAlbums.removeIf((Album albumCheck2) -> albumCheck2.getId().intValue() == album.getId().intValue());
 				break;
 			}
 		}
-
-/*		if (controllo) {
-				Set<Album> artistaalbums = album.getArtist().getDiscography();
-				Set<Album> albumset = new HashSet<>(artistaalbums);
-			for (Album albumcheck : artistaalbums) {
-				if (albumcheck == album) {
-					albumset.remove(album);
-				}
-
-				album.getArtist().setDiscography(albumset);
-			}
-
-			storedSongs.removeIf(songs::contains);
-			storedAlbums.removeIf((Album albumcheck) -> albumcheck.getId().intValue() == album.getId().intValue());
-
-		} else {
-			throw new BusinessException();
-		}*/
+		if(!check)throw new ObjectNotFoundException("album not exist");
 	}
 
 	@Override
@@ -200,31 +202,42 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		multimediaService.add(song.getFileMp3());
 		Album album = song.getAlbum();
 
-		Set<Song> canzoneList;
-		if(album.getSongs() == null) canzoneList = new HashSet<>();
-		else canzoneList = album.getSongs();
-		canzoneList.add(song);
-		album.setSongs(canzoneList);
+		Set<Song> songList;
+		if(album.getSongs() == null) songList = new HashSet<>();
+		else songList = album.getSongs();
+		songList.add(song);
+		album.setSongs(songList);
 
 		storedSongs.add(song);
 
 	}
 
 	@Override
-	public void modify(Integer id, String title, Audio mp3, String lyrics, Album album, String length, Genre genre, Song song) throws BusinessException {
-		for (Song canzone : storedSongs) {
-			if (canzone.getTitle().equals(title) && canzone.getId().intValue() != id.intValue()) {
-				System.out.println("controllo");
+	public void modify(Integer id, String title, Audio tempAudio, String lyrics, Album album, String length, Genre genre, Song oldSong) throws BusinessException {
+		for (Song songs : storedSongs) {
+			if (songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue() || title.contains("DefaultSingles") && album.getSongs() != null) {
 				throw new AlreadyTakenFieldException();
 			}
 		}
-		for (Song canzone : storedSongs) {
-			if (canzone.getId().intValue() == id.intValue()) {
-				canzone.setLyrics(lyrics);
-				canzone.setTitle(title);
-				//canzone.setFileMp3((mp3));
-				canzone.setLength(length);
-				canzone.setGenre(genre);
+		for (Song song : storedSongs) {
+			if (song.getId().intValue() == id.intValue()) {
+				Audio saveAudio;
+
+
+				if(tempAudio != null){
+					saveAudio = tempAudio;
+
+					multimediaService.add(tempAudio);
+					multimediaService.delete(song.getFileMp3());
+				}else{
+					saveAudio = song.getFileMp3();
+				}
+
+				song.setTitle(title);
+				song.setFileMp3(saveAudio);
+				song.setLyrics(lyrics);
+				song.setLength(length);
+				song.setGenre(genre);
 
 			}
 		}
@@ -232,41 +245,45 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 
 	@Override
-	public void delete(Song canzone) throws BusinessException {
-		boolean controllo = false;
-		for (Song song : storedSongs) {
-			if (song.getId().intValue() == canzone.getId().intValue()) {
-				controllo = true;
+	public void delete(Song song) throws BusinessException {
+		boolean check = false;
+		Album album = song.getAlbum();
+
+		for (Song songs : getSongList()) {
+			if(songs.getId().intValue() == song.getId().intValue()) {
+				check = true;
+				multimediaService.delete(song.getFileMp3());
+				storedSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
+				Set<Song> songList = album.getSongs();
+				songList.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
+				album.setSongs(songList);
+
+				UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
+				for(User user : userService.getAllUsers()){
+					for(Playlist playlist : userService.getAllPlaylists(user)){
+						Set<Song> playlistSongs = playlist.getSongList();
+						playlistSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
+						userService.modify(playlist.getId(), playlist.getTitle(), playlistSongs, user);
+					}
+				}
 				break;
 			}
 		}
-		if (controllo) {
-			storedSongs.removeIf((Song canzonecheck) -> canzonecheck == canzone);
 
-			storedAlbums.forEach(
-					(Album albums) -> canzone.getAlbum().getSongs().removeIf((Song canzonecheck) -> canzonecheck == canzone));
+		if(!check)throw new BusinessException("song not exists");
 
-//			for(User utente : getAllUsers()) {
-//				getAllPlaylists(utente).forEach(
-//						(Playlist playlist) -> playlist.getSongList().removeIf((Song canzonecheck) -> canzonecheck == canzone));
-//			}
-		} else {
-			throw new BusinessException();
-		}
 	}
 
 	@Override
 	public Set<Album> getAlbumList() throws BusinessException {
 		if(storedAlbums == null) throw new ObjectNotFoundException();
-		Set<Album> albums = new HashSet<>(storedAlbums);
-		return albums;
+		return new HashSet<>(storedAlbums);
 	}
 
 	@Override
 	public Set<Song> getSongList() throws BusinessException {
 		if(storedSongs == null) throw new ObjectNotFoundException();
-		Set<Song> songs = new HashSet<>(storedSongs);
-		return songs;
+		return new HashSet<>(storedSongs);
 	}
 
 	@Override

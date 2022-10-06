@@ -2,7 +2,6 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
 import java.io.File;
 import java.util.*;
@@ -14,8 +13,8 @@ public class RAMUserServiceImpl implements UserService {
 	private static int idUser = 1;
 	private static int id = 1; // da capire cos'è
 
-	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
-	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
+	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
+	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
 
 	@Override
 	public void add(User newUser) throws BusinessException {

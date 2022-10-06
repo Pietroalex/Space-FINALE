@@ -26,13 +26,13 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                 if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
                     if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
                         ((Song) audio.getOwnership()).setId(null);
-                        throw new AlreadyExistingException("audio");
+                        throw new AlreadyExistingException("existing_singles_audio");
                     }
                 } else {
                     //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
                     if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
                         ((Song) audio.getOwnership()).setId(null);
-                        throw new AlreadyExistingException("audio");
+                        throw new AlreadyExistingException("existing_new_audio");
                     }
                 }
 
@@ -50,12 +50,11 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
         for(Audio audios : storedAudios) {
             if(Arrays.equals(audios.getData(), audio.getData())) {
                 check = true;
-                storedAudios.remove(audio);
                 break;
             }
         }
-
         if(!check)throw new ObjectNotFoundException("audio not exist");
+        else storedAudios.removeIf((Audio audioCheck) -> Arrays.equals(audioCheck.getData(), audio.getData()));
     }
 
     @Override
@@ -63,9 +62,9 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
         AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
         if(picture.getOwnership() instanceof Artist) {
             for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
-                if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+                if(pictureCheck.getId() != null && Arrays.equals(pictureCheck.getData(), picture.getData())){
                     ((Artist) picture.getOwnership()).setId(null);
-                    throw new AlreadyExistingException("artist_picture");
+                    throw new AlreadyExistingException("existing_artist_picture");
                 }
             }
         } else {
@@ -77,13 +76,13 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                     if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                         if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
                             ((Album) picture.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("album_picture");
+                            throw new AlreadyExistingException("existing_singles_album_picture");
                         }
                     } else {
                         //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                         if (Arrays.equals(album.getCover().getData(), picture.getData())) {
                             ((Album) picture.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("album_picture");
+                            throw new AlreadyExistingException("existing_new_album_picture");
                         }
                     }
 
@@ -94,6 +93,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
         picture.setId(idPictures++);
         storedPictures.add(picture);
 
+
     }
     
     @Override
@@ -102,12 +102,11 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
         for(Picture pictures : storedPictures) {
             if(Arrays.equals(pictures.getData(), picture.getData())) {
                 check = true;
-                storedPictures.remove(picture);
                 break;
             }
         }
-
         if(!check)throw new ObjectNotFoundException("picture not exist");
+        else storedPictures.removeIf((Picture pictureCheck) -> Arrays.equals(pictureCheck.getData(), picture.getData()));
     }
     
 }

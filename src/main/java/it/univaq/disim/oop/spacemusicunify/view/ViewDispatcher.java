@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class ViewDispatcher {
-	private static final String RESOURCE_BASE = "/viste/";
+	private static final String RESOURCE_BASE = "/views/";
 	private static final String FXML_SUFFIX = ".fxml";
 	
 	private Stage stage;
@@ -36,7 +36,7 @@ public class ViewDispatcher {
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setTitle("Space Music UNIFY");
-		stage.getIcons().add(new Image("/viste/AdministratorViews/HomeView/icon/logo.png"));
+		stage.getIcons().add(new Image("/views/AdministratorViews/HomeView/icon/logo.png"));
 		stage.show();
 	}
 

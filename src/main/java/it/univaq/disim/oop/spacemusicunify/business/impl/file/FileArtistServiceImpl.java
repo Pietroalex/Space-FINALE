@@ -47,7 +47,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			album.setTitle("Singles"+(artist.getId()));
 			album.setGenre(Genre.singles);
 			Picture pictureAlbum = new Picture();
-			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "cover.png");
+			pictureAlbum.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "cover.png");
 			pictureAlbum.setOwnership(album);
 			pictureAlbum.setHeight(140);
 			pictureAlbum.setWidth(140);

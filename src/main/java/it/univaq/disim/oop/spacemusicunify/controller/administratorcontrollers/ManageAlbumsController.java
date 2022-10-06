@@ -280,7 +280,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         Picture picture = new Picture();
         picture.setHeight(140);
         picture.setWidth(140);
-        picture.setData("src"+ File.separator + "main" + File.separator + "resources" +File.separator+"dati"+ File.separator+"RAMfiles"+ File.separator+"cover.png");
+        picture.setData("src"+ File.separator + "main" + File.separator + "resources" +File.separator+ "data" + File.separator+"RAMfiles"+ File.separator+"cover.png");
         picture.setOwnership(newAlbum);
         newAlbum.setCover(picture);
 

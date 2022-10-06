@@ -572,7 +572,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		if(this.imageUrl.equals(tempimg)){
 			ImageView imgAdd = null;
 			try {
-				imgAdd = new ImageView(new Image(Files.newInputStream(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "addp.png"))));
+				imgAdd = new ImageView(new Image(Files.newInputStream(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png"))));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

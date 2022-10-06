@@ -8,7 +8,6 @@ import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -18,11 +17,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -327,7 +325,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             }
             ImageView imgAdd;
             try {
-                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "addp.png")));
+                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png")));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -340,7 +338,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         }else{
             ImageView imgAdd;
             try {
-                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "addp.png")));
+                imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png")));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -375,9 +373,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             existingLabel.setVisible(true);
             System.out.println("eccezzione1");
         }catch (AlreadyExistingException e){
+
             existingLabel.setText("This artist already exists");
             existingLabel.setVisible(true);
-            System.out.println("eccezione");
+            System.out.println("eccezione "+e.getMessage());
         } catch (BusinessException e) {
             dispatcher.renderError(e);
         }
@@ -426,11 +425,30 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 picture.setHeight(120);
                 picture.setWidth(120);
                 picture.setData(path);
-                tempPictures.add(picture);
+                boolean check = false;
+                for (Picture pictureCheck : artist.getPictures()){
+                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+                        check = true;
+                        existingLabel.setText("Already present picture, chose another or leave it as it is");
+                        existingLabel.setVisible(true);
+                        break;
+                    }
+                }
+                for (Picture pictureCheck : tempPictures){
+                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+                        check = true;
+                        existingLabel.setText("Already present picture, chose another or leave it as it is");
+                        existingLabel.setVisible(true);
+                        break;
+                    }
+                }
+                if(!check) {
+                    tempPictures.add(picture);
 
-                modifyImages.getChildren().clear();
-                /*artist.setPictures(tempPictures);*/
-                loadModifyImages(tempPictures);
+                    modifyImages.getChildren().clear();
+                    /*artist.setPictures(tempPictures);*/
+                    loadModifyImages(tempPictures);
+                }
             }else{
                 existingLabel.setText("Wrong image File type, Only .png or .jpg are allowed");
                 existingLabel.setVisible(true);

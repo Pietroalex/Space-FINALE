@@ -2,15 +2,9 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +12,8 @@ import java.util.Set;
 
 public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	
-	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
-	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator;
+	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
+	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
 
 	@Override
 	public void setAllDefaults() {
@@ -46,25 +40,18 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		picture1.setData(path+"pasqualearrosto.jpg");
 		picture1.setHeight(120);
 		picture1.setWidth(120);
+		picture1.setOwnership(artist1);
 		artista1img.add(picture1);
 
 		Picture picture2 = new Picture();
 		picture2.setData(path+"group4.jpg");
 		picture2.setHeight(120);
 		picture2.setWidth(120);
+		picture2.setOwnership(artist1);
 		artista1img.add(picture2);
+		Set<Artist> artistSet = new HashSet<>();
+		artist1.setBandMembers(artistSet);
 
-		Picture picture3 = new Picture();
-		picture3.setData(path+"group4.jpg");
-		picture3.setHeight(120);
-		picture3.setWidth(120);
-		artista1img.add(picture3);
-
-		Picture picture4 = new Picture();
-		picture4.setData(path+"group4.jpg");
-		picture4.setHeight(120);
-		picture4.setWidth(120);
-		artista1img.add(picture4);
 
 
 		artist1.setPictures(artista1img);

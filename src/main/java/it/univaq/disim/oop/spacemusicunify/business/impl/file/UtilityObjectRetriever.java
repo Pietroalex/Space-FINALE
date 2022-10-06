@@ -27,7 +27,7 @@ public class UtilityObjectRetriever extends Object {
 
 		Object object = null;
 
-		String str = file.substring(file.indexOf("dati"+ File.separator)+ 5);
+		String str = file.substring(file.indexOf("data" + File.separator)+ 5);
 
 		switch(str) {
 			case "songs.txt":
@@ -116,7 +116,7 @@ public class UtilityObjectRetriever extends Object {
 		Set<Picture> pictures = new HashSet<>();
 		List<String> picturesSource = Utility.readArray(colonne[4]);
 		for(String pictureId : picturesSource){
-			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "pictures.txt")));
+			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "pictures.txt")));
 		}
 		artist.setPictures(pictures);
 
@@ -124,7 +124,7 @@ public class UtilityObjectRetriever extends Object {
 		Set<Artist> bandMembers = new HashSet<>();
 		List<String> bandMembersIds = Utility.readArray(colonne[6]);
 		for(String artistId : bandMembersIds){
-			bandMembers.add( (Artist) UtilityObjectRetriever.findObjectById(artistId, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "artists.txt")));
+			bandMembers.add( (Artist) UtilityObjectRetriever.findObjectById(artistId, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "artists.txt")));
 		}
 		artist.setBandMembers(bandMembers);
 		currentArtist = null;
@@ -138,11 +138,11 @@ public class UtilityObjectRetriever extends Object {
 		song.setId(Integer.parseInt(colonne[0]));
 		song.setTitle(colonne[1]);
 		currentSong = song;
-		song.setFileMp3((Audio)  UtilityObjectRetriever.findObjectById(colonne[2], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"audios.txt")));
+		song.setFileMp3((Audio)  UtilityObjectRetriever.findObjectById(colonne[2], file.replace(file.substring(file.indexOf("data" + File.separator) + 5),"audios.txt")));
 		song.setLyrics(colonne[3]);
 
 		if(currentAlbum == null) {
-			song.setAlbum((Album) UtilityObjectRetriever.findObjectById(colonne[4], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5), "albums.txt")));
+			song.setAlbum((Album) UtilityObjectRetriever.findObjectById(colonne[4], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "albums.txt")));
 		}else{
 			song.setAlbum(currentAlbum);
 		}
@@ -158,11 +158,11 @@ public class UtilityObjectRetriever extends Object {
 		album.setGenre(Genre.valueOf(colonne[2]));
 		currentAlbum = album;
 
-		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(colonne[3], file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"pictures.txt"))));
+		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(colonne[3], file.replace(file.substring(file.indexOf("data" + File.separator) + 5),"pictures.txt"))));
 		Set<Song> canzoneList = new HashSet<>();
 
 		for(String canzoni: Utility.readArray(colonne[4])){
-			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("dati" + File.separator) + 5),"songs.txt")));
+			canzoneList.add((Song) UtilityObjectRetriever.findObjectById(canzoni, file.replace(file.substring(file.indexOf("data" + File.separator) + 5),"songs.txt")));
 		}
 		album.setSongs(canzoneList);
 		album.setRelease(LocalDate.parse(colonne[5]));
