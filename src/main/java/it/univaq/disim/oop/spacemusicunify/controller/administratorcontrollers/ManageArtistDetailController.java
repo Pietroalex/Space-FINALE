@@ -444,7 +444,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 }
                 if(!check) {
                     tempPictures.add(picture);
-
                     modifyImages.getChildren().clear();
                     /*artist.setPictures(tempPictures);*/
                     loadModifyImages(tempPictures);
