@@ -72,7 +72,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		if(!player.getQueue().remove(song)) throw new BusinessException("canzone non presente in coda");
+		if(!player.getQueue().remove(song)) throw new ObjectNotFoundException("canzone non presente in coda");
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {

@@ -34,6 +34,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -67,7 +68,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     private SpacemusicunifyPlayer spacemusicunifyPlayer;
     private User user;
     private PlayerService playerService;
-    private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "viste" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+    private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
     private static final String volumeEnabled = path + "volume-up.png";
     private static final String volumeDisabled = path + "mute.png";
 
@@ -98,7 +99,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			this.spacemusicunifyPlayer = playerService.getPlayer(user);
 			
 			spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
-				if(spacemusicunifyPlayer.getQueue().get(0) != null) {
+				if(spacemusicunifyPlayer.getQueue().size() > 0) {
 					//viene riabilitato il player
 					addToPlaylistButton.setDisable(false);
 					playButton.setDisable(false);
@@ -118,6 +119,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			        progressSlider.setDisable(true);
 			        volumeButton.setDisable(true);
 		        	volumeSlider.setDisable(true);
+		        	spacemusicunifyPlayer.setMediaPlayer(null);
 				}
 				
 				if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
@@ -125,9 +127,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				} else {
 					nextButton.setDisable(false);
 				}
-
-				if(c.next() == c.wasAdded()) {
-
+				//da continuare a controllare
+				if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null) ) { //riabilitazioni successive del player
+					System.out.println("carico nuova canzone");
+					System.out.println(spacemusicunifyPlayer.getMediaPlayer());
+					loadSong();
 				}
 			});
 		} catch (BusinessException e) {
@@ -268,12 +272,12 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         spacemusicunifyPlayer.getMediaPlayer().currentTimeProperty().addListener(new ChangeListener<Duration>() {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration current) {
-
+            	
                 progressSlider.setValue(current.toSeconds());
                 int minTime = (int) current.toMinutes();
                 int secTime = (int) current.toSeconds();
                 currentTime.setText(String.valueOf(minTime % 60)+":"+String.valueOf(secTime%60));
-                spacemusicunifyPlayer.setDuration(current);
+                if(current != Duration.ZERO) spacemusicunifyPlayer.setDuration(current);
 				/*
 				 * if(user.getcurrentSong() == mediaPlayerSettings.getLastSong()) {
 				 * if(current.toSeconds() != 0){ mediaPlayerSettings.setLastDuration(current);

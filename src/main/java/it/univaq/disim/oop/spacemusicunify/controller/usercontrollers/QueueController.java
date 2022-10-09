@@ -29,6 +29,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	private PlayerService playerService;
 	private UserService userService;
 	private AlbumService albumService;
+	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 	@FXML
 	private TableView<Song> queueTable;
 	@FXML
@@ -42,11 +43,21 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	@FXML
 	private TableColumn<Song, Button> delete;
 	
+	private ViewDispatcher dispatcher;
+	
 	public QueueController(){
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		playerService = factory.getPlayerService();
 		userService = factory.getUserService();
 		albumService = factory.getAlbumService();
+		this.dispatcher = ViewDispatcher.getInstance();
+		try {
+			this.spacemusicunifyPlayer = playerService.getPlayer(RunTimeService.getCurrentUser());
+		} catch (ObjectNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
 	}
 	
 	@Override
@@ -77,80 +88,73 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		delete.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
-			/*	deleteButton.setOnAction((ActionEvent event) -> {
+			deleteButton.setOnAction((event) -> {
 
-			if(param.getValue().getId().intValue() == utente.getcurrentSong().getId().intValue()){	//canzone in corso uguale a quella selezionata
+				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()){	//canzone in corso uguale a quella selezionata
 
-					if(utente.getSongQueue().size() > 1 ){				//più canzoni in riproduzione
+					if(spacemusicunifyPlayer.getQueue().size() > 1 ){				//più canzoni in riproduzione
 
-						if(utente.getcurrentPosition() + 1 == utente.getSongQueue().size()){		//ultima canzone in coda uguale a canzone in corso
-							spaceMusicUnifyService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
-							mediaPlayerSettings.setPlayerState(PlayerState.queueControllerLoad);
+						if(spacemusicunifyPlayer.getCurrentSong() + 1 == spacemusicunifyPlayer.getQueue().size()){		//ultima canzone in coda uguale a canzone in corso
+							try {
+								if(spacemusicunifyPlayer.isPlay()) {spacemusicunifyPlayer.setPlay(false);}
+								playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
+							} catch (BusinessException e) {
+								dispatcher.renderError(e);
+							}
+							playerService.setPlayerState(PlayerState.queueControllerLoad);
 						}else {																			//canzone corrente tra prima posizione e penultima
-							if(utente.getcurrentPosition() != 0){
-								mediaPlayerSettings.setPlayerState(PlayerState.queueControllerLoad);//canzone corrente non in prima posizione
-								MediaPlayerSettings.getInstance().setLastSong(utente.getSongQueue().get(utente.getcurrentPosition() -1));
+							if(spacemusicunifyPlayer.getCurrentSong() != 0){
+								playerService.setPlayerState(PlayerState.queueControllerLoad);//canzone corrente non in prima posizione
+							//	playerService.setLastSong(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong() -1));
 							}else{												//canzone corrente in prima posizione
-								mediaPlayerSettings.setPlayerState(PlayerState.queueControllerLoad);
-								MediaPlayerSettings.getInstance().setLastSong(null);
+								playerService.setPlayerState(PlayerState.queueControllerLoad);
+							//	playerService.setLastSong(null);
 							}
 						}
 
 					}else{									//una sola canzone in riproduzione
-						MediaPlayerSettings.getInstance().setLastSong(null);
-						mediaPlayerSettings.setPlayerState(PlayerState.started);
+					//	playerService.setLastSong(null);
+						if(spacemusicunifyPlayer.isPlay()) { spacemusicunifyPlayer.setPlay(false);}
+						playerService.setPlayerState(PlayerState.started);
 					}
 				}else{																				//canzone in corso diversa da quella selezionata
 
-					System.out.println("canzone prima di quella selezionata");
-					for(int i = 0; i < utente.getSongQueue().size(); i++ ){
-						if(utente.getSongQueue().get(i).equals(param.getValue())){
-							if (utente.getcurrentPosition() > i ){
-								System.out.println("canzone prima trovata "+param.getValue());
-
-								System.out.println("last song "+MediaPlayerSettings.getInstance().getLastSong());
-								System.out.println("current song "+utente.getcurrentSong());
-								if(utente.getSongQueue().get(i).equals( MediaPlayerSettings.getInstance().getLastSong())){
-									System.out.println("canzone da eliminare uguale a canzone precedente");
+					for(int i = 0; i < spacemusicunifyPlayer.getQueue().size(); i++ ){
+						if(spacemusicunifyPlayer.getQueue().get(i).equals(param.getValue())){
+							if (spacemusicunifyPlayer.getCurrentSong() > i ){
+							//	playerService.setPlayerState(PlayerState.queueControllerResume);
+								try {
+									playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
+								} catch (BusinessException e) {
+									dispatcher.renderError(e);
 								}
-								mediaPlayerSettings.setPlayerState(PlayerState.queueControllerResume);
-								spaceMusicUnifyService.updateCurrentSong(utente, utente.getcurrentPosition() - 1);
 								break;
 							}
 						}
 					}
-					mediaPlayerSettings.setPlayerState(PlayerState.queueControllerResume);
+					// playerService.setPlayerState(PlayerState.queueControllerResume);
 				}
-				System.out.println("current position "+utente.getcurrentPosition());
 
-				MediaPlayerSettings.getInstance().getMediaPlayer().stop();
-				MediaPlayerSettings.getInstance().getMediaPlayer().dispose();
+				spacemusicunifyPlayer.getMediaPlayer().stop();
+				spacemusicunifyPlayer.getMediaPlayer().dispose();
 				queueTable.getItems().remove(param.getValue());
-				spaceMusicUnifyService.deleteSongFromQueue(utente, param.getValue());
+				try {
+					playerService.deleteSongFromQueue(spacemusicunifyPlayer, param.getValue());
+				} catch (ObjectNotFoundException e) {
+					//text
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
 				queueTable.refresh();
-
-				dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
-
 			});
 			return new SimpleObjectProperty<Button>(deleteButton);
 		});
-		System.out.println("songqueue: " + utente.getSongQueue());
-		queueTable.getItems().addAll(utente.getSongQueue());
-	*/
-			return new SimpleObjectProperty<Button>(deleteButton);
-		});
 		
-		SpacemusicunifyPlayer spacemusicunifyPlayer;
-		try {
-			spacemusicunifyPlayer = playerService.getPlayer(user);
-			List<Song> songsList = spacemusicunifyPlayer.getQueue();
-			ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
-			queueTable.setItems(songData);
-		} catch (ObjectNotFoundException e) {
-			//text
-		} catch (BusinessException e) {
-			ViewDispatcher.getInstance().renderError(e);
-		}
+	//	queueTable.getItems().addAll(spacemusicunifyPlayer.getQueue());
+		
+		List<Song> songsList = spacemusicunifyPlayer.getQueue();
+		ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
+		queueTable.setItems(songData);
 		
 	}
 }
