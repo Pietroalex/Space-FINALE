@@ -96,26 +96,32 @@ public class QueueController implements Initializable, DataInitializable<User> {
 
 						if(spacemusicunifyPlayer.getCurrentSong() + 1 == spacemusicunifyPlayer.getQueue().size()){		//ultima canzone in coda uguale a canzone in corso
 							try {
-								if(spacemusicunifyPlayer.isPlay()) {spacemusicunifyPlayer.setPlay(false);}
+								//if(spacemusicunifyPlayer.isPlay()) {spacemusicunifyPlayer.setPlay(false);}
+								spacemusicunifyPlayer.getMediaPlayer().stop();
+								spacemusicunifyPlayer.getMediaPlayer().dispose();
+								spacemusicunifyPlayer.setMediaPlayer(null);
 								playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
 							} catch (BusinessException e) {
 								dispatcher.renderError(e);
 							}
-							playerService.setPlayerState(PlayerState.queueControllerLoad);
+							//playerService.setPlayerState(PlayerState.queueControllerLoad);
 						}else {																			//canzone corrente tra prima posizione e penultima
 							if(spacemusicunifyPlayer.getCurrentSong() != 0){
-								playerService.setPlayerState(PlayerState.queueControllerLoad);//canzone corrente non in prima posizione
+							//	playerService.setPlayerState(PlayerState.queueControllerLoad);//canzone corrente non in prima posizione
 							//	playerService.setLastSong(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong() -1));
 							}else{												//canzone corrente in prima posizione
-								playerService.setPlayerState(PlayerState.queueControllerLoad);
+								spacemusicunifyPlayer.getMediaPlayer().stop();
+								spacemusicunifyPlayer.getMediaPlayer().dispose();
+								spacemusicunifyPlayer.setMediaPlayer(null);
+							//	playerService.setPlayerState(PlayerState.queueControllerLoad);
 							//	playerService.setLastSong(null);
 							}
 						}
 
 					}else{									//una sola canzone in riproduzione
 					//	playerService.setLastSong(null);
-						if(spacemusicunifyPlayer.isPlay()) { spacemusicunifyPlayer.setPlay(false);}
-						playerService.setPlayerState(PlayerState.started);
+					//	if(spacemusicunifyPlayer.isPlay()) { spacemusicunifyPlayer.setPlay(false);}
+					//	playerService.setPlayerState(PlayerState.started);
 					}
 				}else{																				//canzone in corso diversa da quella selezionata
 
@@ -124,6 +130,9 @@ public class QueueController implements Initializable, DataInitializable<User> {
 							if (spacemusicunifyPlayer.getCurrentSong() > i ){
 							//	playerService.setPlayerState(PlayerState.queueControllerResume);
 								try {
+									spacemusicunifyPlayer.getMediaPlayer().stop();
+									spacemusicunifyPlayer.getMediaPlayer().dispose();
+									spacemusicunifyPlayer.setMediaPlayer(null);
 									playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
@@ -135,8 +144,6 @@ public class QueueController implements Initializable, DataInitializable<User> {
 					// playerService.setPlayerState(PlayerState.queueControllerResume);
 				}
 
-				spacemusicunifyPlayer.getMediaPlayer().stop();
-				spacemusicunifyPlayer.getMediaPlayer().dispose();
 				queueTable.getItems().remove(param.getValue());
 				try {
 					playerService.deleteSongFromQueue(spacemusicunifyPlayer, param.getValue());

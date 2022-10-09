@@ -108,9 +108,12 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			        volumeButton.setDisable(false);
 		        	volumeSlider.setDisable(false);
 		        	if(spacemusicunifyPlayer.getMediaPlayer() == null) {
+		        		System.out.println("carico canzone");
 		        		loadSong();
+		        		dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
 		        	}
 				} else {
+					System.out.println("canzone non presente");
 					addToPlaylistButton.setDisable(true);
 					playButton.setDisable(true);
 			        pauseButton.setDisable(true);
@@ -142,6 +145,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		 * playerService.setPlayerOnPlay(false); }
 		 */
         if(spacemusicunifyPlayer.getMediaPlayer() == null) {
+        	System.out.println("canzone non presente, player disabile");
 	        addToPlaylistButton.setDisable(true);
 	        playButton.setDisable(true);
 	        playButton.setVisible(true);
@@ -153,6 +157,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         	volumeButton.setDisable(true);
         	volumeSlider.setDisable(true);
         } else {
+        	System.out.println("canzone già presente, risettaggio impostazioni player");
         	Duration lastDuration = spacemusicunifyPlayer.getDuration();
         	double lastVolume = spacemusicunifyPlayer.getVolume() * 100;
         	boolean isPaused = !spacemusicunifyPlayer.isPlay();
@@ -258,6 +263,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void mediaPlayerModulesInitializer(){
+    	System.out.println("inizializzazione player");
 
     	spacemusicunifyPlayer.getMediaPlayer().setVolume(volumeSlider.getValue() * 0.01);
 
@@ -272,11 +278,14 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         spacemusicunifyPlayer.getMediaPlayer().currentTimeProperty().addListener(new ChangeListener<Duration>() {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration current) {
-            	
                 progressSlider.setValue(current.toSeconds());
                 int minTime = (int) current.toMinutes();
                 int secTime = (int) current.toSeconds();
-                currentTime.setText(String.valueOf(minTime % 60)+":"+String.valueOf(secTime%60));
+                String minutes = String.valueOf(minTime % 60);
+                String seconds = String.valueOf(secTime%60);
+                if(minTime % 60 < 10) minutes = "0" + minutes;
+                if(secTime % 60 < 10) seconds = "0" + seconds;
+                currentTime.setText(minutes + ":" + seconds);
                 if(current != Duration.ZERO) spacemusicunifyPlayer.setDuration(current);
 				/*
 				 * if(user.getcurrentSong() == mediaPlayerSettings.getLastSong()) {
@@ -408,9 +417,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			spacemusicunifyPlayer.getMediaPlayer().stop();
 			spacemusicunifyPlayer.getMediaPlayer().dispose();
 		}
+		System.out.println("prendo canzone dalla coda");
         Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
-
+        System.out.println(song);
         if(song != null) {
+        	System.out.println("canzone != null");
             songTitle.setText(song.getTitle());
             ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
             String artists = "";
@@ -426,7 +437,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             songArtist.setText(artists.substring(0, artists.length() - 2));
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
-
+            System.out.println(songTitle.getText());
+            System.out.println(songArtist.getText());
+            System.out.println(songAlbum.getText());
             spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer(getMediaFromBytes(song)));
 
             this.mediaPlayerModulesInitializer();
