@@ -90,7 +90,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			deleteButton.setCursor(Cursor.HAND);
 			deleteButton.setOnAction((event) -> {
 
-				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
+/*				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
 
 					if(spacemusicunifyPlayer.getQueue().size() > 1 ) {				//più canzoni in riproduzione
 
@@ -104,9 +104,9 @@ public class QueueController implements Initializable, DataInitializable<User> {
 								dispatcher.renderError(e);
 							}
 						} else {	//canzone corrente tra prima posizione e penultima
-							/*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
+							*//*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
 								
-							} else {												//canzone corrente in prima posizione */
+							} else {												//canzone corrente in prima posizione *//*
 								spacemusicunifyPlayer.getMediaPlayer().stop();
 								spacemusicunifyPlayer.getMediaPlayer().dispose();
 								spacemusicunifyPlayer.setMediaPlayer(null);
@@ -133,7 +133,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 							}
 						}
 					}
-				}
+				}*/
 
 				queueTable.getItems().remove(param.getValue());
 				try {
@@ -147,10 +147,8 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			});
 			return new SimpleObjectProperty<Button>(deleteButton);
 		});
-		
-		List<Song> songsList = spacemusicunifyPlayer.getQueue();
-		ObservableList<Song> songData = FXCollections.observableArrayList(songsList);
-		queueTable.setItems(songData);
+
+		queueTable.setItems(spacemusicunifyPlayer.getQueue());
 		
 	}
 }

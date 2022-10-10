@@ -31,7 +31,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getSongs() != null) {
+			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles) {
 
 				throw new AlreadyExistingException();
 			}
@@ -131,7 +131,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue() || album.getTitle().contains("Singles") && album.getSongs() != null){
+			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue() || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
 				throw new AlreadyTakenFieldException();
 			}
 		}
@@ -265,12 +265,19 @@ public class RAMAlbumServiceImpl implements AlbumService {
 						playlistSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
 						userService.modify(playlist.getId(), playlist.getTitle(), playlistSongs, user);
 					}
+					PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+					for(Song songCheck : playerService.getPlayer(user).getQueue()) {
+						if(songCheck.getId().intValue() == song.getId().intValue()){
+							playerService.deleteSongFromQueue(playerService.getPlayer(user), song);
+							break;
+						}
+					}
 				}
 				break;
 			}
 		}
 
-		if(!check)throw new BusinessException("song not exists");
+		if(!check)throw new ObjectNotFoundException("not_existing_song");
 
 	}
 

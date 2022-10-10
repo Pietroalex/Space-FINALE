@@ -167,26 +167,16 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
 				try {
-					
 					playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
-					/*
-					 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
-					 * spacemusicunifyPlayer.getMediaPlayer().getStatus() !=
-					 * MediaPlayer.Status.STOPPED){ spacemusicunifyPlayer.getMediaPlayer().stop();
-					 * spacemusicunifyPlayer.getMediaPlayer().dispose(); }
-					 */
-				} catch (AlreadyExistingException o) {
-					System.out.println(o.getMessage());
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}
-				
-				/*
-				 * playerService.setPlayerState(PlayerState.searchSingleClick);
-				 * dispatcher.renderView("UserViews/HomeView/playerPane", user);
-				 */
 			});
-			
+			for(Song song : spacemusicunifyPlayer.getQueue()) {
+				if(song.getId().intValue() == param.getValue().getId().intValue()) {
+					addButton.setDisable(true);
+				}
+			}
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -248,8 +238,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 					 * MediaPlayer.Status.STOPPED){ spacemusicunifyPlayer.getMediaPlayer().stop();
 					 * spacemusicunifyPlayer.getMediaPlayer().dispose(); }
 					 */
-				} catch (AlreadyExistingException o) {
-					System.out.println(o.getMessage());
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}

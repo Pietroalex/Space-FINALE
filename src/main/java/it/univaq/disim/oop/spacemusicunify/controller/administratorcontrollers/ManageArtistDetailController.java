@@ -266,7 +266,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                             members.hide();
                             dispatcher.setSituation(ViewSituations.detail);
                             dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-                            System.out.println("andato");
 
                         });
                         members.getItems().add(menuItem);

@@ -96,6 +96,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	private Button cancel1;
 	@FXML
+	private Button cancel;
+	@FXML
 	private Button addToQueue;
 	@FXML
 	private Button deletealbum;
@@ -148,7 +150,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						menuItem.setText(artistCtrl.getName());
 						menuItem.setOnAction((ActionEvent event) -> {
 							artistS.hide();
-							dispatcher.setSituation(ViewSituations.detail);
+							/*dispatcher.setSituation(ViewSituations.detail);*/
 							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
 						});
 						artistS.getItems().add(menuItem);
@@ -260,6 +262,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				});*/
 
 				if(this.album.getGenre() == Genre.singles){
+					genreField.setDisable(true);
 					deletealbum.setDisable(true);
 					titleField.setDisable(true);
 					releaseField.setDisable(true);
@@ -281,20 +284,11 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				});
 
 				coverField.getChildren().add(imgview2);
-				if(album.getGenre() == Genre.singles){
-					genreField.setDisable(true);
 
-				}else {
-					if (album.getId() == null) {
-						newSong.setVisible(false);
+				confirm.setText("Modify Album");
+				cancel.setText("Back");
 
-						confirm.setText("Create Album");
-						modifyalbumsongs.setVisible(false);
-					} else {
 
-						confirm.setText("Modify Album");
-					}
-				}
 				titleView.setText("Modify Album");
 				modifyalbumsongs.setItems(songData);
 				break;
@@ -364,7 +358,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						menuItem.setText(artistCtrl.getName());
 						menuItem.setOnAction((ActionEvent event) -> {
 							artistS.hide();
-							dispatcher.setSituation(ViewSituations.detail);
+							/*dispatcher.setSituation(ViewSituations.user);*/
 							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
 						});
 						artistS.getItems().add(menuItem);

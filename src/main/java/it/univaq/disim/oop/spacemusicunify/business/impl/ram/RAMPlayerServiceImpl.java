@@ -57,22 +57,62 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				return player;
 			}
 		}
-		throw new ObjectNotFoundException("player non trovato");
+		throw new ObjectNotFoundException("not_existing_player");
 	}
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
-		boolean check = false;
-		for(Song song : player.getQueue()) {
-			if(song == newSong) {
-				check = true;
-			}
-		}
-		if(!check) player.getQueue().add(newSong);
-		else throw new AlreadyExistingException("canzone già presente in coda");
+		if(player.getQueue() == null) throw new BusinessException();
+		player.getQueue().add(newSong);
 	}
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		if(!player.getQueue().remove(song)) throw new ObjectNotFoundException("canzone non presente in coda");
+
+		if(song.getId().intValue() == player.getQueue().get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
+
+			if(player.getQueue().size() > 1 ) {				//più canzoni in riproduzione
+
+				if(player.getCurrentSong() + 1 == player.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
+					if(player.getMediaPlayer() != null) {
+						player.getMediaPlayer().stop();
+						player.getMediaPlayer().dispose();
+						player.setMediaPlayer(null);
+					}
+					updateCurrentSong(player, player.getCurrentSong() - 1);
+
+				} else {	//canzone corrente tra prima posizione e penultima
+							/*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
+
+							} else {												//canzone corrente in prima posizione */
+					if(player.getMediaPlayer() != null) {
+						player.getMediaPlayer().stop();
+						player.getMediaPlayer().dispose();
+						player.setMediaPlayer(null);
+					}
+					//}
+				}
+
+			} else {									//una sola canzone in riproduzione
+				if(player.getMediaPlayer() != null) {
+					player.getMediaPlayer().stop();
+					player.getMediaPlayer().dispose();
+					player.setMediaPlayer(null);
+				}
+			}
+
+		} else {																				//canzone in corso diversa da quella selezionata
+
+			for(int i = 0; i < player.getQueue().size(); i++) {
+				if(player.getQueue().get(i).equals(song)) {
+					if (player.getCurrentSong() > i ) {
+
+						updateCurrentSong(player, player.getCurrentSong() - 1);
+
+						break;
+					}
+				}
+			}
+		}
+		player.getQueue().remove(song);
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {

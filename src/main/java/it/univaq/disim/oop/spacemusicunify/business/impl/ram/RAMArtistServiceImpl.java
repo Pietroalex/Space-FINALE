@@ -167,7 +167,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("album not exist");
+		if(!check)throw new ObjectNotFoundException("not_existing_artist");
 	}
 
 	@Override

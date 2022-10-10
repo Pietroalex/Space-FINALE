@@ -48,6 +48,7 @@ public class LayoutController implements DataInitializable<User> {
 			menu.getItems().add(menuItem);
 		}
 
+
 		this.user = user;
 		playerService.setPlayerState(PlayerState.started);
 		dispatcher.renderView("UserViews/HomeView/playerPane", user);

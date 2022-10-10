@@ -53,7 +53,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                 break;
             }
         }
-        if(!check)throw new ObjectNotFoundException("audio not exist");
+        if(!check)throw new ObjectNotFoundException("not_existing_audio");
         else storedAudios.removeIf((Audio audioCheck) -> Arrays.equals(audioCheck.getData(), audio.getData()));
     }
 
@@ -105,7 +105,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                 break;
             }
         }
-        if(!check)throw new ObjectNotFoundException("picture not exist");
+        if(!check)throw new ObjectNotFoundException("not_existing_picture");
         else storedPictures.removeIf((Picture pictureCheck) -> Arrays.equals(pictureCheck.getData(), picture.getData()));
     }
     
