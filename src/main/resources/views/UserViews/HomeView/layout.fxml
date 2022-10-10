@@ -49,7 +49,7 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <MenuButton fx:id="menu" layoutX="1009.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="0.0" wrapText="true" />
+            <Button fx:id="menu" layoutX="1022.0" layoutY="25.0" mnemonicParsing="false" onAction="#showGenreSelection" prefHeight="25.0" prefWidth="25.0" />
          </children>
       </AnchorPane>
    </top>

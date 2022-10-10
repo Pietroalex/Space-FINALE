@@ -8,11 +8,20 @@ import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class LayoutController implements DataInitializable<User> {
 
@@ -21,7 +30,7 @@ public class LayoutController implements DataInitializable<User> {
 	@FXML
 	private TextField searchField;
 	@FXML
-	private MenuButton menu;
+	private Button menu;
 
 	private User user;
 	private PlayerService playerService;
@@ -41,13 +50,6 @@ public class LayoutController implements DataInitializable<User> {
 		} catch (BusinessException e) {
 			e.printStackTrace();
 		}
-		for(Genre genre: Genre.values()){
-			MenuItem menuItem = new MenuItem();
-			menuItem.setText(genre.toString());
-			menuItem.setOnAction( (ActionEvent event) -> { searchField.setText(menuItem.getText()); });
-			menu.getItems().add(menuItem);
-		}
-
 
 		this.user = user;
 		playerService.setPlayerState(PlayerState.started);
@@ -69,6 +71,41 @@ public class LayoutController implements DataInitializable<User> {
 	public void searchAction(ActionEvent event) {
 		RunTimeService.setSearch(searchField.getText());
 		dispatcher.renderView("UserViews/SearchView/searchView", user);
+	}
+	@FXML
+	public void showGenreSelection(ActionEvent event) {
+		/*for(Genre genre: Genre.values()){
+			MenuItem menuItem = new MenuItem();
+			menuItem.setText(genre.toString());
+			menuItem.setOnAction( (ActionEvent event) -> { searchField.setText(menuItem.getText()); });
+			menu.getItems().add(menuItem);
+		}*/
+		Stage popupwindow = new Stage();
+		popupwindow.initModality(Modality.APPLICATION_MODAL);
+		VBox container = new VBox();
+		VBox vBox = new VBox();
+		for(Genre genre: Genre.values()) {
+		    Button item = new Button(genre.toString());
+		    item.setCursor(Cursor.HAND);
+		    item.setPrefWidth(115);
+		    item.setOnAction((ActionEvent event2) -> { searchField.setText(item.getText()); });
+		    vBox.getChildren().add(item);
+		}
+		ScrollPane scrollPane = new ScrollPane(vBox);
+		scrollPane.setMaxHeight(200);//Adjust max height of the popup here
+		scrollPane.setMaxWidth(130);//Adjust max width of the popup here
+		Button closeButton = new Button("Close");
+		closeButton.setCursor(Cursor.HAND);
+		closeButton.setOnAction(e -> {
+			popupwindow.close();
+		});
+		container.getChildren().addAll(scrollPane, closeButton);
+		container.setAlignment(Pos.CENTER);
+		Scene scene1 = new Scene(container, 150, 200);
+		popupwindow.setScene(scene1);
+		popupwindow.setResizable(false);
+		popupwindow.setTitle("search by genre");
+		popupwindow.showAndWait();
 	}
 
 }
