@@ -90,13 +90,12 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			deleteButton.setCursor(Cursor.HAND);
 			deleteButton.setOnAction((event) -> {
 
-				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()){	//canzone in corso uguale a quella selezionata
+				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
 
-					if(spacemusicunifyPlayer.getQueue().size() > 1 ){				//più canzoni in riproduzione
+					if(spacemusicunifyPlayer.getQueue().size() > 1 ) {				//più canzoni in riproduzione
 
-						if(spacemusicunifyPlayer.getCurrentSong() + 1 == spacemusicunifyPlayer.getQueue().size()){		//ultima canzone in coda uguale a canzone in corso
+						if(spacemusicunifyPlayer.getCurrentSong() + 1 == spacemusicunifyPlayer.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
 							try {
-								//if(spacemusicunifyPlayer.isPlay()) {spacemusicunifyPlayer.setPlay(false);}
 								spacemusicunifyPlayer.getMediaPlayer().stop();
 								spacemusicunifyPlayer.getMediaPlayer().dispose();
 								spacemusicunifyPlayer.setMediaPlayer(null);
@@ -104,35 +103,29 @@ public class QueueController implements Initializable, DataInitializable<User> {
 							} catch (BusinessException e) {
 								dispatcher.renderError(e);
 							}
-							//playerService.setPlayerState(PlayerState.queueControllerLoad);
-						}else {																			//canzone corrente tra prima posizione e penultima
-							if(spacemusicunifyPlayer.getCurrentSong() != 0){
-							//	playerService.setPlayerState(PlayerState.queueControllerLoad);//canzone corrente non in prima posizione
-							//	playerService.setLastSong(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong() -1));
-							}else{												//canzone corrente in prima posizione
+						} else {	//canzone corrente tra prima posizione e penultima
+							/*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
+								
+							} else {												//canzone corrente in prima posizione */
 								spacemusicunifyPlayer.getMediaPlayer().stop();
 								spacemusicunifyPlayer.getMediaPlayer().dispose();
 								spacemusicunifyPlayer.setMediaPlayer(null);
-							//	playerService.setPlayerState(PlayerState.queueControllerLoad);
-							//	playerService.setLastSong(null);
-							}
+							//}
 						}
 
-					}else{									//una sola canzone in riproduzione
-					//	playerService.setLastSong(null);
-					//	if(spacemusicunifyPlayer.isPlay()) { spacemusicunifyPlayer.setPlay(false);}
-					//	playerService.setPlayerState(PlayerState.started);
+					} else {									//una sola canzone in riproduzione
+						spacemusicunifyPlayer.getMediaPlayer().stop();
+						spacemusicunifyPlayer.getMediaPlayer().dispose();
+						spacemusicunifyPlayer.setMediaPlayer(null);
 					}
-				}else{																				//canzone in corso diversa da quella selezionata
+					
+				} else {																				//canzone in corso diversa da quella selezionata
 
-					for(int i = 0; i < spacemusicunifyPlayer.getQueue().size(); i++ ){
-						if(spacemusicunifyPlayer.getQueue().get(i).equals(param.getValue())){
-							if (spacemusicunifyPlayer.getCurrentSong() > i ){
-							//	playerService.setPlayerState(PlayerState.queueControllerResume);
+					for(int i = 0; i < spacemusicunifyPlayer.getQueue().size(); i++) {
+						if(spacemusicunifyPlayer.getQueue().get(i).equals(param.getValue())) {
+							if (spacemusicunifyPlayer.getCurrentSong() > i ) {
 								try {
-									spacemusicunifyPlayer.getMediaPlayer().stop();
-									spacemusicunifyPlayer.getMediaPlayer().dispose();
-									spacemusicunifyPlayer.setMediaPlayer(null);
+									
 									playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
@@ -141,7 +134,6 @@ public class QueueController implements Initializable, DataInitializable<User> {
 							}
 						}
 					}
-					// playerService.setPlayerState(PlayerState.queueControllerResume);
 				}
 
 				queueTable.getItems().remove(param.getValue());
@@ -156,8 +148,6 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			});
 			return new SimpleObjectProperty<Button>(deleteButton);
 		});
-		
-	//	queueTable.getItems().addAll(spacemusicunifyPlayer.getQueue());
 		
 		List<Song> songsList = spacemusicunifyPlayer.getQueue();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songsList);

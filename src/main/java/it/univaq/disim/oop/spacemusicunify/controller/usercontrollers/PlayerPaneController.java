@@ -130,10 +130,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				} else {
 					nextButton.setDisable(false);
 				}
-				//da continuare a controllare
+				if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
+				else previousButton.setDisable(false);
+				
 				if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null) ) { //riabilitazioni successive del player
-					System.out.println("carico nuova canzone");
-					System.out.println(spacemusicunifyPlayer.getMediaPlayer());
 					loadSong();
 				}
 			});
