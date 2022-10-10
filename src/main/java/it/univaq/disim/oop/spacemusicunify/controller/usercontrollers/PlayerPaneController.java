@@ -8,6 +8,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -681,10 +682,23 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void showSongInfo(MouseEvent mouseEvent) {
-        /*if (user.getcurrentSong() != null) {
-            spaceMusicUnifyService.setSituation(ViewSituations.user);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", user.getcurrentSong());
-        }*/
+    	Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
+        if (song != null) {
+        	List<Object> fakeList = new ArrayList<>();
+			try {
+				for(Production prod : SpacemusicunifyBusinessFactory.getInstance().getProductionService().getAllProductions()) {
+					if(prod.getAlbum().equals(song.getAlbum())) {
+						fakeList.add(prod);
+						break;
+					}
+				}
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+			fakeList.add(song);
+            dispatcher.setSituation(ViewSituations.user);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", fakeList);
+        }
     }
     
     private Media getMediaFromBytes(Song song) {
