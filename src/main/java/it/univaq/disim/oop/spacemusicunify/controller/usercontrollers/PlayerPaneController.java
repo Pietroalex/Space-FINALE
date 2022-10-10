@@ -145,7 +145,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		 * playerService.setPlayerOnPlay(false); }
 		 */
         if(spacemusicunifyPlayer.getMediaPlayer() == null) {
-        	System.out.println("canzone non presente, player disabile");
 	        addToPlaylistButton.setDisable(true);
 	        playButton.setDisable(true);
 	        playButton.setVisible(true);
@@ -157,7 +156,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         	volumeButton.setDisable(true);
         	volumeSlider.setDisable(true);
         } else {
-        	System.out.println("canzone già presente, risettaggio impostazioni player");
         	Duration lastDuration = spacemusicunifyPlayer.getDuration();
         	double lastVolume = spacemusicunifyPlayer.getVolume() * 100;
         	boolean isPaused = !spacemusicunifyPlayer.isPlay();
@@ -263,7 +261,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void mediaPlayerModulesInitializer(){
-    	System.out.println("inizializzazione player");
 
     	spacemusicunifyPlayer.getMediaPlayer().setVolume(volumeSlider.getValue() * 0.01);
 
@@ -417,11 +414,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			spacemusicunifyPlayer.getMediaPlayer().stop();
 			spacemusicunifyPlayer.getMediaPlayer().dispose();
 		}
-		System.out.println("prendo canzone dalla coda");
         Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
-        System.out.println(song);
         if(song != null) {
-        	System.out.println("canzone != null");
             songTitle.setText(song.getTitle());
             ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
             String artists = "";
@@ -437,9 +431,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             songArtist.setText(artists.substring(0, artists.length() - 2));
             songAlbum.setText(song.getAlbum().getTitle());
             songImage.setImage(new Image(new ByteArrayInputStream(song.getAlbum().getCover().getData())));
-            System.out.println(songTitle.getText());
-            System.out.println(songArtist.getText());
-            System.out.println(songAlbum.getText());
             spacemusicunifyPlayer.setMediaPlayer(new MediaPlayer(getMediaFromBytes(song)));
 
             this.mediaPlayerModulesInitializer();
@@ -602,7 +593,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
         nextButton.setDisable(false);
-        System.out.println("precedente");
         if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
     }
 
@@ -614,7 +604,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     	spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() + 1);
         this.loadSong();
         spacemusicunifyPlayer.setPlay(true);
-        System.out.println("prossima");
         previousButton.setDisable(false);
         if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
     }
@@ -626,10 +615,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void addThisSongToPlaylist(ActionEvent event) {
+    	Song songToAdd = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
     	Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
-/*		Label title = new Label("Add " + user.getcurrentSong().getTitle() + " to which playlist?");*/
-		/*title.setAlignment(Pos.CENTER);*/
+		Label title = new Label("Add " + songToAdd.getTitle() + " to which playlist?");
+		title.setAlignment(Pos.CENTER);
 		//selezione multipla playlist
 		TableView<Playlist> tableView = new TableView<>();
 		TableColumn<Playlist, String> name = new TableColumn<>("Title");
@@ -639,26 +629,22 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
 			final Button addButton = new Button("Add here");
 
-            if(this.checkForClones(param.getValue())){
-                addButton.setDisable(true);
-            }
-
 			addButton.setOnAction((ActionEvent evento) -> {
-				//aggiunto album alla playlist
+				//aggiunta canzone alla playlist
 				Set<Song> lista = param.getValue().getSongList();
 				Boolean alreadyAdded = false;
 				for(Song canzonePlaylist: lista) {
-					/*if(user.getcurrentSong().getId().intValue() == canzonePlaylist.getId().intValue()) {
+					if(songToAdd.getId().intValue() == canzonePlaylist.getId().intValue()) {
 						alreadyAdded = true;
 						break;
-					}*/
+					}
 				}
 				if(!alreadyAdded) {
-					/*lista.add(user.getcurrentSong());*/
+					lista.add(songToAdd);
 				}
-
+				
 				try {
-                    userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -666,6 +652,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			});
 			return new SimpleObjectProperty<>(addButton);
 		});
+		
         tableView.getColumns().add(name);
         tableView.getColumns().add(add);
 		
@@ -680,12 +667,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		Button closeButton = new Button("Close");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/UserHomeView/playlistPane", user);
 			popupwindow.close();
 		});
 
 		VBox layout = new VBox(10);
-		/*layout.getChildren().addAll(title, tableView, closeButton);*/
+		layout.getChildren().addAll(title, tableView, closeButton);
 		layout.setAlignment(Pos.CENTER);
 		Scene scene1 = new Scene(layout, 300, 150);
 		popupwindow.setScene(scene1);
@@ -699,16 +685,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             spaceMusicUnifyService.setSituation(ViewSituations.user);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/song_detail", user.getcurrentSong());
         }*/
-    }
-    
-    private boolean checkForClones(Playlist playlist){
-        for(Song canzone : playlist.getSongList()){
-           /* if(canzone.getId().equals( user.getcurrentSong().getId())){
-                return true;
-            }*/
-        }
-
-        return false;
     }
     
     private Media getMediaFromBytes(Song song) {

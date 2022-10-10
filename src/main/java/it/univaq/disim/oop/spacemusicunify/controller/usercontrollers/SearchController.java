@@ -440,7 +440,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/HomeView/playlistPane", user);
 			popupwindow.close();
 		});
 

@@ -667,7 +667,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void addAlbumToPlaylist(ActionEvent event) {
 		User user = RunTimeService.getCurrentUser();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		PlayerService playerService = factory.getPlayerService();
 		UserService userService = factory.getUserService();
 		
 		Stage popupwindow = new Stage();
@@ -719,7 +718,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		Button closeButton = new Button("Cancel");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/HomeView/playlistPane", RunTimeService.getCurrentUser());
 			popupwindow.close();
 		});
 

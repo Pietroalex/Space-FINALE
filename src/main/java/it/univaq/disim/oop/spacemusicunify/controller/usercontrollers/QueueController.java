@@ -125,7 +125,6 @@ public class QueueController implements Initializable, DataInitializable<User> {
 						if(spacemusicunifyPlayer.getQueue().get(i).equals(param.getValue())) {
 							if (spacemusicunifyPlayer.getCurrentSong() > i ) {
 								try {
-									
 									playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
