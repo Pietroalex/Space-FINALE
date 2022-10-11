@@ -60,12 +60,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
     @FXML
     private Button modify;
-    @FXML
-    private AnchorPane infoPane;
-    @FXML
-    private AnchorPane modifyPane;
-    @FXML
-    private AnchorPane masterPane;
+
     @FXML
     private HBox images;
     @FXML
@@ -248,7 +243,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
                 nationalityField.setValue(artist.getNationality());
-
+                deleteartist.setVisible(false);
 
                 title.setText("New Artist");
                 confirm.setText("Create");

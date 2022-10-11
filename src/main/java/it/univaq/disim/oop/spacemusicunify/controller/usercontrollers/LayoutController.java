@@ -85,11 +85,15 @@ public class LayoutController implements DataInitializable<User> {
 		VBox container = new VBox();
 		VBox vBox = new VBox();
 		for(Genre genre: Genre.values()) {
-		    Button item = new Button(genre.toString());
-		    item.setCursor(Cursor.HAND);
-		    item.setPrefWidth(115);
-		    item.setOnAction((ActionEvent event2) -> { searchField.setText(item.getText()); });
-		    vBox.getChildren().add(item);
+			if(genre != Genre.singles) {
+				Button item = new Button(genre.toString());
+				item.setCursor(Cursor.HAND);
+				item.setPrefWidth(115);
+				item.setOnAction((ActionEvent event2) -> {
+					searchField.setText(item.getText());
+				});
+				vBox.getChildren().add(item);
+			}
 		}
 		ScrollPane scrollPane = new ScrollPane(vBox);
 		scrollPane.setMaxHeight(200);//Adjust max height of the popup here

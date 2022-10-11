@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface UserService {
 
-	void add(User utente) throws BusinessException;
+	void add(User user) throws BusinessException;
 	
 	void modify(Integer id, String username, String password) throws BusinessException;
 
@@ -24,6 +24,6 @@ public interface UserService {
 
 	GeneralUser authenticate(String username, String password) throws BusinessException;
 	
-	Set<User> getAllUsers();
+	Set<User> getAllUsers() throws BusinessException;
 	
 }

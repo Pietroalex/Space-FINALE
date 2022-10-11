@@ -33,11 +33,13 @@ public class RAMUserServiceImpl implements UserService {
 
 	@Override
 	public void modify(Integer id, String username, String password) throws AlreadyTakenFieldException {
-		Set<User> utenti = getAllUsers();
+		Set<User> utenti = null;
+		try {
+			utenti = getAllUsers();
+
 
 		for (User user : utenti) {
 			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
-				System.out.println("controllo");
 				throw new AlreadyTakenFieldException();
 			}
 		}
@@ -47,24 +49,26 @@ public class RAMUserServiceImpl implements UserService {
 				user.setPassword(password);
 			}
 		}
-
+	} catch (BusinessException e) {
+		throw new RuntimeException(e);
+	}
 	}
 
 	@Override
-	public void delete(User utente) throws BusinessException {
+	public void delete(User user) throws BusinessException {
 
-		Set<User> utenti = getAllUsers();
+
 		Set<Playlist> playlists = null;
 		try {
-			playlists = getAllPlaylists(utente);
+			playlists = getAllPlaylists(user);
 			System.out.println(playlists);
 		} catch (BusinessException e) {
 			throw new RuntimeException(e);
 		}
 
-		for (User user : utenti) {
-			if (user.getId().intValue() == utente.getId().intValue()) {
-				utenti.remove(user);
+		for (User userCheck : getAllUsers()) {
+			if (userCheck.getId().intValue() == user.getId().intValue()) {
+				storedUsers.remove(userCheck);
 				break;
 			}
 		}
@@ -72,12 +76,12 @@ public class RAMUserServiceImpl implements UserService {
 		
 		Set<Playlist> playlistList = playlists;
 		for (Playlist playlist : playlistList) {
-			if (playlist.getUser().equals(utente)) {
+			if (playlist.getUser().equals(user)) {
 				delete(playlist);
 			}
 		}
 		
-		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(utente);
+		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
 	}
 
 	@Override
@@ -88,7 +92,7 @@ public class RAMUserServiceImpl implements UserService {
 			admin.setPassword(password);
 			return admin;
 		} else {
-			for (User user : storedUsers) {
+			for (User user : getAllUsers()) {
 				if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
 					RunTimeService.setCurrentUser(user);
 					return user;
@@ -99,8 +103,9 @@ public class RAMUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Set<User> getAllUsers() {
-		return storedUsers;
+	public Set<User> getAllUsers() throws BusinessException {
+		if(storedUsers == null) throw  new BusinessException();
+		return new HashSet<>(storedUsers);
 	}
 
 	@Override

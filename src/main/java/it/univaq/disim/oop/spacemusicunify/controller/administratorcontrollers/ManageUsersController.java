@@ -65,8 +65,13 @@ public class ManageUsersController implements Initializable, DataInitializable<A
     @Override
     public void initializeData(Administrator amministratore) {
 
-            Set<User> utenti = userService.getAllUsers();
-            ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
+        Set<User> utenti = null;
+        try {
+            utenti = userService.getAllUsers();
+        } catch (BusinessException e) {
+            dispatcher.renderError(e);
+        }
+        ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
             usersList.setItems(utenteData);
 
     }

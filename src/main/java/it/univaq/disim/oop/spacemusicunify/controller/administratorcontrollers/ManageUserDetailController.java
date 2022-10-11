@@ -101,10 +101,10 @@ public class ManageUserDetailController implements Initializable, DataInitializa
                 }
 
             } else {
-
                 userService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
+                dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
             }
-            dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
+
         } catch (AlreadyTakenFieldException e){
             System.out.println(e.getMessage());
             existingLabel.setVisible(true);

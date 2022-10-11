@@ -8,9 +8,13 @@ import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerService;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
+import it.univaq.disim.oop.spacemusicunify.business.impl.file.Utility;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Duration;
 
 public class RAMPlayerServiceImpl implements PlayerService {
 	
@@ -28,8 +32,15 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				throw new AlreadyExistingException();
 			}
 		}
-		SpacemusicunifyPlayer spacemusicunifyPlayer = new SpacemusicunifyPlayer(user);
-		storedPlayers.add(spacemusicunifyPlayer);
+		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer(user);
+		player.setVolume(0.5);
+		player.setDuration(Duration.ZERO);
+		player.setMute(false);
+		player.setPlay(false);
+		ObservableList<Song> queue = FXCollections.observableArrayList();
+		player.setQueue(queue);
+		player.setCurrentSong(0);
+		storedPlayers.add(player);
 		
 	}
 	@Override
@@ -61,17 +72,20 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
-		player.getQueue().add(newSong);
+		ObservableList<Song> queue = player.getQueue();
+		if(queue == null) throw new BusinessException();
+		queue.add(newSong);
+		player.setQueue(queue);
 	}
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
+		ObservableList<Song> queue = player.getQueue();
 
-		if(song.getId().intValue() == player.getQueue().get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
+		if(song.getId().intValue() == queue.get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
 
-			if(player.getQueue().size() > 1 ) {				//più canzoni in riproduzione
+			if(queue.size() > 1 ) {				//più canzoni in riproduzione
 
-				if(player.getCurrentSong() + 1 == player.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
+				if(player.getCurrentSong() + 1 == queue.size()) {		//ultima canzone in coda uguale a canzone in corso
 					if(player.getMediaPlayer() != null) {
 						player.getMediaPlayer().stop();
 						player.getMediaPlayer().dispose();
@@ -101,8 +115,8 @@ public class RAMPlayerServiceImpl implements PlayerService {
 
 		} else {																				//canzone in corso diversa da quella selezionata
 
-			for(int i = 0; i < player.getQueue().size(); i++) {
-				if(player.getQueue().get(i).equals(song)) {
+			for(int i = 0; i < queue.size(); i++) {
+				if(queue.get(i).equals(song)) {
 					if (player.getCurrentSong() > i ) {
 
 						updateCurrentSong(player, player.getCurrentSong() - 1);
@@ -112,7 +126,8 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		player.getQueue().remove(song);
+		queue.remove(song);
+		player.setQueue(queue);
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
@@ -121,7 +136,9 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		player.getQueue().set(player.getCurrentSong(), song); 
+		ObservableList<Song> queue = player.getQueue();
+		queue.set(player.getCurrentSong(), song);
+		player.setQueue(queue);
 		//throw new BusinessException();
 	}
 	

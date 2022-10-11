@@ -83,7 +83,6 @@ public class FileProductionServiceImpl implements ProductionService {
 
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 		
@@ -117,7 +116,7 @@ public class FileProductionServiceImpl implements ProductionService {
 			}
 			if(!check)throw new BusinessException("production inesistente");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException();
 		}
 		
 	}

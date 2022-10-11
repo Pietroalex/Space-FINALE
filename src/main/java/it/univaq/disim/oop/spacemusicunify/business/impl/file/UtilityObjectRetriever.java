@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Duration;
 
 public class UtilityObjectRetriever extends Object {
 
@@ -82,6 +86,22 @@ public class UtilityObjectRetriever extends Object {
 					throw new RuntimeException(e);
 				}
 				break;
+			case "players.txt":
+
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] columns : fileData.getRows()) {
+						if(columns[0].equals(id)) {
+
+							object = findPlayer(columns, file);
+
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				break;
 
 			default:
 
@@ -90,9 +110,7 @@ public class UtilityObjectRetriever extends Object {
 
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) {
-
 							object = findMultimedia(columns);
-
 						}
 					}
 				} catch (IOException e) {
@@ -103,6 +121,23 @@ public class UtilityObjectRetriever extends Object {
 		}
 
 		return object;
+	}
+
+	private static SpacemusicunifyPlayer findPlayer(String[] columns, String file) {
+		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer((User) UtilityObjectRetriever.findObjectById(columns[7], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt")));
+		player.setVolume(Double.parseDouble(columns[1]));
+		player.setDuration(Duration.valueOf(columns[2]));
+		player.setMute(Boolean.parseBoolean(columns[3]));
+		player.setPlay(Boolean.parseBoolean(columns[4]));
+		ObservableList<Song> queue = FXCollections.observableArrayList();
+		List<String> queueIDS = Utility.readArray(columns[5]);
+		for (String songsID : queueIDS){
+			queue.add((Song) UtilityObjectRetriever.findObjectById(songsID, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "songs.txt")));
+		}
+		player.setQueue(queue);
+		player.setCurrentSong(Integer.parseInt(columns[6]));
+
+		return player;
 	}
 
 

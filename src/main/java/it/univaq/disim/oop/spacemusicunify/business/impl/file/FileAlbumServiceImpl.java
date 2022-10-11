@@ -401,12 +401,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 			FileData fileData = Utility.readAllRows(albumsFile);
 
-			for (String[] righe : fileData.getRows()) {
-				albumList.add((Album) UtilityObjectRetriever.findObjectById(righe[0], albumsFile));
+			for (String[] rows : fileData.getRows()) {
+				albumList.add((Album) UtilityObjectRetriever.findObjectById(rows[0], albumsFile));
 
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException();
 		}
 		return albumList;

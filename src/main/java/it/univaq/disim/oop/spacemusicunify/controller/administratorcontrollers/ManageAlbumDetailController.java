@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -93,8 +94,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private Button newSong;
 	@FXML
 	private MenuButton artistS;
-	@FXML
-	private Button cancel1;
 	@FXML
 	private Button cancel;
 	@FXML

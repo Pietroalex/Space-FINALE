@@ -192,13 +192,18 @@ public class FileArtistServiceImpl implements ArtistService {
 					Set<Album> albumList = findAllAlbums(artist);
 					//aggiorno il file album.txt
 					for (Album albumCtrl : albumList) {
-						if(SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl).size() <= 1){
+						Set<Production> productions = SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl);
+						if(productions.size() > 1){
+							for(Production prod : productions){
+								if(prod.getArtist().getId().intValue() == artist.getId().intValue()) productionService.delete(prod);
+							}
+						}else{
 							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);
 						}
 					}
-					for(Production production : findAllProductions(artist)){
+					/*for(Production production : findAllProductions(artist)){
 						productionService.delete(production);
-					}
+					}*/
 
 					//aggiorno il file artisti.txt
 					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {

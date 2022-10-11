@@ -34,35 +34,34 @@ public class FileUserServiceImpl implements UserService {
 
 
 	@Override
-	public void add(User utente) throws  BusinessException {
+	public void add(User user) throws  BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
-			for (String[] colonne : fileData.getRows()) {
-				if (colonne[2].equals(utente.getUsername())) {
+			for (String[] columns : fileData.getRows()) {
+				if (columns[2].equals(user.getUsername())) {
 					throw new AlreadyExistingException("Already existing user");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				long contatore = fileData.getCounter();
-				writer.println((contatore + 1));
-				for (String[] righe : fileData.getRows()) {
-					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+				long counter = fileData.getCounter();
+				writer.println((counter + 1));
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
+				user.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 				StringBuilder row = new StringBuilder();
-				row.append(contatore);
+				row.append(counter);
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(utente.getUsername());
+				row.append("user");
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(utente.getPassword());
+				row.append(user.getUsername());
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append("0");
-				row.append(Utility.COLUMN_SEPARATOR);
-				row.append("[]");
+				row.append(user.getPassword());
 				writer.println(row.toString());
 
 			}
+			SpacemusicunifyBusinessFactory.getInstance().getPlayerService().add(user);
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}
@@ -86,10 +85,6 @@ public class FileUserServiceImpl implements UserService {
 						row.append(username);
 						row.append(Utility.COLUMN_SEPARATOR);
 						row.append(password);
-						row.append(Utility.COLUMN_SEPARATOR);
-						row.append(righe[4]);
-						row.append(Utility.COLUMN_SEPARATOR);
-						row.append(righe[5]);
 						writer.println(row.toString());
 					} else {
 						writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
@@ -104,12 +99,12 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void delete(User utente) throws BusinessException {
+	public void delete(User user) throws BusinessException {
 		Boolean controllo = false;
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] colonne : fileData.getRows()) {
-				if ( Integer.parseInt(colonne[0]) == utente.getId() ) {
+				if ( Integer.parseInt(colonne[0]) == user.getId() ) {
 					controllo = true;
 					break;
 				}
@@ -119,21 +114,21 @@ public class FileUserServiceImpl implements UserService {
 				try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
 					writer.println(fileData.getCounter());
 					for (String[] righe : fileData.getRows()) {
-						if (Long.parseLong(righe[0]) != utente.getId()) {
+						if (Long.parseLong(righe[0]) != user.getId()) {
 							writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 						}
 					}
 				}
 				//eliminazione delle playlists
-				Set<Playlist> playlists = getAllPlaylists(utente);
+				Set<Playlist> playlists = getAllPlaylists(user);
 				for(Playlist playlist : playlists) {
 					delete(playlist);
 				}
+				SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
 			}else{
 				throw new BusinessException("Not existing User");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}

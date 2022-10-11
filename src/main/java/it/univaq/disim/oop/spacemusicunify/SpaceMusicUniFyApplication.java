@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify;
 
+import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.SPACEMusicUnifyService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
@@ -11,8 +12,12 @@ public class SpaceMusicUniFyApplication extends Application {
 	public static void main(String[] args) {
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		SPACEMusicUnifyService SPACEMusicUnifyService = factory.getSPACEMusicUnifyService();
-		SPACEMusicUnifyService.setAllDefaults();
-		launch(args);
+		try {
+			SPACEMusicUnifyService.setAllDefaults();
+		} catch (BusinessException e){
+			ViewDispatcher.getInstance().renderError(e);
+	}
+			launch(args);
 	}
 
 	@Override
