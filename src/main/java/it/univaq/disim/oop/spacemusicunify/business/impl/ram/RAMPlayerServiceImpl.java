@@ -33,13 +33,6 @@ public class RAMPlayerServiceImpl implements PlayerService {
 			}
 		}
 		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer(user);
-		player.setVolume(0.5);
-		player.setDuration(Duration.ZERO);
-		player.setMute(false);
-		player.setPlay(false);
-		ObservableList<Song> queue = FXCollections.observableArrayList();
-		player.setQueue(queue);
-		player.setCurrentSong(0);
 		storedPlayers.add(player);
 		
 	}
