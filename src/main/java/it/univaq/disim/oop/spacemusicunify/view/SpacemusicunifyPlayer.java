@@ -13,15 +13,20 @@ import it.univaq.disim.oop.spacemusicunify.domain.User;
 public class SpacemusicunifyPlayer {
 	
 	private MediaPlayer mediaPlayer;
-	private double volume = 0.5; //percentage of volume
-	private Duration duration = Duration.ZERO; //current time of played song
-	private boolean mute = false; //player is mute or not
-	private boolean play = false; //player is playing or paused
+	private double volume; //percentage of volume
+	private Duration duration; //current time of played song
+	private boolean mute; //player is mute or not
+	private boolean play; //player is playing or paused
 	private ObservableList<Song> queue = FXCollections.observableArrayList(); //songs to play
-	private int currentSong = 0; //current song loaded
+	private int currentSong; //current song loaded
 	private User user;
 	
 	public SpacemusicunifyPlayer(User user) {
+		this.volume = 0.5;	
+		this.duration = Duration.ZERO; 
+		this.mute = false;
+		this.play = false;
+		this.currentSong = 0;
 		this.user = user;
 	}
 	
