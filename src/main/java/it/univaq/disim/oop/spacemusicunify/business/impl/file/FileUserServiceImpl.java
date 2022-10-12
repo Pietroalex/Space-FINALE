@@ -169,69 +169,51 @@ public class FileUserServiceImpl implements UserService {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for(String[] colonne : fileData.getRows()) {
 				if(colonne[2].equals(username) && colonne[3].equals(password)) {
-					GeneralUser utente = null;
+					GeneralUser user = null;
 					switch (colonne[1]) {
 						case "user" :
-							utente = new User();
+							user = new User();
+							RunTimeService.setCurrentUser((User) user);
 
-							//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
-/*							List<String> songQueue = Utility.leggiArray(colonne[5]);
-							List<Song> queueList = new ArrayList<>();
-							for(String string : songQueue) {
-								queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
-							}*/
-							//((User) utente).setSongQueue(queueList);
 							break;
 
 						case "admin" :
-							utente = new Administrator();
+							user = new Administrator();
 							break;
 
 						default :
 							break;
 					}
-					if(utente != null) {
-						utente.setId(Integer.parseInt(colonne[0]));
-						utente.setUsername(colonne[2]);
-						utente.setPassword(colonne[3]);
+					if(user != null) {
+						user.setId(Integer.parseInt(colonne[0]));
+						user.setUsername(colonne[2]);
+						user.setPassword(colonne[3]);
+
 					} else { throw new BusinessException("errore nella lettura del file"); }
-					return utente;
+
+					return user;
 				}
 			}
 			throw new ObjectNotFoundException();
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 	}
 
 	@Override
-	public Set<User> getAllUsers() {
-		Set<User> utenteList = new HashSet<>();
+	public Set<User> getAllUsers() throws BusinessException {
+		Set<User> users = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
-			fileData.getRows().remove(0);
-
-			for (String[] colonne : fileData.getRows()) {
-				User utente = new User();
-				utente.setId(Integer.parseInt(colonne[0]));
-				utente.setUsername(colonne[2]);
-				utente.setPassword(colonne[3]);
-				//((User) utente).setcurrentPosition(Integer.parseInt(colonne[4]));
-				/*List<String> songQueue = Utility.leggiArray(colonne[5]);
-				List<Song> queueList = new ArrayList<>();
-				for(String string : songQueue) {
-					queueList.add((Song) UtilityObjectRetriever.findObjectById(string, songsFile));
-				}*/
-				//((User) utente).setSongQueue(queueList);
-				utenteList.add(utente);
+			for (String[] columns : fileData.getRows()) {
+				if(!(columns[1].equals("admin"))) users.add((User) UtilityObjectRetriever.findObjectById(columns[0], usersFile));
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 
-		return utenteList;
+		return users;
 	}
 
 	@Override

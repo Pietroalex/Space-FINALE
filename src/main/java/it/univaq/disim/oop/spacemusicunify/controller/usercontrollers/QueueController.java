@@ -89,66 +89,19 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			final Button deleteButton = new Button("Delete");
 			deleteButton.setCursor(Cursor.HAND);
 			deleteButton.setOnAction((event) -> {
-
-/*				if(param.getValue().getId().intValue() == spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
-
-					if(spacemusicunifyPlayer.getQueue().size() > 1 ) {				//più canzoni in riproduzione
-
-						if(spacemusicunifyPlayer.getCurrentSong() + 1 == spacemusicunifyPlayer.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
-							try {
-								spacemusicunifyPlayer.getMediaPlayer().stop();
-								spacemusicunifyPlayer.getMediaPlayer().dispose();
-								spacemusicunifyPlayer.setMediaPlayer(null);
-								playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
-							} catch (BusinessException e) {
-								dispatcher.renderError(e);
-							}
-						} else {	//canzone corrente tra prima posizione e penultima
-							*//*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
-								
-							} else {												//canzone corrente in prima posizione *//*
-								spacemusicunifyPlayer.getMediaPlayer().stop();
-								spacemusicunifyPlayer.getMediaPlayer().dispose();
-								spacemusicunifyPlayer.setMediaPlayer(null);
-							//}
-						}
-
-					} else {									//una sola canzone in riproduzione
-						spacemusicunifyPlayer.getMediaPlayer().stop();
-						spacemusicunifyPlayer.getMediaPlayer().dispose();
-						spacemusicunifyPlayer.setMediaPlayer(null);
-					}
-					
-				} else {																				//canzone in corso diversa da quella selezionata
-
-					for(int i = 0; i < spacemusicunifyPlayer.getQueue().size(); i++) {
-						if(spacemusicunifyPlayer.getQueue().get(i).equals(param.getValue())) {
-							if (spacemusicunifyPlayer.getCurrentSong() > i ) {
-								try {
-									playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() - 1);
-								} catch (BusinessException e) {
-									dispatcher.renderError(e);
-								}
-								break;
-							}
-						}
-					}
-				}*/
-
-				queueTable.getItems().remove(param.getValue());
 				try {
 					playerService.deleteSongFromQueue(spacemusicunifyPlayer, param.getValue());
+
 				} catch (ObjectNotFoundException e) {
 					//text
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}
-				queueTable.refresh();
+				/*queueTable.getItems().remove(param.getValue());*/
+				/*queueTable.refresh();*/
 			});
 			return new SimpleObjectProperty<Button>(deleteButton);
 		});
-
 		queueTable.setItems(spacemusicunifyPlayer.getQueue());
-		
 	}
 }

@@ -1,5 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.domain;
 
+import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +24,7 @@ public class Multimedia {
         return data;
     }
 
-    public void setData(String source) {
+    public void setData(String source) throws BusinessException {
         byte[] bytes;
         try {
             ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
@@ -32,7 +34,7 @@ public class Multimedia {
 
             outStreamObj.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(e);
         }
         this.data = bytes;
     }

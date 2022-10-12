@@ -418,7 +418,11 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 picture.setOwnership(artist);
                 picture.setHeight(120);
                 picture.setWidth(120);
-                picture.setData(path);
+                try {
+                    picture.setData(path);
+                } catch (BusinessException e) {
+                    dispatcher.renderError(e);
+                }
                 boolean check = false;
                 for (Picture pictureCheck : artist.getPictures()){
                     if(Arrays.equals(pictureCheck.getData(), picture.getData())){

@@ -34,7 +34,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 			FileData fileData = Utility.readAllRows(playersFile);
 			for(String[] columns: fileData.getRows()) {
-				if (columns[7].equals( user.getId().toString() ) ) {
+				if (columns[0].equals( user.getId().toString() ) ) {
 					throw new AlreadyExistingException("existing_player");
 				}
 			}
@@ -46,11 +46,11 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 
 				StringBuilder row = new StringBuilder();
-				row.append(counter);
+				row.append(user.getId());
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(Double.valueOf(0.5));
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(Duration.ZERO);
+				row.append(Double.valueOf(40.5));
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(false);
 				row.append(Utility.COLUMN_SEPARATOR);
@@ -59,8 +59,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 				row.append("[]");
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(0);
-				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(user.getId());
+
 
 				writer.println(row.toString());
 
@@ -76,14 +75,14 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 			FileData fileData = Utility.readAllRows(playersFile);
 			for(String[] rowsCheck: fileData.getRows()) {
-				if(rowsCheck[7].equals(user.getId().toString())) {
+				if(rowsCheck[0].equals(user.getId().toString())) {
 
 					check = true;
 					//aggiorno il file players.txt
 					try (PrintWriter writer = new PrintWriter(new File(playersFile))) {
 						writer.println(fileData.getCounter());
 						for (String[] rows : fileData.getRows()) {
-							if (rows[7].equals(user.getId().toString())) {
+							if (rows[0].equals(user.getId().toString())) {
 								//jump line
 								continue;
 							} else {
@@ -113,22 +112,23 @@ public class FilePlayerServiceImpl implements PlayerService {
 			FileData fileData = Utility.readAllRows(playersFile);
 
 			for (String[] rows : fileData.getRows()) {
-				if(rows[7].equals(user.getId().toString())) player = (SpacemusicunifyPlayer) UtilityObjectRetriever.findObjectById(rows[0], playersFile);
+				if(rows[0].equals(user.getId().toString())) player = (SpacemusicunifyPlayer) UtilityObjectRetriever.findObjectById(rows[0], playersFile);
 			}
 		} catch (IOException e) {
 			throw new BusinessException();
 		}
 		if (player == null) throw  new ObjectNotFoundException("not_found_player");
+		System.out.println("jamm2");
 		return player;
 	}
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
-		ObservableList<Song> queue = player.getQueue();
-		if(queue == null) throw new BusinessException();
-		queue.add(newSong);
-		player.setQueue(queue);
+
+		if(player.getQueue() == null) throw new BusinessException();
+		player.getQueue().add(newSong);
+
 		List<String> queueIDS = new ArrayList<>();
-		for(Song song : queue){
+		for(Song song : player.getQueue()){
 			queueIDS.add(song.getId().toString());
 		}
 		try {
@@ -136,11 +136,11 @@ public class FilePlayerServiceImpl implements PlayerService {
 			FileData fileData = Utility.readAllRows(playersFile);
 			int cont = 0;
 			for(String[] rows: fileData.getRows()) {
-				if(rows[7].equals(player.getUser().getId().toString())) {
+				if(rows[0].equals(player.getUser().getId().toString())) {
 
 
 
-					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(queueIDS), rows[6], rows[7] };
+					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(queueIDS), rows[6] };
 					fileData.getRows().set(cont, row);
 
 					break;
@@ -161,13 +161,11 @@ public class FilePlayerServiceImpl implements PlayerService {
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
 
-		ObservableList<Song> queue = player.getQueue();
+		if(song.getId().intValue() == player.getQueue().get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
 
-		if(song.getId().intValue() == queue.get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
+			if(player.getQueue().size() > 1 ) {				//più canzoni in riproduzione
 
-			if(queue.size() > 1 ) {				//più canzoni in riproduzione
-
-				if(player.getCurrentSong() + 1 == queue.size()) {		//ultima canzone in coda uguale a canzone in corso
+				if(player.getCurrentSong() + 1 == player.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
 					if(player.getMediaPlayer() != null) {
 						player.getMediaPlayer().stop();
 						player.getMediaPlayer().dispose();
@@ -197,8 +195,8 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 		} else {																				//canzone in corso diversa da quella selezionata
 
-			for(int i = 0; i < queue.size(); i++) {
-				if(queue.get(i).equals(song)) {
+			for(int i = 0; i < player.getQueue().size(); i++) {
+				if(player.getQueue().get(i).equals(song)) {
 					if (player.getCurrentSong() > i ) {
 
 						updateCurrentSong(player, player.getCurrentSong() - 1);
@@ -208,10 +206,10 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		queue.remove(song);
-		player.setQueue(queue);
+		player.getQueue().remove(song);
+
 		List<String> queueIDS = new ArrayList<>();
-		for(Song songs : queue){
+		for(Song songs : player.getQueue()){
 			queueIDS.add(songs.getId().toString());
 		}
 		try {
@@ -219,11 +217,11 @@ public class FilePlayerServiceImpl implements PlayerService {
 			FileData fileData = Utility.readAllRows(playersFile);
 			int cont = 0;
 			for(String[] rows: fileData.getRows()) {
-				if(rows[7].equals(player.getUser().getId().toString())) {
+				if(rows[0].equals(player.getUser().getId().toString())) {
 
 
 
-					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(queueIDS), rows[6], rows[7] };
+					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(queueIDS), rows[6] };
 					fileData.getRows().set(cont, row);
 
 					break;
@@ -252,8 +250,8 @@ public class FilePlayerServiceImpl implements PlayerService {
 			FileData fileData = Utility.readAllRows(playersFile);
 			int cont = 0;
 			for(String[] rows: fileData.getRows()) {
-				if(rows[7].equals(player.getUser().getId().toString())) {
-					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], rows[5], String.valueOf(position), rows[7] };
+				if(rows[0].equals(player.getUser().getId().toString())) {
+					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], rows[5], String.valueOf(position) };
 					fileData.getRows().set(cont, row);
 
 					player.setCurrentSong(position);

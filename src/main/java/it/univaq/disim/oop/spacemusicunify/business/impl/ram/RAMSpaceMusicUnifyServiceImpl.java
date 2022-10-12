@@ -35,9 +35,11 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		artist1.setNationality(Nationality.italian);
 		artist1.setYearsOfActivity(6);
 		Set<Picture> artista1img = new HashSet<>();
-
+		try {
 		Picture picture1 = new Picture();
-		picture1.setData(path+"pasqualearrosto.jpg");
+
+			picture1.setData(path+"pasqualearrosto.jpg");
+
 		picture1.setHeight(120);
 		picture1.setWidth(120);
 		picture1.setOwnership(artist1);
@@ -56,7 +58,6 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 		artist1.setPictures(artista1img);
 
-		try {
 			artistService.add(artist1);
 		} catch (BusinessException e1) {
 			ViewDispatcher.getInstance().renderError(e1);

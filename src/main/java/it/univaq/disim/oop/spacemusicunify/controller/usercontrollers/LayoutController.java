@@ -48,7 +48,7 @@ public class LayoutController implements DataInitializable<User> {
 		try {
 			spacemusicunifyPlayer = playerService.getPlayer(user);
 		} catch (BusinessException e) {
-			e.printStackTrace();
+			dispatcher.renderError(e);
 		}
 
 		this.user = user;

@@ -2,10 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
-import it.univaq.disim.oop.spacemusicunify.domain.Song;
-import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
-import it.univaq.disim.oop.spacemusicunify.domain.Production;
-import it.univaq.disim.oop.spacemusicunify.domain.User;
+import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
@@ -98,8 +95,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         this.user = user;
         try {
 			this.spacemusicunifyPlayer = playerService.getPlayer(user);
-			
+			System.out.println("jamm3");
 			spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
+				System.out.println("jamm");
 				if(spacemusicunifyPlayer.getQueue().size() > 0) {
 					//viene riabilitato il player
 					addToPlaylistButton.setDisable(false);
@@ -172,6 +170,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         		playButton.setVisible(true);
         		pauseButton.setVisible(false);
         	}
+
         	spacemusicunifyPlayer.setDuration(lastDuration);
         	volumeSlider.setValue(lastVolume);
         }
@@ -418,13 +417,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
         if(song != null) {
             songTitle.setText(song.getTitle());
-            ProductionService productionService = SpacemusicunifyBusinessFactory.getInstance().getProductionService();
             String artists = "";
             try {
-				for(Production production : productionService.getAllProductions()){
-					if(production.getAlbum() == song.getAlbum()) {
-						artists = artists + production.getArtist().getName() + ", ";
-					}
+				for(Artist artist : SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllArtists(song.getAlbum())){
+					artists = artists + artist.getName() + ", ";
+
 				}
 			} catch (BusinessException e) {
 				dispatcher.renderError(e);

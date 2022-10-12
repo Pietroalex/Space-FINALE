@@ -27,7 +27,7 @@ public class SpacemusicunifyPlayer {
 	
 	public void setVolume(double volume) {
 		this.volume = volume;
-		this.mediaPlayer.setVolume(volume);
+		if(mediaPlayer != null) this.mediaPlayer.setVolume(volume);
 	}
 	
 	public double getVolume() {
@@ -48,7 +48,7 @@ public class SpacemusicunifyPlayer {
 
 	public void setMute(boolean mute) {
 		this.mute = mute;
-		this.mediaPlayer.setMute(mute);
+		if(mediaPlayer != null) this.mediaPlayer.setMute(mute);
 	}
 
 	public boolean isPlay() {
@@ -57,10 +57,12 @@ public class SpacemusicunifyPlayer {
 
 	public void setPlay(boolean play) {
 		this.play = play;
-		if(play) {
-			this.mediaPlayer.play();
-		} else {
-			this.mediaPlayer.pause();
+		if(mediaPlayer != null) {
+			if (play) {
+				this.mediaPlayer.play();
+			} else {
+				this.mediaPlayer.pause();
+			}
 		}
 	}
 

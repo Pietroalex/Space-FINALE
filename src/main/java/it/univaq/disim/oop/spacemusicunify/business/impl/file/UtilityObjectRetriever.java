@@ -2,15 +2,20 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
+import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 public class UtilityObjectRetriever extends Object {
@@ -102,6 +107,22 @@ public class UtilityObjectRetriever extends Object {
 					throw new RuntimeException(e);
 				}
 				break;
+			case "users.txt":
+
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] columns : fileData.getRows()) {
+						if(columns[0].equals(id)) {
+
+							object = findUser(columns, file);
+
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				break;
 
 			default:
 
@@ -123,10 +144,18 @@ public class UtilityObjectRetriever extends Object {
 		return object;
 	}
 
+	private static User findUser(String[] columns, String file) {
+		User user = new User();
+		user.setId(Integer.parseInt(columns[0]));
+		user.setUsername(columns[2]);
+		user.setPassword(columns[3]);
+		return user;
+	}
+
 	private static SpacemusicunifyPlayer findPlayer(String[] columns, String file) {
-		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer((User) UtilityObjectRetriever.findObjectById(columns[7], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt")));
+		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer((User) UtilityObjectRetriever.findObjectById(columns[0], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt")));
 		player.setVolume(Double.parseDouble(columns[1]));
-		player.setDuration(Duration.valueOf(columns[2]));
+		player.setDuration(new Duration(Double.parseDouble(columns[2])));
 		player.setMute(Boolean.parseBoolean(columns[3]));
 		player.setPlay(Boolean.parseBoolean(columns[4]));
 		ObservableList<Song> queue = FXCollections.observableArrayList();
@@ -134,8 +163,9 @@ public class UtilityObjectRetriever extends Object {
 		for (String songsID : queueIDS){
 			queue.add((Song) UtilityObjectRetriever.findObjectById(songsID, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "songs.txt")));
 		}
-		player.setQueue(queue);
+		player.getQueue().addAll(queue);
 		player.setCurrentSong(Integer.parseInt(columns[6]));
+		if(queueIDS.size() > 0) player.setMediaPlayer(new MediaPlayer(new Media(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "attack.mp3").toUri().toString())));
 
 		return player;
 	}
@@ -206,12 +236,14 @@ public class UtilityObjectRetriever extends Object {
 	}
 	private static Multimedia findMultimedia(String[] column){
 		Multimedia multimedia = null;
-
+		try {
 		if(currentArtist == null){
 			if(currentAlbum == null){
 				multimedia = new Audio();
 				multimedia.setId(Integer.parseInt(column[0]));
-				multimedia.setData(filesMp3Directory+column[1]);
+
+					multimedia.setData(filesMp3Directory+column[1]);
+
 				multimedia.setOwnership(currentSong);
 				return multimedia;
 			}else {
@@ -288,7 +320,11 @@ public class UtilityObjectRetriever extends Object {
 			return multimedia;
 		}
 */
-		/*return multimedia;*/
+
+		} catch (BusinessException e) {
+			ViewDispatcher.getInstance().renderError(e);
+		}
+		return multimedia;
 	}
 
 }

@@ -261,7 +261,11 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
                 if(path.endsWith(".mp3")){
                     tempAudio = new Audio();
-                    tempAudio.setData(path);
+                    try {
+                        tempAudio.setData(path);
+                    } catch (BusinessException e) {
+                        dispatcher.renderError(e);
+                    }
                     tempAudio.setOwnership(song);
                     songField.setText("MP3 Audio File loaded");
                     existingLabel.setVisible(false);

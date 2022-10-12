@@ -72,20 +72,17 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
-		ObservableList<Song> queue = player.getQueue();
-		if(queue == null) throw new BusinessException();
-		queue.add(newSong);
-		player.setQueue(queue);
+		if(player.getQueue() == null) throw new BusinessException();
+		player.getQueue().add(newSong);
 	}
 	@Override
 	public void deleteSongFromQueue(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		ObservableList<Song> queue = player.getQueue();
 
-		if(song.getId().intValue() == queue.get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
+		if(song.getId().intValue() == player.getQueue().get(player.getCurrentSong()).getId().intValue()) {	//canzone in corso uguale a quella selezionata
 
-			if(queue.size() > 1 ) {				//più canzoni in riproduzione
+			if(player.getQueue().size() > 1 ) {				//più canzoni in riproduzione
 
-				if(player.getCurrentSong() + 1 == queue.size()) {		//ultima canzone in coda uguale a canzone in corso
+				if(player.getCurrentSong() + 1 == player.getQueue().size()) {		//ultima canzone in coda uguale a canzone in corso
 					if(player.getMediaPlayer() != null) {
 						player.getMediaPlayer().stop();
 						player.getMediaPlayer().dispose();
@@ -115,8 +112,8 @@ public class RAMPlayerServiceImpl implements PlayerService {
 
 		} else {																				//canzone in corso diversa da quella selezionata
 
-			for(int i = 0; i < queue.size(); i++) {
-				if(queue.get(i).equals(song)) {
+			for(int i = 0; i < player.getQueue().size(); i++) {
+				if(player.getQueue().get(i).equals(song)) {
 					if (player.getCurrentSong() > i ) {
 
 						updateCurrentSong(player, player.getCurrentSong() - 1);
@@ -126,8 +123,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		queue.remove(song);
-		player.setQueue(queue);
+		player.getQueue().remove(song);
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
@@ -136,9 +132,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		ObservableList<Song> queue = player.getQueue();
-		queue.set(player.getCurrentSong(), song);
-		player.setQueue(queue);
+		player.getQueue().set(player.getCurrentSong(), song);
 		//throw new BusinessException();
 	}
 	

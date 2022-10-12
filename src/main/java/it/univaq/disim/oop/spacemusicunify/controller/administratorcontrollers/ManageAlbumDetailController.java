@@ -531,7 +531,11 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 				tempPicture = new Picture();
 
-				tempPicture.setData(path);
+				try {
+					tempPicture.setData(path);
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
 				tempPicture.setHeight(140);
 				tempPicture.setWidth(140);
 				tempPicture.setOwnership(album);
