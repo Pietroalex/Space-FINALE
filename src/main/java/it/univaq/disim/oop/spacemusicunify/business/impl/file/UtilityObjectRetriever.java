@@ -158,12 +158,11 @@ public class UtilityObjectRetriever extends Object {
 		player.setDuration(new Duration(Double.parseDouble(columns[2])));
 		player.setMute(Boolean.parseBoolean(columns[3]));
 		player.setPlay(Boolean.parseBoolean(columns[4]));
-		ObservableList<Song> queue = FXCollections.observableArrayList();
+
 		List<String> queueIDS = Utility.readArray(columns[5]);
 		for (String songsID : queueIDS){
-			queue.add((Song) UtilityObjectRetriever.findObjectById(songsID, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "songs.txt")));
+			player.getQueue().add((Song) UtilityObjectRetriever.findObjectById(songsID, file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "songs.txt")));
 		}
-		player.getQueue().addAll(queue);
 		player.setCurrentSong(Integer.parseInt(columns[6]));
 		if(queueIDS.size() > 0) player.setMediaPlayer(new MediaPlayer(new Media(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "attack.mp3").toUri().toString())));
 

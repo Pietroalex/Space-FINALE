@@ -136,6 +136,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					loadSong();
 				}
 			});
+			//spacemusicunifyPlayer.getQueue().add(null); //aggiorna
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
