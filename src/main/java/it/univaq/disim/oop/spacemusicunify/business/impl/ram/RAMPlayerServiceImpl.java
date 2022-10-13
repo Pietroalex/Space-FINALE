@@ -57,12 +57,25 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	@Override
 	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
 		for(SpacemusicunifyPlayer player : storedPlayers) {
-			if(player.getUser() == user) {
+			if(player.getUser().getId().intValue() == user.getId().intValue()) {
 				return player;
 			}
 		}
 		throw new ObjectNotFoundException("not_existing_player");
 	}
+
+	@Override
+	public void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException {
+		if(player.getQueue() == null) throw new BusinessException();
+		player.setDuration(duration);
+	}
+
+	@Override
+	public void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException {
+		if(player.getQueue() == null) throw new BusinessException();
+		player.setVolume(volume);
+	}
+
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
 		if(player.getQueue() == null) throw new BusinessException();

@@ -15,14 +15,18 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FilePlayerServiceImpl implements PlayerService {
 
 	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
 	private static final String playersFile = REPOSITORY_BASE + File.separator + "players.txt";
 
+	private static Set<SpacemusicunifyPlayer> storedPlayers = new HashSet<>();
 	private PlayerState playerState;
 
 	@Override
@@ -108,19 +112,91 @@ public class FilePlayerServiceImpl implements PlayerService {
 	@Override
 	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
 		SpacemusicunifyPlayer player = null;
+		for(SpacemusicunifyPlayer players : storedPlayers) {
+			if(players.getUser().getId().intValue() == user.getId().intValue()) {
+				return players;
+			}
+		}
 		try {
 			FileData fileData = Utility.readAllRows(playersFile);
 
 			for (String[] rows : fileData.getRows()) {
-				if(rows[0].equals(user.getId().toString())) player = (SpacemusicunifyPlayer) UtilityObjectRetriever.findObjectById(rows[0], playersFile);
+				if(rows[0].equals(user.getId().toString())) {
+					player = (SpacemusicunifyPlayer) UtilityObjectRetriever.findObjectById(rows[0], playersFile);
+					storedPlayers.add(player);
+				}
 			}
 		} catch (IOException e) {
 			throw new BusinessException();
 		}
 		if (player == null) throw  new ObjectNotFoundException("not_found_player");
-		System.out.println("jamm2");
 		return player;
 	}
+
+	@Override
+	public void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException {
+		if(player.getQueue() == null) throw new BusinessException();
+		player.setDuration(duration);
+
+		try {
+
+			FileData fileData = Utility.readAllRows(playersFile);
+			int cont = 0;
+			for(String[] rows: fileData.getRows()) {
+				if(rows[0].equals(player.getUser().getId().toString())) {
+
+					String[] row = new String[]{rows[0], rows[1], String.valueOf(duration.toMillis()), rows[3], rows[4], rows[5], rows[6] };
+					fileData.getRows().set(cont, row);
+
+					break;
+				}
+				cont++;
+			}
+
+			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
+				writer.println(fileData.getCounter());
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
+				}
+			}
+		} catch (IOException e) {
+			throw new BusinessException(e);
+		}
+	}
+
+	@Override
+	public void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException {
+		if(player.getQueue() == null) throw new BusinessException();
+		player.setVolume(volume);
+
+		try {
+
+			FileData fileData = Utility.readAllRows(playersFile);
+			int cont = 0;
+			for(String[] rows: fileData.getRows()) {
+				if(rows[0].equals(player.getUser().getId().toString())) {
+
+
+
+					String[] row = new String[]{rows[0], String.valueOf(volume), rows[2], rows[3], rows[4], rows[5], rows[6] };
+					fileData.getRows().set(cont, row);
+
+					break;
+				}
+				cont++;
+			}
+
+			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
+				writer.println(fileData.getCounter());
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
+				}
+			}
+		} catch (IOException e) {
+			throw new BusinessException(e);
+		}
+	}
+
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
 

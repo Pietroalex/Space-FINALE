@@ -13,22 +13,19 @@ public class RAMUserServiceImpl implements UserService {
 	private static int idUser = 1;
 	private static int id = 1; // da capire cos'è
 
-	private static String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
-	private static String pathmp3 = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
-
 	@Override
-	public void add(User newUser) throws BusinessException {
+	public void add(User user) throws BusinessException {
 		// controllo se l'utente già è presente
-		for (User user : storedUsers) {
-			if (user.getUsername().equals(newUser.getUsername())) {
-				throw new AlreadyExistingException();
+		for (User users : storedUsers) {
+			if (users.getUsername().equals(user.getUsername()) || user.getUsername().contains("admin")) {
+				throw new AlreadyExistingException("existing_user");
 			}
 		}
 		// utente nuovo
 
-		newUser.setId(idUser++);
-		storedUsers.add(newUser);
-		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().add(newUser);
+		user.setId(idUser++);
+		storedUsers.add(user);
+		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().add(user);
 	}
 
 	@Override

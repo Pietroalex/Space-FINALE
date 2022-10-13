@@ -12,23 +12,16 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 public class FileUserServiceImpl implements UserService {
 
 	private final String usersFile;
-	private final String albumsFile;
-	private final String artistsFile;
+
 	private final String songsFile;
 	private final String playlistFile;
-	private final String picturesFile;
-	private final String picturesDirectory;
-	private final String mp3Directory;
 
-	public FileUserServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures) {
+
+	public FileUserServiceImpl(String fileUtenti, String fileCanzoni, String filePlaylist) {
 		this.usersFile = fileUtenti;
-		this.albumsFile = fileAlbums;
-		this.artistsFile = fileArtisti;
 		this.songsFile = fileCanzoni;
 		this.playlistFile = filePlaylist;
-		this.picturesFile = filePictures;
-		this.picturesDirectory = cartellaImmagini;
-		this.mp3Directory = cartellaFilesMP3;
+
 	}
 
 
@@ -38,8 +31,8 @@ public class FileUserServiceImpl implements UserService {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] columns : fileData.getRows()) {
-				if (columns[2].equals(user.getUsername())) {
-					throw new AlreadyExistingException("Already existing user");
+				if (columns[2].equals(user.getUsername()) || user.getUsername().contains("admin")) {
+					throw new AlreadyExistingException("existing_user");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
@@ -70,8 +63,8 @@ public class FileUserServiceImpl implements UserService {
 	public void modify(Integer id, String username, String password) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
-			for (String[] colonne : fileData.getRows()) {
-				if (colonne[2].equals(username) && Integer.parseInt(colonne[0]) != id ) {
+			for (String[] columns : fileData.getRows()) {
+				if (columns[2].equals(username) && Integer.parseInt(columns[0]) != id ) {
 					throw new AlreadyTakenFieldException();
 				}
 			}
@@ -93,24 +86,23 @@ public class FileUserServiceImpl implements UserService {
 
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}
 
 	@Override
 	public void delete(User user) throws BusinessException {
-		Boolean controllo = false;
+		boolean control = false;
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] colonne : fileData.getRows()) {
 				if ( Integer.parseInt(colonne[0]) == user.getId() ) {
-					controllo = true;
+					control = true;
 					break;
 				}
 			}
 
-			if(controllo){
+			if(control){
 				try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
 					writer.println(fileData.getCounter());
 					for (String[] righe : fileData.getRows()) {
@@ -126,51 +118,21 @@ public class FileUserServiceImpl implements UserService {
 				}
 				SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
 			}else{
-				throw new BusinessException("Not existing User");
+				throw new BusinessException("not_existing_user");
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
 	}
 
-	
-
-	
-
-/*	@Override
-	public Set<Artist> getAllArtists() throws BusinessException {
-		try {
-			return SpacemusicunifyBusinessFactory.getInstance().getArtistService().getArtistList();
-		} catch (BusinessException e) {
-			throw new BusinessException();
-		}
-	}
 	@Override
-	public Set<Album> getAllAlbums() throws BusinessException {
-		try {
-			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getAlbumList();
-		} catch (BusinessException e) {
-			throw new BusinessException();
-		}
-	}
-	@Override
-	public Set<Song> getAllSongs() throws BusinessException{
-		try {
-			return SpacemusicunifyBusinessFactory.getInstance().getAlbumService().getSongList();
-		} catch (BusinessException e) {
-			throw new BusinessException();
-		}
-	}*/
-
-
-	@Override
-	public GeneralUser authenticate(String username, String password) throws ObjectNotFoundException, BusinessException {
+	public GeneralUser authenticate(String username, String password) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
-			for(String[] colonne : fileData.getRows()) {
-				if(colonne[2].equals(username) && colonne[3].equals(password)) {
+			for(String[] columns : fileData.getRows()) {
+				if(columns[2].equals(username) && columns[3].equals(password)) {
 					GeneralUser user = null;
-					switch (colonne[1]) {
+					switch (columns[1]) {
 						case "user" :
 							user = new User();
 							RunTimeService.setCurrentUser((User) user);
@@ -185,16 +147,16 @@ public class FileUserServiceImpl implements UserService {
 							break;
 					}
 					if(user != null) {
-						user.setId(Integer.parseInt(colonne[0]));
-						user.setUsername(colonne[2]);
-						user.setPassword(colonne[3]);
+						user.setId(Integer.parseInt(columns[0]));
+						user.setUsername(columns[2]);
+						user.setPassword(columns[3]);
 
-					} else { throw new BusinessException("errore nella lettura del file"); }
+					} else { throw new BusinessException("file_read_error"); }
 
 					return user;
 				}
 			}
-			throw new ObjectNotFoundException();
+			throw new ObjectNotFoundException("no_user");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
@@ -313,7 +275,7 @@ public class FileUserServiceImpl implements UserService {
 
 	}
 	@Override
-	public Set<Playlist> getAllPlaylists(User utente) {
+	public Set<Playlist> getAllPlaylists(User utente) throws BusinessException{
 		Set<Playlist> playlistsUtente = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
@@ -342,7 +304,7 @@ public class FileUserServiceImpl implements UserService {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 		return playlistsUtente;
 	}

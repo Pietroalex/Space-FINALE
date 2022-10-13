@@ -167,16 +167,15 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
 				try {
-					playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
+					if(!(checkForClones(param.getValue()))) playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
+					addButton.setDisable(true);
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}
 			});
-			for(Song song : spacemusicunifyPlayer.getQueue()) {
-				if(song.getId().intValue() == param.getValue().getId().intValue()) {
-					addButton.setDisable(true);
-				}
-			}
+			if(checkForClones(param.getValue())) addButton.setDisable(true);
+
+
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -228,10 +227,11 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
 				try {
-					Set<Song> lista = param.getValue().getSongs();
-					for(Song canzoneAlbum: lista) {
-						playerService.addSongToQueue(spacemusicunifyPlayer, canzoneAlbum);
+					Set<Song> songs = param.getValue().getSongs();
+					for(Song albumSong: songs) {
+						if(!(checkForClones(albumSong))) playerService.addSongToQueue(spacemusicunifyPlayer, albumSong);
 					}
+					addButton.setDisable(true);
 					/*
 					 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
 					 * spacemusicunifyPlayer.getMediaPlayer().getStatus() !=
@@ -368,13 +368,13 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		});
 	}
 
-/*	public boolean checkForClones(Song value){
+	public boolean checkForClones(Song value){
 
-		for(Song canzone : utente.getSongQueue()){
-			if(canzone.getId().equals(value.getId())) return true;
+		for(Song songs : spacemusicunifyPlayer.getQueue()){
+			if(songs.getId().intValue() == value.getId().intValue()) return true;
 		}
 		return false;
-	}*/
+	}
 
 	private void showPopupSelectPlaylist(Album selectedAlbum) {
 		Stage popupwindow = new Stage();
