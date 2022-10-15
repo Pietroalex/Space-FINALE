@@ -89,7 +89,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				
 				playlist.getSongList().remove(param.getValue());
 				try {
-					userService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser());
+					userService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser(), playlist);
 				} catch (BusinessException e) {
 					e.printStackTrace();
 				}
@@ -126,22 +126,16 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 			}*/
 		}
 		
-		SpacemusicunifyPlayer spacemusicunifyPlayer;
-		try {
-			spacemusicunifyPlayer = playerService.getPlayer(user);
+		SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
 			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 				spacemusicunifyPlayer.getMediaPlayer().stop();
 				spacemusicunifyPlayer.getMediaPlayer().dispose();
 			}
-		} catch (ObjectNotFoundException o) {
-			//show label
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+
 
 		
 		playerService.setPlayerState(PlayerState.searchSingleClick);
-		dispatcher.renderView("UserViews/UserHomeView/playerPane", user);
+		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 	}
 	
 	@FXML
@@ -149,9 +143,9 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 		try {
 			userService.delete(playlist);
 		} catch (BusinessException e) {
-			e.printStackTrace();
+			dispatcher.renderError(e);
 		}
-		dispatcher.renderView("UserViews/UserHomeView/home", playlist.getUser());
-		dispatcher.renderView("UserViews/UserHomeView/playlistPane", playlist.getUser());
+		dispatcher.renderView("UserViews/HomeView/home", playlist.getUser());
+		dispatcher.renderView("UserViews/HomeView/playlistPane", playlist.getUser());
 	}
 }

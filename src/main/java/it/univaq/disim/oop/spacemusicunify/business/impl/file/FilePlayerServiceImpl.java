@@ -25,8 +25,6 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
 	private static final String playersFile = REPOSITORY_BASE + File.separator + "players.txt";
-
-	private static Set<SpacemusicunifyPlayer> storedPlayers = new HashSet<>();
 	private PlayerState playerState;
 
 	@Override
@@ -112,18 +110,12 @@ public class FilePlayerServiceImpl implements PlayerService {
 	@Override
 	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
 		SpacemusicunifyPlayer player = null;
-		for(SpacemusicunifyPlayer players : storedPlayers) {
-			if(players.getUser().getId().intValue() == user.getId().intValue()) {
-				return players;
-			}
-		}
 		try {
 			FileData fileData = Utility.readAllRows(playersFile);
 
 			for (String[] rows : fileData.getRows()) {
 				if(rows[0].equals(user.getId().toString())) {
 					player = (SpacemusicunifyPlayer) UtilityObjectRetriever.findObjectById(rows[0], playersFile);
-					storedPlayers.add(player);
 				}
 			}
 		} catch (IOException e) {

@@ -51,13 +51,9 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		userService = factory.getUserService();
 		albumService = factory.getAlbumService();
 		this.dispatcher = ViewDispatcher.getInstance();
-		try {
-			this.spacemusicunifyPlayer = playerService.getPlayer(RunTimeService.getCurrentUser());
-		} catch (ObjectNotFoundException e) {
-			System.out.println(e.getMessage());
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+
+		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
+
 	}
 	
 	@Override

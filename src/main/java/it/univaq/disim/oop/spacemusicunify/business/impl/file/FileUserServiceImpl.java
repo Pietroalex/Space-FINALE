@@ -137,6 +137,7 @@ public class FileUserServiceImpl implements UserService {
 							user = new User();
 							RunTimeService.setCurrentUser((User) user);
 
+
 							break;
 
 						case "admin" :
@@ -150,6 +151,8 @@ public class FileUserServiceImpl implements UserService {
 						user.setId(Integer.parseInt(columns[0]));
 						user.setUsername(columns[2]);
 						user.setPassword(columns[3]);
+						if(user instanceof User) RunTimeService.setPlayer(SpacemusicunifyBusinessFactory.getInstance().getPlayerService().getPlayer((User) user));
+
 
 					} else { throw new BusinessException("file_read_error"); }
 
@@ -211,7 +214,7 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Set<Song> songlist, User user) throws  BusinessException {
+	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist playlist) throws  BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			List<String> idSongList = new ArrayList<>();
@@ -236,10 +239,9 @@ public class FileUserServiceImpl implements UserService {
 						writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 					}
 				}
-
+				playlist.setSongList(songlist);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}

@@ -35,7 +35,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
-public class ManageAlbumsController implements Initializable, DataInitializable<Set<Production>> {
+public class ManageAlbumsController implements Initializable, DataInitializable<Artist> {
 	
     private final ViewDispatcher dispatcher;
     private final ArtistService artistService;
@@ -107,7 +107,8 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
                 } else {
                     dispatcher.setSituation(ViewSituations.detail);
                 }
-                findANDnav(param.getValue());
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", param.getValue());
+
 
             });
             return new SimpleObjectProperty<Button>(modify);
@@ -144,18 +145,12 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
     					}*/
     				}
-    				SpacemusicunifyPlayer spacemusicunifyPlayer;
-    				try {
-    					spacemusicunifyPlayer = playerService.getPlayer(RunTimeService.getCurrentUser());
+    				SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
     					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
     						spacemusicunifyPlayer.getMediaPlayer().stop();
     						spacemusicunifyPlayer.getMediaPlayer().dispose();
     					}
-    				} catch (ObjectNotFoundException o) {
-    					//show label
-    				} catch (BusinessException e) {
-    					dispatcher.renderError(e);
-    				}
+
 
     				playerService.setPlayerState(PlayerState.searchSingleClick);
     				dispatcher.renderView("UserViews/UserHomeView/playerPane", RunTimeService.getCurrentUser());
@@ -204,7 +199,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
 					}
 				}
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser(), param.getValue());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}
@@ -241,19 +236,10 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
 		popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");
 		popupwindow.showAndWait();
 	}
-	
-    private void findANDnav(Album value) {
-        for(Production production : productionSet){
-            if(production.getAlbum().getId().intValue() == value.getId().intValue()){
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
-            }
-        }
-    }
 
     @Override
-    public void initializeData(Set<Production> productions) {
-        productionSet = productions;
-        artist = productions.iterator().next().getArtist();
+    public void initializeData(Artist artist) {
+        this.artist = artist;
 
         stageName.setText(artist.getName());
         if(dispatcher.getSituation() == ViewSituations.user) {
@@ -261,9 +247,11 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         	operation.setText("View");
         }
 
-        List<Album> albums = new ArrayList<>();
-        for(Production production : productions){
-            albums.add(production.getAlbum());
+        Set<Album> albums = null;
+        try {
+            albums = artistService.findAllAlbums(artist);
+        } catch (BusinessException e) {
+            dispatcher.renderError(e);
         }
 
         ObservableList<Album> albumsData = FXCollections.observableArrayList(albums);
@@ -288,11 +276,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         picture.setOwnership(newAlbum);
         newAlbum.setCover(picture);
 
-        Production production = new Production();
-        production.setArtist(artist);
-        production.setAlbum(newAlbum);
-
         dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", newAlbum);
     }
 }

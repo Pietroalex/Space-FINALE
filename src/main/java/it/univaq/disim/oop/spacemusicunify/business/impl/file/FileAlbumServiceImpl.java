@@ -382,12 +382,12 @@ public class FileAlbumServiceImpl implements AlbumService {
 						for(Playlist playlist : userService.getAllPlaylists(user)){
 							Set<Song> songs = playlist.getSongList();
 							songs.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
-							userService.modify(playlist.getId(), playlist.getTitle(), songs, user);
+							userService.modify(playlist.getId(), playlist.getTitle(), songs, user, playlist);
 						}
 					}
 
 				} catch (IOException e) {
-					e.printStackTrace();
+					throw new BusinessException(e);
 				}
 				
 				break;

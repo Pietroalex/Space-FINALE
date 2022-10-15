@@ -1,16 +1,11 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.business.impl.file.FileData;
-import it.univaq.disim.oop.spacemusicunify.business.impl.file.Utility;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
@@ -263,7 +258,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 					for(Playlist playlist : userService.getAllPlaylists(user)){
 						Set<Song> playlistSongs = playlist.getSongList();
 						playlistSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
-						userService.modify(playlist.getId(), playlist.getTitle(), playlistSongs, user);
+						userService.modify(playlist.getId(), playlist.getTitle(), playlistSongs, user, playlist);
 					}
 					PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
 					for(Song songCheck : playerService.getPlayer(user).getQueue()) {

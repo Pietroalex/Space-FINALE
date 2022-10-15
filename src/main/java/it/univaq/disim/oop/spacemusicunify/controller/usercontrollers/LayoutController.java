@@ -44,12 +44,7 @@ public class LayoutController implements DataInitializable<User> {
 	}
 	@Override
 	public void initializeData(User user) {
-		
-		try {
-			spacemusicunifyPlayer = playerService.getPlayer(user);
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+		spacemusicunifyPlayer = RunTimeService.getPlayer();
 
 		this.user = user;
 		playerService.setPlayerState(PlayerState.started);

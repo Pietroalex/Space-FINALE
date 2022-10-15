@@ -3,7 +3,6 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
-import java.io.File;
 import java.util.*;
 
 public class RAMUserServiceImpl implements UserService {
@@ -92,6 +91,7 @@ public class RAMUserServiceImpl implements UserService {
 			for (User user : getAllUsers()) {
 				if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
 					RunTimeService.setCurrentUser(user);
+					RunTimeService.setPlayer(SpacemusicunifyBusinessFactory.getInstance().getPlayerService().getPlayer(user));
 					return user;
 				}
 			}
@@ -112,7 +112,7 @@ public class RAMUserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void modify(Integer id, String title, Set<Song> songlist, User user)
+	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist value)
 			throws AlreadyTakenFieldException {
 
 		for (Playlist playlist : storedPlaylists) {

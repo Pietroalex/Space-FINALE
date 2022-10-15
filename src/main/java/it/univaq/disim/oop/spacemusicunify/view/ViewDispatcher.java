@@ -19,7 +19,9 @@ public class ViewDispatcher {
 	private Stage stage;
 	private BorderPane layout;
 	private ViewSituations situation;
-	
+	public BorderPane getLayout(){
+		return layout;
+	}
 	private static ViewDispatcher instance = new ViewDispatcher();
 	
 	private ViewDispatcher() { //costruttore privato in modo tale che nessuna classe possa istanziare un nuovo ViewDispatcher
@@ -61,34 +63,32 @@ public class ViewDispatcher {
 		
 		//vista utente
 		if(utenteGenerico instanceof User) {
-		try{
-			View<User> layoutView = loadView("UserViews/HomeView/layout");
-			layout = (BorderPane) layoutView.getView();
-			DataInitializable<User> layoutController = layoutView.getController();
-			layoutController.initializeData((User) utenteGenerico);
-			
-
-			renderView("UserViews/HomeView/home",(User) utenteGenerico);
-			Scene scene = new Scene(layout);
-			stage.setScene(scene);
-	} catch (ViewException e) {
-		e.printStackTrace();
-		renderError(e);
-	}
-		} else {
 			try{
-				View<Administrator> layoutView = loadView("AdministratorViews/HomeView/layout");
-				DataInitializable<Administrator> layoutController = layoutView.getController();
-				layoutController.initializeData((Administrator) utenteGenerico);
-				
+				View<User> layoutView = loadView("UserViews/HomeView/layout");
 				layout = (BorderPane) layoutView.getView();
-				renderView("AdministratorViews/HomeView/home",(Administrator) utenteGenerico);
+				DataInitializable<User> layoutController = layoutView.getController();
+				layoutController.initializeData((User) utenteGenerico);
+
+
+				renderView("UserViews/HomeView/home",(User) utenteGenerico);
 				Scene scene = new Scene(layout);
 				stage.setScene(scene);
 			} catch (ViewException e) {
-				e.printStackTrace();
 				renderError(e);
 			}
+		} else {
+				try{
+					View<Administrator> layoutView = loadView("AdministratorViews/HomeView/layout");
+					DataInitializable<Administrator> layoutController = layoutView.getController();
+					layoutController.initializeData((Administrator) utenteGenerico);
+
+					layout = (BorderPane) layoutView.getView();
+					renderView("AdministratorViews/HomeView/home",(Administrator) utenteGenerico);
+					Scene scene = new Scene(layout);
+					stage.setScene(scene);
+				} catch (ViewException e) {
+					renderError(e);
+				}
 		}
 	}
 	public <T> void renderView(String viewName, T data) {

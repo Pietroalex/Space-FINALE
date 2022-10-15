@@ -22,6 +22,11 @@ public class SpacemusicunifyPlayer {
 	private User user;
 	
 	public SpacemusicunifyPlayer(User user) {
+		this.volume = 0.5;
+		this.duration = Duration.ZERO;
+		this.mute = false;
+		this.play = false;
+		this.currentSong = 0;
 		this.user = user;
 	}
 	

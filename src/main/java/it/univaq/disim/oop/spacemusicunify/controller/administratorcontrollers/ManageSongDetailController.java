@@ -29,7 +29,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
-public class ManageSongDetailController implements Initializable, DataInitializable<List<Object>> {
+public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
 
 	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
@@ -78,8 +78,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     private Song song;
     @FXML
     private Button mp3button;
-    private Production production;
-    private List<Object> objectlist;
+
     private Audio tempAudio;
 
 
@@ -184,11 +183,9 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     		//confirm.disableProperty().bind(songField.textProperty().isEqualTo("MP3 Audio File loaded")); -> per prova
     }
     @Override
-    public void initializeData(List<Object> list) {
-        objectlist = list;
-        song = (Song) list.get(1);
-        production = (Production) list.get(0);
-        album = production.getAlbum();
+    public void initializeData(Song song) {
+        this.song = song;
+        album = song.getAlbum();
         setView2();
     }
     @FXML
@@ -215,7 +212,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
               albumService.modify(song.getId(), titleField.getText(),  tempAudio, lyricsField.getText(), album, lengthField.getText(), genreField.getValue(), song);
             }
             dispatcher.setSituation(ViewSituations.modify);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
 
         } catch (AlreadyTakenFieldException e) {
             existingLabel.setText("This song's title is already taken");
@@ -238,16 +235,16 @@ public class ManageSongDetailController implements Initializable, DataInitializa
         switch (dispatcher.getSituation()){
             case newobject:
                 dispatcher.setSituation(ViewSituations.modify);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", production);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
                 break;
             default:
                 dispatcher.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objectlist);
+                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
         }
     }
     @FXML
     public void backToTheAlbum(){
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
     }
 
     @FXML
@@ -289,7 +286,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 System.out.println("Song not found");
             }
             dispatcher.setSituation(ViewSituations.detail);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", production);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
         } catch (BusinessException e) {
             dispatcher.renderError(e);
@@ -299,6 +296,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     @FXML
     public void showModify() {
         dispatcher.setSituation(ViewSituations.modify);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objectlist);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
     }
 }

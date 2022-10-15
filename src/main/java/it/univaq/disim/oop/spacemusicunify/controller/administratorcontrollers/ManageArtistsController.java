@@ -79,11 +79,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.detail);
-				try {
-					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(param.getValue()));
-				} catch (BusinessException e) {
-					throw new RuntimeException(e);
-				}
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue());
 			});
 			return new SimpleObjectProperty<Button>(modify);
 		});
@@ -109,7 +105,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 		try {
 			artists = artistService.getArtistList();
 		} catch (BusinessException e) {
-			throw new RuntimeException(e);
+			dispatcher.renderError(e);
 		}
 		ObservableList<Artist> artistaData = FXCollections.observableArrayList(artists);
 			artistList.setItems(artistaData);

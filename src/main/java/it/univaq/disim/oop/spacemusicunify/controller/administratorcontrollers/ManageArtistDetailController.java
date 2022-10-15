@@ -388,14 +388,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     }
     @FXML
     public void manageAlbums(ActionEvent event) {
-        try {
-        	System.out.println("vado a vedere gli album dell'artista");
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
-        } catch (ObjectNotFoundException o) {
-        	System.out.println("non trovo l'oggetto");
-        } catch (BusinessException e) {
-            dispatcher.renderError(e);
-        } 
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
     }
     
     public void focusImage(Picture image){

@@ -93,64 +93,62 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     	currentTime.setText("00:00");
         totalTime.setText("00:00");
         this.user = user;
-        try {
-			this.spacemusicunifyPlayer = playerService.getPlayer(user);
 
-			spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
-				if(spacemusicunifyPlayer.getQueue().size() > 0) {
-					//viene riabilitato il player
-					addToPlaylistButton.setDisable(false);
-					playButton.setDisable(false);
-			        pauseButton.setDisable(false);
-			        progressSlider.setDisable(false);
-			        volumeButton.setDisable(false);
-		        	volumeSlider.setDisable(false);
-		        	if(spacemusicunifyPlayer.getMediaPlayer() == null) {
-		        		System.out.println("carico canzone");
-		        		loadSong();
-		        		dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
-		        	}
-				} else {
-					System.out.println("canzone non presente");
-					addToPlaylistButton.setDisable(true);
-					playButton.setDisable(true);
-			        pauseButton.setDisable(true);
-			        nextButton.setDisable(true);
-			        previousButton.setDisable(true);
-			        progressSlider.setDisable(true);
-			        volumeButton.setDisable(true);
-		        	volumeSlider.setDisable(true);
-		        	spacemusicunifyPlayer.setMediaPlayer(null);
-					Image img = null;
-					try {
-						img = new Image(Files.newInputStream(Paths.get(path + "mute.png")));
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-					volumeImg.setImage(img);
-					playButton.setVisible(true);
-					pauseButton.setVisible(false);
-					dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
+		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
 
-				}
-				
-				if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
-					nextButton.setDisable(true);
-				} else {
-					nextButton.setDisable(false);
-				}
-				if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
-				else previousButton.setDisable(false);
-				
-				if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null) ) { //riabilitazioni successive del player
+		spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
+			if(spacemusicunifyPlayer.getQueue().size() > 0) {
+				//viene riabilitato il player
+				addToPlaylistButton.setDisable(false);
+				playButton.setDisable(false);
+				pauseButton.setDisable(false);
+				progressSlider.setDisable(false);
+				volumeButton.setDisable(false);
+				volumeSlider.setDisable(false);
+				if(spacemusicunifyPlayer.getMediaPlayer() == null) {
+					System.out.println("carico canzone");
 					loadSong();
+					dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
 				}
-			});
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+			} else {
+				System.out.println("canzone non presente");
+				addToPlaylistButton.setDisable(true);
+				playButton.setDisable(true);
+				pauseButton.setDisable(true);
+				nextButton.setDisable(true);
+				previousButton.setDisable(true);
+				progressSlider.setDisable(true);
+				volumeButton.setDisable(true);
+				volumeSlider.setDisable(true);
+				spacemusicunifyPlayer.setMediaPlayer(null);
+				Image img = null;
+				try {
+					img = new Image(Files.newInputStream(Paths.get(path + "mute.png")));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				volumeImg.setImage(img);
+				playButton.setVisible(true);
+				pauseButton.setVisible(false);
+				dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
+
+			}
+
+			if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
+				nextButton.setDisable(true);
+			} else {
+				nextButton.setDisable(false);
+			}
+			if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
+			else previousButton.setDisable(false);
+
+			if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null) ) { //riabilitazioni successive del player
+				loadSong();
+			}
+		});
+
 		/*
 		 * if(playerService.getPlayerOnPlay() == null) {
 		 * playerService.setPlayerOnPlay(false); }
@@ -669,25 +667,20 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
 
 			final Button addButton = new Button("Add here");
-
+			if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
 			addButton.setOnAction((ActionEvent evento) -> {
+
 				//aggiunta canzone alla playlist
-				Set<Song> lista = param.getValue().getSongList();
-				Boolean alreadyAdded = false;
-				for(Song canzonePlaylist: lista) {
-					if(songToAdd.getId().intValue() == canzonePlaylist.getId().intValue()) {
-						alreadyAdded = true;
-						break;
-					}
-				}
-				if(!alreadyAdded) {
-					lista.add(songToAdd);
-				}
+				Set<Song> list = param.getValue().getSongList();
+				list.add(songToAdd);
 				
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),list, param.getValue().getUser(), param.getValue());
+					if("playlist".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("UserViews/PlaylistView/playlistView", param.getValue());
+					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
+
 				} catch (BusinessException e) {
-					 e.printStackTrace();
+					dispatcher.renderError(e);
 				}
 				addButton.setDisable(true);
 			});
@@ -700,8 +693,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		try {
 			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
 			tableView.setItems(observableList);
-		} catch (BusinessException e1) {
-			e1.printStackTrace();
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
 		}
 		
 		// operazione annulla
@@ -742,7 +735,13 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			}
 		}
     }
-    
+	public boolean checkForClones(Playlist playlist,Song value){
+
+		for(Song songs : playlist.getSongList()){
+			if(songs.getId().intValue() == value.getId().intValue()) return true;
+		}
+		return false;
+	}
     private Media getMediaFromBytes(Song song) {
     	try {
 			File tempMp3 = File.createTempFile("tempmp3", ".mp3", null);

@@ -19,7 +19,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -32,7 +31,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ManageAlbumDetailController implements Initializable, DataInitializable<Production> {
+public class ManageAlbumDetailController implements Initializable, DataInitializable<Album> {
 	private final ArtistService artistService;
 	private final AlbumService albumService;
 	private final ViewDispatcher dispatcher;
@@ -107,10 +106,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private Artist artist;
 	private Album album;
 	private Picture tempPicture;
-	private Administrator admin;
-	private Production albumProduction;
 
-	List<Object> objects = new ArrayList<>();
 	private Set<Artist> artistSet = new HashSet<>();
 	@FXML
 	private Label titleView;
@@ -169,8 +165,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						}else{
 							dispatcher.setSituation(ViewSituations.detail);
 						}
-						objects.add(param.getValue());
-						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
 					});
 					return new SimpleObjectProperty<Button>(modify);
 				});
@@ -240,7 +235,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 								System.out.println("Song not found");
 							}
 							dispatcher.setSituation(ViewSituations.modify);
-							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", albumProduction);
+							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
 
 						} catch (BusinessException e) {
 							dispatcher.renderError(e);
@@ -380,33 +375,25 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						}else{
 							dispatcher.setSituation(ViewSituations.detail);
 						}
-						objects.add(param.getValue());
-						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
+						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
 					});
 					return new SimpleObjectProperty<Button>(modify);
 				});
 
 				addSongToQueue.setStyle("-fx-alignment: CENTER;");
 				addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-
 					final Button addButton = new Button("Add to queue");
 					addButton.setCursor(Cursor.HAND);
-
-					/*if(this.checkForClones(param.getValue())){
-						addButton.setDisable(true);
-					}
-
 					addButton.setOnAction((ActionEvent event) -> {
-						spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
-						if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-							mediaPlayerSettings.getMediaPlayer().stop();
-							mediaPlayerSettings.getMediaPlayer().dispose();
+						//aggiungere la canzone alla coda di riproduzione dell'utente
+						try {
+							if(!(checkForClones(RunTimeService.getPlayer(), param.getValue()))) SpacemusicunifyBusinessFactory.getInstance().getPlayerService().addSongToQueue(RunTimeService.getPlayer(), param.getValue());
+							addButton.setDisable(true);
+						} catch (BusinessException b) {
+							dispatcher.renderError(b);
 						}
-						song.refresh();
-						mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
-						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 					});
-		*/
+
 					return new SimpleObjectProperty<Button>(addButton);
 				});
 				
@@ -442,12 +429,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 	}
 	@Override
-	public void initializeData(Production production) {
-		objects.add(production);
-		albumProduction = production;
-		album = production.getAlbum();
-		artist = production.getArtist();
-
+	public void initializeData(Album album) {
+		this.album = album;
 
 		Set<Song> songs = album.getSongs();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
@@ -499,7 +482,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				break;
 			default:
 				dispatcher.setSituation(ViewSituations.detail);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", albumProduction);
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 		}
 
 	}
@@ -592,23 +575,22 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	@FXML
 	public void createNewSong() {
-		Song canzone = new Song();
-		canzone.setAlbum(this.album);
-		canzone.setTitle("Nuova canzone");
-		canzone.setLyrics("add Lyric");
-		canzone.setLength("00:00");
+		Song song = new Song();
+		song.setAlbum(this.album);
+		song.setTitle("Nuova song");
+		song.setLyrics("add Lyric");
+		song.setLength("00:00");
 		if(album.getGenre() == Genre.singles) {
-			canzone.setGenre(Genre.pop);
+			song.setGenre(Genre.pop);
 		}else{
-			canzone.setGenre(album.getGenre());
+			song.setGenre(album.getGenre());
 		}
 /*		Audio audio = new Audio();
-		audio.setOwnership(canzone);
+		audio.setOwnership(song);
 		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "unravel.mp3");
-		canzone.setFileMp3(audio);*/
+		song.setFileMp3(audio);*/
 		dispatcher.setSituation(ViewSituations.newobject);
-		objects.add(canzone);
-        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", objects);
+        dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
 
 	}
 	@FXML
@@ -631,34 +613,26 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		//aggiungere la canzone alla coda di riproduzione dell'utente
 		User user = RunTimeService.getCurrentUser();
 		PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
-		Set<Song> lista = album.getSongs();
-		for(Song canzoneAlbum: lista) {
-			Boolean alreadyAdded = false;
-			/*for(Song canzone: utente.getSongQueue()) {
-				if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
-					alreadyAdded = true;
-					break;
+		for(Song albumSong: album.getSongs()) {
+			if(!(checkForClones(RunTimeService.getPlayer(), albumSong))) {
+				try {
+					playerService.addSongToQueue(RunTimeService.getPlayer(), albumSong);
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
 				}
 			}
-			if(!alreadyAdded) {
-				spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
-			}*/
 		}
-		SpacemusicunifyPlayer spacemusicunifyPlayer;
-		try {
-			spacemusicunifyPlayer = playerService.getPlayer(user);
+
+
+		SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
 			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 				spacemusicunifyPlayer.getMediaPlayer().stop();
 				spacemusicunifyPlayer.getMediaPlayer().dispose();
 			}
-		} catch (ObjectNotFoundException o) {
-			//show label
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+
 
 		playerService.setPlayerState(PlayerState.searchSingleClick);
-		dispatcher.renderView("UserViews/UserHomeView/playerPane", user);
+		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 	}
 	@FXML
 	public void addAlbumToPlaylist(ActionEvent event) {
@@ -679,23 +653,15 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			final Button addButton = new Button("add");
 			addButton.setOnAction((actionEvent) -> {
 				//aggiunto album alla playlist
-				Set<Song> lista = param.getValue().getSongList();
-				for(Song canzoneAlbum: album.getSongs()) {
-					Boolean alreadyAdded = false;
-					for(Song canzonePlaylist: lista) {
-						if(canzoneAlbum.getId().intValue() == canzonePlaylist.getId().intValue()) {
-							alreadyAdded = true;
-							break;
-						}
-					}
-					if(!alreadyAdded) {
-						lista.add(canzoneAlbum);
-					}
+				Set<Song> songList = param.getValue().getSongList();
+				for(Song albumSong: album.getSongs()) {
+					if(checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
 				}
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser());
+					userService.modify(param.getValue().getId(), param.getValue().getTitle(),songList, param.getValue().getUser(), param.getValue());
+					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
 				} catch (BusinessException e) {
-					 e.printStackTrace();
+					dispatcher.renderError(e);
 				}
 
 				addButton.setDisable(true);
@@ -727,11 +693,24 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		popupwindow.setTitle("Add " + album.getTitle() + " to playlist?");
 		popupwindow.showAndWait();
 	}
-	
+	public boolean checkForClones(Object object, Song value){
+
+		if(object instanceof SpacemusicunifyPlayer) {
+			for (Song songs : ((SpacemusicunifyPlayer) object).getQueue()) {
+				if (songs.getId().intValue() ==  value.getId().intValue()) return true;
+			}
+			return false;
+		} else {
+			for (Song songs : ((Playlist) object).getSongList()) {
+				if (songs.getId().intValue() == value.getId().intValue()) return false;
+			}
+			return true;
+		}
+	}
 	@FXML
 	public void showModify(ActionEvent event) {
 		dispatcher.setSituation(ViewSituations.modify);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", albumProduction);
+		dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
 	}
 
 }

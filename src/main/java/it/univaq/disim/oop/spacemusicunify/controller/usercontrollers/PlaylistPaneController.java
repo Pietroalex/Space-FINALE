@@ -52,7 +52,9 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         playlistView.setOnMouseClicked(event -> {
             // visualizzare la playlist
             Playlist selected = playlistView.getSelectionModel().getSelectedItem();
-            dispatcher.renderView("UserViews/PlaylistView/playlistView", selected);
+
+            if(selected != null) dispatcher.renderView("UserViews/PlaylistView/playlistView", selected);
+
         });
     }
     @Override

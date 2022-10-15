@@ -1,9 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.business;
 
 import it.univaq.disim.oop.spacemusicunify.domain.*;
-import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 
-import java.util.List;
 import java.util.Set;
 
 public interface UserService {
@@ -16,7 +14,7 @@ public interface UserService {
 
 	void add(Playlist playlist) throws BusinessException;
 
-	void modify(Integer id, String title, Set<Song> songlist, User user) throws BusinessException;
+	void modify(Integer id, String title, Set<Song> songlist, User user, Playlist playlist) throws BusinessException;
 
 	void delete(Playlist playlist) throws BusinessException;
 
