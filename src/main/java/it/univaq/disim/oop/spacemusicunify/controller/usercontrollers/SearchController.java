@@ -304,36 +304,31 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			TableRow<Song> canzone = new TableRow<>();
 			canzone.setOnMouseClicked((MouseEvent event) -> {
 				if(event.getClickCount() == 2) {
-
-					/*if(this.utente.getcurrentSong() != null) {
-						mediaPlayerSettings.setPlayerState(PlayerState.searchDoubleClick);
-						System.out.println("this.utente.getcurrentSong() != null");
-						if(this.utente.getcurrentSong().getId().intValue() != canzone.getItem().getId().intValue()) {
-
-							spaceMusicUnifyService.deleteSongFromQueue(utente, canzone.getItem());	//rimuovo la canzone se già presente in coda
-							
-							//carica la canzone nel player
-							if(utente.getSongQueue().size() == this.utente.getcurrentPosition()) {
-								spaceMusicUnifyService.addSongToQueue(utente, canzone.getItem());
-								System.out.println("utente.getSongQueue().size() <= this.utente.getcurrentPosition()");
-								dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
-							} else {
-								mediaPlayerSettings.getMediaPlayer().stop();
-								mediaPlayerSettings.getMediaPlayer().dispose();
-								spaceMusicUnifyService.replaceCurrentSong(utente, canzone.getItem());
-								System.out.println("utente.getSongQueue().size() > this.utente.getcurrentPosition()");
-								dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+					PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+					if(spacemusicunifyPlayer.getQueue().size() != 0) {
+						
+						if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != canzone.getItem().getId().intValue()) {
+							try {
+								playerService.deleteSongFromQueue(spacemusicunifyPlayer, canzone.getItem());	//rimuovo la canzone se già presente in coda
+								playerService.replaceCurrentSong(spacemusicunifyPlayer, canzone.getItem());
+							} catch (BusinessException e) {
+								dispatcher.renderError(e);
 							}
+							
 							song.refresh();
 						} else {
 							System.out.println("la canzone è già in riproduzione al momento");
 						}
 					} else {
-						spaceMusicUnifyService.addSongToQueue(utente, canzone.getItem());
+						try {
+							playerService.addSongToQueue(spacemusicunifyPlayer, canzone.getItem());
+						} catch (BusinessException e) {
+							dispatcher.renderError(e);
+						}
 
-						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
+						//dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 					}
-*/
+
 				}
 			});
 			return canzone;

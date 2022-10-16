@@ -138,8 +138,8 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
+		if(player.getQueue().size() == 0) throw new BusinessException();
 		player.getQueue().set(player.getCurrentSong(), song);
-		//throw new BusinessException();
 	}
 	
 }

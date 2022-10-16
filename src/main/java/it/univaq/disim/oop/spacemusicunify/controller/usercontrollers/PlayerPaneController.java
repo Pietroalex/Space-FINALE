@@ -97,6 +97,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
 
 		spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
+			
 			if(spacemusicunifyPlayer.getQueue().size() > 0) {
 				//viene riabilitato il player
 				addToPlaylistButton.setDisable(false);
@@ -109,6 +110,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					System.out.println("carico canzone");
 					loadSong();
 					dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
+				} else if(c.next() == c.wasReplaced()) {
+					loadSong();
 				}
 			} else {
 				System.out.println("canzone non presente");
@@ -144,9 +147,11 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
 			else previousButton.setDisable(false);
 
-			if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null) ) { //riabilitazioni successive del player
+			if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null)) { //riabilitazioni successive del player
+				System.out.println("add");
 				loadSong();
 			}
+			
 		});
 
 		/*
