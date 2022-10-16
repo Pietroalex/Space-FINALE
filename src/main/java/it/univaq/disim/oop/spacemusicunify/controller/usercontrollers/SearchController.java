@@ -303,36 +303,38 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		song.setRowFactory( tablerow -> {
 			TableRow<Song> canzone = new TableRow<>();
 			canzone.setOnMouseClicked((MouseEvent event) -> {
-				if(event.getClickCount() == 2) {
-					PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
-					if(spacemusicunifyPlayer.getQueue().size() != 0) {
-						
-						if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != canzone.getItem().getId().intValue()) {
+				if(canzone.getItem() != null){
+					if(event.getClickCount() == 2) {
+						PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+						if(spacemusicunifyPlayer.getQueue().size() != 0) {
+
+							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != canzone.getItem().getId().intValue()) {
+								try {
+									playerService.deleteSongFromQueue(spacemusicunifyPlayer, canzone.getItem());	//rimuovo la canzone se già presente in coda
+									playerService.replaceCurrentSong(spacemusicunifyPlayer, canzone.getItem());
+								} catch (BusinessException e) {
+									dispatcher.renderError(e);
+								}
+
+								song.refresh();
+							} else {
+								System.out.println("la canzone è già in riproduzione al momento");
+							}
+						} else {
 							try {
-								playerService.deleteSongFromQueue(spacemusicunifyPlayer, canzone.getItem());	//rimuovo la canzone se già presente in coda
-								playerService.replaceCurrentSong(spacemusicunifyPlayer, canzone.getItem());
+								playerService.addSongToQueue(spacemusicunifyPlayer, canzone.getItem());
 							} catch (BusinessException e) {
 								dispatcher.renderError(e);
 							}
-							
-							song.refresh();
-						} else {
-							System.out.println("la canzone è già in riproduzione al momento");
-						}
-					} else {
-						try {
-							playerService.addSongToQueue(spacemusicunifyPlayer, canzone.getItem());
-						} catch (BusinessException e) {
-							dispatcher.renderError(e);
+
 						}
 
-						//dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
 					}
-
 				}
 			});
 			return canzone;
 		});
+
 	}
 
 	public boolean checkForClones(Object object, Song value){

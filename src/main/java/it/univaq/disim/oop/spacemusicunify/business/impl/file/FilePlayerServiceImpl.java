@@ -309,9 +309,10 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 
 	}
+
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("impossibile scorrere la coda");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("no_position");
 
 		try {
 
@@ -342,147 +343,34 @@ public class FilePlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		player.getQueue().set(player.getCurrentSong(), song);
-		//throw new BusinessException();
-	}
+		if(player.getQueue().size() == 0) throw new BusinessException("no_songs");
 
-	/*@Override
-        public MediaPlayer getMediaPlayer() {
-            return mediaPlayer;
-        }
-        @Override
-        public void startMediaPlayer(Media media) {
-            this.mediaPlayer = new MediaPlayer(media);
-        }
-        @Override
-        public Duration getLastDuration() {
-            return lastDuration;
-        }
-        @Override
-        public void setLastDuration(Duration lastDuration) {
-            this.lastDuration = lastDuration;
-
-        }
-        @Override
-        public Boolean getPlayerOnPlay() {
-            return playerOnPlay;
-        }
-        @Override
-        public void setPlayerOnPlay(Boolean playerOnPlay) {
-            this.playerOnPlay = playerOnPlay;
-        }
-        @Override
-        public Double getPlayerVolume() {
-            return volume;
-        }
-        @Override
-        public void setPlayerVolume(Double volume) {
-            this.volume = volume;
-        }
-        @Override
-        public Boolean isMute() {
-            return mute;
-        }
-        @Override
-        public void setMute(Boolean mute) {
-            this.mute = mute;
-        }
-        @Override
-        public Song getLastSong() {
-            return lastSong;
-        }
-        @Override
-        public void setLastSong(Song song) {
-            this.lastSong = song;
-        }
-        @Override
-        public PlayerState getPlayerState() {
-            return playerState;
-        }
-    */
-
-
-
-
-
-	/*@Override
-	public void addSongToQueue(User utente, Song canzone) {
-
-		 * try { FileData fileData = Utility.readAllRows(usersFile); int cont = 0;
-		 * for(String[] righe : fileData.getRighe()) {
-		 * if(righe[0].equals(utente.getId().toString())) { List<String> songQueue =
-		 * Utility.leggiArray(righe[5]); songQueue.add(String.valueOf(canzone.getId()));
-		 * String[] row = new String[] {righe[0], righe[1], righe[2], righe[3],
-		 * righe[4], songQueue.toString()}; fileData.getRighe().set(cont, row);
-		 * utente.getSongQueue().add(canzone); break; } cont++; } try (PrintWriter
-		 * writer = new PrintWriter(new File(usersFile))) {
-		 * writer.println(fileData.getContatore()); for (String[] righe :
-		 * fileData.getRighe()) { writer.println(String.join(Utility.SEPARATORE_COLONNA,
-		 * righe)); } } } catch (IOException e) { e.printStackTrace(); }
-
-	}
-
-	@Override
-	public void deleteSongFromQueue(User utente, Song canzone) {
-
-		 * try { FileData fileData = Utility.readAllRows(usersFile); int cont = 0;
-		 * for(String[] righe : fileData.getRighe()) {
-		 * if(righe[0].equals(utente.getId().toString())) { List<String> songQueue =
-		 * Utility.leggiArray(righe[5]);
-		 * songQueue.remove(String.valueOf(canzone.getId())); String[] row = new
-		 * String[] {righe[0], righe[1], righe[2], righe[3], righe[4],
-		 * songQueue.toString()}; fileData.getRighe().set(cont, row); List<Song> lista =
-		 * new ArrayList<>(utente.getSongQueue()); for(Song song :
-		 * utente.getSongQueue()) { if(song.getId().equals(canzone.getId()))
-		 * lista.remove(song); } utente.setSongQueue(lista); break; } cont++; } try
-		 * (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-		 * writer.println(fileData.getContatore()); for (String[] righe :
-		 * fileData.getRighe()) { writer.println(String.join(Utility.SEPARATORE_COLONNA,
-		 * righe)); } } } catch (IOException e) { e.printStackTrace(); }
-
-	}
-
-	@Override
-	public void updateCurrentSong(User utente, int position) { //aggiorna la canzone corrente scorrendo la coda
-
-		 * try { FileData fileData = Utility.readAllRows(usersFile); int cont = 0;
-		 * for(String[] righe : fileData.getRighe()) {
-		 * if(righe[0].equals(utente.getId().toString())) { String[] row = new String[]
-		 * {righe[0], righe[1], righe[2], righe[3], String.valueOf(position), righe[5]};
-		 * fileData.getRighe().set(cont, row); utente.setcurrentPosition(position);
-		 * break; } cont++; } try (PrintWriter writer = new PrintWriter(new
-		 * File(usersFile))) { writer.println(fileData.getContatore()); for (String[]
-		 * righe : fileData.getRighe()) {
-		 * writer.println(String.join(Utility.SEPARATORE_COLONNA, righe)); } } } catch
-		 * (IOException e) { e.printStackTrace(); }
-
-	}
-
-	@Override
-	public void replaceCurrentSong(User utente, Song canzone) { //aggiorna la canzone corrente con una canzone a scelta
 		try {
-			FileData fileData = Utility.readAllRows(usersFile);
+
+			FileData fileData = Utility.readAllRows(playersFile);
 			int cont = 0;
-			for(String[] righe : fileData.getRighe()) {
-				if(righe[0].equals(utente.getId().toString())) {
-					List<String> songQueue = Utility.leggiArray(righe[5]);
-					songQueue.set(Integer.parseInt(righe[4]), String.valueOf(canzone.getId()));
-					String[] row = new String[] {righe[0], righe[1], righe[2], righe[3], righe[4], songQueue.toString()};
-					fileData.getRighe().set(cont, row);
-					utente.getSongQueue().set(utente.getcurrentPosition(), canzone);
+			for(String[] rows: fileData.getRows()) {
+				if(rows[0].equals(player.getUser().getId().toString())) {
+					List<String> queueIDS = Utility.readArray(rows[5]);
+					queueIDS.set(player.getCurrentSong(), song.getId().toString());
+
+					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(queueIDS), rows[6] };
+					fileData.getRows().set(cont, row);
+
+					player.getQueue().set(player.getCurrentSong(), song);
 					break;
 				}
 				cont++;
 			}
-			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-				writer.println(fileData.getContatore());
-				for (String[] righe : fileData.getRighe()) {
-					writer.println(String.join(Utility.SEPARATORE_COLONNA, righe));
+
+			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
+				writer.println(fileData.getCounter());
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
-	}*/
-	
+	}
 }

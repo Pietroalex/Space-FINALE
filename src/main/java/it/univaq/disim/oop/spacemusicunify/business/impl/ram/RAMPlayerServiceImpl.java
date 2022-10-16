@@ -133,12 +133,12 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("impossibile scorrere la coda");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("no_position");
 		player.setCurrentSong(position);
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		if(player.getQueue().size() == 0) throw new BusinessException();
+		if(player.getQueue().size() == 0) throw new BusinessException("no_songs");
 		player.getQueue().set(player.getCurrentSong(), song);
 	}
 	
