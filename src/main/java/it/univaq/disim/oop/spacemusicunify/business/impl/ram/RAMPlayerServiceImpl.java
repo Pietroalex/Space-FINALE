@@ -129,7 +129,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		player.getQueue().remove(song);
+		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("not_removed");
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
