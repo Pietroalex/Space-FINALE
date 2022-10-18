@@ -63,7 +63,6 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     private Button newAlbumButton;
     @FXML
     private Label operation;
-    private Set<Production> productionSet;
 
     public ManageAlbumsController(){
         dispatcher = ViewDispatcher.getInstance();
@@ -240,6 +239,9 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     @Override
     public void initializeData(Artist artist) {
         this.artist = artist;
+        Set<Artist> artists = new HashSet<>();
+        artists.add(artist);
+        SpacemusicunifyBusinessFactory.getInstance().getAlbumService().setChosenArtists(artists);
 
         stageName.setText(artist.getName());
         if(dispatcher.getSituation() == ViewSituations.user) {
@@ -276,6 +278,9 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         picture.setOwnership(newAlbum);
         newAlbum.setCover(picture);
 
+        Set<Artist> artists = new HashSet<>();
+        artists.add(artist);
+        SpacemusicunifyBusinessFactory.getInstance().getAlbumService().setChosenArtists(artists);
         dispatcher.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", newAlbum);
     }

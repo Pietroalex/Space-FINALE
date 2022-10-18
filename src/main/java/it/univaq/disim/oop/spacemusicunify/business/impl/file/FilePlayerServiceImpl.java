@@ -121,7 +121,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 		} catch (IOException e) {
 			throw new BusinessException();
 		}
-		if (player == null) throw  new ObjectNotFoundException("not_found_player");
+		if (player == null) throw new ObjectNotFoundException("not_found_player");
 		return player;
 	}
 
@@ -274,7 +274,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		player.getQueue().remove(song);
+		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("not_removed");
 
 		List<String> queueIDS = new ArrayList<>();
 		for(Song songs : player.getQueue()){

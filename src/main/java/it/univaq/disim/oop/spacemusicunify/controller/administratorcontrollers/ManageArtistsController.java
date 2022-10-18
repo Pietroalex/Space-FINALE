@@ -78,6 +78,9 @@ public class ManageArtistsController implements Initializable, DataInitializable
 			final Button modify = new Button("Albums");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
+				Set<Artist> artists = new HashSet<>();
+				artists.add(param.getValue());
+				SpacemusicunifyBusinessFactory.getInstance().getAlbumService().setChosenArtists(artists);
 				dispatcher.setSituation(ViewSituations.detail);
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", param.getValue());
 			});

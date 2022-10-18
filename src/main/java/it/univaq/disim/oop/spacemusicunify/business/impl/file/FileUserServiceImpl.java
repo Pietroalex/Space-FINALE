@@ -249,6 +249,7 @@ public class FileUserServiceImpl implements UserService {
 	public void delete(Playlist playlist) throws BusinessException {
 		boolean check = false;
 		try {
+
 			FileData fileData = Utility.readAllRows(playlistFile);
 			for (String[] righecontrollo : fileData.getRows()) {
 				if (righecontrollo[0].equals(playlist.getId().toString())) {
@@ -270,45 +271,27 @@ public class FileUserServiceImpl implements UserService {
 
 			}
 		} catch(IOException e){
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 
 		if(!check)throw new BusinessException("Playlist inesistente");
 
 	}
 	@Override
-	public Set<Playlist> getAllPlaylists(User utente) throws BusinessException{
-		Set<Playlist> playlistsUtente = new HashSet<>();
+	public Set<Playlist> getAllPlaylists(User user) throws BusinessException{
+		Set<Playlist> playlists = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 
-			for (String[] colonne : fileData.getRows()) {
-
-				if(colonne[2].equals(utente.getId().toString())) {
-					Playlist playlist = new Playlist();
-					playlist.setId(Integer.parseInt(colonne[0]));
-					playlist.setTitle(colonne[1]);
-					playlist.setUser(utente);
-					Set<Song> listaCanzoni = new HashSet<>();
-					List<String> songList = Utility.readArray(colonne[3]);
-
-					if(!(songList.contains("")	)){
-						for (String canzoneString : songList) {
-							listaCanzoni.add((Song) UtilityObjectRetriever.findObjectById(canzoneString, songsFile));
-						}
-					}
-					playlist.setSongList(listaCanzoni);
-
-					playlistsUtente.add(playlist);
+			for (String[] rows : fileData.getRows()) {
+				if(rows[2].equals(user.getId().toString())) {
+					playlists.add((Playlist) UtilityObjectRetriever.findObjectById(rows[0], playlistFile));
 				}
-
-
 			}
-
 		} catch (IOException e) {
-			throw new BusinessException(e);
+			throw new BusinessException();
 		}
-		return playlistsUtente;
+		return playlists;
 	}
 
 }

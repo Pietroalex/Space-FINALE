@@ -124,6 +124,20 @@ public class UtilityObjectRetriever extends Object {
 				}
 				break;
 
+			case "playlists.txt":
+
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] columns : fileData.getRows()) {
+						if(columns[0].equals(id)) {
+							object = findPlaylist(columns, file);
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				break;
 			default:
 
 				try {
@@ -142,6 +156,19 @@ public class UtilityObjectRetriever extends Object {
 		}
 
 		return object;
+	}
+
+	private static Playlist findPlaylist(String[] columns, String file) {
+		Playlist playlist = new Playlist();
+		playlist.setId(Integer.valueOf(columns[0]));
+		playlist.setUser(((User) UtilityObjectRetriever.findObjectById(columns[2], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt"))));
+		playlist.setTitle(columns[1]);
+		Set<Song> songs = new HashSet<>();
+		for(String song: Utility.readArray(columns[3])){
+			songs.add((Song) UtilityObjectRetriever.findObjectById(song, file.replace(file.substring(file.indexOf("data" + File.separator) + 5),"songs.txt")));
+		}
+		playlist.setSongList(songs);
+		return playlist;
 	}
 
 	private static User findUser(String[] columns, String file) {

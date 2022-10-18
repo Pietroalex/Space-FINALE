@@ -201,7 +201,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         }
     }
 
-    public String saveANDstore(byte[] bytes, String type) {
+    public String saveANDstore(byte[] bytes, String type) throws BusinessException {
         String existImage = picturesDirectory + "image";
         String existMp3 = mp3Directory + "audio";
 
@@ -220,16 +220,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 while (!fileNotExistPng) {
 
                     newfilePng = existImage + numberPng + ".png";
-                    System.out.println("iterazione " + newfilePng);
                     if (Files.exists(Paths.get(newfilePng))) {
-                        System.out.println("file exist with " + numberPng);
                         numberPng++;
                     } else {
-                        System.out.println("file not exist with " + numberPng);
                         fileNotExistPng = true;
                     }
                 }
-                System.out.println("last " + numberPng);
                 newfile = newfilePng;
                 product = type + numberPng + ".png";
 
@@ -243,16 +239,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 while (!fileNotExistMp3) {
 
                     newfileMp3 = existMp3 + numberMp3 + ".mp3";
-                    System.out.println("iterazione " + newfileMp3);
                     if (Files.exists(Paths.get(newfileMp3))) {
-                        System.out.println("file exist with " + numberMp3);
                         numberMp3++;
                     } else {
-                        System.out.println("file not exist with " + numberMp3);
                         fileNotExistMp3 = true;
                     }
                 }
-                System.out.println("last " + numberMp3);
                 newfile = newfileMp3;
                 product = type+numberMp3+".mp3";
                 break;
@@ -262,7 +254,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         try {
             Files.write(Paths.get(newfile), bytes);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(e);
         }
         return product;
     }

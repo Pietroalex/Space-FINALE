@@ -431,7 +431,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@Override
 	public void initializeData(Album album) {
 		this.album = album;
-
+		if(albumService.getChosenArtists() != null) {
+			artist = albumService.getChosenArtists().iterator().next();
+		}
 		Set<Song> songs = album.getSongs();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
 		setView2(songData);
@@ -456,7 +458,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			} else {
 				albumService.modify(album.getId(), titleField.getText(), genreField.getValue(), tempPicture, album.getSongs(), releaseField.getValue(), album);
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 
 		} catch (AlreadyTakenFieldException e){
 			existingLabel.setText("This album title is already taken");
@@ -474,11 +476,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void cancelModify(ActionEvent event) {
 		switch (dispatcher.getSituation()){
 			case newobject:
-				try {
-					dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
-				} catch (BusinessException e) {
-					throw new RuntimeException(e);
-				}
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 				break;
 			default:
 				dispatcher.setSituation(ViewSituations.detail);

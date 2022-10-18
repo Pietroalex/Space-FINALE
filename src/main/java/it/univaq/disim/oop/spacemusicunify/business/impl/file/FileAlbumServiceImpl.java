@@ -95,7 +95,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new BusinessException(e);
 			}
 	}
 
@@ -338,6 +338,24 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			if(songCheck.getId().intValue() == song.getId().intValue()) {
 				check = true;
+
+				UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
+				PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+
+				for(User user : userService.getAllUsers()){
+					for(Song songCheck2 : playerService.getPlayer(user).getQueue()) {
+						if(songCheck2.getId().intValue() == song.getId().intValue()){
+							playerService.deleteSongFromQueue(playerService.getPlayer(user), song);
+							break;
+						}
+					}
+					for(Playlist playlist : userService.getAllPlaylists(user)){
+						Set<Song> songs = playlist.getSongList();
+							songs.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
+							userService.modify(playlist.getId(), playlist.getTitle(), songs, user, playlist);
+					}
+				}
+
 				try {
 					FileData fileData = Utility.readAllRows(songsFile);
 					//aggiorno il file canzoni.txt
@@ -376,15 +394,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 							writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 						}
 					}
-					UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
 
-					for(User user : userService.getAllUsers()){
-						for(Playlist playlist : userService.getAllPlaylists(user)){
-							Set<Song> songs = playlist.getSongList();
-							songs.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
-							userService.modify(playlist.getId(), playlist.getTitle(), songs, user, playlist);
-						}
-					}
 
 				} catch (IOException e) {
 					throw new BusinessException(e);
@@ -422,7 +432,6 @@ public class FileAlbumServiceImpl implements AlbumService {
 				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException();
 		}
 		return songList;
@@ -450,9 +459,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	}
 	@Override
 	public Set<Artist> getChosenArtists() {
-		Set<Artist> artists = choosenArtists;
-		choosenArtists = null;
-		return artists;
+		return choosenArtists;
 	}
 	@Override
 	public void setChosenArtists(Set<Artist> chosenArtists) {

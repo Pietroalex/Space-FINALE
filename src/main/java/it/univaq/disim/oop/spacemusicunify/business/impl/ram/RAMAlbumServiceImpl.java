@@ -247,11 +247,6 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		for (Song songs : getSongList()) {
 			if(songs.getId().intValue() == song.getId().intValue()) {
 				check = true;
-				multimediaService.delete(song.getFileMp3());
-				storedSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
-				Set<Song> songList = album.getSongs();
-				songList.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
-				album.setSongs(songList);
 
 				UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
 				for(User user : userService.getAllUsers()){
@@ -268,6 +263,14 @@ public class RAMAlbumServiceImpl implements AlbumService {
 						}
 					}
 				}
+
+				multimediaService.delete(song.getFileMp3());
+				storedSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
+				Set<Song> songList = album.getSongs();
+				songList.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
+				album.setSongs(songList);
+
+
 				break;
 			}
 		}

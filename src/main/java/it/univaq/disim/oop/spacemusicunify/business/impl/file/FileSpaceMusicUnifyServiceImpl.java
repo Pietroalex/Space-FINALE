@@ -50,7 +50,7 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			Path path = Paths.get(artistsFile);
 			if (Files.notExists(path)) {
-				if (new File(artistsFile).createNewFile()) System.out.println("file artisti creato correttamente");
+				if (!(new File(artistsFile).createNewFile())) throw new BusinessException("artistFile creation error");
 				FileWriter writer = new FileWriter(new File(artistsFile));
 				writer.write("1" + "\n");
 				writer.close();
@@ -58,28 +58,28 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			path = Paths.get(audiosFile);
 			if (Files.notExists(path)) {
-				if (new File(audiosFile).createNewFile()) System.out.println("file album creato correttamente");
+				if (!(new File(audiosFile).createNewFile())) throw new BusinessException("audiosFile creation error");
 				FileWriter writer = new FileWriter(new File(audiosFile));
 				writer.write("1" + "\n");
 				writer.close();
 			}
 			path = Paths.get(productionFile);
 			if (Files.notExists(path)) {
-				if (new File(productionFile).createNewFile()) System.out.println("file productions creato correttamente");
+				if (!(new File(productionFile).createNewFile())) throw new BusinessException("productionFile creation error");
 				FileWriter writer = new FileWriter(new File(productionFile));
 				writer.write("1" + "\n");
 				writer.close();
 			}
 			path = Paths.get(albumsFile);
 			if (Files.notExists(path)) {
-				if (new File(albumsFile).createNewFile()) System.out.println("file album creato correttamente");
+				if (!(new File(albumsFile).createNewFile())) throw new BusinessException("albumsFile creation error");
 				FileWriter writer = new FileWriter(new File(albumsFile));
 				writer.write("1" + "\n");
 				writer.close();
 			}
 			path = Paths.get(playlistFile);
 			if (Files.notExists(path)) {
-				if (new File(playlistFile).createNewFile()) System.out.println("file album creato correttamente");
+				if (!(new File(playlistFile).createNewFile())) throw new BusinessException("playlistFile creation error");
 				FileWriter writer = new FileWriter(new File(playlistFile));
 				writer.write("1" + "\n");
 				writer.close();
@@ -88,14 +88,14 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			path = Paths.get(playersFile);
 			if (Files.notExists(path)) {
-				if (new File(playersFile).createNewFile()) System.out.println("file players creato correttamente");
+				if (!(new File(playersFile).createNewFile())) throw new BusinessException("playersFile creation error");
 				FileWriter writer = new FileWriter(new File(playersFile));
-				writer.write("1" + "\n");
+				writer.write("2" + "\n");
 				writer.close();
 			}
 			path = Paths.get(usersFile);
 			if (Files.notExists(path)) {
-				if (new File(usersFile).createNewFile()) System.out.println("file utenti creato");
+				if (!(new File(usersFile).createNewFile())) throw new BusinessException("usersFile creation error");
 
 				FileWriter writer = new FileWriter(new File(usersFile));
 				writer.write("3" + "\n");
@@ -113,7 +113,7 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			path = Paths.get(picturesFile);
 			if (Files.notExists(path)) {
-				if (new File(picturesFile).createNewFile()) System.out.println("file pictures creato correttamente");
+				if (!(new File(picturesFile).createNewFile())) throw new BusinessException("picturesFile creation error");
 				FileWriter writer = new FileWriter(new File(picturesFile));
 				writer.write("1" + "\n");
 				writer.close();
@@ -121,7 +121,7 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			path = Paths.get(songsFile);
 			if (Files.notExists(path)) {
-				if (new File(songsFile).createNewFile()) System.out.println("file canzoni creato correttamente");
+				if (!(new File(songsFile).createNewFile())) throw new BusinessException("songsFile creation error");
 				FileWriter writer = new FileWriter(new File(songsFile));
 				writer.write("1" + "\n");
 				writer.close();
@@ -129,12 +129,12 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 			path = Paths.get(picturesDirectory);
 			if (Files.notExists(path)) {
-				if (new File(picturesDirectory).mkdirs()) System.out.println("cartella immagini creata correttamente");
+				if (!(new File(picturesDirectory).mkdirs())) throw new BusinessException("picturesDirectory creation error");
 			}
 
 			path = Paths.get(mp3Directory);
 			if (Files.notExists(path)) {
-				if (new File(mp3Directory).mkdirs()) System.out.println("cartella filesMP3 creata correttamente");
+				if (!(new File(mp3Directory).mkdirs())) throw new BusinessException("mp3Directory creation error");
 			}
 		} catch (IOException e) {
 			throw new BusinessException("File creation Problem");
