@@ -112,57 +112,56 @@ public class RAMUserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist value)
-			throws AlreadyTakenFieldException {
-
+	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist value) throws BusinessException {
+		boolean check = false;
 		for (Playlist playlist : storedPlaylists) {
-
 			if (playlist.getId().intValue() == id.intValue()) {
+				check = true;
 				playlist.setSongList(songlist);
-
+				break;
 			}
 		}
+		if(!check) throw new BusinessException("not_existing_playlist");
 
 	}
 	
 	@Override
 	public void delete(Playlist playlist) throws BusinessException {
-		boolean controllo = false;
+		boolean check = false;
 		for(Playlist play : storedPlaylists) {
 			if(play.getId().intValue() == playlist.getId().intValue()) {
-				controllo = true;
+				check = true;
 				break;
 			}
 		}
-		if(controllo) {
-			storedPlaylists.remove(playlist);
+		if(check) {
+			storedPlaylists.removeIf((Playlist playlistCheck) -> playlistCheck.getId().intValue() == playlist.getId().intValue());
 		} else {
-			throw new BusinessException();
+			throw new BusinessException("not_existing_playlist");
 		}
 	}
 	
 	@Override
-	public Set<Playlist> getAllPlaylists(User utente) throws BusinessException {
+	public Set<Playlist> getAllPlaylists(User user) throws BusinessException {
 
-		boolean controllo = false;
-		for(User user: getAllUsers()) {
-			if(user.getId().intValue() == utente.getId().intValue()) {
-				controllo = true;
+		boolean check = false;
+		for(User users: getAllUsers()) {
+			if(users.getId().intValue() == user.getId().intValue()) {
+				check = true;
 				break;
 			}
 		}
-		if(controllo) {
+		if(check) {
 			Set<Playlist> userPlaylists = new HashSet<>();
-			//prendere solo le playlist dell'utente passato
 
 			for(Playlist playList: storedPlaylists) {
-				if(playList.getUser() == utente) {
+				if(playList.getUser().getId().intValue() == user.getId().intValue()) {
 					userPlaylists.add(playList);
 				}
 			}
 			return userPlaylists;
 		}
-		throw new BusinessException();
+		throw new BusinessException("not_existing_user");
 	}
 	
 }

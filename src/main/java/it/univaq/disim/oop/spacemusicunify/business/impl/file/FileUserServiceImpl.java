@@ -274,7 +274,7 @@ public class FileUserServiceImpl implements UserService {
 			throw new BusinessException(e);
 		}
 
-		if(!check)throw new BusinessException("Playlist inesistente");
+		if(!check)throw new BusinessException("not_existing_playlist");
 
 	}
 	@Override
