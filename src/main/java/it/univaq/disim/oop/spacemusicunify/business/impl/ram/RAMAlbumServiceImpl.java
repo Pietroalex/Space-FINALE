@@ -27,7 +27,6 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
 			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles) {
-
 				throw new AlreadyExistingException();
 			}
 		}
@@ -315,9 +314,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public Set<Artist> getChosenArtists() {
-		Set<Artist> artists = chosenArtists;
-		chosenArtists = null;
-		return artists;
+		return chosenArtists;
 	}
 	@Override
 	public void setChosenArtists(Set<Artist> chosenArtists) {

@@ -311,7 +311,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					ObservableList<Artist> artistsData = FXCollections.observableArrayList(artists);
 					artistTable.getItems().addAll(artistsData);
 				} catch (BusinessException e) {
-					throw new RuntimeException(e);
+					dispatcher.renderError(e);
 				}
 
 				newSong.setVisible(false);
