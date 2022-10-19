@@ -110,7 +110,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         try {
             if(picture.getOwnership() instanceof Artist) {
                 for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
-                    if(pictureCheck.getData() == picture.getData()){
+                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
                         ((Artist) picture.getOwnership()).setId(null);
                         throw new AlreadyExistingException("artist_picture");
                     }

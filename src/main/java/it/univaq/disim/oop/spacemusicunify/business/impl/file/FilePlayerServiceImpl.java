@@ -67,7 +67,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 			}
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 
 	}
@@ -98,7 +98,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 			}
 			if(!check)throw new BusinessException("not_existing_player");
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 
 	}
@@ -119,7 +119,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 			}
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 		if (player == null) throw new ObjectNotFoundException("not_found_player");
 		return player;

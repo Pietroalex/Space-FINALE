@@ -5,11 +5,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlbumService;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyTakenFieldException;
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
+import it.univaq.disim.oop.spacemusicunify.business.*;
+
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Audio;
@@ -34,12 +31,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 	private final AlbumService albumService;
     private final ViewDispatcher dispatcher;
 
-    @FXML
-    private AnchorPane masterPane;
-    @FXML
-    private AnchorPane modifyPane;
-    @FXML
-    private AnchorPane infoPane;
     @FXML
     private TextField titleField;
     @FXML
@@ -98,6 +89,18 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 break;
 
             case modify:
+                confirm.disableProperty().bind(
+                        lyricsField.textProperty().isEmpty()
+                                .or(titleField.textProperty().isEmpty())
+                                .or(lengthField.textProperty().isEmpty())
+                                .or(existingLabel.visibleProperty())
+                                .or(songField.textProperty().isEqualTo("No MP3 File selected"))
+                );
+                titleField.textProperty().addListener((obs, oldText, newText)-> {
+                    if (existingLabel.isVisible()) {
+                        existingLabel.setVisible(false);
+                    }
+                });
                 genreField.getItems().addAll(Genre.values());
                 genreField.getItems().remove(Genre.singles);
                 titleView.setText("Modify Song");
@@ -122,17 +125,26 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 break;
 
             case newobject:
+                songField.setText("No MP3 File selected");
+                confirm.disableProperty().bind(
+                        lyricsField.textProperty().isEmpty()
+                        .or(titleField.textProperty().isEmpty())
+                        .or(lengthField.textProperty().isEmpty())
+                        .or(existingLabel.visibleProperty())
+                        .or(songField.textProperty().isEqualTo("No MP3 File selected"))
+                );
+                titleField.textProperty().addListener((obs, oldText, newText)-> {
+                    if (existingLabel.isVisible()) {
+                        existingLabel.setVisible(false);
+                    }
+                });
+
                 genreField.getItems().addAll(Genre.values());
                 genreField.getItems().remove(Genre.singles);
                 titleField.setText(song.getTitle());
                 lengthField.setText(song.getLength());
                 lyricsField.setText(song.getLyrics());
                 deletesong.setVisible(false);
-
-
-
-
-                songField.setText("No MP3 File selected");
 
 
                 if(album.getGenre() == Genre.singles) {
@@ -144,7 +156,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 if(album.getSongs().size() == 1){
                     deletesong.setDisable(true);
                 }
-                confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
+
                 mp3button.setText("Pick Up an mp3");
                 titleView.setText("New Song");
                 confirm.setText("Create");
@@ -167,20 +179,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-/*        "No MP3 File selected".equals(songField.getText());
-        Object ChangeListener;
-        confirm.disableProperty().bind(  );*/
-       /* confirm.disableProperty().bind(lyricsField.textProperty().isEmpty().or(titleField.textProperty().isEmpty()).or(lengthField.textProperty().isEmpty()).or(existingLabel.visibleProperty()));
-        titleField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                existingLabel.setVisible(false);
-            }
-        });*/
-    	
-    	if(dispatcher.getSituation() == ViewSituations.modify)
-    		confirm.disableProperty().bind(songField.textProperty().isEqualTo("No MP3 File selected")); //OK
-    		//confirm.disableProperty().bind(songField.textProperty().isEqualTo("MP3 Audio File loaded")); -> per prova
     }
     @Override
     public void initializeData(Song song) {
@@ -208,23 +206,16 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
                 albumService.add(song);
             } else {
-                System.out.println("eseguo modify");
               albumService.modify(song.getId(), titleField.getText(),  tempAudio, lyricsField.getText(), album, lengthField.getText(), genreField.getValue(), song);
             }
             dispatcher.setSituation(ViewSituations.modify);
             dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
 
-        } catch (AlreadyTakenFieldException e) {
-            existingLabel.setText("This song's title is already taken");
-            existingLabel.setVisible(true);
 
-        } catch (AlreadyExistingException e) {
-            if("audio".equals(e.getMessage())){
-                existingLabel.setText("This song's file already exists");
-            } else {
-                existingLabel.setText("This song already exists");
-            }
-            existingLabel.setVisible(true);
+        }catch (AlreadyExistingException e){
+
+          existingLabel.setText(e.getMessage());
+          existingLabel.setVisible(true);
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);

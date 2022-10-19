@@ -16,7 +16,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	private static Integer idSong = 1;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
-	private Set<Artist> chosenArtists = new HashSet<>();
+	private Set<Artist> chosenArtists;
 
 	public RAMAlbumServiceImpl(MultimediaService multimediaService, ProductionService productionService) {
 		this.multimediaService = multimediaService;
@@ -27,7 +27,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
 			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles) {
-				throw new AlreadyExistingException();
+				throw new AlreadyExistingException("Already Existing album with this title");
 			}
 		}
 		album.setId(idAlbum++);
@@ -126,7 +126,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
 			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue() || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-				throw new AlreadyTakenFieldException();
+				throw new AlreadyExistingException();
 			}
 		}
 		for (Album albumCheck : storedAlbums) {
@@ -188,7 +188,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void add(Song song) throws BusinessException {
 		for (Song songs : storedSongs) {
 			if(songs.getTitle().equals(song.getTitle()) || song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null) {
-				throw new AlreadyExistingException();
+				throw new AlreadyExistingException("Already Existing song with this title");
 			}
 		}
 
@@ -210,7 +210,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void modify(Integer id, String title, Audio tempAudio, String lyrics, Album album, String length, Genre genre, Song oldSong) throws BusinessException {
 		for (Song songs : storedSongs) {
 			if (songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue() || title.contains("DefaultSingles") && album.getSongs() != null) {
-				throw new AlreadyTakenFieldException();
+				throw new AlreadyExistingException();
 			}
 		}
 		for (Song song : storedSongs) {

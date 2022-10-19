@@ -13,7 +13,10 @@ import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
+
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +28,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -145,7 +149,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						menuItem.setText(artistCtrl.getName());
 						menuItem.setOnAction((ActionEvent event) -> {
 							artistS.hide();
-							/*dispatcher.setSituation(ViewSituations.detail);*/
 							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
 						});
 						artistS.getItems().add(menuItem);
@@ -154,44 +157,14 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					dispatcher.renderError(e);
 				}
 
-				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
 					modify.setCursor(Cursor.HAND);
 					modify.setOnAction((ActionEvent event) -> {
-						if(dispatcher.getSituation() == ViewSituations.user){
-							dispatcher.setSituation(ViewSituations.user);
-						}else{
-							dispatcher.setSituation(ViewSituations.detail);
-						}
 						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
 					});
 					return new SimpleObjectProperty<Button>(modify);
-				});
-				
-				addSongToQueue.setStyle("-fx-alignment: CENTER;");
-				addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-
-					final Button addButton = new Button("Add to queue");
-					addButton.setCursor(Cursor.HAND);
-
-					/*if(this.checkForClones(param.getValue())){
-						addButton.setDisable(true);
-					}
-
-					addButton.setOnAction((ActionEvent event) -> {
-						spaceMusicUnifyService.addSongToQueue(utente, param.getValue());
-						if(mediaPlayerSettings.getMediaPlayer() != null && mediaPlayerSettings.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-							mediaPlayerSettings.getMediaPlayer().stop();
-							mediaPlayerSettings.getMediaPlayer().dispose();
-						}
-						song.refresh();
-						mediaPlayerSettings.setPlayerState(PlayerState.searchSingleClick);
-						dispatcher.renderPlayer("UserViews/UserHomeView/playerPane", utente);
-					});
-		*/
-					return new SimpleObjectProperty<Button>(addButton);
 				});
 
 				titleAlbum.setText(album.getTitle());
@@ -209,6 +182,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				break;
 
 			case modify:
+				confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+				titleField.textProperty().addListener((obs, oldText, newText)-> {
+					if (existingLabel.isVisible()) {
+						existingLabel.setVisible(false);
+					}
+				});
 				cancelBox.setVisible(false);
 
 				genreField.getItems().addAll(Genre.values());
@@ -218,8 +197,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				titleModify.setCellValueFactory(new PropertyValueFactory<>("title"));
 				lengthModify.setCellValueFactory(new PropertyValueFactory<>("length"));
 				genreModify.setCellValueFactory(new PropertyValueFactory<>("genre"));
-				/*artistsModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//*));
-*/
+
 				managesong.setStyle("-fx-alignment: CENTER;");
 				managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button deletesong = new Button("Delete");
@@ -243,17 +221,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					});
 					return new SimpleObjectProperty<Button>(deletesong);
 				});
-				/*detailSongModify.setStyle("-fx-alignment: CENTER;");
-				detailSongModify.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-					final Button modify = new Button("Detail");
-					modify.setCursor(Cursor.HAND);
-					modify.setOnAction((ActionEvent event) -> {
-						dispatcher.setSituation(ViewSituations.detail);
-						objects.add(param.getValue());
-						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", objects);
-					});
-					return new SimpleObjectProperty<Button>(modify);
-				});*/
+
 
 				if(this.album.getGenre() == Genre.singles){
 					genreField.setDisable(true);
@@ -288,6 +256,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				break;
 
 			case newobject:
+				confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+				titleField.textProperty().addListener((obs, oldText, newText)-> {
+					if (existingLabel.isVisible()) {
+						existingLabel.setVisible(false);
+					}
+				});
 				modifyalbumsongs.setVisible(false);
 				table_label.setVisible(false);
 				cancelBox.setVisible(false);
@@ -361,10 +335,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					dispatcher.renderError(e);
 				}
 
-
-
-
-				/*artists.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(*//*album.getArtist().getStageName()*//* ));*/
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
@@ -418,14 +388,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-/*		confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
-		titleField.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				existingLabel.setVisible(false);
-			}
-		});*/
-
 
 	}
 	@Override
@@ -433,6 +395,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		this.album = album;
 		if(albumService.getChosenArtists() != null) {
 			artist = albumService.getChosenArtists().iterator().next();
+		} else {
+			artist = null;
 		}
 		Set<Song> songs = album.getSongs();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
@@ -460,12 +424,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 
-		} catch (AlreadyTakenFieldException e){
-			existingLabel.setText("This album title is already taken");
-			existingLabel.setVisible(true);
-
 		}catch (AlreadyExistingException e){
-			existingLabel.setText("This album already exists");
+			/*existingLabel.setText("This album already exists");*/
+			existingLabel.setText(e.getMessage());
 			existingLabel.setVisible(true);
 
 		} catch (BusinessException e) {
@@ -489,7 +450,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		//dispatcher.setSituation(ViewSituations.detail);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artist);
 	}
-	public void focusImage(String image){
+	private void focusImage(String image){
 		imageUrl = image;
 
 		cancelBox.setVisible(true);
@@ -500,7 +461,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		cancelBox.setVisible(false);
 
 	}
-	public void focusAdd(){
+	private void focusAdd(){
 		cancelBox.setVisible(false);
 		FileChooser fileChoose = new FileChooser();
 		File file =  fileChoose.showOpenDialog(null);
@@ -531,6 +492,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 				coverField.getChildren().clear();
 				coverField.getChildren().add(imgview2);
+				existingLabel.setVisible(false);
 			}else{
 				existingLabel.setText("Wrong image File type, Only .png or .jpg are allowed");
 				existingLabel.setVisible(true);
@@ -544,31 +506,23 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	@FXML
 	public void deleteCover(ActionEvent event){
-		String tempimg = String.valueOf(album.getCover().getId());
-
-
-		if(this.imageUrl.equals(tempimg)){
-			ImageView imgAdd = null;
-			try {
-				imgAdd = new ImageView(new Image(Files.newInputStream(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png"))));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			imgAdd.setFitHeight(140);
-			imgAdd.setFitWidth(140);
-			imgAdd.setOnMouseClicked(event2 -> {
-				this.focusAdd();
-			});
-
-
-			coverField.getChildren().clear();
-
-			coverField.getChildren().add(imgAdd);
-
-			cancelBox.setVisible(false);
-
-
+		ImageView imgAdd = null;
+		try {
+			imgAdd = new ImageView(new Image(Files.newInputStream(Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png"))));
+		} catch (IOException e) {
+			dispatcher.renderError(e);
 		}
+		imgAdd.setFitHeight(140);
+		imgAdd.setFitWidth(140);
+		imgAdd.setOnMouseClicked(event2 -> {
+			this.focusAdd();
+		});
+
+		coverField.getChildren().clear();
+
+		coverField.getChildren().add(imgAdd);
+
+		cancelBox.setVisible(false);
 
 	}
 	@FXML
@@ -583,10 +537,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}else{
 			song.setGenre(album.getGenre());
 		}
-/*		Audio audio = new Audio();
-		audio.setOwnership(song);
-		audio.setData("src" + File.separator + "main" + File.separator + "resources" + File.separator + "dati" + File.separator + "RAMfiles" + File.separator + "unravel.mp3");
-		song.setFileMp3(audio);*/
 		dispatcher.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
 
@@ -691,7 +641,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		popupwindow.setTitle("Add " + album.getTitle() + " to playlist?");
 		popupwindow.showAndWait();
 	}
-	public boolean checkForClones(Object object, Song value){
+	private boolean checkForClones(Object object, Song value){
 
 		if(object instanceof SpacemusicunifyPlayer) {
 			for (Song songs : ((SpacemusicunifyPlayer) object).getQueue()) {

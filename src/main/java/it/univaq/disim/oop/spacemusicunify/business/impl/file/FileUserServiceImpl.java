@@ -65,7 +65,7 @@ public class FileUserServiceImpl implements UserService {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] columns : fileData.getRows()) {
 				if (columns[2].equals(username) && Integer.parseInt(columns[0]) != id ) {
-					throw new AlreadyTakenFieldException();
+					throw new AlreadyExistingException();
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
@@ -185,19 +185,19 @@ public class FileUserServiceImpl implements UserService {
 	public void add(Playlist playlist) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
-			for (String[] colonne : fileData.getRows()) {
-				if (colonne[2].equals(playlist.getTitle())) {
+			for (String[] rowsCheck : fileData.getRows()) {
+				if (rowsCheck[2].equals(playlist.getTitle())) {
 					throw new AlreadyExistingException("Already existing Playlist");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
-				long contatore = fileData.getCounter();
-				writer.println((contatore + 1));
-				for (String[] righe : fileData.getRows()) {
-					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+				long counter = fileData.getCounter();
+				writer.println((counter + 1));
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
 				StringBuilder row = new StringBuilder();
-				row.append(contatore);
+				row.append(counter);
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(playlist.getTitle());
 				row.append(Utility.COLUMN_SEPARATOR);
@@ -208,7 +208,6 @@ public class FileUserServiceImpl implements UserService {
 
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new BusinessException(e);
 		}
 	}
@@ -251,18 +250,18 @@ public class FileUserServiceImpl implements UserService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playlistFile);
-			for (String[] righecontrollo : fileData.getRows()) {
-				if (righecontrollo[0].equals(playlist.getId().toString())) {
+			for (String[] rowsCheck : fileData.getRows()) {
+				if (rowsCheck[0].equals(playlist.getId().toString())) {
 					check = true;
 
 					try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
 						writer.println(fileData.getCounter());
-						for (String[] righe : fileData.getRows()) {
-							if (righe[0].equals(playlist.getId().toString())) {
+						for (String[] rows : fileData.getRows()) {
+							if (rows[0].equals(playlist.getId().toString())) {
 								//jump line
 								continue;
 							} else {
-								writer.println(String.join("§", righe));
+								writer.println(String.join("§", rows));
 							}
 						}
 					}
@@ -289,7 +288,7 @@ public class FileUserServiceImpl implements UserService {
 				}
 			}
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 		return playlists;
 	}

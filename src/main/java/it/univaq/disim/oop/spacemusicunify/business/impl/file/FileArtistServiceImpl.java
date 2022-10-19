@@ -32,7 +32,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] column: fileData.getRows()) {
 				if(column[1].equals(artist.getName())) {
-					throw new AlreadyExistingException();
+					throw new AlreadyExistingException("Already Existing artist with this name");
 				}
 			}
 			artist.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
@@ -106,9 +106,9 @@ public class FileArtistServiceImpl implements ArtistService {
 		try {
 
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for(String[] colonne: fileData.getRows()) {
-				if(colonne[1].equals(name) && !colonne[0].equals(id.toString())) {
-					throw new AlreadyTakenFieldException();
+			for(String[] column: fileData.getRows()) {
+				if(column[1].equals(artist.getName())) {
+					throw new AlreadyExistingException("Already Existing artist with this name");
 				}
 			}
 			int cont = 0;
@@ -174,8 +174,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 	}
 
@@ -201,9 +200,6 @@ public class FileArtistServiceImpl implements ArtistService {
 							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);
 						}
 					}
-					/*for(Production production : findAllProductions(artist)){
-						productionService.delete(production);
-					}*/
 
 					//aggiorno il file artisti.txt
 					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
@@ -228,10 +224,11 @@ public class FileArtistServiceImpl implements ArtistService {
 					break;
 				}
 			}
-			if(!check)throw new BusinessException("artista inesistente");
+
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
+		if(!check)throw new ObjectNotFoundException("artista inesistente");
 	}
 
 
@@ -246,7 +243,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 		return artistList;
 	}

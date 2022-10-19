@@ -17,7 +17,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	private String songsFile;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
-	private Set<Artist> choosenArtists = new HashSet<>();
+	private Set<Artist> choosenArtists;
 	
 	public FileAlbumServiceImpl(String albumsFile, String songsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.albumsFile = albumsFile;
@@ -28,18 +28,18 @@ public class FileAlbumServiceImpl implements AlbumService {
 	
 	@Override
 	public void add(Album album) throws BusinessException {
-		//album: title, genre, release, artist, cover
-		for (Album album1 : getAlbumList()) {
-			if (album1.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getSongs() != null) {
-				throw new AlreadyExistingException();
-			}
-		}
-
-		FileData fileData;
-		//scrivo il file album
 		try {
+			FileData fileData = Utility.readAllRows(albumsFile);
+			for(String[] column: fileData.getRows()) {
+				if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+					throw new AlreadyExistingException("The title must not contain 'Singles'");
+				}
+				if (column[1].equals(album.getTitle()) ) {
+					throw new AlreadyExistingException("Already Existing album with this title");
+				}
+			}
+		//scrivo il file album
 
-			fileData = Utility.readAllRows(albumsFile);
 			album.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 			multimediaService.add(album.getCover());
 			//creo la canzone
@@ -107,8 +107,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] columns: fileData.getRows()) {
 				if(genre != Genre.singles) {
-					if (columns[1].equals(title) && !columns[0].equals(id.toString()) || album.getTitle().contains("Singles") && album.getSongs() != null){
-						throw new AlreadyTakenFieldException();
+					if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+						throw new AlreadyExistingException("The title must not contain 'Singles'");
+					}
+					if (columns[1].equals(title) && !columns[0].equals(id.toString()) ){
+						throw new AlreadyExistingException("Already Existing album with this title");
 					}
 				}
 			}
@@ -158,24 +161,27 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void delete(Album album) throws BusinessException {
 		boolean check = false;
+		try {
 
-		for(Album albumCheck : getAlbumList()) {
+			FileData fileData = Utility.readAllRows(albumsFile);
+			for(String[] columns: fileData.getRows()) {
 
-			if(albumCheck.getId().intValue() ==  album.getId().intValue()) {
-				check = true;
 
-				for(Song song : album.getSongs()){
-					delete(song);
-				}
+				if (columns[0].equals(album.getId().toString()) ){
+					check = true;
 
-				for(Production production1 : productionService.getAllProductions()){
-					if(production1.getAlbum().getId().intValue() == album.getId().intValue()){
-						productionService.delete(production1);
+
+					multimediaService.delete(album.getCover());
+					for(Song song : album.getSongs()){
+						delete(song);
 					}
-				}
-				try {
-					FileData fileData = Utility.readAllRows(albumsFile);
-					//aggiorno il file album.txt
+
+					for(Production production1 : productionService.getAllProductions()){
+						if(production1.getAlbum().getId().intValue() == album.getId().intValue()){
+							productionService.delete(production1);
+						}
+					}
+						//aggiorno il file album.txt
 					try (PrintWriter writer = new PrintWriter(new File(albumsFile))) {
 						writer.println(fileData.getCounter());
 						for (String[] righe : fileData.getRows()) {
@@ -187,15 +193,13 @@ public class FileAlbumServiceImpl implements AlbumService {
 							}
 						}
 					}
-					multimediaService.delete(album.getCover());
 
-				} catch (IOException e) {
-					e.printStackTrace();
+					break;
 				}
 
-
-				break;
 			}
+		} catch (IOException e) {
+			throw new BusinessException(e);
 		}
 		if(!check)throw new ObjectNotFoundException("album not exist");
 	}
@@ -206,8 +210,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] righe: fileData.getRows()) {
-				if(righe[1].equals(song.getTitle()) || song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null) {
-					throw new AlreadyExistingException();
+				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+				}
+				if(righe[1].equals(song.getTitle())) {
+					throw new AlreadyExistingException("Already Existing song with this title");
 				}
 			}
 
@@ -259,7 +266,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 				cont++;
 			}
-			if(!check)throw new BusinessException("album non trovato");
+			if(!check)throw new ObjectNotFoundException("album non trovato");
 
 			try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
 				writer.println(fileData.getCounter());
@@ -268,22 +275,24 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BusinessException(e);
 		}
 
 	}
 
 	@Override
-	public void modify(Integer id, String title, Audio tempAudio,String lyrics,Album album,String length,Genre genre, Song song)
-			throws BusinessException {
+	public void modify(Integer id, String title, Audio tempAudio,String lyrics,Album album,String length,Genre genre, Song song) throws BusinessException {
 
 		boolean check = false;
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] columns: fileData.getRows()) {
-				if (columns[1].equals(title) && !columns[0].equals(id.toString()) || title.contains("DefaultSingles") && album.getSongs() != null) {
-					throw new AlreadyTakenFieldException();
+				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+				}
+				if(columns[1].equals(song.getTitle())) {
+					throw new AlreadyExistingException("Already Existing song with this title");
 				}
 			}
 			int cont = 0;
@@ -403,7 +412,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				break;
 			}
 		}
-		if(!check)throw new BusinessException("song not exists");
+		if(!check)throw new ObjectNotFoundException("song not exists");
 	}
 	@Override
 	public Set<Album> getAlbumList() throws BusinessException {

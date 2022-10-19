@@ -28,15 +28,14 @@ public class RAMUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void modify(Integer id, String username, String password) throws AlreadyTakenFieldException {
+	public void modify(Integer id, String username, String password) throws BusinessException {
 		Set<User> utenti = null;
-		try {
-			utenti = getAllUsers();
 
+		utenti = getAllUsers();
 
 		for (User user : utenti) {
 			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
-				throw new AlreadyTakenFieldException();
+				throw new AlreadyExistingException();
 			}
 		}
 		for (User user : utenti) {
@@ -45,9 +44,6 @@ public class RAMUserServiceImpl implements UserService {
 				user.setPassword(password);
 			}
 		}
-	} catch (BusinessException e) {
-		throw new RuntimeException(e);
-	}
 	}
 
 	@Override

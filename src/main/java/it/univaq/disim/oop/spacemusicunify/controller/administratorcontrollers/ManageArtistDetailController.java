@@ -12,13 +12,11 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,7 +30,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private Artist artist;
 
     @FXML
-    private TextField stageNameField;
+    private TextField nameField;
     @FXML
     private ComboBox<Nationality> nationalityField;
     @FXML
@@ -42,7 +40,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private TextArea biographyField;
 
     @FXML
-    private Label stageName;
+    private Label name;
     @FXML
     private Label nationality;
     @FXML
@@ -126,7 +124,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         members.getItems().add(menuItem);
                     }
                 }
-                stageName.setText(artist.getName());
+                name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
                 biography.setText(artist.getBiography());
                 nationality.setText(String.valueOf(artist.getNationality()));
@@ -134,6 +132,12 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 break;
 
             case modify:
+                confirm.disableProperty().bind(nameField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+                nameField.textProperty().addListener((obs, oldText, newText)-> {
+                    if (existingLabel.isVisible()) {
+                        existingLabel.setVisible(false);
+                    }
+                });
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
@@ -169,7 +173,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 cancelbox.setVisible(false);
                 loadModifyImages(artist.getPictures());
 
-                stageNameField.setText(artist.getName());
+                nameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
                 nationalityField.setValue(artist.getNationality());
@@ -181,6 +185,12 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 break;
 
             case newobject:
+                confirm.disableProperty().bind(nameField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+                nameField.textProperty().addListener((obs, oldText, newText)-> {
+                    if (existingLabel.isVisible()) {
+                        existingLabel.setVisible(false);
+                    }
+                });
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
@@ -239,7 +249,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 cancelbox.setVisible(false);
                 loadModifyImages(artist.getPictures());
 
-                stageNameField.setText(artist.getName());
+                nameField.setText(artist.getName());
                 yearsOfActivityField.setValue(artist.getYearsOfActivity());
                 biographyField.setText(artist.getBiography());
                 nationalityField.setValue(artist.getNationality());
@@ -266,7 +276,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         members.getItems().add(menuItem);
                     }
                 }
-                stageName.setText(artist.getName());
+                name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
                 biography.setText(artist.getBiography());
                 nationality.setText(String.valueOf(artist.getNationality()));
@@ -313,8 +323,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         this.focusImage(img);
                     });
 
-
-
                 modifyImages.getChildren().add(imgs);
             }
             ImageView imgAdd;
@@ -350,7 +358,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         try{
 
             if (artist.getId() == null) {
-                artist.setName(stageNameField.getText());
+                artist.setName(nameField.getText());
                 artist.setBiography(biographyField.getText());
                 artist.setYearsOfActivity(yearsOfActivityField.getValue());
                 artist.setNationality(nationalityField.getValue());
@@ -358,19 +366,15 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 if(tempPictures != null ) artist.setPictures(tempPictures);
                 artistService.add(artist);
             } else {
-            	artistService.modify(artist.getId(), stageNameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), tempPictures, addMembers, artist);
+            	artistService.modify(artist.getId(), nameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), tempPictures, addMembers, artist);
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
-        } catch (AlreadyTakenFieldException e){
-            existingLabel.setText("This Artist stage name is already taken");
-            existingLabel.setVisible(true);
-            System.out.println("eccezzione1");
-        }catch (AlreadyExistingException e){
 
-            existingLabel.setText("This artist already exists");
+        }catch (AlreadyExistingException e){
+            existingLabel.setText(e.getMessage());
             existingLabel.setVisible(true);
-            System.out.println("eccezione "+e.getMessage());
+
         } catch (BusinessException e) {
             dispatcher.renderError(e);
         }
@@ -458,17 +462,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         modifyImages.getChildren().clear();
         loadModifyImages(tempPictures);
         cancelbox.setVisible(false);
-/*        for(Picture img: tempPictures){
-            if(imgUrl.getId().intValue() == img.getId().intValue()){
-                tempPictures.remove(img);
-                modifyImages.getChildren().clear();
-                *//*artist.setPictures(tempPictures);*//*
-                loadModifyImages(tempPictures);
-                cancelbox.setVisible(false);
-
-                break;
-            }
-        }*/
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){

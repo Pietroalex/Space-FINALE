@@ -105,13 +105,9 @@ public class ManageUserDetailController implements Initializable, DataInitializa
                 dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
             }
 
-        } catch (AlreadyTakenFieldException e){
-            System.out.println(e.getMessage());
-            existingLabel.setVisible(true);
-
         }catch (AlreadyExistingException e){
-            System.out.println(e.getMessage());
-            existingLabel.setText("The user already exist");
+
+            existingLabel.setText(e.getMessage());
             existingLabel.setVisible(true);
 
         } catch (BusinessException e) {

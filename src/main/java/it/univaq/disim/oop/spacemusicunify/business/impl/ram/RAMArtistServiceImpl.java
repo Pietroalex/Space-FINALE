@@ -72,7 +72,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 	public void modify(Integer id, String name, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images, Set<Artist> addMembers, Artist artist) throws BusinessException {
 		for(Artist artists : storedArtists) {
 			if(artists.getName().equals(name) && artists.getId().intValue() != id.intValue()) {
-				throw new AlreadyTakenFieldException("taken_artist_name");
+				throw new AlreadyExistingException("taken_artist_name");
 			}
 		}
 		for(Artist artistCheck : storedArtists){

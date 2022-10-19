@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="masterPane" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
-   <TextField id="text" fx:id="stageNameField" alignment="CENTER" layoutX="118.0" layoutY="96.0" prefHeight="25.0" prefWidth="249.0" promptText="StageName">
+   <TextField id="text" fx:id="nameField" alignment="CENTER" layoutX="118.0" layoutY="96.0" prefHeight="25.0" prefWidth="249.0" promptText="Name">
       <font>
          <Font size="11.0" />
       </font>
