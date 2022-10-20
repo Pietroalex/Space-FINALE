@@ -529,7 +529,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	public void createNewSong() {
 		Song song = new Song();
 		song.setAlbum(this.album);
-		song.setTitle("Nuova song");
+		song.setTitle("New song");
 		song.setLyrics("add Lyric");
 		song.setLength("00:00");
 		if(album.getGenre() == Genre.singles) {
@@ -579,7 +579,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}
 
 
-		playerService.setPlayerState(PlayerState.searchSingleClick);
 		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 	}
 	@FXML
@@ -606,7 +605,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					if(checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
 				}
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),songList, param.getValue().getUser(), param.getValue());
+					userService.modify(songList, param.getValue());
 					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);

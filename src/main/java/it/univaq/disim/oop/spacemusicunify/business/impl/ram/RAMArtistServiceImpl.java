@@ -32,7 +32,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 
 		for (Artist artists : storedArtists) {
 			if (artists.getName().equals(artist.getName())) {
-				throw new AlreadyExistingException("existing_artist");
+				throw new AlreadyExistingException("New Artist, Already Existing artist with this name");
 			}
 		}
 
@@ -72,7 +72,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 	public void modify(Integer id, String name, String biography, int yearsOfActivity, Nationality nationality, Set<Picture> images, Set<Artist> addMembers, Artist artist) throws BusinessException {
 		for(Artist artists : storedArtists) {
 			if(artists.getName().equals(name) && artists.getId().intValue() != id.intValue()) {
-				throw new AlreadyExistingException("taken_artist_name");
+				throw new AlreadyExistingException("Modify Artist, Already Existing artist with this name");
 			}
 		}
 		for(Artist artistCheck : storedArtists){
@@ -167,12 +167,12 @@ public class RAMArtistServiceImpl implements ArtistService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("not_existing_artist");
+		if(!check)throw new ObjectNotFoundException("This artist doesn't exist");
 	}
 
 	@Override
 	public Set<Artist> getArtistList() throws BusinessException {
-		if(storedArtists == null) throw new ObjectNotFoundException();
+		if(storedArtists == null) throw new BusinessException("Error in artist storage");
 		return new HashSet<>(storedArtists);
 	}
 
@@ -182,7 +182,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 		for(Production production : findAllProductions(artist)) {
 			albums.add(production.getAlbum());
 		}
-		if(albums.isEmpty()) throw new ObjectNotFoundException("no albums for this artist");
+		if(albums.isEmpty()) throw new ObjectNotFoundException("There is no album for this artist");
 		return albums;
 	}
 
@@ -194,7 +194,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				productions.add(production);
 			}
 		}
-		if(productions.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
+		if(productions.isEmpty()) throw new ObjectNotFoundException("There is no production for this artist");
 		return productions;
 	}
 }

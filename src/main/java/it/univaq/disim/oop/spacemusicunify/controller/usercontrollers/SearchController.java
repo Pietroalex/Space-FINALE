@@ -372,7 +372,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 					if(checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
 				}
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),songList, param.getValue().getUser(), param.getValue());
+					userService.modify(songList, param.getValue());
 				} catch (BusinessException e) {
 					 dispatcher.renderError(e);
 				}

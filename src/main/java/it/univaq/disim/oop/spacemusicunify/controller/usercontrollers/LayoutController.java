@@ -47,7 +47,6 @@ public class LayoutController implements DataInitializable<User> {
 		spacemusicunifyPlayer = RunTimeService.getPlayer();
 
 		this.user = user;
-		playerService.setPlayerState(PlayerState.started);
 		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 		dispatcher.renderView("UserViews/HomeView/playlistPane", user);
 

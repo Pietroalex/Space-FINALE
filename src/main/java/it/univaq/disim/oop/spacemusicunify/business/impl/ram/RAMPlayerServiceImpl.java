@@ -7,29 +7,19 @@ import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerService;
-import it.univaq.disim.oop.spacemusicunify.business.PlayerState;
-import it.univaq.disim.oop.spacemusicunify.business.impl.file.Utility;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.util.Duration;
 
 public class RAMPlayerServiceImpl implements PlayerService {
 	
 	private static Set<SpacemusicunifyPlayer> storedPlayers = new HashSet<>();
-	private PlayerState playerState;
-	
-	@Override
-	public PlayerState getPlayerState() {
-		return playerState;
-	}
 	@Override
 	public void add(User user) throws BusinessException {
 		for(SpacemusicunifyPlayer player : storedPlayers) {
 			if(player.getUser() == user) {
-				throw new AlreadyExistingException();
+				throw new AlreadyExistingException("Already Existing player for this user");
 			}
 		}
 		SpacemusicunifyPlayer player = new SpacemusicunifyPlayer(user);
@@ -38,21 +28,16 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void delete(User user) throws BusinessException {
-		SpacemusicunifyPlayer player = null;
 		boolean check = false;
 		for(SpacemusicunifyPlayer playerCheck : storedPlayers) {
 			if(playerCheck.getUser() == user) {
 				check = true;
-				storedPlayers.remove(player);
+				storedPlayers.removeIf((SpacemusicunifyPlayer p) -> p.getUser().getId().intValue() == user.getId().intValue());
 				break;
 			}
 		}
-		if(!check) throw new ObjectNotFoundException("player not found");
+		if(!check) throw new ObjectNotFoundException("This Player doesn't exist");
 
-	}
-	@Override
-	public void setPlayerState(PlayerState playerState) {
-		this.playerState = playerState;
 	}
 	@Override
 	public SpacemusicunifyPlayer getPlayer(User user) throws BusinessException {
@@ -61,24 +46,24 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				return player;
 			}
 		}
-		throw new ObjectNotFoundException("not_existing_player");
+		throw new ObjectNotFoundException("There is no player for this user");
 	}
 
 	@Override
 	public void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player, empty queue");
 		player.setDuration(duration);
 	}
 
 	@Override
 	public void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in volume updating for this player");
 		player.setVolume(volume);
 	}
 
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player, empty queue");
 		player.getQueue().add(newSong);
 	}
 	@Override
@@ -129,16 +114,16 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("not_removed");
+		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("Error in removal of the song, not removed");
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("no_position");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside player");
 		player.setCurrentSong(position);
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		if(player.getQueue().size() == 0) throw new BusinessException("no_songs");
+		if(player.getQueue().size() == 0) throw new BusinessException("The song queue has no songs, cannot replace");
 		player.getQueue().set(player.getCurrentSong(), song);
 	}
 	

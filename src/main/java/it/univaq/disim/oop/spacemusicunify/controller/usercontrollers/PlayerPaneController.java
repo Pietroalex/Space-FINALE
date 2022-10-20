@@ -680,7 +680,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				list.add(songToAdd);
 				
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),list, param.getValue().getUser(), param.getValue());
+					userService.modify(list, param.getValue());
 					if("playlist".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("UserViews/PlaylistView/playlistView", param.getValue());
 					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
 

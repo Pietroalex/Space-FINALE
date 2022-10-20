@@ -25,19 +25,14 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
 	private static final String playersFile = REPOSITORY_BASE + File.separator + "players.txt";
-	private PlayerState playerState;
 
-	@Override
-	public PlayerState getPlayerState() {
-		return playerState;
-	}
 	@Override
 	public void add(User user) throws BusinessException {
 		try {
 			FileData fileData = Utility.readAllRows(playersFile);
 			for(String[] columns: fileData.getRows()) {
 				if (columns[0].equals( user.getId().toString() ) ) {
-					throw new AlreadyExistingException("existing_player");
+					throw new AlreadyExistingException("Already Existing player for this user");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(playersFile))) {
@@ -96,15 +91,10 @@ public class FilePlayerServiceImpl implements PlayerService {
 					break;
 				}
 			}
-			if(!check)throw new BusinessException("not_existing_player");
+			if(!check)throw new BusinessException("This Player doesn't exist");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-
-	}
-	@Override
-	public void setPlayerState(PlayerState playerState) {
-		this.playerState = playerState;
 
 	}
 	@Override
@@ -121,13 +111,13 @@ public class FilePlayerServiceImpl implements PlayerService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if (player == null) throw new ObjectNotFoundException("not_found_player");
+		if (player == null) throw new ObjectNotFoundException("There is no player for this user");
 		return player;
 	}
 
 	@Override
 	public void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player");
 		player.setDuration(duration);
 
 		try {
@@ -158,7 +148,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 	@Override
 	public void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in volume updating for this player");
 		player.setVolume(volume);
 
 		try {
@@ -167,8 +157,6 @@ public class FilePlayerServiceImpl implements PlayerService {
 			int cont = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
-
-
 
 					String[] row = new String[]{rows[0], String.valueOf(volume), rows[2], rows[3], rows[4], rows[5], rows[6] };
 					fileData.getRows().set(cont, row);
@@ -192,7 +180,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
 
-		if(player.getQueue() == null) throw new BusinessException();
+		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player, empty queue");
 		player.getQueue().add(newSong);
 
 		List<String> queueIDS = new ArrayList<>();
@@ -274,7 +262,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 			}
 		}
-		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("not_removed");
+		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("Error in removal of the song, not removed");
 
 		List<String> queueIDS = new ArrayList<>();
 		for(Song songs : player.getQueue()){
@@ -312,7 +300,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("no_position");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside player");
 
 		try {
 
@@ -343,7 +331,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void replaceCurrentSong(SpacemusicunifyPlayer player, Song song) throws BusinessException {
-		if(player.getQueue().size() == 0) throw new BusinessException("no_songs");
+		if(player.getQueue().size() == 0) throw new BusinessException("The song queue has no songs, cannot replace");
 
 		try {
 

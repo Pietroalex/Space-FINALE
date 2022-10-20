@@ -2,6 +2,7 @@ package it.univaq.disim.oop.spacemusicunify.business.impl.ram;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
+import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 
 import java.util.*;
 
@@ -10,14 +11,17 @@ public class RAMUserServiceImpl implements UserService {
 	private static Set<User> storedUsers = new HashSet<>();
 	private static Set<Playlist> storedPlaylists = new HashSet<>();
 	private static int idUser = 1;
-	private static int id = 1; // da capire cos'è
+	private static int idPlaylist = 1;
 
 	@Override
 	public void add(User user) throws BusinessException {
 		// controllo se l'utente già è presente
 		for (User users : storedUsers) {
-			if (users.getUsername().equals(user.getUsername()) || user.getUsername().contains("admin")) {
-				throw new AlreadyExistingException("existing_user");
+			if ( user.getUsername().contains("admin")) {
+				throw new AlreadyExistingException("No User can contain ADMIN username in its own");
+			}
+			if (users.getUsername().equals(user.getUsername())) {
+				throw new AlreadyExistingException("New User, Already Existing user with this username");
 			}
 		}
 		// utente nuovo
@@ -29,16 +33,17 @@ public class RAMUserServiceImpl implements UserService {
 
 	@Override
 	public void modify(Integer id, String username, String password) throws BusinessException {
-		Set<User> utenti = null;
+		Set<User> users = getAllUsers();
 
-		utenti = getAllUsers();
-
-		for (User user : utenti) {
-			if (user.getUsername().equals(username) && user.getId().intValue() != id.intValue()) {
-				throw new AlreadyExistingException();
+		for (User userCheck : users) {
+			if ( username.contains("admin")) {
+				throw new AlreadyExistingException("No User can contain ADMIN username in its own");
+			}
+			if (userCheck.getUsername().equals(username) && userCheck.getId().intValue() != id.intValue()) {
+				throw new AlreadyExistingException("Modify User, Already Existing user with this username");
 			}
 		}
-		for (User user : utenti) {
+		for (User user : users) {
 			if (user.getId().intValue() == id.intValue()) {
 				user.setUsername(username);
 				user.setPassword(password);
@@ -48,32 +53,26 @@ public class RAMUserServiceImpl implements UserService {
 
 	@Override
 	public void delete(User user) throws BusinessException {
-
-
-		Set<Playlist> playlists = null;
+		boolean check = false;
 		try {
-			playlists = getAllPlaylists(user);
-			System.out.println(playlists);
-		} catch (BusinessException e) {
-			throw new RuntimeException(e);
-		}
+			for (User userCheck : getAllUsers()) {
+				if (userCheck.getId().intValue() == user.getId().intValue()) {
+					check = true;
 
-		for (User userCheck : getAllUsers()) {
-			if (userCheck.getId().intValue() == user.getId().intValue()) {
-				storedUsers.remove(userCheck);
-				break;
+					Set<Playlist> playlists = getAllPlaylists(user);
+					for(Playlist playlist : playlists) {
+						delete(playlist);
+					}
+					SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
+
+					break;
+				}
 			}
+
+		} catch (BusinessException e) {
+		ViewDispatcher.getInstance().renderError(e);
 		}
-		
-		
-		Set<Playlist> playlistList = playlists;
-		for (Playlist playlist : playlistList) {
-			if (playlist.getUser().equals(user)) {
-				delete(playlist);
-			}
-		}
-		
-		SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
+		if(!check) throw new ObjectNotFoundException("This user doesn't exist");
 	}
 
 	@Override
@@ -92,28 +91,34 @@ public class RAMUserServiceImpl implements UserService {
 				}
 			}
 		}
-		throw new ObjectNotFoundException();
+		throw new ObjectNotFoundException("User Not Found");
 	}
 
 	@Override
 	public Set<User> getAllUsers() throws BusinessException {
-		if(storedUsers == null) throw  new BusinessException();
+		if(storedUsers == null) throw  new BusinessException("Error in user storage");
 		return new HashSet<>(storedUsers);
 	}
 
 	@Override
 	public void add(Playlist playlist) throws BusinessException {
-		playlist.setId(id++);
+		for (Playlist playlistCheck : storedPlaylists) {
+			if (playlistCheck.getTitle().equals(playlist.getTitle()) && playlistCheck.getUser().getId().intValue() == playlist.getId().intValue()) {
+				throw new AlreadyExistingException("This playlist already exists in the users playlists");
+			}
+		}
+
+		playlist.setId(idPlaylist++);
 		if(!storedPlaylists.add(playlist)) throw new BusinessException();
 	}
 	
 	@Override
-	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist value) throws BusinessException {
+	public void modify(Set<Song> songs, Playlist playlist) throws BusinessException {
 		boolean check = false;
-		for (Playlist playlist : storedPlaylists) {
-			if (playlist.getId().intValue() == id.intValue()) {
+		for (Playlist playlists : storedPlaylists) {
+			if (playlists.getId().intValue() == playlist.getId()) {
 				check = true;
-				playlist.setSongList(songlist);
+				playlist.setSongList(songs);
 				break;
 			}
 		}
@@ -130,11 +135,8 @@ public class RAMUserServiceImpl implements UserService {
 				break;
 			}
 		}
-		if(check) {
-			storedPlaylists.removeIf((Playlist playlistCheck) -> playlistCheck.getId().intValue() == playlist.getId().intValue());
-		} else {
-			throw new BusinessException("not_existing_playlist");
-		}
+		if(!check) throw new BusinessException("This playlist doesn't exist");
+		storedPlaylists.removeIf((Playlist playlistCheck) -> playlistCheck.getId().intValue() == playlist.getId().intValue());
 	}
 	
 	@Override
@@ -157,7 +159,7 @@ public class RAMUserServiceImpl implements UserService {
 			}
 			return userPlaylists;
 		}
-		throw new BusinessException("not_existing_user");
+		throw new BusinessException("This user doesn't exist");
 	}
 	
 }

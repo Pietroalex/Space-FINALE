@@ -89,7 +89,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				
 				playlist.getSongList().remove(param.getValue());
 				try {
-					userService.modify(playlist.getId(),playlist.getTitle(),playlist.getSongList(),playlist.getUser(), playlist);
+					userService.modify(playlist.getSongList(), playlist);
 				} catch (BusinessException e) {
 					e.printStackTrace();
 				}
@@ -131,10 +131,6 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				spacemusicunifyPlayer.getMediaPlayer().stop();
 				spacemusicunifyPlayer.getMediaPlayer().dispose();
 			}
-
-
-		
-		playerService.setPlayerState(PlayerState.searchSingleClick);
 		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 	}
 	

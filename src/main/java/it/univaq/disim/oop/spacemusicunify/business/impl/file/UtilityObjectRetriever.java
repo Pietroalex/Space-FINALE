@@ -161,10 +161,10 @@ public class UtilityObjectRetriever extends Object {
 	private static Playlist findPlaylist(String[] columns, String file) {
 		Playlist playlist = new Playlist();
 		playlist.setId(Integer.valueOf(columns[0]));
-		playlist.setUser(((User) UtilityObjectRetriever.findObjectById(columns[2], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt"))));
+		playlist.setUser(((User) UtilityObjectRetriever.findObjectById(columns[3], file.replace(file.substring(file.indexOf("data" + File.separator) + 5), "users.txt"))));
 		playlist.setTitle(columns[1]);
 		Set<Song> songs = new HashSet<>();
-		for(String song: Utility.readArray(columns[3])){
+		for(String song: Utility.readArray(columns[2])){
 			songs.add((Song) UtilityObjectRetriever.findObjectById(song, file.replace(file.substring(file.indexOf("data" + File.separator) + 5),"songs.txt")));
 		}
 		playlist.setSongList(songs);

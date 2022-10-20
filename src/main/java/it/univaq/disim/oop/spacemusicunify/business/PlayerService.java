@@ -7,11 +7,6 @@ import javafx.util.Duration;
 
 
 public interface PlayerService {
-
-    PlayerState getPlayerState();
-    
-	void setPlayerState(PlayerState playerState);
-	
 	SpacemusicunifyPlayer getPlayer(User user) throws BusinessException;
 	void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException;
 	void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException;

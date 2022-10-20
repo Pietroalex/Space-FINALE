@@ -17,7 +17,6 @@ public class FileArtistServiceImpl implements ArtistService {
 	private String artistsFile;
 	private ProductionService productionService;
 	private MultimediaService multimediaService;
-	private Set<Artist> bandMembers = new HashSet<>();
 	
 	public FileArtistServiceImpl(String artistsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.artistsFile = artistsFile;
@@ -32,7 +31,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] column: fileData.getRows()) {
 				if(column[1].equals(artist.getName())) {
-					throw new AlreadyExistingException("Already Existing artist with this name");
+					throw new AlreadyExistingException("New Artist, Already Existing artist with this name");
 				}
 			}
 			artist.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
@@ -108,7 +107,7 @@ public class FileArtistServiceImpl implements ArtistService {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] column: fileData.getRows()) {
 				if(column[1].equals(artist.getName())) {
-					throw new AlreadyExistingException("Already Existing artist with this name");
+					throw new AlreadyExistingException("Modify Artist, Already Existing artist with this name");
 				}
 			}
 			int cont = 0;
@@ -228,7 +227,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check)throw new ObjectNotFoundException("artista inesistente");
+		if(!check)throw new ObjectNotFoundException("This artist doesn't exist");
 	}
 
 
@@ -238,8 +237,8 @@ public class FileArtistServiceImpl implements ArtistService {
 		Set<Artist> artistList = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for (String[] colonne : fileData.getRows()) {
-				artistList.add((Artist) UtilityObjectRetriever.findObjectById(colonne[0], artistsFile));
+			for (String[] columns : fileData.getRows()) {
+				artistList.add((Artist) UtilityObjectRetriever.findObjectById(columns[0], artistsFile));
 			}
 
 		} catch (IOException e) {
@@ -255,7 +254,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		for (Production production : productions){
 			albums.add(production.getAlbum());
 		}
-		if(albums.isEmpty()) throw new ObjectNotFoundException("no albums for this artist");
+		if(albums.isEmpty()) throw new ObjectNotFoundException("There is no album for this artist");
 		return albums;
 	}
 	@Override
@@ -266,7 +265,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				productionList.add(production);
 			}
 		}
-		if(productionList.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
+		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this artist");
 		return productionList;
 	}
 
