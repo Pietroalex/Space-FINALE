@@ -150,8 +150,6 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     						spacemusicunifyPlayer.getMediaPlayer().dispose();
     					}
 
-
-    				playerService.setPlayerState(PlayerState.searchSingleClick);
     				dispatcher.renderView("UserViews/UserHomeView/playerPane", RunTimeService.getCurrentUser());
     			});
     			return new SimpleObjectProperty<Button>(addButton);
@@ -198,7 +196,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
 					}
 				}
 				try {
-					userService.modify(param.getValue().getId(), param.getValue().getTitle(),lista, param.getValue().getUser(), param.getValue());
+					userService.modify(lista, param.getValue());
 				} catch (BusinessException e) {
 					 e.printStackTrace();
 				}

@@ -26,7 +26,10 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(album.getTitle()) || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles) {
+			if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+				throw new AlreadyExistingException("The title must not contain 'Singles'");
+			}
+			if (albums.getTitle().equals(album.getTitle()) ) {
 				throw new AlreadyExistingException("Already Existing album with this title");
 			}
 		}
@@ -125,8 +128,13 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if (albums.getTitle().equals(title) && album.getId().intValue() != id.intValue() || album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-				throw new AlreadyExistingException();
+			if(genre != Genre.singles) {
+				if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+					throw new AlreadyExistingException("The title must not contain 'Singles'");
+				}
+				if (albums.getTitle().equals(title) && albums.getId().intValue() != id.intValue() ){
+					throw new AlreadyExistingException("Already Existing album with this title");
+				}
 			}
 		}
 		for (Album albumCheck : storedAlbums) {
@@ -181,13 +189,16 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("album not exist");
+		if(!check)throw new ObjectNotFoundException("This album doesn't exist");
 	}
 
 	@Override
 	public void add(Song song) throws BusinessException {
 		for (Song songs : storedSongs) {
-			if(songs.getTitle().equals(song.getTitle()) || song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null) {
+			if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+			}
+			if(songs.getTitle().equals(song.getTitle())) {
 				throw new AlreadyExistingException("Already Existing song with this title");
 			}
 		}
@@ -209,8 +220,11 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Audio tempAudio, String lyrics, Album album, String length, Genre genre, Song oldSong) throws BusinessException {
 		for (Song songs : storedSongs) {
-			if (songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue() || title.contains("DefaultSingles") && album.getSongs() != null) {
-				throw new AlreadyExistingException();
+			if ( title.contains("DefaultSingles") && album.getSongs() != null){
+				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+			}
+			if(songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue()) {
+				throw new AlreadyExistingException("Already Existing song with this title");
 			}
 		}
 		for (Song song : storedSongs) {
@@ -252,7 +266,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 					for(Playlist playlist : userService.getAllPlaylists(user)){
 						Set<Song> playlistSongs = playlist.getSongList();
 						playlistSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
-						userService.modify(playlist.getId(), playlist.getTitle(), playlistSongs, user, playlist);
+						userService.modify(playlistSongs, playlist);
 					}
 					PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
 					for(Song songCheck : playerService.getPlayer(user).getQueue()) {
@@ -274,19 +288,19 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			}
 		}
 
-		if(!check)throw new ObjectNotFoundException("not_existing_song");
+		if(!check)throw new ObjectNotFoundException("This song doesn't exist");
 
 	}
 
 	@Override
 	public Set<Album> getAlbumList() throws BusinessException {
-		if(storedAlbums == null) throw new ObjectNotFoundException();
+		if(storedAlbums == null) throw new BusinessException("Error In albums storage");
 		return new HashSet<>(storedAlbums);
 	}
 
 	@Override
 	public Set<Song> getSongList() throws BusinessException {
-		if(storedSongs == null) throw new ObjectNotFoundException();
+		if(storedSongs == null) throw new BusinessException("Error In songs storage");
 		return new HashSet<>(storedSongs);
 	}
 
@@ -296,7 +310,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		for(Production production : findAllProductions(album)) {
 			artists.add(production.getArtist());
 		}
-		if(artists.isEmpty()) throw new ObjectNotFoundException("no artists for this album");
+		if(artists.isEmpty()) throw new ObjectNotFoundException("There is no artist for this album");
 		return artists;
 	}
 
@@ -308,7 +322,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				productions.add(production);
 			}
 		}
-		if(productions.isEmpty()) throw new ObjectNotFoundException("no productions for this album");
+		if(productions.isEmpty()) throw new ObjectNotFoundException("There is no production for this album");
 		return productions;
 	}
 

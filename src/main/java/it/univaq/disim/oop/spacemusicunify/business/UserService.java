@@ -14,11 +14,11 @@ public interface UserService {
 
 	void add(Playlist playlist) throws BusinessException;
 
-	void modify(Integer id, String title, Set<Song> songlist, User user, Playlist playlist) throws BusinessException;
+	void modify(Set<Song> songs, Playlist playlist) throws BusinessException;
 
 	void delete(Playlist playlist) throws BusinessException;
 
-	Set<Playlist> getAllPlaylists(User utente) throws BusinessException;
+	Set<Playlist> getAllPlaylists(User user) throws BusinessException;
 
 	GeneralUser authenticate(String username, String password) throws BusinessException;
 	

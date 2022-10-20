@@ -17,7 +17,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	private String songsFile;
 	private MultimediaService multimediaService;
 	private ProductionService productionService;
-	private Set<Artist> choosenArtists;
+	private Set<Artist> chosenArtists;
 	
 	public FileAlbumServiceImpl(String albumsFile, String songsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.albumsFile = albumsFile;
@@ -100,7 +100,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Genre genre, Picture tempPicture,  Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
+	public void modify(Integer id, String title, Genre genre, Picture tempPicture,  Set<Song> songs, LocalDate release, Album album) throws BusinessException {
 		String oldGenre = null;
 		try {
 
@@ -146,7 +146,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			if(oldGenre != null && genre != Genre.singles) {
 				if (!oldGenre.equals(String.valueOf(genre)) ) {
-					for (Song song : songlist) {
+					for (Song song : songs) {
 						song.setGenre(genre);
 						modify(song.getId(), song.getTitle(), null, song.getLyrics(), song.getAlbum(), song.getLength(), song.getGenre(), song);
 					}
@@ -201,7 +201,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check)throw new ObjectNotFoundException("album not exist");
+		if(!check)throw new ObjectNotFoundException("This album doesn't exist");
 	}
 	
 	@Override
@@ -266,12 +266,12 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 				cont++;
 			}
-			if(!check)throw new ObjectNotFoundException("album non trovato");
+			if(!check)throw new ObjectNotFoundException("This album doesn't exist");
 
 			try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
 				writer.println(fileData.getCounter());
-				for (String[] righe : fileData.getRows()) {
-					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
 			}
 		} catch (IOException e) {
@@ -324,7 +324,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 				cont++;
 			}
-			if(!check)throw new BusinessException("song not found");
+			if(!check)throw new BusinessException("This song doesn't exist");
 
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				writer.println(fileData.getCounter());
@@ -361,7 +361,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 					for(Playlist playlist : userService.getAllPlaylists(user)){
 						Set<Song> songs = playlist.getSongList();
 							songs.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
-							userService.modify(playlist.getId(), playlist.getTitle(), songs, user, playlist);
+							userService.modify(songs, playlist);
 					}
 				}
 
@@ -412,7 +412,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("song not exists");
+		if(!check)throw new ObjectNotFoundException("This song doesn't exist");
 	}
 	@Override
 	public Set<Album> getAlbumList() throws BusinessException {
@@ -425,7 +425,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			}
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 		return albumList;
 	}
@@ -436,12 +436,12 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 
-			for(String[] righe : fileData.getRows()) {
+			for(String[] rows : fileData.getRows()) {
 
-				songList.add((Song) UtilityObjectRetriever.findObjectById(righe[0], songsFile));
+				songList.add((Song) UtilityObjectRetriever.findObjectById(rows[0], songsFile));
 			}
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
 		return songList;
 
@@ -452,7 +452,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		for (Production production : findAllProductions(album)){
 			artists.add(production.getArtist());
 		}
-		if(artists.isEmpty()) throw new ObjectNotFoundException("no artists for this album");
+		if(artists.isEmpty()) throw new ObjectNotFoundException("There is no artist for this album");
 		return artists;
 	}
 	@Override
@@ -463,15 +463,15 @@ public class FileAlbumServiceImpl implements AlbumService {
 				productionList.add(production);
 			}
 		}
-		if(productionList.isEmpty()) throw new ObjectNotFoundException("no productions for this artist");
+		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this album");
 		return productionList;
 	}
 	@Override
 	public Set<Artist> getChosenArtists() {
-		return choosenArtists;
+		return chosenArtists;
 	}
 	@Override
 	public void setChosenArtists(Set<Artist> chosenArtists) {
-		this.choosenArtists = chosenArtists;
+		this.chosenArtists = chosenArtists;
 	}
 }

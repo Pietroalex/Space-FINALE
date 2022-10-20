@@ -12,16 +12,12 @@ import it.univaq.disim.oop.spacemusicunify.domain.*;
 public class FileUserServiceImpl implements UserService {
 
 	private final String usersFile;
-
-	private final String songsFile;
 	private final String playlistFile;
 
 
-	public FileUserServiceImpl(String fileUtenti, String fileCanzoni, String filePlaylist) {
+	public FileUserServiceImpl(String fileUtenti, String filePlaylist) {
 		this.usersFile = fileUtenti;
-		this.songsFile = fileCanzoni;
 		this.playlistFile = filePlaylist;
-
 	}
 
 
@@ -32,7 +28,7 @@ public class FileUserServiceImpl implements UserService {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] columns : fileData.getRows()) {
 				if (columns[2].equals(user.getUsername()) || user.getUsername().contains("admin")) {
-					throw new AlreadyExistingException("existing_user");
+					throw new AlreadyExistingException("Already Existing user with this username");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
@@ -65,13 +61,13 @@ public class FileUserServiceImpl implements UserService {
 			FileData fileData = Utility.readAllRows(usersFile);
 			for (String[] columns : fileData.getRows()) {
 				if (columns[2].equals(username) && Integer.parseInt(columns[0]) != id ) {
-					throw new AlreadyExistingException();
+					throw new AlreadyExistingException("Already Existing user with this username");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
 				writer.println(fileData.getCounter());
-				for (String[] righe : fileData.getRows()) {
-					if (Long.parseLong(righe[0]) == id) {
+				for (String[] rows : fileData.getRows()) {
+					if (Long.parseLong(rows[0]) == id) {
 						StringBuilder row = new StringBuilder();
 						row.append(id);
 						row.append(Utility.COLUMN_SEPARATOR);
@@ -80,7 +76,7 @@ public class FileUserServiceImpl implements UserService {
 						row.append(password);
 						writer.println(row.toString());
 					} else {
-						writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+						writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 					}
 				}
 
@@ -92,37 +88,35 @@ public class FileUserServiceImpl implements UserService {
 
 	@Override
 	public void delete(User user) throws BusinessException {
-		boolean control = false;
+		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(usersFile);
-			for (String[] colonne : fileData.getRows()) {
-				if ( Integer.parseInt(colonne[0]) == user.getId() ) {
-					control = true;
-					break;
-				}
-			}
+			for (String[] columns : fileData.getRows()) {
+				if ( Integer.parseInt(columns[0]) == user.getId() ) {
+					check = true;
+					//eliminazione delle playlists
+					Set<Playlist> playlists = getAllPlaylists(user);
+					for(Playlist playlist : playlists) {
+						delete(playlist);
+					}
+					SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
 
-			if(control){
-				try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
-					writer.println(fileData.getCounter());
-					for (String[] righe : fileData.getRows()) {
-						if (Long.parseLong(righe[0]) != user.getId()) {
-							writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+					try (PrintWriter writer = new PrintWriter(new File(usersFile))) {
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
+							if (Long.parseLong(righe[0]) != user.getId()) {
+								writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+							}
 						}
 					}
+
+					break;
 				}
-				//eliminazione delle playlists
-				Set<Playlist> playlists = getAllPlaylists(user);
-				for(Playlist playlist : playlists) {
-					delete(playlist);
-				}
-				SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
-			}else{
-				throw new BusinessException("not_existing_user");
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
+		if(!check) throw new ObjectNotFoundException("This user doesn't exist");
 	}
 
 	@Override
@@ -136,8 +130,6 @@ public class FileUserServiceImpl implements UserService {
 						case "user" :
 							user = new User();
 							RunTimeService.setCurrentUser((User) user);
-
-
 							break;
 
 						case "admin" :
@@ -159,7 +151,7 @@ public class FileUserServiceImpl implements UserService {
 					return user;
 				}
 			}
-			throw new ObjectNotFoundException("no_user");
+			throw new ObjectNotFoundException("User Not Found");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
@@ -186,8 +178,8 @@ public class FileUserServiceImpl implements UserService {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			for (String[] rowsCheck : fileData.getRows()) {
-				if (rowsCheck[2].equals(playlist.getTitle())) {
-					throw new AlreadyExistingException("Already existing Playlist");
+				if (rowsCheck[2].equals(playlist.getTitle()) && Integer.parseInt(rowsCheck[3]) == playlist.getId()) {
+					throw new AlreadyExistingException("This playlist already exists in the users playlists");
 				}
 			}
 			try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
@@ -201,9 +193,9 @@ public class FileUserServiceImpl implements UserService {
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(playlist.getTitle());
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(playlist.getUser().getId());
-				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(playlist.getSongList());
+				row.append(Utility.COLUMN_SEPARATOR);
+				row.append(playlist.getUser().getId());
 				writer.println(row.toString());
 
 			}
@@ -213,36 +205,43 @@ public class FileUserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void modify(Integer id, String title, Set<Song> songlist, User user, Playlist playlist) throws  BusinessException {
+	public void modify( Set<Song> songs, Playlist playlist) throws  BusinessException {
+		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
-			List<String> idSongList = new ArrayList<>();
-			for(Song canzone : songlist) {
-				idSongList.add(canzone.getId().toString());
-			}
-			try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
-				writer.println(fileData.getCounter());
-				for (String[] righe : fileData.getRows()) {
-					if (Long.parseLong(righe[0]) == id) {
-						StringBuilder row = new StringBuilder();
-						row.append(id);
-						row.append(Utility.COLUMN_SEPARATOR);
-						row.append(title);
-						row.append(Utility.COLUMN_SEPARATOR);
-						row.append(user.getId());
-						row.append(Utility.COLUMN_SEPARATOR);
-						row.append(idSongList);
-
-						writer.println(row.toString());
-					} else {
-						writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+			for (String[] rowsCheck : fileData.getRows()) {
+				if (Integer.parseInt(rowsCheck[0]) == playlist.getId()) {
+					check = true;
+					List<String> idSongList = new ArrayList<>();
+					for (Song song : songs) {
+						idSongList.add(song.getId().toString());
 					}
+					try (PrintWriter writer = new PrintWriter(new File(playlistFile))) {
+						writer.println(fileData.getCounter());
+						for (String[] rows : fileData.getRows()) {
+							if (Long.parseLong(rows[0]) == playlist.getId()) {
+								StringBuilder row = new StringBuilder();
+								row.append(playlist.getId());
+								row.append(Utility.COLUMN_SEPARATOR);
+								row.append(rows[1]);
+								row.append(Utility.COLUMN_SEPARATOR);
+								row.append(idSongList);
+								row.append(Utility.COLUMN_SEPARATOR);
+								row.append(rows[3]);
+								writer.println(row.toString());
+							} else {
+								writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
+							}
+						}
+						playlist.setSongList(songs);
+					}
+					break;
 				}
-				playlist.setSongList(songlist);
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
+		if(!check) throw new BusinessException("This playlist doesn't exist");
 	}
 	@Override
 	public void delete(Playlist playlist) throws BusinessException {
@@ -273,7 +272,7 @@ public class FileUserServiceImpl implements UserService {
 			throw new BusinessException(e);
 		}
 
-		if(!check)throw new BusinessException("not_existing_playlist");
+		if(!check)throw new ObjectNotFoundException("This playlist doesn't exist");
 
 	}
 	@Override

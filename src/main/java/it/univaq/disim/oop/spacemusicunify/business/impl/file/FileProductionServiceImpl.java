@@ -59,21 +59,21 @@ public class FileProductionServiceImpl implements ProductionService {
 	public void add(Production production) throws BusinessException {
 		try {
 				FileData fileData = Utility.readAllRows(productionsFile);
-				for(String[] colonne: fileData.getRows()) {
-					if (colonne[1].equals( production.getArtist().getId().toString() ) && colonne[2].equals(production.getAlbum().getId().toString())) {
-						throw new AlreadyExistingException();
+				for(String[] columns: fileData.getRows()) {
+					if (columns[1].equals( production.getArtist().getId().toString() ) && columns[2].equals(production.getAlbum().getId().toString())) {
+						throw new AlreadyExistingException("This production already exists");
 					}
 				}
 			try (PrintWriter writer = new PrintWriter(new File(productionsFile))) {
-				long contatore = fileData.getCounter();
-				writer.println((contatore + 1));
-				for (String[] righe : fileData.getRows()) {
-					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+				long counter = fileData.getCounter();
+				writer.println((counter + 1));
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
-				production.setId((int) contatore);
+				production.setId((int) counter);
 
 				StringBuilder row = new StringBuilder();
-				row.append(contatore);
+				row.append(counter);
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(production.getArtist().getId());
 				row.append(Utility.COLUMN_SEPARATOR);
@@ -94,19 +94,19 @@ public class FileProductionServiceImpl implements ProductionService {
 
 		try {
 			FileData fileData = Utility.readAllRows(productionsFile);
-			for(String[] righeCheck: fileData.getRows()) {
-				if(righeCheck[0].equals(production.getId().toString())) {
+			for(String[] rowsCheck: fileData.getRows()) {
+				if(rowsCheck[0].equals(production.getId().toString())) {
 
 					check = true;
 					//aggiorno il file productions.txt
 					try (PrintWriter writer = new PrintWriter(new File(productionsFile))) {
 						writer.println(fileData.getCounter());
-						for (String[] righe : fileData.getRows()) {
-							if (righe[0].equals(production.getId().toString())) {
+						for (String[] rows : fileData.getRows()) {
+							if (rows[0].equals(production.getId().toString())) {
 								//jump line
 								continue;
 							} else {
-								writer.println(String.join("§", righe));
+								writer.println(String.join("§", rows));
 							}
 						}
 					}
@@ -114,11 +114,10 @@ public class FileProductionServiceImpl implements ProductionService {
 					break;
 				}
 			}
-			if(!check)throw new BusinessException("production inesistente");
 		} catch (IOException e) {
-			throw new BusinessException();
+			throw new BusinessException(e);
 		}
-		
+		if(!check)throw new BusinessException("This production doesn't exists");
 	}
 
 }

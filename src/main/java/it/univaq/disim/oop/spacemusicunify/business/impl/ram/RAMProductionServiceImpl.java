@@ -22,7 +22,7 @@ public class RAMProductionServiceImpl implements ProductionService {
 
 	@Override
 	public Set<Production> getAllProductions() throws BusinessException {
-		if(storedProductions == null) throw new BusinessException();
+		if(storedProductions == null) throw new BusinessException("Error in production storage");
 		return new HashSet<>(storedProductions);
 	}
 
@@ -30,7 +30,7 @@ public class RAMProductionServiceImpl implements ProductionService {
 	public void add(Production production) throws BusinessException {
 		for (Production productions : storedProductions) {
 			if (productions.getArtist().getId().toString().equals( production.getArtist().getId().toString() ) && productions.getAlbum().getId().toString().equals(production.getAlbum().getId().toString())) {
-				throw new AlreadyExistingException();
+				throw new AlreadyExistingException("This production already exists");
 			}
 		}
 		production.setId(idProduction++);
@@ -49,7 +49,7 @@ public class RAMProductionServiceImpl implements ProductionService {
 			}
 		}
 
-		if(!check)throw new BusinessException("production not exist");
+		if(!check)throw new BusinessException("This production doesn't exists");
 		else storedProductions.removeIf((Production productionCheck) -> productionCheck.getId().intValue() == production.getId().intValue());
 	}
 

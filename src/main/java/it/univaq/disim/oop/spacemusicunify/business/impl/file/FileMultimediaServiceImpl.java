@@ -35,13 +35,13 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
                         if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
                             ((Song) audio.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("audio");
+                            throw new AlreadyExistingException("Already Existing song with this audio");
                         }
                     } else {
                         //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
                         if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
                             ((Song) audio.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("audio");
+                            throw new AlreadyExistingException("Already Existing song with this audio");
                         }
                     }
 
@@ -68,7 +68,6 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new BusinessException(e);
         }
     }
@@ -98,9 +97,9 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new BusinessException("audio not exist");
+            if(!check)throw new ObjectNotFoundException("This audio doesn't exist");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BusinessException(e);
         }
     }
 
@@ -112,7 +111,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
                     if(Arrays.equals(pictureCheck.getData(), picture.getData())){
                         ((Artist) picture.getOwnership()).setId(null);
-                        throw new AlreadyExistingException("artist_picture");
+                        throw new AlreadyExistingException("Duplicated picture for this artist");
                     }
                 }
             } else {
@@ -124,13 +123,13 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                         if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                             if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 ((Album) picture.getOwnership()).setId(null);
-                                throw new AlreadyExistingException("album_picture");
+                                throw new AlreadyExistingException("Already Existing album with this cover");
                             }
                         } else {
                             //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                             if (Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 ((Album) picture.getOwnership()).setId(null);
-                                throw new AlreadyExistingException("album_picture");
+                                throw new AlreadyExistingException("Already Existing album with this cover");
                             }
                         }
 
@@ -165,7 +164,6 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new BusinessException(e);
         }
     }
@@ -195,7 +193,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new ObjectNotFoundException("picture not exist");
+            if(!check)throw new ObjectNotFoundException("This picture doesn't exist");
         } catch (IOException e) {
             throw new BusinessException(e);
         }
