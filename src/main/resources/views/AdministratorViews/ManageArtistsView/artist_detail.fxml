@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="480.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
    <children>
-         <Button id="b1" fx:id="modify" layoutX="38.0" layoutY="391.0" mnemonicParsing="false" onAction="#showModify" text="Modify Artist">
+         <Button id="b1" fx:id="modify" layoutX="38.0" layoutY="385.0" mnemonicParsing="false" onAction="#showModify" text="Modify Artist">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -45,7 +45,7 @@
                <HBox fx:id="images" alignment="CENTER_LEFT" prefHeight="120.0" prefWidth="120.0" spacing="10.0" />
             </content>
       </ScrollPane>
-         <Button id="b1" fx:id="albums" layoutX="684.0" layoutY="391.0" mnemonicParsing="false" onAction="#manageAlbums" text="Manage Artist Albums">
+         <Button id="b1" fx:id="albums" layoutX="684.0" layoutY="385.0" mnemonicParsing="false" onAction="#manageAlbums" text="Manage Artist Albums">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
