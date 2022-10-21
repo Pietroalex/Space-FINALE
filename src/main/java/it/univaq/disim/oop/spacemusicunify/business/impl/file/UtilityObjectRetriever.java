@@ -138,6 +138,34 @@ public class UtilityObjectRetriever extends Object {
 					throw new RuntimeException(e);
 				}
 				break;
+			case "audios.txt":
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] columns : fileData.getRows()) {
+						if(columns[0].equals(id)) {
+							System.out.println("audio");
+							object = findMultimedia(columns);
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				break;
+			case "pictures.txt":
+				try {
+					FileData fileData = Utility.readAllRows(file);
+
+					for (String[] columns : fileData.getRows()) {
+						if(columns[0].equals(id)) {
+							System.out.println("pictures");
+							object = findMultimedia(columns);
+						}
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				break;
 			default:
 
 				try {

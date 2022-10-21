@@ -173,9 +173,9 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
         try {
             FileData fileData = Utility.readAllRows(picturesFile);
-            for(String[] righeCheck: fileData.getRows()) {
-                if(righeCheck[0].equals(picture.getId().toString())) {
-                    Files.deleteIfExists(Paths.get(picturesDirectory+File.separator+righeCheck[1]));
+            for(String[] rowsCheck: fileData.getRows()) {
+                if(rowsCheck[0].equals(picture.getId().toString())) {
+                    Files.deleteIfExists(Paths.get(picturesDirectory+File.separator+rowsCheck[1]));
                     check = true;
                     //aggiorno il file pictures.txt
                     try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {

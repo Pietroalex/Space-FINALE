@@ -424,8 +424,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 
-		}catch (AlreadyExistingException e){
-			/*existingLabel.setText("This album already exists");*/
+		} catch (AlreadyExistingException e){
 			existingLabel.setText(e.getMessage());
 			existingLabel.setVisible(true);
 
@@ -444,11 +443,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 		}
 
-	}
-	@FXML
-	public void backToTheArtist(ActionEvent event) {
-		//dispatcher.setSituation(ViewSituations.detail);
-		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artist);
 	}
 	private void focusImage(String image){
 		imageUrl = image;
