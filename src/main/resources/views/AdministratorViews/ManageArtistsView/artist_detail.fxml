@@ -30,12 +30,12 @@
             <Font size="17.0" />
          </font>
       </Label>
-         <Label contentDisplay="CENTER" layoutX="378.0" layoutY="14.0" text="Artist Info">
+         <Label contentDisplay="CENTER" layoutX="386.0" layoutY="17.0" text="Artist Info">
             <font>
                <Font size="32.0" />
             </font>
          </Label>
-         <Label alignment="CENTER" layoutX="71.0" layoutY="73.0" text="stageName">
+         <Label alignment="CENTER" layoutX="163.0" layoutY="73.0" text="stageName">
          <font>
             <Font size="17.0" />
          </font>
@@ -53,22 +53,22 @@
             <Font size="16.0" />
          </font>
       </Button>
-         <Label layoutX="535.0" layoutY="73.0" text="nationality">
+         <Label layoutX="517.0" layoutY="73.0" text="nationality">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-         <Label fx:id="name" alignment="CENTER" layoutX="60.0" layoutY="99.0" text="Artist stageName">
+         <Label fx:id="name" alignment="CENTER" layoutX="58.0" layoutY="99.0" prefHeight="20.0" prefWidth="296.0" text="Artist stageName">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-         <Label fx:id="yearsOfActivity" alignment="CENTER" contentDisplay="CENTER" layoutX="711.0" layoutY="99.0" text="Artist yearsOfActivity">
+         <Label fx:id="yearsOfActivity" alignment="CENTER" contentDisplay="CENTER" layoutX="696.0" layoutY="99.0" prefHeight="20.0" prefWidth="160.0" text="Artist yearsOfActivity">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-         <Label fx:id="nationality" alignment="CENTER" contentDisplay="CENTER" layoutX="524.0" layoutY="99.0" text="Artist nationality">
+         <Label fx:id="nationality" alignment="CENTER" contentDisplay="CENTER" layoutX="477.0" layoutY="99.0" prefHeight="20.0" prefWidth="160.0" text="Artist nationality">
          <font>
             <Font size="14.0" />
          </font>

@@ -36,7 +36,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="417.0" layoutY="14.0" text="title">
+      <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="265.0" layoutY="14.0" prefHeight="45.0" prefWidth="382.0" text="title">
          <font>
             <Font size="30.0" />
          </font>
@@ -65,7 +65,7 @@
             <Font size="23.0" />
          </font>
       </Label>
-      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="694.0" layoutY="164.0" prefHeight="77.0" prefWidth="208.0">
+      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="154.0" prefHeight="77.0" prefWidth="208.0">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="21.0" prefWidth="204.0" text="Do you want to delete this image?">
                <font>

@@ -15,18 +15,18 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistsController">
    <children>
-      <Label alignment="CENTER" layoutX="14.0" layoutY="34.0" prefHeight="24.0" prefWidth="147.0" text="Manage Artists" textFill="#e366d0">
+      <Label alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="24.0" prefWidth="147.0" text="Manage Artists" textFill="#e366d0">
          <font>
             <Font name="Yu Gothic Medium" size="16.0" />
          </font></Label>
-      <Button id="b1" layoutX="770.0" layoutY="25.0" mnemonicParsing="false" onAction="#newArtist" text="New Artist">
+      <Button id="b1" layoutX="796.0" layoutY="14.0" mnemonicParsing="false" onAction="#newArtist" prefHeight="40.0" prefWidth="100.0" text="New Artist">
          <font>
             <Font size="16.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <TableView fx:id="artistList" layoutY="81.0" prefHeight="352.0" prefWidth="910.0">
+      <TableView fx:id="artistList" layoutY="65.0" prefHeight="368.0" prefWidth="910.0">
         <placeholder>
         <Label text="no artist found" />
    		</placeholder>
