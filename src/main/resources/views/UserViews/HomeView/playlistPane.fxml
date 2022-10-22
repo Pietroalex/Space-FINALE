@@ -29,7 +29,7 @@
             </TableView>
             <Button id="addP" fx:id="addPlaylist" mnemonicParsing="false" onAction="#addNewPlaylist" prefHeight="42.0" prefWidth="160.0" text="+ New Playlist" underline="true">
                <font>
-                  <Font name="Times New Roman" size="21.0" />
+                  <Font name="Times New Roman" size="18.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />

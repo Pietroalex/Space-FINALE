@@ -64,7 +64,6 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             Set<Playlist> result = userService.getAllPlaylists(user);
             ObservableList<Playlist> playlistData = FXCollections.observableArrayList(result);
             playlistView.setItems(playlistData);
-
         } catch (BusinessException e) {
             dispatcher.renderError(e);
         }

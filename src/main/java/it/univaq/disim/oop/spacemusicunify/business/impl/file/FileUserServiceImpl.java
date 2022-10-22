@@ -280,15 +280,15 @@ public class FileUserServiceImpl implements UserService {
 		Set<Playlist> playlists = new HashSet<>();
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
-
 			for (String[] rows : fileData.getRows()) {
-				if(rows[2].equals(user.getId().toString())) {
+				if(rows[3].equals(user.getId().toString())) {
 					playlists.add((Playlist) UtilityObjectRetriever.findObjectById(rows[0], playlistFile));
 				}
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
+		System.out.println(playlists);
 		return playlists;
 	}
 
