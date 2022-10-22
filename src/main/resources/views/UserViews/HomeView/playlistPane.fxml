@@ -15,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="448.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlaylistPaneController">
+<AnchorPane prefHeight="440.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlaylistPaneController">
    <children>
-      <VBox id="vbox" alignment="BOTTOM_LEFT" prefHeight="448.0" prefWidth="160.0">
+      <VBox id="vbox" alignment="BOTTOM_LEFT" prefHeight="440.0" prefWidth="160.0">
          <children>
-            <TableView fx:id="playlistView" prefHeight="406.0" prefWidth="160.0">
+            <TableView fx:id="playlistView" prefHeight="388.0" prefWidth="160.0">
                <placeholder>
         	   		<Label text="Playlists not found" />
    			   </placeholder>
@@ -27,6 +27,7 @@
                   <TableColumn fx:id="titleColumn" prefWidth="160.0" text="My Playlists" />
                </columns>
             </TableView>
+            <Separator prefHeight="10.0" prefWidth="160.0" />
             <Button id="addP" fx:id="addPlaylist" mnemonicParsing="false" onAction="#addNewPlaylist" prefHeight="42.0" prefWidth="160.0" text="+ New Playlist" underline="true">
                <font>
                   <Font name="Times New Roman" size="18.0" />

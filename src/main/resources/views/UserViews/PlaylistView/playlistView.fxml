@@ -30,11 +30,11 @@
             <TableColumn fx:id="delete" prefWidth="103.0" />
         </columns>
       </TableView>
-      <Label fx:id="playlistName" alignment="CENTER" layoutX="109.0" layoutY="9.0" prefHeight="52.0" prefWidth="693.0" text="Nome:" textFill="#e366d0">
+      <Label fx:id="playlistName" alignment="CENTER" layoutX="109.0" layoutY="9.0" prefHeight="52.0" prefWidth="693.0" text="Nome:" textFill="#45b5fb">
          <font>
             <Font size="34.0" />
          </font></Label>
-      <Button fx:id="play" layoutX="836.0" layoutY="10.0" mnemonicParsing="false" onAction="#addPlaylistToQueue" style="-fx-background-color: transparent;">
+      <Button id="b2" fx:id="play" layoutX="836.0" layoutY="10.0" mnemonicParsing="false" onAction="#addPlaylistToQueue">
          <graphic>
             <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -45,6 +45,9 @@
                </cursor>
             </ImageView>
          </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
       <Button id="b1" fx:id="deleteButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#deletePlaylist" prefHeight="31.0" prefWidth="70.0" text="delete">
          <font>

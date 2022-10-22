@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="player" maxHeight="74.0" maxWidth="1070.0" prefHeight="74.0" prefWidth="1070.0" style="-fx-background-color: lightblue;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlayerPaneController">
+<AnchorPane fx:id="player" maxHeight="82.0" maxWidth="1070.0" prefHeight="82.0" prefWidth="1070.0" style="-fx-background-color: lightblue;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlayerPaneController">
    <children>
       <Slider fx:id="progressSlider" layoutX="306.0" layoutY="3.0" max="0.0" prefHeight="2.0" prefWidth="655.0">
          <cursor>
@@ -161,7 +161,7 @@
             <Label fx:id="totalTime" text="TotalTime" />
          </children>
       </HBox>
-      <HBox alignment="CENTER" onMouseClicked="#showSongInfo" prefHeight="72.0" prefWidth="298.0" spacing="10.0">
+      <HBox alignment="CENTER" layoutY="5.0" onMouseClicked="#showSongInfo" prefHeight="72.0" prefWidth="298.0" spacing="10.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

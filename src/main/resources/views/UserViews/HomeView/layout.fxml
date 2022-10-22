@@ -29,7 +29,7 @@
                <image>
                   <Image url="@icon/logo.png" />
                </image></ImageView>
-            <Button id="b" fx:id="logoutButton" layoutX="41.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#logout" prefHeight="35.0" prefWidth="79.0" text="LogOut">
+            <Button id="b" fx:id="logoutButton" layoutX="41.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#logout" prefHeight="35.0" prefWidth="79.0" text="LogOut" textFill="#282828">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>

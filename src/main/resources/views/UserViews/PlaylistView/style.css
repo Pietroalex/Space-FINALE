@@ -1,15 +1,21 @@
 #b1{
--fx-background-color:transparent;
--fx-border-color: #e366d0;
--fx-border-width:2px;
--fx-background-radius:25px;
--fx-border-radius:25px;
--fx-text-fill:#e366d0;
+    -fx-background-color: black;
+    -fx-border-color: linear-gradient(to top, #ea3a27 0%, #f8bb16 100%);
+    -fx-border-width: 2px;
+    -fx-border-radius: 25px;
+    -fx-background-radius: 25px;
+    -fx-text-fill: white;
 }
 #b1:hover {      
--fx-background-color: #cb6aff;
--fx-text-fill:black;      
--fx-border-color:black; 
+    -fx-background-color: white;
+    -fx-text-fill:black;
+}
+#b2{
+    -fx-background-color: transparent;
+    -fx-background-radius: 25px;
+}
+#b2:hover{
+    -fx-background-color: black;
 }
 .table-view {
     -fx-background-color: transparent;
