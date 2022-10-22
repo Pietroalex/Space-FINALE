@@ -20,6 +20,9 @@
       <VBox id="vbox" alignment="BOTTOM_LEFT" prefHeight="448.0" prefWidth="160.0">
          <children>
             <TableView fx:id="playlistView" prefHeight="406.0" prefWidth="160.0">
+               <placeholder>
+        	   		<Label text="Playlists not found" />
+   			   </placeholder>
                <columns>
                   <TableColumn fx:id="titleColumn" prefWidth="160.0" text="My Playlists" />
                </columns>

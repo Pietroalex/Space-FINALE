@@ -20,7 +20,7 @@
    <children>
       <TableView fx:id="playlistTable" layoutX="1.0" layoutY="64.0" prefHeight="350.0" prefWidth="910.0">
         <placeholder>
-        <Label text="playlist is empty" />
+        	<Label text="playlist is empty" />
    		</placeholder>
         <columns>
           <TableColumn fx:id="songName" prefWidth="256.0" text="Title" />
