@@ -50,26 +50,23 @@ import java.util.*;
 
 public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
-
+	private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+	private static final String volumeEnabled = path + "volume-up.png";
+	private static final String volumeDisabled = path + "mute.png";
 	private final ViewDispatcher dispatcher;
     private final UserService userService;
+	private PlayerService playerService;
     @FXML
     private Button playButton, nextButton, previousButton, pauseButton, volumeButton, queueButton, addToPlaylistButton;
     @FXML
     private Slider progressSlider, volumeSlider;
     @FXML
     private Label songTitle, songAlbum, songArtist, currentTime, totalTime;
-
     @FXML
     private ImageView songImage, volumeImg;
 
     private SpacemusicunifyPlayer spacemusicunifyPlayer;
     private User user;
-    private PlayerService playerService;
-    private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
-    private static final String volumeEnabled = path + "volume-up.png";
-    private static final String volumeDisabled = path + "mute.png";
-
 
     public PlayerPaneController() {
         dispatcher = ViewDispatcher.getInstance();
@@ -719,24 +716,12 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		popupwindow.showAndWait();
     }
 
-    public void showSongInfo(MouseEvent mouseEvent) {
+    public void showSongInfo() {
 		if((!spacemusicunifyPlayer.getQueue().isEmpty())) {
 			Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
 			if (song != null) {
-				List<Object> fakeList = new ArrayList<>();
-				try {
-					for (Production prod : SpacemusicunifyBusinessFactory.getInstance().getProductionService().getAllProductions()) {
-						if (prod.getAlbum().equals(song.getAlbum())) {
-							fakeList.add(prod);
-							break;
-						}
-					}
-				} catch (BusinessException e) {
-					dispatcher.renderError(e);
-				}
-				fakeList.add(song);
 				dispatcher.setSituation(ViewSituations.user);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", fakeList);
+				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
 			}
 		}
     }

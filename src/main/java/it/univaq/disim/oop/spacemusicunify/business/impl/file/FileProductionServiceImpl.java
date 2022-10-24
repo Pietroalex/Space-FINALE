@@ -16,13 +16,9 @@ import it.univaq.disim.oop.spacemusicunify.domain.Production;
 public class FileProductionServiceImpl implements ProductionService {
 	
 	private String productionsFile;
-	private String artistsFileName;
-	private String albumsFileName;
 	
-	public FileProductionServiceImpl(String productionsFile, String artistsFileName, String albumsFileName) {
+	public FileProductionServiceImpl(String productionsFile) {
 		this.productionsFile = productionsFile;
-		this.artistsFileName = artistsFileName;
-		this.albumsFileName = albumsFileName;
 	}
 
 	@Override
@@ -31,25 +27,12 @@ public class FileProductionServiceImpl implements ProductionService {
 
 		try {
 			FileData fileData = Utility.readAllRows(productionsFile);
-
-			for (String[] colonne : fileData.getRows()) {
-
-				Production production = new Production();
-				Artist artist = (Artist) UtilityObjectRetriever.findObjectById(colonne[1], artistsFileName);
-				Album album = (Album) UtilityObjectRetriever.findObjectById(colonne[2], albumsFileName);
-
-				production.setId(Integer.parseInt(colonne[0]));
-
-				production.setArtist(artist);
-				production.setAlbum(album);
-				productionList.add(production);
-
-
+			for (String[] rows : fileData.getRows()) {
+				productionList.add((Production) UtilityObjectRetriever.findObjectById(rows[0], productionsFile));
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-
 
 		return productionList;
 

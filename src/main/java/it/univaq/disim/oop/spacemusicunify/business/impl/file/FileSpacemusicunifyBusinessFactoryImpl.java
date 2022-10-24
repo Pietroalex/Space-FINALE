@@ -25,22 +25,24 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 	private static final String AUDIOS_FILE_NAME = REPOSITORY_BASE + File.separator + "audios.txt";
 	private static final String PICTURES_DIRECTORY = REPOSITORY_BASE + File.separator + "images" + File.separator;
 	private static final String FILES_MP3_DIRECTORY = REPOSITORY_BASE + File.separator + "audios" + File.separator;
+	private static final String PLAYERS_FILE_NAME = REPOSITORY_BASE + File.separator + "players.txt";
 
 
 	public FileSpacemusicunifyBusinessFactoryImpl() {
-		spaceMusicUnifyService = new FileSpaceMusicUnifyServiceImpl(USERS_FILE_NAME,ALBUMS_FILE_NAME,ARTISTS_FILE_NAME,SONGS_FILE_NAME, PLAYLISTS_FILE_NAME,PICTURES_DIRECTORY,FILES_MP3_DIRECTORY,PICTURES_FILE_NAME,AUDIOS_FILE_NAME,PRODUCTIONS_FILE_NAME);
+		spaceMusicUnifyService = new FileSpaceMusicUnifyServiceImpl(USERS_FILE_NAME,ALBUMS_FILE_NAME,ARTISTS_FILE_NAME,SONGS_FILE_NAME, PLAYLISTS_FILE_NAME,PICTURES_DIRECTORY,FILES_MP3_DIRECTORY,PICTURES_FILE_NAME,AUDIOS_FILE_NAME,PRODUCTIONS_FILE_NAME, PLAYERS_FILE_NAME);
 		userService = new FileUserServiceImpl(USERS_FILE_NAME,PLAYLISTS_FILE_NAME);
-		productionService = new FileProductionServiceImpl(PRODUCTIONS_FILE_NAME,ARTISTS_FILE_NAME,ALBUMS_FILE_NAME);
+		productionService = new FileProductionServiceImpl(PRODUCTIONS_FILE_NAME);
 		multimediaService = new FileMultimediaServiceImpl(PICTURES_FILE_NAME, AUDIOS_FILE_NAME, PICTURES_DIRECTORY, FILES_MP3_DIRECTORY);
 		artistService = new FileArtistServiceImpl(ARTISTS_FILE_NAME, productionService, multimediaService);
 		albumService = new FileAlbumServiceImpl(ALBUMS_FILE_NAME, SONGS_FILE_NAME, productionService, multimediaService);
-		UtilityObjectRetriever.setDirectory(PICTURES_DIRECTORY, FILES_MP3_DIRECTORY);
-		playerService = new FilePlayerServiceImpl();
+		UtilityObjectRetriever.setDirectory(USERS_FILE_NAME,ALBUMS_FILE_NAME,ARTISTS_FILE_NAME,SONGS_FILE_NAME, REPOSITORY_BASE,PICTURES_DIRECTORY,FILES_MP3_DIRECTORY,PICTURES_FILE_NAME,AUDIOS_FILE_NAME);
+		playerService = new FilePlayerServiceImpl(PLAYERS_FILE_NAME);
 	}
 	@Override
 	public SPACEMusicUnifyService getSPACEMusicUnifyService() {
 		return spaceMusicUnifyService;
 	}
+
 	@Override
 	public UserService getUserService() {
 		return userService;
@@ -55,17 +57,6 @@ public class FileSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusin
 	public ArtistService getArtistService() {
 		return artistService;
 	}
-
-	@Override
-	public MultimediaService getMultimediaService() {
-		return multimediaService;
-	}
-
-	@Override
-	public ProductionService getProductionService() {
-		return productionService;
-	}
-
 
 	@Override
 	public PlayerService getPlayerService() {

@@ -17,7 +17,5 @@ public abstract class SpacemusicunifyBusinessFactory {
 	public abstract UserService getUserService();
 	public abstract AlbumService getAlbumService();
 	public abstract ArtistService getArtistService();
-	public abstract MultimediaService getMultimediaService();
-	public abstract ProductionService getProductionService();
 	public abstract PlayerService getPlayerService();
 }

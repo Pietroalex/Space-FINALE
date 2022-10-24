@@ -37,19 +37,12 @@ public class RAMSpacemusicunifyBusinessFactoryImpl extends SpacemusicunifyBusine
 	public AlbumService getAlbumService() {
 		return albumService;
 	}
+
 	@Override
 	public ArtistService getArtistService() {
 		return artistService;
 	}
 
-	@Override
-	public MultimediaService getMultimediaService() {
-		return multimediaService;
-	}
-	@Override
-	public ProductionService getProductionService() {
-		return productionService;
-	}
 	@Override
 	public PlayerService getPlayerService() {
 		return playerService;

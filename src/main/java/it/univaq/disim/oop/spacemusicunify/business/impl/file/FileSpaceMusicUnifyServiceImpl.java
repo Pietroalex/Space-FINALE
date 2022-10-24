@@ -22,28 +22,21 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	private final String picturesFile;
 	private final String picturesDirectory;
 	private final String mp3Directory;
+	private final String playersFile;
 
-	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
-	private static final String playersFile = REPOSITORY_BASE + File.separator + "players.txt";
-
-
-	public FileSpaceMusicUnifyServiceImpl(String fileUtenti, String fileAlbums, String fileArtisti, String fileCanzoni, String filePlaylist, String cartellaImmagini, String cartellaFilesMP3, String filePictures, String audiosFileName, String productionsFileName) {
-		this.usersFile = fileUtenti;
-		this.albumsFile = fileAlbums;
-		this.artistsFile = fileArtisti;
-		this.songsFile = fileCanzoni;
-		this.playlistFile = filePlaylist;
-		this.picturesFile = filePictures;
-		this.picturesDirectory = cartellaImmagini;
-		this.mp3Directory = cartellaFilesMP3;
-		this.productionFile = productionsFileName;
-		this.audiosFile = audiosFileName;
+	public FileSpaceMusicUnifyServiceImpl(String usersFileName, String albumsFileName, String artistsFileName, String songsFileName, String playlistsFileName, String picturesDirectoryName, String filesMp3DirectoryName, String picturesFileName, String audiosFileName, String productionsFileName, String playersFileName) {
+		usersFile = usersFileName;
+		albumsFile = albumsFileName;
+		artistsFile = artistsFileName;
+		songsFile = songsFileName;
+		playlistFile = playlistsFileName;
+		picturesFile = picturesFileName;
+		picturesDirectory = picturesDirectoryName;
+		mp3Directory = filesMp3DirectoryName;
+		productionFile = productionsFileName;
+		audiosFile = audiosFileName;
+		playersFile = playersFileName;
 	}
-
-
-
-
-	
 	@Override
 	public void setAllDefaults() throws BusinessException {
 		try {
@@ -84,8 +77,6 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				writer.write("1" + "\n");
 				writer.close();
 			}
-
-
 			path = Paths.get(playersFile);
 			if (Files.notExists(path)) {
 				if (!(new File(playersFile).createNewFile())) throw new BusinessException("playersFile creation error");

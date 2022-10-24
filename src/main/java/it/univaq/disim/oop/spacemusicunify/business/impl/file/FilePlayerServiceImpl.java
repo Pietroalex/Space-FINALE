@@ -1,15 +1,9 @@
 package it.univaq.disim.oop.spacemusicunify.business.impl.file;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
-import it.univaq.disim.oop.spacemusicunify.domain.Album;
-import it.univaq.disim.oop.spacemusicunify.domain.Audio;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -17,14 +11,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FilePlayerServiceImpl implements PlayerService {
 
-	private static final String REPOSITORY_BASE = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "data";
-	private static final String playersFile = REPOSITORY_BASE + File.separator + "players.txt";
+	private String playersFile;
+
+	public FilePlayerServiceImpl(String playersFileName){
+		this.playersFile = playersFileName;
+	}
+
 
 	@Override
 	public void add(User user) throws BusinessException {

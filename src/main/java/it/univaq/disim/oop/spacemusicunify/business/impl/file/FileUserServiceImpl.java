@@ -288,7 +288,6 @@ public class FileUserServiceImpl implements UserService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		System.out.println(playlists);
 		return playlists;
 	}
 

@@ -91,7 +91,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 				try {
 					userService.modify(playlist.getSongList(), playlist);
 				} catch (BusinessException e) {
-					e.printStackTrace();
+					dispatcher.renderError(e);
 				}
 				
 				initializeTable();
