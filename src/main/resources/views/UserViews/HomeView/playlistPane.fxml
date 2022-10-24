@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -27,7 +28,6 @@
                   <TableColumn fx:id="titleColumn" prefWidth="160.0" text="My Playlists" />
                </columns>
             </TableView>
-            <Separator prefHeight="10.0" prefWidth="160.0" />
             <Button id="addP" fx:id="addPlaylist" mnemonicParsing="false" onAction="#addNewPlaylist" prefHeight="42.0" prefWidth="160.0" text="+ New Playlist" underline="true">
                <font>
                   <Font name="Times New Roman" size="18.0" />
@@ -35,6 +35,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
             </Button>
          </children>
       </VBox>
