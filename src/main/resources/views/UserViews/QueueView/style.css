@@ -21,11 +21,11 @@
     -fx-padding: 2 0 2 10px;
 }
 .table-row-cell: hover {
-    -fx-background-color:  transparent;
+    -fx-background-color:  transparent !important;
     -fx-text-background-color: #e366d0 ;
 }
-.table-row-cell:selected {
-   -fx-background-color: transparent; 
+.table-row-cell: selected {
+   -fx-background-color: transparent !important;
    -fx-text-background-color: #e366d0;
 }
 .table-row-cell: odd{

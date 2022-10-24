@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
+import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
 import it.univaq.disim.oop.spacemusicunify.business.UserService;
 import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
@@ -20,8 +21,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.List;
@@ -79,8 +82,12 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         popupwindow.initModality(Modality.APPLICATION_MODAL);
         // inserimento nome playlist
         TextField title = new TextField();
+        title.setId("title");
         title.setMaxWidth(250);
         title.setAlignment(Pos.CENTER);
+        Label error = new Label("This playlist already exists");
+        error.setTextFill(Paint.valueOf("red"));
+        error.setVisible(false);
         Label insert = new Label("Insert name");
         // operazione annulla
         Button closeButton = new Button("Cancel");
@@ -97,21 +104,28 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             // aggiungere la playlist alla TableView
             try {
                 userService.add(playlist);
+            } catch (AlreadyExistingException e1) {
+            	error.setVisible(true);
             } catch (BusinessException e1) {
                 dispatcher.renderError(e1);
             }
             dispatcher.renderView("UserViews/HomeView/playlistPane", this.user);
-            //refresh table
-
-            popupwindow.close();
+            
+            if(!error.isVisible()) popupwindow.close();
         });
-        createButton.disableProperty().bind(title.textProperty().isEmpty());
-
+        
+        createButton.disableProperty().bind(title.textProperty().isEmpty().or(error.visibleProperty()));
+        title.textProperty().addListener((obs, oldText, newText)-> {
+            if (error.isVisible()) {
+                error.setVisible(false);
+            }
+        });
+        
         VBox layout = new VBox(10);
         HBox align = new HBox(5);
         align.setAlignment(Pos.CENTER);
         align.getChildren().addAll(createButton, closeButton);
-        layout.getChildren().addAll(insert, title, align);
+        layout.getChildren().addAll(error, insert, title, align);
         layout.setAlignment(Pos.CENTER);
         Scene scene1 = new Scene(layout, 300, 150);
         popupwindow.setScene(scene1);

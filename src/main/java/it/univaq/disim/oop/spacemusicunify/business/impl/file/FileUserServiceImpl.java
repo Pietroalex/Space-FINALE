@@ -178,7 +178,7 @@ public class FileUserServiceImpl implements UserService {
 		try {
 			FileData fileData = Utility.readAllRows(playlistFile);
 			for (String[] rowsCheck : fileData.getRows()) {
-				if (rowsCheck[2].equals(playlist.getTitle()) && Integer.parseInt(rowsCheck[3]) == playlist.getId()) {
+				if (rowsCheck[1].equals(playlist.getTitle()) && Integer.parseInt(rowsCheck[3]) == playlist.getUser().getId()) {
 					throw new AlreadyExistingException("This playlist already exists in the users playlists");
 				}
 			}

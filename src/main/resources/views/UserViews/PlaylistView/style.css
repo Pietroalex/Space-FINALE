@@ -2,13 +2,12 @@
     -fx-background-color: black;
     -fx-border-color: linear-gradient(to top, #ea3a27 0%, #f8bb16 100%);
     -fx-border-width: 2px;
-    -fx-border-radius: 25px;
     -fx-background-radius: 25px;
+    -fx-border-radius: 25px;
     -fx-text-fill: white;
 }
-#b1:hover {      
-    -fx-background-color: white;
-    -fx-text-fill:black;
+#b1:hover {
+    -fx-text-fill: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
 }
 #b2{
     -fx-background-color: transparent;
