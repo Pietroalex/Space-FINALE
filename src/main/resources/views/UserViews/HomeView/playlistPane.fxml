@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="440.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlaylistPaneController">
+<AnchorPane prefHeight="440.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlaylistPaneController">
    <children>
       <VBox id="vbox" alignment="BOTTOM_LEFT" prefHeight="440.0" prefWidth="160.0">
          <children>
-            <TableView fx:id="playlistView" prefHeight="388.0" prefWidth="160.0">
+            <TableView fx:id="playlistView" maxWidth="5000.0" prefHeight="388.0" prefWidth="5000.0">
                <placeholder>
         	   		<Label text="Playlists not found" />
-   			   </placeholder>
+      			   </placeholder>
                <columns>
-                  <TableColumn fx:id="titleColumn" prefWidth="160.0" text="My Playlists" />
+                  <TableColumn fx:id="titleColumn" minWidth="150.0" prefWidth="151.0" text="My Playlists" />
                </columns>
             </TableView>
             <Button id="addP" fx:id="addPlaylist" mnemonicParsing="false" onAction="#addNewPlaylist" prefHeight="42.0" prefWidth="160.0" text="+ New Playlist" underline="true">

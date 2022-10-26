@@ -54,6 +54,9 @@
             <TableColumn fx:id="songInfo" text="Info" />
             <TableColumn fx:id="addSongToQueue" prefWidth="104.0" />
          </columns>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </TableView>
       <TableView fx:id="album" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
          <placeholder>

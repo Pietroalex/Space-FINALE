@@ -415,6 +415,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		song.setVisible(false);
 		album.setVisible(false);
 		artist.setVisible(true);
+		artist.refresh();
 	}
 	
 	@FXML
@@ -422,6 +423,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		song.setVisible(true);
 		artist.setVisible(false);
 		album.setVisible(false);
+		song.refresh();
 	}
 	
 	@FXML
@@ -429,5 +431,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		song.setVisible(false);
 		artist.setVisible(false);
 		album.setVisible(true);
+		album.refresh();
 	}
 }
