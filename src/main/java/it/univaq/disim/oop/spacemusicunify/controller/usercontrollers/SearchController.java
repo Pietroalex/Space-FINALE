@@ -132,10 +132,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		songTime.setCellValueFactory(new PropertyValueFactory<>("length"));
 		songInfo.setStyle("-fx-alignment: CENTER;");
 		songInfo.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
-
-
-
+			
 			final Button info = new Button("info");
+			info.setId("button");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.user);
@@ -147,6 +146,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 
 			final Button addButton = new Button("Add to queue");
+			addButton.setId("button");
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
@@ -158,8 +158,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				}
 			});
 			if(checkForClones(spacemusicunifyPlayer, param.getValue())) addButton.setDisable(true);
-
-
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -169,7 +167,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		artistYears.setCellValueFactory(new PropertyValueFactory<>("yearsOfActivity"));
 		artistInfo.setStyle("-fx-alignment: CENTER;");
 		artistInfo.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
+			
 			final Button info = new Button("info");
+			info.setId("button");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.user);
@@ -207,6 +207,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		addAlbumToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
 
 			final Button addButton = new Button("Add to queue");
+			addButton.setId("button");
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
@@ -236,8 +237,8 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		albumInfo.setStyle("-fx-alignment: CENTER;");
 		albumInfo.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
 
-
 			final Button info = new Button("info");
+			info.setId("button");
 			info.setCursor(Cursor.HAND);
 			info.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.user);
@@ -247,7 +248,9 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		});
 		addAlbumToPlaylist.setStyle("-fx-alignment: CENTER;");
 		addAlbumToPlaylist.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
+			
 			final Button addButton = new Button("Add to playlist");
+			addButton.setId("button");
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				showPopupSelectPlaylist(param.getValue());

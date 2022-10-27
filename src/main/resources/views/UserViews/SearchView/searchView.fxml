@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -12,7 +8,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.SearchController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.SearchController">
    <children>
       <ToggleButton id="toggle" fx:id="tb1" layoutX="51.0" layoutY="18.0" mnemonicParsing="false" onAction="#songView" prefHeight="25.0" prefWidth="114.0" selected="true" text="Songs">
          <toggleGroup>
@@ -38,7 +34,7 @@
             <TableColumn fx:id="artistName" prefWidth="427.0" text="Artist" />
             <TableColumn fx:id="artistNationality" prefWidth="246.0" text="Nationality" />
             <TableColumn fx:id="artistYears" prefWidth="115.0" text="Years of activity" />
-            <TableColumn fx:id="artistInfo" prefWidth="117.0" text="Info" />
+            <TableColumn fx:id="artistInfo" prefWidth="117.0" />
          </columns>
       </TableView>
       <TableView fx:id="song" layoutY="71.0" prefHeight="364.0" prefWidth="910.0">
@@ -51,7 +47,7 @@
             <TableColumn fx:id="songAlbum" prefWidth="163.0" text="Album" />
             <TableColumn fx:id="songGenre" prefWidth="142.0" text="Genre" />
             <TableColumn fx:id="songTime" prefWidth="93.0" text="Duration" />
-            <TableColumn fx:id="songInfo" text="Info" />
+            <TableColumn fx:id="songInfo" />
             <TableColumn fx:id="addSongToQueue" prefWidth="104.0" />
          </columns>
          <cursor>
@@ -68,7 +64,7 @@
             <TableColumn fx:id="albumArtists" prefWidth="128.0" text="Artist" />
             <TableColumn fx:id="albumGenre" prefWidth="122.0" text="Genre" />
             <TableColumn fx:id="albumRelease" minWidth="0.0" prefWidth="110.0" text="Release Date" />
-            <TableColumn fx:id="albumInfo" prefWidth="87.0" text="Info" />
+            <TableColumn fx:id="albumInfo" prefWidth="87.0" />
             <TableColumn fx:id="addAlbumToQueue" prefWidth="110.0" />
             <TableColumn fx:id="addAlbumToPlaylist" prefWidth="129.0" />
          </columns>

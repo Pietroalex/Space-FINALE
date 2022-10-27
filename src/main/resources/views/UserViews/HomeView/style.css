@@ -56,7 +56,7 @@
     -fx-background-radius: 7px 7px 0px 0px;
 }
 #sname, #aname, #arname {
-    -fx-text-fill: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+    -fx-text-fill: orange;
 }
 .list-view {
     -fx-background-color: white;
