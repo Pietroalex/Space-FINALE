@@ -104,7 +104,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				volumeButton.setDisable(false);
 				volumeSlider.setDisable(false);
 				if(spacemusicunifyPlayer.getMediaPlayer() == null) {
-					System.out.println("carico canzone");
 					loadSong();
 					dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
 				} else if(c.next() == c.wasReplaced()) {
@@ -319,21 +318,20 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				 * }else{ mediaPlayerSettings.setLastDuration(oldValue); } } else {
 				 * mediaPlayerSettings.setLastDuration(current);
 				 * mediaPlayerSettings.setLastSong(user.getcurrentSong()); }
-				 
-                if(mediaPlayerSettings.getLastDuration().greaterThanOrEqualTo(Duration.millis(mediaPlayer.getTotalDuration().toMillis() - Scarto.toMillis()))) {
-                	if(user.getcurrentPosition() < user.getSongQueue().size() - 1) {
-                		mediaPlayerSettings.setLastSong(user.getcurrentSong());
-                        spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);
-                    	mediaPlayerSettings.setPlayerOnPlay(true);
-
-                        mediaPlayer.stop();
-                        mediaPlayer.dispose();
-                        loadSong();
-                        System.out.println("prossima");
-                        previousButton.setDisable(false);
+				 */
+                if(current.greaterThanOrEqualTo(Duration.millis(spacemusicunifyPlayer.getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()))) {
+                	if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) {
+                        try {
+							playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() + 1);
+							loadSong();
+							previousButton.setDisable(false);
+							if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
+                        } catch (BusinessException e) {
+							dispatcher.renderError(e);
+						}
                 	}
                 }
-                */
+                
             }
         });
 
