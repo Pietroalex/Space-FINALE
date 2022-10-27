@@ -9,24 +9,30 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -36,9 +42,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     private final UserService userService;
 
     @FXML
-    private TableView<Playlist> playlistView;
-    @FXML
-    private TableColumn<Playlist, String> titleColumn;
+    private ListView<String> myPlaylists;
     private User user;
 
     public PlaylistPaneController(){
@@ -49,27 +53,32 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // settaggio proprietà della tabella playlist
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        playlistView.setCursor(Cursor.HAND);
-        playlistView.setOnMouseClicked(event -> {
-            // visualizzare la playlist
-            Playlist selected = playlistView.getSelectionModel().getSelectedItem();
-
-            if(selected != null) dispatcher.renderView("UserViews/PlaylistView/playlistView", selected);
-
-        });
+    	myPlaylists.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
+    		String selectedItem = myPlaylists.getSelectionModel().getSelectedItem();
+    		Playlist selected = null;
+    		try {
+				for(Playlist playlist : userService.getAllPlaylists(user)) {
+					if(selectedItem.equals(playlist.getTitle())) {
+						selected = playlist;
+						break;
+					}
+				}
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+    		if(selected != null) dispatcher.renderView("UserViews/PlaylistView/playlistView", selected);
+    	});
     }
     @Override
     public void initializeData(User user) {
         this.user = user;
         try {
-            Set<Playlist> result = userService.getAllPlaylists(user);
-            ObservableList<Playlist> playlistData = FXCollections.observableArrayList(result);
-            playlistView.setItems(playlistData);
-        } catch (BusinessException e) {
-            dispatcher.renderError(e);
-        }
+        	for(Playlist playlist : userService.getAllPlaylists(user)) {
+        		myPlaylists.getItems().add(playlist.getTitle());
+        	}
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
     }
 
     public void addNewPlaylist(ActionEvent event) {

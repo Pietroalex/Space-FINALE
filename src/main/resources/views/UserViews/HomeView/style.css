@@ -107,3 +107,6 @@
 #sname, #aname, #arname {
     -fx-text-fill: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
 }
+.scroll-pane {
+    -fx-background-color: black;
+}

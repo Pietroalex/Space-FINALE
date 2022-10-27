@@ -103,7 +103,7 @@ public class RAMUserServiceImpl implements UserService {
 	@Override
 	public void add(Playlist playlist) throws BusinessException {
 		for (Playlist playlistCheck : storedPlaylists) {
-			if (playlistCheck.getTitle().equals(playlist.getTitle()) && playlistCheck.getUser().getId().intValue() == playlist.getId().intValue()) {
+			if (playlistCheck.getTitle().equals(playlist.getTitle()) && playlistCheck.getUser().getId().intValue() == playlist.getUser().getId().intValue()) {
 				throw new AlreadyExistingException("This playlist already exists in the users playlists");
 			}
 		}
