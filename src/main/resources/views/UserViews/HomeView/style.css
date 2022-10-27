@@ -63,50 +63,32 @@
 .table-view .corner {
     -fx-background-color: transparent;
 }
-.table-view .column-header-background{
+#hp{
     -fx-background-color: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
     -fx-background-radius: 7px 7px 0px 0px;
-}
-.table-view .column-header {
-    -fx-background-color: transparent;
-}
-.table-view .table-cell{
-    -fx-padding: 2 0 2 0px;
-}
-.table-row-cell: hover {
-    -fx-background-color:  black !important;
-    -fx-text-background-color: white;
-}
-.table-row-cell: selected {
-    -fx-background-color: black !important;
-    -fx-text-background-color: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
-}
-.table-row-cell: odd{
-    -fx-background-color: ghostwhite;
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em;
-}
-.table-row-cell: even{
-    -fx-background-color: white;
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em;
-}
-.table-view .virtual-flow .scroll-bar:vertical,
-.table-view .virtual-flow .scroll-bar:vertical .track,
-.table-view .virtual-flow .scroll-bar:vertical .track-background,
-.table-view .virtual-flow .scroll-bar:horizontal,
-.table-view .virtual-flow .scroll-bar:horizontal .track,
-.table-view .virtual-flow .scroll-bar:horizontal .track-background {
-    -fx-background-color: transparent;
-}
-.table-view .virtual-flow .scroll-bar .increment-button,
-.table-view .virtual-flow .scroll-bar .decrement-button {
-    -fx-opacity: 0;
-    -fx-padding: 2;
 }
 #sname, #aname, #arname {
     -fx-text-fill: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
 }
-.scroll-pane {
-    -fx-background-color: black;
+.list-view {
+    -fx-background-color: white;
+    -fx-font-size: 15px;
+}
+.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: black !important;
+    -fx-text-background-color: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+}
+.list-view .list-cell:filled:hover {
+    -fx-background-color:  black !important;
+    -fx-text-background-color: white;
+}
+.list-view .list-cell:even {
+    -fx-background-color: white;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+.list-view .list-cell:odd {
+    -fx-background-color: ghostwhite;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
 }
