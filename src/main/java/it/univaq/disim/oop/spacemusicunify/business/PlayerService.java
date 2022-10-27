@@ -7,9 +7,13 @@ import javafx.util.Duration;
 
 
 public interface PlayerService {
+	
 	SpacemusicunifyPlayer getPlayer(User user) throws BusinessException;
+	
 	void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException;
+	
 	void updateVolume(SpacemusicunifyPlayer player, Double volume) throws BusinessException;
+	
 	void add(User user) throws BusinessException;
 	
 	void delete(User user) throws BusinessException;
@@ -18,8 +22,8 @@ public interface PlayerService {
 	
 	void deleteSongFromQueue(SpacemusicunifyPlayer player, Song canzone) throws BusinessException;
 	
-	void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException;
+	void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException; //action that navigates the play queue
 	
-	void replaceCurrentSong(SpacemusicunifyPlayer player, Song canzone) throws BusinessException;
+	void replaceCurrentSong(SpacemusicunifyPlayer player, Song canzone) throws BusinessException; //action that modifies the play queue
 
 }
