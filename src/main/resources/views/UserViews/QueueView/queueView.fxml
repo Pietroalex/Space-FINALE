@@ -14,9 +14,9 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.QueueController">
    <children>
       <TableView fx:id="queueTable" layoutY="80.0" prefHeight="340.0" prefWidth="910.0">
-      <placeholder>
-        <Label text="queue is empty" />
-    </placeholder>
+      	<placeholder>
+        	<Label text="queue is empty" />
+    	</placeholder>
         <columns>
           <TableColumn fx:id="songName" prefWidth="282.0" text="Title" />
           <TableColumn fx:id="artistName" prefWidth="168.0" text="Artist" />

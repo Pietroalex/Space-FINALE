@@ -19,6 +19,9 @@
                </font>
             </Label>
             <ListView fx:id="myPlaylists" prefHeight="360.0" prefWidth="160.0">
+            	<placeholder>
+        			<Label text="Create new playlists" />
+    			</placeholder>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></ListView>

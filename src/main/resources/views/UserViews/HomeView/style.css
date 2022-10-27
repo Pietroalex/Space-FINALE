@@ -73,10 +73,10 @@
 .list-view .list-cell:even {
     -fx-background-color: white;
     -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em;
+    -fx-padding: 3px;
 }
 .list-view .list-cell:odd {
     -fx-background-color: ghostwhite;
     -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em;
+    -fx-padding: 3px;
 }
