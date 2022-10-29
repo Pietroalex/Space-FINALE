@@ -1,12 +1,10 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
-import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
-import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.UserService;
-import it.univaq.disim.oop.spacemusicunify.business.SpacemusicunifyBusinessFactory;
+import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 
 import it.univaq.disim.oop.spacemusicunify.domain.Playlist;
+import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import javafx.beans.InvalidationListener;
@@ -14,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
@@ -22,6 +21,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -32,16 +32,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class PlaylistPaneController implements Initializable, DataInitializable<User> {
     private final ViewDispatcher dispatcher;
     private final UserService userService;
 
-    @FXML
+/*    @FXML
     private ListView<String> myPlaylists;
     private User user;
 
@@ -53,6 +50,8 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
     	myPlaylists.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
     		String selectedItem = myPlaylists.getSelectionModel().getSelectedItem();
     		Playlist selected = null;
@@ -72,6 +71,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     @Override
     public void initializeData(User user) {
         this.user = user;
+
         try {
         	for(Playlist playlist : userService.getAllPlaylists(user)) {
         		myPlaylists.getItems().add(playlist.getTitle());
@@ -79,11 +79,108 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
+  */
+@FXML
+private ListView<Playlist> myPlaylists;
+    private User user;
+
+    public PlaylistPaneController(){
+        dispatcher = ViewDispatcher.getInstance();
+        SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
+        userService = factory.getUserService();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        myPlaylists.setCellFactory(param -> new ListCell<Playlist>() {
+            @Override
+            protected void updateItem(Playlist item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.getTitle() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getTitle());
+                }
+            }
+
+        });
+/*        myPlaylists.setOnMouseClicked( mouseEvent ->  {
+            if(myPlaylists.getSelectionModel().getSelectedItem() != null) System.out.println("clicked on " + myPlaylists.getSelectionModel().getSelectedItem().getTitle());
+            myPlaylists.getSelectionModel().clearSelection();
+        });*/
+        myPlaylists.setOnMouseClicked( mouseEvent ->  {
+
+
+            if(myPlaylists.getSelectionModel().getSelectedItem() != null){
+
+                if(mouseEvent.getClickCount() == 1) {
+
+                    System.out.println("clicked 1 on " + myPlaylists.getSelectionModel().getSelectedItem().getTitle());
+                }
+                if(mouseEvent.getClickCount() == 2){
+                    System.out.println("clicked 2 on " + myPlaylists.getSelectionModel().getSelectedItem().getTitle());
+                }
+            }
+            myPlaylists.getSelectionModel().clearSelection();
+        });
+
+
+    }
+    @Override
+    public void initializeData(User user) {
+        this.user = user;
+        try {
+
+            List<Playlist> playlists = new ArrayList<>(userService.getAllPlaylists(user));
+
+            ObservableList<Playlist> playlistData = FXCollections.observableArrayList(playlists);
+            myPlaylists.setItems(playlistData);
+
+        } catch (BusinessException e) {
+            dispatcher.renderError(e);
+        }
+
+    /*setRowFactory( tablerow -> {
+            TableRow<Song> canzone = new TableRow<>();
+            canzone.setOnMouseClicked((MouseEvent event) -> {
+                if(canzone.getItem() != null){
+                    if(event.getClickCount() == 2) {
+                        PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+                        if(spacemusicunifyPlayer.getQueue().size() != 0) {
+
+                            if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != canzone.getItem().getId().intValue()) {
+                                try {
+                                    playerService.deleteSongFromQueue(spacemusicunifyPlayer, canzone.getItem());	//rimuovo la canzone se già presente in coda
+                                    playerService.replaceCurrentSong(spacemusicunifyPlayer, canzone.getItem());
+                                } catch (BusinessException e) {
+                                    dispatcher.renderError(e);
+                                }
+
+                                song.refresh();
+                            } else {
+                                System.out.println("la canzone è già in riproduzione al momento");
+                            }
+                        } else {
+                            try {
+                                playerService.addSongToQueue(spacemusicunifyPlayer, canzone.getItem());
+                            } catch (BusinessException e) {
+                                dispatcher.renderError(e);
+                            }
+
+                        }
+
+                    }
+                }
+            });
+            return canzone;
+        });*/
     }
 
     public void addNewPlaylist(ActionEvent event) {
-        Playlist nuova = new Playlist();
-        createPlaylistPopup(nuova);
+        Playlist newPlaylist = new Playlist();
+        newPlaylist.setUser(user);
+        createPlaylistPopup(newPlaylist);
     }
 
     private void createPlaylistPopup(Playlist playlist) {
@@ -109,7 +206,6 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
 
         createButton.setOnAction(e -> {
             playlist.setTitle(title.getText());
-            playlist.setUser(this.user);
             // aggiungere la playlist alla TableView
             try {
                 userService.add(playlist);
