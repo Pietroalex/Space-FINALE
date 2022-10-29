@@ -515,7 +515,9 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				}
         		volumeSlider.setDisable(true);
         	}
-        }
+			if("song_detail".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()));
+
+		}
     }
     /*
     public void resume() {
@@ -624,13 +626,15 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			dispatcher.renderError(e);
 		}
 		/*spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() - 1);*/
-        this.loadSong();
-        spacemusicunifyPlayer.setPlay(true);
+        loadSong();
+
+		spacemusicunifyPlayer.setPlay(true);
         nextButton.setDisable(false);
         if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
     }
 
     public void nextSong(ActionEvent event) {
+		System.out.println(dispatcher.getLayout().getCenter().getId());
        /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
@@ -641,7 +645,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 			dispatcher.renderError(e);
 		}
     	/*spacemusicunifyPlayer.setCurrentSong(spacemusicunifyPlayer.getCurrentSong() + 1);*/
-        this.loadSong();
+        loadSong();
+
         spacemusicunifyPlayer.setPlay(true);
         previousButton.setDisable(false);
         if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
