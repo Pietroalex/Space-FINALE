@@ -515,7 +515,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				}
         		volumeSlider.setDisable(true);
         	}
-			if("song_detail".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()));
+			if("song_detail".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
 
 		}
     }
@@ -634,7 +634,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void nextSong(ActionEvent event) {
-		System.out.println(dispatcher.getLayout().getCenter().getId());
+
        /* mediaPlayerSettings.setLastSong(user.getcurrentSong());
         spaceMusicUnifyService.updateCurrentSong(user, user.getcurrentPosition() + 1);*/
     	spacemusicunifyPlayer.getMediaPlayer().stop();
