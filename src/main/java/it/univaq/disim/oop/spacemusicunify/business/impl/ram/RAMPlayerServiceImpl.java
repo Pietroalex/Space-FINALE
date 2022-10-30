@@ -62,6 +62,12 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 
 	@Override
+	public void updateMute(SpacemusicunifyPlayer player, boolean mute) throws BusinessException {
+		if(player.getQueue() == null) throw new BusinessException("Error in mute updating for this player");
+		player.setMute(mute);
+	}
+
+	@Override
 	public void addSongToQueue(SpacemusicunifyPlayer player, Song newSong) throws BusinessException {
 		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player, empty queue");
 		player.getQueue().add(newSong);

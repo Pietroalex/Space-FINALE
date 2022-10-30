@@ -31,7 +31,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] column: fileData.getRows()) {
-				if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+				if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
 					throw new AlreadyExistingException("The title must not contain 'Singles'");
 				}
 				if (column[1].equals(album.getTitle()) ) {
@@ -106,14 +106,12 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] columns: fileData.getRows()) {
-				if(genre != Genre.singles) {
-					if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+					if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
 						throw new AlreadyExistingException("The title must not contain 'Singles'");
 					}
 					if (columns[1].equals(title) && !columns[0].equals(id.toString()) ){
 						throw new AlreadyExistingException("Already Existing album with this title");
 					}
-				}
 			}
 
 			int cont = 0;
@@ -209,11 +207,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
-			for(String[] righe: fileData.getRows()) {
-				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+			for(String[] rows: fileData.getRows()) {
+				if ( song.getTitle().contains("DefaultSingles") && song.getGenre() != Genre.singles){
 					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
 				}
-				if(righe[1].equals(song.getTitle())) {
+				if(rows[1].equals(song.getTitle())) {
 					throw new AlreadyExistingException("Already Existing song with this title");
 				}
 			}
@@ -222,14 +220,14 @@ public class FileAlbumServiceImpl implements AlbumService {
 			multimediaService.add(song.getFileMp3());
 
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
-				long contatore = fileData.getCounter();
-				writer.println(contatore + 1);
+				long counter = fileData.getCounter();
+				writer.println(counter + 1);
 				for (String[] righe : fileData.getRows()) {
 					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
 				}
 
 				StringBuilder row = new StringBuilder();
-				row.append(contatore);
+				row.append(counter);
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(song.getTitle());
 				row.append(Utility.COLUMN_SEPARATOR);
@@ -288,7 +286,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] columns: fileData.getRows()) {
-				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
 					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
 				}
 				if(columns[1].equals(song.getTitle())) {

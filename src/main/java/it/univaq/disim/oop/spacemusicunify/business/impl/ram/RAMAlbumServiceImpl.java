@@ -26,7 +26,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if ( album.getTitle().contains("Singles") && album.getSongs() != null){
+			if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
 				throw new AlreadyExistingException("The title must not contain 'Singles'");
 			}
 			if (albums.getTitle().equals(album.getTitle()) ) {
@@ -99,7 +99,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				"Start！ Transfer ahh");
 		song.setLength("04:02");
 		if(album.getGenre() == Genre.singles){
-			song.setGenre(Genre.pop);
+			song.setGenre(Genre.alternative_rock);
 		} else {
 			song.setGenre(album.getGenre());
 		}
@@ -128,13 +128,11 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
 		for (Album albums : storedAlbums) {
-			if(genre != Genre.singles) {
-				if ( album.getTitle().contains("Singles") && album.getSongs() != null){
-					throw new AlreadyExistingException("The title must not contain 'Singles'");
-				}
-				if (albums.getTitle().equals(title) && albums.getId().intValue() != id.intValue() ){
-					throw new AlreadyExistingException("Already Existing album with this title");
-				}
+			if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
+				throw new AlreadyExistingException("The title must not contain 'Singles'");
+			}
+			if (albums.getTitle().equals(title) && albums.getId().intValue() != id.intValue() ){
+				throw new AlreadyExistingException("Already Existing album with this title");
 			}
 		}
 		for (Album albumCheck : storedAlbums) {
@@ -195,7 +193,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void add(Song song) throws BusinessException {
 		for (Song songs : storedSongs) {
-			if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getSongs() != null){
+			if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
 				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
 			}
 			if(songs.getTitle().equals(song.getTitle())) {
@@ -220,7 +218,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Audio tempAudio, String lyrics, Album album, String length, Genre genre, Song oldSong) throws BusinessException {
 		for (Song songs : storedSongs) {
-			if ( title.contains("DefaultSingles") && album.getSongs() != null){
+			if ( title.contains("DefaultSingles") && album.getGenre() != Genre.singles){
 				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
 			}
 			if(songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue()) {

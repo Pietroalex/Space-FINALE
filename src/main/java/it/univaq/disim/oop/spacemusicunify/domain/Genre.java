@@ -41,7 +41,7 @@ public enum Genre {
 	techno,
 	urban,
 	heavy_metal,
-	reggauton,
+	reggaeton,
 	neomelodic,
 	trap,
 	r_neg_b

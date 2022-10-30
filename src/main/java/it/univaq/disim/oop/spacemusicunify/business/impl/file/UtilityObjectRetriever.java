@@ -145,12 +145,11 @@ public class UtilityObjectRetriever {
 		player.setVolume(Double.parseDouble(columns[1]));
 		player.setDuration(new Duration(Double.parseDouble(columns[2])));
 		player.setMute(Boolean.parseBoolean(columns[3]));
-		player.setPlay(Boolean.parseBoolean(columns[4]));
-		List<String> queueIDS = Utility.readArray(columns[5]);
+		List<String> queueIDS = Utility.readArray(columns[4]);
 		for (String songsID : queueIDS){
 			player.getQueue().add((Song) UtilityObjectRetriever.findObjectById(songsID, songsFileName));
 		}
-		player.setCurrentSong(Integer.parseInt(columns[6]));
+		player.setCurrentSong(Integer.parseInt(columns[5]));
 		if(queueIDS.size() > 0) player.setMediaPlayer(new MediaPlayer(new Media(Paths.get(ramFiles).toUri().toString())));
 		return player;
 	}

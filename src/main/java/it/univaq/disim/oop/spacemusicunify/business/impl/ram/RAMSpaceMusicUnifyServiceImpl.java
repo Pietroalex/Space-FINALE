@@ -85,7 +85,13 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 			user.setUsername("utente");
 			user.setPassword("123456");
 
+			Playlist userPlaylist = new Playlist();
+			userPlaylist.setUser(user);
+			userPlaylist.setTitle("Default Playlist");
+
 			userService.add(user);
+			userService.add(userPlaylist);
+
 		} catch (BusinessException e) {
 			ViewDispatcher.getInstance().renderError(e);
 		}

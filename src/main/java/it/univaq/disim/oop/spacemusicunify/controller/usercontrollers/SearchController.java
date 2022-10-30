@@ -44,7 +44,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 	private UserService userService;
 	@FXML
-	private TableView<Song> song;
+	private TableView<Song> songTableView;
 	@FXML
 	private TableColumn<Song, String> songTitle;
 	@FXML
@@ -56,12 +56,13 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	@FXML
 	private TableColumn<Song, Genre> songGenre;
 	@FXML
+	private TableColumn<Song, Button> songInfo;
+	@FXML
 	private TableColumn<Song, Button> addSongToQueue;
 	@FXML
-	private TableColumn<Song, Button> songInfo;
-	
+	private TableColumn<Song, Button> addSongToPlaylists;
 	@FXML
-	private TableView<Artist> artist;
+	private TableView<Artist> artistTableView;
 	@FXML
 	private TableColumn<Artist,String> artistName;
 	@FXML
@@ -72,7 +73,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private TableColumn<Artist, Button> artistInfo;
 	
 	@FXML
-	private TableView<Album> album;
+	private TableView<Album> albumTableView;
 	@FXML
 	private TableColumn<Album, ImageView> albumCover;
 	@FXML
@@ -85,6 +86,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private TableColumn<Album, LocalDate> albumRelease;
 	@FXML
 	private TableColumn<Album, Button> addAlbumToQueue;
+
 	@FXML
 	private TableColumn<Album, Button> addAlbumToPlaylist;
 	@FXML
@@ -95,7 +97,6 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private PlayerService playerService;
 	private ArtistService artistService;
 	private AlbumService albumService;
-	private ProductionService productionService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 	
 	public SearchController() {
@@ -151,13 +152,22 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiungere la canzone alla coda di riproduzione dell'utente
 				try {
-					if(!(checkForClones(spacemusicunifyPlayer, param.getValue()))) playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
+					if(!checkForClones(spacemusicunifyPlayer, param.getValue())) playerService.addSongToQueue(spacemusicunifyPlayer, param.getValue());
 					addButton.setDisable(true);
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}
 			});
 			if(checkForClones(spacemusicunifyPlayer, param.getValue())) addButton.setDisable(true);
+			return new SimpleObjectProperty<Button>(addButton);
+		});
+		addSongToPlaylists.setStyle("-fx-alignment: CENTER;");
+		addSongToPlaylists.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
+
+			final Button addButton = new Button("Add to playlists");
+			addButton.setId("button");
+			addButton.setCursor(Cursor.HAND);
+			addButton.setOnAction((ActionEvent event) -> addThisSongToPlaylist(param.getValue()));
 			return new SimpleObjectProperty<Button>(addButton);
 		});
 
@@ -214,7 +224,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				try {
 					Set<Song> songs = param.getValue().getSongs();
 					for(Song albumSong: songs) {
-						if(!(checkForClones(spacemusicunifyPlayer, albumSong))) playerService.addSongToQueue(spacemusicunifyPlayer, albumSong);
+						if(!checkForClones(spacemusicunifyPlayer, albumSong)) playerService.addSongToQueue(spacemusicunifyPlayer, albumSong);
 					}
 					addButton.setDisable(true);
 					/*
@@ -269,13 +279,13 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 		try {
 			List<Artist> artistList = new ArrayList<>();
-			for(Artist artista: artistService.getArtistList()) {
-				if(artista.getName().contains(search.strip())) {
-					artistList.add(artista);
+			for(Artist artist: artistService.getArtistList()) {
+				if(artist.getName().contains(search.strip())) {
+					artistList.add(artist);
 				}
 			}
 			ObservableList<Artist> artistData = FXCollections.observableArrayList(artistList);
-			artist.setItems(artistData);
+			artistTableView.setItems(artistData);
 
 
 			List<Song> songList = new ArrayList<>();
@@ -287,7 +297,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			}
 
 			ObservableList<Song> songData = FXCollections.observableArrayList(songList);
-			song.setItems(songData);
+			songTableView.setItems(songData);
 
 
 			List<Album> albumList = new ArrayList<>();
@@ -297,35 +307,37 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				}
 			}
 			ObservableList<Album> albumData = FXCollections.observableArrayList(albumList);
-			album.setItems(albumData);
+			albumTableView.setItems(albumData);
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
 
-		song.setRowFactory( tablerow -> {
-			TableRow<Song> canzone = new TableRow<>();
-			canzone.setOnMouseClicked((MouseEvent event) -> {
-				if(canzone.getItem() != null){
+		songTableView.setRowFactory(tablerow -> {
+			TableRow<Song> songTableRow = new TableRow<>();
+			songTableRow.setOnMouseClicked((MouseEvent event) -> {
+				if(songTableRow.getItem() != null){
 					if(event.getClickCount() == 2) {
 						PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
 						if(spacemusicunifyPlayer.getQueue().size() != 0) {
 
-							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != canzone.getItem().getId().intValue()) {
+							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != songTableRow.getItem().getId().intValue()) {
 								try {
-									playerService.deleteSongFromQueue(spacemusicunifyPlayer, canzone.getItem());	//rimuovo la canzone se già presente in coda
-									playerService.replaceCurrentSong(spacemusicunifyPlayer, canzone.getItem());
+
+									for(Song songCheck : spacemusicunifyPlayer.getQueue()){
+										if(songCheck.getId().intValue() == songTableRow.getItem().getId().intValue()) playerService.deleteSongFromQueue(spacemusicunifyPlayer, songTableRow.getItem());	//rimuovo la songTableRow se già presente in coda
+									}
+
+									playerService.replaceCurrentSong(spacemusicunifyPlayer, songTableRow.getItem());
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
 								}
 
-								song.refresh();
-							} else {
-								System.out.println("la canzone è già in riproduzione al momento");
+								songTableView.refresh();
 							}
 						} else {
 							try {
-								playerService.addSongToQueue(spacemusicunifyPlayer, canzone.getItem());
+								playerService.addSongToQueue(spacemusicunifyPlayer, songTableRow.getItem());
 							} catch (BusinessException e) {
 								dispatcher.renderError(e);
 							}
@@ -335,24 +347,82 @@ public class SearchController implements Initializable, DataInitializable<User>{
 					}
 				}
 			});
-			return canzone;
+			return songTableRow;
 		});
 
 	}
+	public void addThisSongToPlaylist(Song songToAdd) {
 
+		Stage popupwindow = new Stage();
+		popupwindow.initModality(Modality.APPLICATION_MODAL);
+		Label title = new Label("Add " + songToAdd.getTitle() + " to which playlist?");
+		title.setAlignment(Pos.CENTER);
+		//selezione multipla playlist
+		TableView<Playlist> tableView = new TableView<>();
+		TableColumn<Playlist, String> name = new TableColumn<>("Title");
+		TableColumn<Playlist, Button> add = new TableColumn<>();
+		name.setCellValueFactory(new PropertyValueFactory<>("title"));
+		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
+
+			final Button addButton = new Button("Add here");
+			if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
+			addButton.setOnAction((ActionEvent evento) -> {
+
+				//aggiunta canzone alla playlist
+				Set<Song> list = param.getValue().getSongList();
+				list.add(songToAdd);
+
+				try {
+					userService.modify(list, param.getValue());
+					/*dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());*/
+
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
+				addButton.setDisable(true);
+			});
+			return new SimpleObjectProperty<>(addButton);
+		});
+
+		tableView.getColumns().add(name);
+		tableView.getColumns().add(add);
+
+		try {
+			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
+			tableView.setItems(observableList);
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
+
+		// operazione annulla
+		Button closeButton = new Button("Close");
+		closeButton.setCursor(Cursor.HAND);
+		closeButton.setOnAction(e -> {
+			popupwindow.close();
+		});
+
+		VBox layout = new VBox(10);
+		layout.getChildren().addAll(title, tableView, closeButton);
+		layout.setAlignment(Pos.CENTER);
+		Scene scene1 = new Scene(layout, 300, 150);
+		popupwindow.setScene(scene1);
+		popupwindow.setResizable(false);
+		popupwindow.setTitle("Add to playlist");
+		popupwindow.showAndWait();
+	}
 	public boolean checkForClones(Object object, Song value){
 
 		if(object instanceof SpacemusicunifyPlayer) {
 			for (Song songs : ((SpacemusicunifyPlayer) object).getQueue()) {
 				if (songs.getId().intValue() ==  value.getId().intValue()) return true;
 			}
-			return false;
+
 		} else {
 			for (Song songs : ((Playlist) object).getSongList()) {
-				if (songs.getId().intValue() == value.getId().intValue()) return false;
+				if (songs.getId().intValue() == value.getId().intValue()) return true;
 			}
-			return true;
 		}
+		return false;
 	}
 
 	private void showPopupSelectPlaylist(Album selectedAlbum) {
@@ -372,7 +442,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 				//aggiunto album alla playlist
 				Set<Song> songList = param.getValue().getSongList();
 				for(Song albumSong: selectedAlbum.getSongs()) {
-					if(checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
+					if(!checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
 				}
 				try {
 					userService.modify(songList, param.getValue());
@@ -415,25 +485,25 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 	@FXML
 	public void artistView(ActionEvent event) {
-		song.setVisible(false);
-		album.setVisible(false);
-		artist.setVisible(true);
-		artist.refresh();
+		songTableView.setVisible(false);
+		albumTableView.setVisible(false);
+		artistTableView.setVisible(true);
+		artistTableView.getSelectionModel().clearSelection();
 	}
 	
 	@FXML
 	public void songView(ActionEvent event) {
-		song.setVisible(true);
-		artist.setVisible(false);
-		album.setVisible(false);
-		song.refresh();
+		songTableView.setVisible(true);
+		artistTableView.setVisible(false);
+		albumTableView.setVisible(false);
+		songTableView.getSelectionModel().clearSelection();
 	}
 	
 	@FXML
 	public void albumView(ActionEvent event) {
-		song.setVisible(false);
-		artist.setVisible(false);
-		album.setVisible(true);
-		album.refresh();
+		songTableView.setVisible(false);
+		artistTableView.setVisible(false);
+		albumTableView.setVisible(true);
+		albumTableView.getSelectionModel().clearSelection();
 	}
 }

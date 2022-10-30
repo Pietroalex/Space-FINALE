@@ -79,10 +79,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     public void initialize(URL location, ResourceBundle resources) {
         try {
             songImage.setImage(new Image(Files.newInputStream(Paths.get(path+"music.png"))));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            dispatcher.renderError(e);
         }
     }
     @Override
@@ -110,7 +108,6 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					loadSong();
 				}
 			} else {
-				System.out.println("canzone non presente");
 				addToPlaylistButton.setDisable(true);
 				playButton.setDisable(true);
 				pauseButton.setDisable(true);
@@ -120,11 +117,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				volumeButton.setDisable(true);
 				volumeSlider.setDisable(true);
 				spacemusicunifyPlayer.setMediaPlayer(null);
-				Image img = null;
+				Image img;
 				try {
 					img = new Image(Files.newInputStream(Paths.get(path + "mute.png")));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
@@ -319,7 +315,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				 * mediaPlayerSettings.setLastDuration(current);
 				 * mediaPlayerSettings.setLastSong(user.getcurrentSong()); }
 				 */
-                if(current.greaterThanOrEqualTo(Duration.millis(spacemusicunifyPlayer.getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()))) {
+				if(spacemusicunifyPlayer.getMediaPlayer() != null && current.greaterThanOrEqualTo(Duration.millis(spacemusicunifyPlayer.getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()))) {
                 	if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) {
                         try {
 							playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() + 1);
@@ -499,23 +495,21 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             }*/
 			try {
 				playerService.updateDuration(spacemusicunifyPlayer, Duration.ZERO);
-			} catch (BusinessException e) {
+
+				/*spacemusicunifyPlayer.setDuration(Duration.ZERO);*/
+				spacemusicunifyPlayer.setPlay(true);
+				pauseButton.setVisible(true);
+				 playButton.setVisible(false);
+					if(spacemusicunifyPlayer.isMute()) {
+						playerService.updateMute(spacemusicunifyPlayer, true);
+						volumeImg.setImage(new Image(Files.newInputStream(Paths.get(volumeDisabled))));
+						volumeSlider.setDisable(true);
+					}
+			} catch (IOException | BusinessException e) {
 				dispatcher.renderError(e);
 			}
-			/*spacemusicunifyPlayer.setDuration(Duration.ZERO);*/
-            spacemusicunifyPlayer.setPlay(true);
-            pauseButton.setVisible(true);
-            playButton.setVisible(false);
-            if(spacemusicunifyPlayer.isMute()) {
-        		spacemusicunifyPlayer.setMute(true);
-        		try {
-					volumeImg.setImage(new Image(Files.newInputStream(Paths.get(volumeDisabled))));
-				} catch (IOException e) {
-					dispatcher.renderError(e);
-				}
-        		volumeSlider.setDisable(true);
-        	}
-			if("song_detail".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
+
+			if(dispatcher.getLayout().getCenter() != null && "song_detail".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
 
 		}
     }
@@ -584,29 +578,29 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         
     }
     */
-    public void muteSong(ActionEvent event) {
-        if(spacemusicunifyPlayer.isMute()){
-            Image img = null;
-            try {
-                img = new Image(Files.newInputStream(Paths.get(volumeEnabled)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            volumeImg.setImage(img);
-            volumeSlider.setDisable(false);
-            spacemusicunifyPlayer.setMute(false);
-        }else{
-            Image img = null;
-            try {
-                img = new Image(Files.newInputStream(Paths.get(volumeDisabled)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            volumeImg.setImage(img);
-            volumeSlider.setDisable(true);
-            spacemusicunifyPlayer.setMute(true);
-        }
+    public void muteSong() {
+		try {
+			if(spacemusicunifyPlayer.isMute()){
+				Image img;
 
+					img = new Image(Files.newInputStream(Paths.get(volumeEnabled)));
+
+				volumeImg.setImage(img);
+				volumeSlider.setDisable(false);
+				playerService.updateMute(spacemusicunifyPlayer, false);
+
+			}else{
+				Image img;
+
+				img = new Image(Files.newInputStream(Paths.get(volumeDisabled)));
+
+				volumeImg.setImage(img);
+				volumeSlider.setDisable(true);
+				playerService.updateMute(spacemusicunifyPlayer, true);
+			}
+		} catch (IOException | BusinessException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     public void pauseSong(ActionEvent event) {

@@ -26,7 +26,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></ToggleButton>
-      <TableView fx:id="artist" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
+      <TableView fx:id="artistTableView" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
         <placeholder>
         	<Label text="artist not found" />
         </placeholder>
@@ -37,7 +37,7 @@
             <TableColumn fx:id="artistInfo" prefWidth="117.0" />
          </columns>
       </TableView>
-      <TableView fx:id="song" layoutY="71.0" prefHeight="364.0" prefWidth="910.0">
+      <TableView fx:id="songTableView" layoutY="71.0" prefHeight="364.0" prefWidth="910.0">
          <placeholder>
         	<Label text="song not found" />
         </placeholder>
@@ -45,16 +45,17 @@
             <TableColumn fx:id="songTitle" prefWidth="156.0" text="Title" />
             <TableColumn fx:id="songArtist" prefWidth="166.0" text="Artist" />
             <TableColumn fx:id="songAlbum" prefWidth="163.0" text="Album" />
-            <TableColumn fx:id="songGenre" prefWidth="142.0" text="Genre" />
-            <TableColumn fx:id="songTime" prefWidth="93.0" text="Duration" />
-            <TableColumn fx:id="songInfo" />
-            <TableColumn fx:id="addSongToQueue" prefWidth="104.0" />
+            <TableColumn fx:id="songGenre" prefWidth="99.0" text="Genre" />
+            <TableColumn fx:id="songTime" text="Duration" />
+            <TableColumn fx:id="songInfo" prefWidth="76.0" />
+            <TableColumn fx:id="addSongToQueue" prefWidth="81.0" />
+            <TableColumn fx:id="addSongToPlaylists" prefWidth="81.0" />
          </columns>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </TableView>
-      <TableView fx:id="album" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
+      <TableView fx:id="albumTableView" layoutY="71.0" prefHeight="364.0" prefWidth="910.0" visible="false">
          <placeholder>
         	<Label text="album not found" />
         </placeholder>

@@ -10,7 +10,7 @@ public interface UserService {
 	
 	void modify(Integer id, String username, String password) throws BusinessException;
 
-	void delete(User utente) throws BusinessException;
+	void delete(User user) throws BusinessException;
 
 	void add(Playlist playlist) throws BusinessException;
 

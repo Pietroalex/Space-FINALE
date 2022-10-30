@@ -27,7 +27,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class QueueController implements Initializable, DataInitializable<User> {
 
 	private PlayerService playerService;
-	private UserService userService;
 	private AlbumService albumService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 	@FXML
@@ -48,10 +47,8 @@ public class QueueController implements Initializable, DataInitializable<User> {
 	public QueueController(){
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
 		playerService = factory.getPlayerService();
-		userService = factory.getUserService();
 		albumService = factory.getAlbumService();
 		this.dispatcher = ViewDispatcher.getInstance();
-
 		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
 
 	}
@@ -72,9 +69,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			}
 			return new SimpleStringProperty(artists);
 		});
-		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> {
-			return new SimpleStringProperty(param.getValue().getAlbum().getTitle());
-		});
+		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(param.getValue().getAlbum().getTitle()));
 		duration.setCellValueFactory(new PropertyValueFactory<>("length"));
 		delete.setStyle("-fx-alignment: CENTER;");
 	}
@@ -87,16 +82,11 @@ public class QueueController implements Initializable, DataInitializable<User> {
 			deleteButton.setOnAction((event) -> {
 				try {
 					playerService.deleteSongFromQueue(spacemusicunifyPlayer, param.getValue());
-
-				} catch (ObjectNotFoundException e) {
-					//text
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}
-				/*queueTable.getItems().remove(param.getValue());*/
-				/*queueTable.refresh();*/
 			});
-			return new SimpleObjectProperty<Button>(deleteButton);
+			return new SimpleObjectProperty<>(deleteButton);
 		});
 		queueTable.setItems(spacemusicunifyPlayer.getQueue());
 	}
