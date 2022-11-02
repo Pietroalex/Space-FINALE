@@ -118,7 +118,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                             members.hide();
                             dispatcher.setSituation(ViewSituations.detail);
                             dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-                            System.out.println("andato");
 
                         });
                         members.getItems().add(menuItem);
@@ -161,7 +160,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         menuItem.setOnAction((ActionEvent event) -> {
                             dispatcher.setSituation(ViewSituations.detail);
                             dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-                            System.out.println("andato");
+
 
                         });
                         membersModify.getItems().add(menuItem);

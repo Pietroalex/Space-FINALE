@@ -364,22 +364,22 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		name.setCellValueFactory(new PropertyValueFactory<>("title"));
 		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
 
-			final Button addButton = new Button("Add here");
-			if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
-			addButton.setOnAction((ActionEvent evento) -> {
+		final Button addButton = new Button("Add here");
+		if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
+		addButton.setOnAction((ActionEvent evento) -> {
 
 				//aggiunta canzone alla playlist
-				Set<Song> list = param.getValue().getSongList();
-				list.add(songToAdd);
+			Set<Song> list = param.getValue().getSongList();
+			list.add(songToAdd);
 
-				try {
-					userService.modify(list, param.getValue());
-					/*dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());*/
+			try {
+				userService.modify(list, param.getValue());
+				dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
 
-				} catch (BusinessException e) {
-					dispatcher.renderError(e);
-				}
-				addButton.setDisable(true);
+			} catch (BusinessException e) {
+				dispatcher.renderError(e);
+			}
+			addButton.setDisable(true);
 			});
 			return new SimpleObjectProperty<>(addButton);
 		});

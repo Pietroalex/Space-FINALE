@@ -38,50 +38,8 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
     private final ViewDispatcher dispatcher;
     private final UserService userService;
 
-/*    @FXML
-    private ListView<String> myPlaylists;
-    private User user;
-
-    public PlaylistPaneController(){
-        dispatcher = ViewDispatcher.getInstance();
-        SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-        userService = factory.getUserService();
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-
-    	myPlaylists.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
-    		String selectedItem = myPlaylists.getSelectionModel().getSelectedItem();
-    		Playlist selected = null;
-    		try {
-				for(Playlist playlist : userService.getAllPlaylists(user)) {
-					if(selectedItem.equals(playlist.getTitle())) {
-						selected = playlist;
-						break;
-					}
-				}
-			} catch (BusinessException e) {
-				dispatcher.renderError(e);
-			}
-    		if(selected != null) dispatcher.renderView("UserViews/PlaylistView/playlistView", selected);
-    	});
-    }
-    @Override
-    public void initializeData(User user) {
-        this.user = user;
-
-        try {
-        	for(Playlist playlist : userService.getAllPlaylists(user)) {
-        		myPlaylists.getItems().add(playlist.getTitle());
-        	}
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
-  */
-@FXML
-private ListView<Playlist> myPlaylists;
+    @FXML
+    private ListView<Playlist> myPlaylists;
     private User user;
 
     public PlaylistPaneController(){
@@ -116,10 +74,7 @@ private ListView<Playlist> myPlaylists;
     public void initializeData(User user) {
         this.user = user;
         try {
-
-            List<Playlist> playlists = new ArrayList<>(userService.getAllPlaylists(user));
-
-            ObservableList<Playlist> playlistData = FXCollections.observableArrayList(playlists);
+            ObservableList<Playlist> playlistData = FXCollections.observableArrayList(userService.getAllPlaylists(user));
             myPlaylists.setItems(playlistData);
 
         } catch (BusinessException e) {

@@ -46,7 +46,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 			Song canzone = new Song();
 			canzone.setAlbum(album);
 			if(album.getSongs() == null)canzone.setTitle("Default"+album.getTitle());
-			else canzone.setTitle("Default "+album.getTitle());
+			else canzone.setTitle("Default song of "+album.getTitle());
 			canzone.setLyrics("Lyrics");
 			canzone.setLength("04:02");
 			if(album.getGenre() == Genre.singles){
@@ -164,21 +164,21 @@ public class FileAlbumServiceImpl implements AlbumService {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] columns: fileData.getRows()) {
 
-
+				for(Production production1 : productionService.getAllProductions()){
+					if(production1.getAlbum().getId().intValue() == album.getId().intValue()){
+						productionService.delete(production1);
+					}
+				}
 				if (columns[0].equals(album.getId().toString()) ){
 					check = true;
-
-
-					multimediaService.delete(album.getCover());
-					for(Song song : album.getSongs()){
+					Set<Song> songs = new HashSet<>(album.getSongs());
+					for(Song song : songs){
 						delete(song);
 					}
+					multimediaService.delete(album.getCover());
 
-					for(Production production1 : productionService.getAllProductions()){
-						if(production1.getAlbum().getId().intValue() == album.getId().intValue()){
-							productionService.delete(production1);
-						}
-					}
+
+
 						//aggiorno il file album.txt
 					try (PrintWriter writer = new PrintWriter(new File(albumsFile))) {
 						writer.println(fileData.getCounter());
@@ -208,7 +208,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] rows: fileData.getRows()) {
-				if ( song.getTitle().contains("DefaultSingles") && song.getGenre() != Genre.singles){
+				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
 					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
 				}
 				if(rows[1].equals(song.getTitle())) {
@@ -340,8 +340,8 @@ public class FileAlbumServiceImpl implements AlbumService {
 	public void delete(Song song) throws BusinessException {
 		boolean check = false;
 		Album album = song.getAlbum();
-
-		for(Song songCheck : album.getSongs()) {
+		Set<Song> songs = new HashSet<>(album.getSongs());
+		for(Song songCheck : songs) {
 
 			if(songCheck.getId().intValue() == song.getId().intValue()) {
 				check = true;
@@ -357,9 +357,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 						}
 					}
 					for(Playlist playlist : userService.getAllPlaylists(user)){
-						Set<Song> songs = playlist.getSongList();
-							songs.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
-							userService.modify(songs, playlist);
+						Set<Song> playlistSongList = playlist.getSongList();
+						playlistSongList.removeIf((Song songCheck2) -> songCheck2.getId().intValue() == song.getId().intValue());
+						userService.modify(playlistSongList, playlist);
 					}
 				}
 

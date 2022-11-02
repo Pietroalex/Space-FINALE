@@ -543,7 +543,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			}else{
 				System.out.println("Album not found");
 			}
-			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artistService.findAllProductions(artist));
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);

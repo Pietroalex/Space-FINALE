@@ -21,7 +21,7 @@ public class HomeController implements Initializable, DataInitializable<User> {
 		
 	}
 	@Override
-	public void initializeData(User utente) {
-		benvenutoLabel.setText("Benvenuto " +  utente.getUsername().substring(0, 1).toUpperCase(Locale.ROOT).concat(utente.getUsername().substring(1)) + "!");
+	public void initializeData(User user) {
+		benvenutoLabel.setText("Benvenuto " +  user.getUsername().substring(0, 1).toUpperCase(Locale.ROOT).concat(user.getUsername().substring(1)) + "!");
 	}
 }

@@ -1,6 +1,8 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -75,7 +77,8 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 
 							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != songTableRow.getItem().getId().intValue()) {
 								try {
-									for(Song songCheck : spacemusicunifyPlayer.getQueue()){
+									List<Song> songList = new ArrayList<>(spacemusicunifyPlayer.getQueue());
+									for(Song songCheck : songList){
 										if(songCheck.getId().intValue() == songTableRow.getItem().getId().intValue()) playerService.deleteSongFromQueue(spacemusicunifyPlayer, songTableRow.getItem());	//rimuovo la songTableRow se già presente in coda
 									}
 

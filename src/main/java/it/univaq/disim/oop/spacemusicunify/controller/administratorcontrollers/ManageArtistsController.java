@@ -94,7 +94,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 					count = count + production.getAlbum().getSongs().size();
 				}
 			} catch (BusinessException e) {
-				throw new RuntimeException(e);
+				dispatcher.renderError(e);
 			}
 			String number = String.valueOf(count);
 			return new SimpleStringProperty(number);
