@@ -56,6 +56,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 	private final ViewDispatcher dispatcher;
     private final UserService userService;
 	private PlayerService playerService;
+	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";	
+	
     @FXML
     private Button playButton, nextButton, previousButton, pauseButton, volumeButton, queueButton, addToPlaylistButton;
     @FXML
@@ -707,6 +709,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		layout.getChildren().addAll(title, tableView, closeButton);
 		layout.setAlignment(Pos.CENTER);
 		Scene scene1 = new Scene(layout, 300, 150);
+		scene1.getStylesheets().add(MyStyle);
 		popupwindow.setScene(scene1);
 		popupwindow.setResizable(false);
 		popupwindow.setTitle("Add to playlist");

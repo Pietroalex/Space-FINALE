@@ -37,6 +37,8 @@ import java.util.*;
 public class PlaylistPaneController implements Initializable, DataInitializable<User> {
     private final ViewDispatcher dispatcher;
     private final UserService userService;
+	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";
+
 
     @FXML
     private ListView<Playlist> myPlaylists;
@@ -138,6 +140,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         layout.getChildren().addAll(error, insert, title, align);
         layout.setAlignment(Pos.CENTER);
         Scene scene1 = new Scene(layout, 300, 150);
+        scene1.getStylesheets().add(MyStyle);
         popupwindow.setScene(scene1);
         popupwindow.setResizable(false);
         popupwindow.setTitle("Create new playlist");

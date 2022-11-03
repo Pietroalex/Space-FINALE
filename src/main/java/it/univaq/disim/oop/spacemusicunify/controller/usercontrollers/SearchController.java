@@ -98,6 +98,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private ArtistService artistService;
 	private AlbumService albumService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
+	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
@@ -405,6 +406,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		layout.getChildren().addAll(title, tableView, closeButton);
 		layout.setAlignment(Pos.CENTER);
 		Scene scene1 = new Scene(layout, 300, 150);
+		scene1.getStylesheets().add(MyStyle);
 		popupwindow.setScene(scene1);
 		popupwindow.setResizable(false);
 		popupwindow.setTitle("Add to playlist");
