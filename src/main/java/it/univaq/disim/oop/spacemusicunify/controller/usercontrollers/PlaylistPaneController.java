@@ -105,11 +105,13 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         // operazione annulla
         Button closeButton = new Button("Cancel");
         closeButton.setCursor(Cursor.HAND);
+        closeButton.setId("b1");
         closeButton.setOnAction(e -> popupwindow.close());
 
         // operazione conferma
         Button createButton = new Button("Confirm");
         createButton.setCursor(Cursor.HAND);
+        createButton.setId("b1");
 
         createButton.setOnAction(e -> {
             playlist.setTitle(title.getText());

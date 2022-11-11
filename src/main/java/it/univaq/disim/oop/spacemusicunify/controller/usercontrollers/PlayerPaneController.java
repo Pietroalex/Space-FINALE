@@ -662,12 +662,14 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		title.setAlignment(Pos.CENTER);
 		//selezione multipla playlist
 		TableView<Playlist> tableView = new TableView<>();
+		tableView.setId("table");
 		TableColumn<Playlist, String> name = new TableColumn<>("Title");
 		TableColumn<Playlist, Button> add = new TableColumn<>();
 		name.setCellValueFactory(new PropertyValueFactory<>("title"));
 		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
 
 			final Button addButton = new Button("Add here");
+			addButton.setId("b2");
 			if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
 			addButton.setOnAction((ActionEvent evento) -> {
 
@@ -700,6 +702,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		
 		// operazione annulla
 		Button closeButton = new Button("Close");
+		closeButton.setId("b1");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
 			popupwindow.close();

@@ -439,6 +439,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		name.setCellValueFactory(new PropertyValueFactory<>("title"));
 		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
 			final Button addButton = new Button("ADD");
+			addButton.setId("b2");
 
 			addButton.setOnAction((ActionEvent event) -> {
 				//aggiunto album alla playlist
@@ -469,6 +470,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 		// operazione annulla
 		Button closeButton = new Button("Close");
+		closeButton.setId("b1");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
 			popupwindow.close();
@@ -478,6 +480,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		layout.getChildren().addAll(title, tableView, closeButton);
 		layout.setAlignment(Pos.CENTER);
 		Scene scene1 = new Scene(layout, 300, 150);
+		scene1.getStylesheets().add(MyStyle);
 		popupwindow.setScene(scene1);
 		popupwindow.setResizable(false);
 		popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");

@@ -83,6 +83,7 @@ public class LayoutController implements DataInitializable<User> {
 			System.out.println(genre);
 			if(genre != Genre.singles) {
 				Button item = new Button(genre.toString());
+				item.setId("item");
 				item.setCursor(Cursor.HAND);
 				item.setPrefWidth(115);
 				item.setOnAction((ActionEvent event2) -> {
@@ -97,6 +98,7 @@ public class LayoutController implements DataInitializable<User> {
 		scrollPane.setMaxHeight(200);//Adjust max height of the popup here
 		scrollPane.setMaxWidth(130);//Adjust max width of the popup here
 		Button closeButton = new Button("Close");
+		closeButton.setId("b1");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
 			popupwindow.close();
