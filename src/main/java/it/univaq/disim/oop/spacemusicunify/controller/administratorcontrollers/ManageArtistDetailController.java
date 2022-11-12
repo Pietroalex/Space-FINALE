@@ -55,10 +55,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private Button cancel;
     @FXML
     private Button albums;
-
     @FXML
     private Button modify;
-
+    @FXML
+    private ListView<HBox> artistsListView;
     @FXML
     private HBox images;
     @FXML
@@ -101,7 +101,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 existingLabel.setVisible(false);
             }
         });*/
-        
 
     }
     
@@ -140,6 +139,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
+                artistsListView.setVisible(false);
                 if(!(artist.getBandMembers().isEmpty())) {
                     membersModify.setVisible(true);
                     addMembers = new HashSet<>(artist.getBandMembers());
@@ -193,7 +193,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
-
+                artistsListView.setVisible(true);
                 membersModify.setVisible(true);
                 try {
                     Set<Artist> artists = artistService.getArtistList();
@@ -227,6 +227,17 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         add.setCursor(Cursor.HAND);
                         add.setOnAction((ActionEvent event) -> {
                             addMembers.add(artistCtrl);
+                            HBox hBox = new HBox();
+                            Label aName = new Label(artistCtrl.getName());
+                            Button del = new Button("Delete");
+                            del.setOnAction((action) -> {
+                            	addMembers.remove(artistCtrl);
+                            	artistsListView.getItems().remove(hBox);
+                            	add.setDisable(false);
+                            });
+                            hBox.getChildren().add(aName);
+                            hBox.getChildren().add(del);
+                            artistsListView.getItems().add(hBox);
                             add.setDisable(true);
                         });
                         Label name = new Label(artistCtrl.getName());
@@ -396,6 +407,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     
     public void focusImage(Picture image){
         imgUrl = image;
+        artistsListView.setVisible(false);
         cancelbox.setVisible(true);
     }
     
@@ -461,12 +473,13 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         modifyImages.getChildren().clear();
         loadModifyImages(tempPictures);
         cancelbox.setVisible(false);
+        if(membersModify.isVisible()) artistsListView.setVisible(true);
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){
         imgUrl = null;
         cancelbox.setVisible(false);
-
+        if(membersModify.isVisible()) artistsListView.setVisible(true);
     }
     @FXML
     public void deleteThisArtist(){

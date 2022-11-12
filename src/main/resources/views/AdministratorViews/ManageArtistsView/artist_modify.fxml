@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
@@ -21,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
    <children>
       <TextField id="text" fx:id="nameField" alignment="CENTER" layoutX="115.0" layoutY="79.0" prefHeight="34.0" prefWidth="249.0" promptText="Name">
          <font>
@@ -65,7 +60,7 @@
             <Font size="23.0" />
          </font>
       </Label>
-      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="154.0" prefHeight="77.0" prefWidth="208.0">
+      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="154.0" prefHeight="77.0" prefWidth="208.0" visible="false">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="21.0" prefWidth="204.0" text="Do you want to delete this image?">
                <font>
@@ -131,6 +126,11 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <MenuButton fx:id="membersModify" layoutX="694.0" layoutY="129.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="195.0" text="Artists" visible="false" />
+      <MenuButton id="b1" fx:id="membersModify" layoutX="692.0" layoutY="129.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="187.0" text="Band composed of :" visible="false" />
+      <ListView fx:id="artistsListView" layoutX="692.0" layoutY="169.0" prefHeight="71.0" prefWidth="187.0" visible="false">
+      	<placeholder>
+        	<Label text="Single Artist" />
+    	</placeholder>
+      </ListView>
    </children>
 </AnchorPane>
