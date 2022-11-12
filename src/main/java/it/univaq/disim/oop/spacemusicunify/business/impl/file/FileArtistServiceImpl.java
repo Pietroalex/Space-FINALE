@@ -34,6 +34,8 @@ public class FileArtistServiceImpl implements ArtistService {
 					throw new AlreadyExistingException("New Artist, Already Existing artist with this name");
 				}
 			}
+			if(artist.getBandMembers().size() == 1)	throw new AlreadyExistingException("New Artist, The Band Must be composed at least of 2 artists");
+
 			artist.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
 			List<String> imageList = new ArrayList<>();
 			for(Picture picture : artist.getPictures()){

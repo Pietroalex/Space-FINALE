@@ -5,16 +5,24 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
@@ -58,7 +66,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     @FXML
     private Button modify;
     @FXML
-    private ListView<HBox> artistsListView;
+    private ListView<HBox> artistsModifyListView;
+    @FXML
+    private ListView<Artist> artistsDetailListView;
     @FXML
     private HBox images;
     @FXML
@@ -73,13 +83,16 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private Label existingLabel;
     @FXML
     private MenuButton members;
+    @FXML Button addArtists;
 
     private Administrator admin;
     private UserService userService;
 
     private static Picture imgUrl;
     @FXML
-    private MenuButton membersModify;
+    private AnchorPane artistsPane;
+    @FXML
+    private AnchorPane artistsModifyPane;
     @FXML
     private Set<Artist> addMembers ;
     private Set<Picture> tempPictures;
@@ -109,18 +122,26 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             case detail:
                 loadImages(artist.getPictures());
                 if(!(artist.getBandMembers().isEmpty())) {
-                    members.setVisible(true);
-                    for (Artist artistCtrl : artist.getBandMembers()) {
-                        MenuItem menuItem = new MenuItem();
-                        menuItem.setText(artistCtrl.getName());
-                        menuItem.setOnAction((ActionEvent event) -> {
-                            members.hide();
-                            dispatcher.setSituation(ViewSituations.detail);
-                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+                    artistsPane.setVisible(true);
+                    artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+                        @Override
+                        protected void updateItem(Artist item, boolean empty) {
+                            super.updateItem(item, empty);
 
-                        });
-                        members.getItems().add(menuItem);
-                    }
+                            if (empty || item == null || item.getName() == null) {
+                                setText(null);
+                            } else {
+                                setText(item.getName());
+                            }
+                        }
+
+                    });
+
+                    artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+                        if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+                    });
+                    ObservableList<Artist> bamdMembersData = FXCollections.observableArrayList(artist.getBandMembers());
+                    artistsDetailListView.setItems(bamdMembersData);
                 }
                 name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
@@ -139,31 +160,27 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
-                artistsListView.setVisible(false);
+
                 if(!(artist.getBandMembers().isEmpty())) {
-                    membersModify.setVisible(true);
+                    artistsModifyPane.setVisible(true);
                     addMembers = new HashSet<>(artist.getBandMembers());
                     for (Artist artistCtrl : artist.getBandMembers()) {
-                        MenuItem menuItem = new MenuItem();
-                        Button delete = new Button("Delete");
-                        delete.setCursor(Cursor.HAND);
-                        delete.setOnAction((ActionEvent event) -> {
-                            addMembers.remove(artistCtrl);
-                            membersModify.getItems().remove(menuItem);
-                        });
-                        Label name = new Label(artistCtrl.getName());
+
                         HBox hBox = new HBox();
-                        hBox.getChildren().add(name);
-                        hBox.getChildren().add(delete);
-
-                        menuItem.setGraphic(hBox);
-                        menuItem.setOnAction((ActionEvent event) -> {
-                            dispatcher.setSituation(ViewSituations.detail);
-                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-
-
+                        Label aName = new Label(artistCtrl.getName());
+                        Button del = new Button("Delete");
+                        del.setOnAction((action) -> {
+                            addMembers.remove(artistCtrl);
+                            artistsModifyListView.getItems().remove(hBox);
                         });
-                        membersModify.getItems().add(menuItem);
+                        hBox.getChildren().add(aName);
+                        hBox.getChildren().add(del);
+                        artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> {
+                            del.setDisable(a.getList().size() <= 2);
+                        });
+                        artistsModifyListView.getItems().add(hBox);
+
+
                     }
                 }
                 nationalityField.getItems().addAll(Nationality.values());
@@ -193,65 +210,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for(int i=1; i<101; i++) {
                     yearsOfActivityField.getItems().add(i);
                 }
-                artistsListView.setVisible(true);
-                membersModify.setVisible(true);
-                try {
-                    Set<Artist> artists = artistService.getArtistList();
-                    addMembers = new HashSet<>();
-                    Set<Artist> singleArtist = new HashSet<>(artists);
-                    Set<Artist> band = new HashSet<>();
-                    for(Artist artistCheck : artists){
-                        if(!(artistCheck.getBandMembers().isEmpty())){
-                            singleArtist.remove(artistCheck);
-                            band.add(artistCheck);
-                        }
-                    }
-                    for(Artist bandctr : band){
-                        for(Artist art : bandctr.getBandMembers()){
-                            for(Artist single2 : singleArtist) {
-
-                                if (art.getId().intValue() == single2.getId().intValue()) {
-                                    artists.remove(single2);
-                                }
-
-                            }
-                        }
-                    }
-                    for(Artist removeBand : band){
-                        artists.remove(removeBand);
-                    }
-
-                    for (Artist artistCtrl : artists) {
-                        MenuItem menuItem = new MenuItem();
-                        Button add = new Button("Add");
-                        add.setCursor(Cursor.HAND);
-                        add.setOnAction((ActionEvent event) -> {
-                            addMembers.add(artistCtrl);
-                            HBox hBox = new HBox();
-                            Label aName = new Label(artistCtrl.getName());
-                            Button del = new Button("Delete");
-                            del.setOnAction((action) -> {
-                            	addMembers.remove(artistCtrl);
-                            	artistsListView.getItems().remove(hBox);
-                            	add.setDisable(false);
-                            });
-                            hBox.getChildren().add(aName);
-                            hBox.getChildren().add(del);
-                            artistsListView.getItems().add(hBox);
-                            add.setDisable(true);
-                        });
-                        Label name = new Label(artistCtrl.getName());
-                        HBox hBox = new HBox();
-                        hBox.getChildren().add(name);
-                        hBox.getChildren().add(add);
-
-                        menuItem.setGraphic(hBox);
-
-                        membersModify.getItems().add(menuItem);
-                    }
-                } catch (BusinessException e) {
-                    throw new RuntimeException(e);
-                }
+                artistsModifyPane.setVisible(true);
+                addMembers = new HashSet<>();
 
                 nationalityField.getItems().addAll(Nationality.values());
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -273,18 +233,26 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             case user:
                 loadImages(artist.getPictures());
                 if(!(artist.getBandMembers().isEmpty())) {
-                    members.setVisible(true);
-                    for (Artist artistCtrl : artist.getBandMembers()) {
-                        MenuItem menuItem = new MenuItem();
-                        menuItem.setText(artistCtrl.getName());
-                        menuItem.setOnAction((ActionEvent event) -> {
-                            members.hide();
-                            dispatcher.setSituation(ViewSituations.detail);
-                            dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
+                    artistsPane.setVisible(true);
+                    artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+                        @Override
+                        protected void updateItem(Artist item, boolean empty) {
+                            super.updateItem(item, empty);
 
-                        });
-                        members.getItems().add(menuItem);
-                    }
+                            if (empty || item == null || item.getName() == null) {
+                                setText(null);
+                            } else {
+                                setText(item.getName());
+                            }
+                        }
+
+                    });
+
+                    artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+                        if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+                    });
+                    ObservableList<Artist> bamdMembersData = FXCollections.observableArrayList(artist.getBandMembers());
+                    artistsDetailListView.setItems(bamdMembersData);
                 }
                 name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
@@ -297,6 +265,111 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             default:
             	break;
         }
+    }
+    @FXML
+    public void showArtistsSelection() {
+        Stage popupwindow = new Stage();
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        VBox container = new VBox();
+        VBox vBox = new VBox();
+        try {
+            Set<Artist> artists = artistService.getArtistList();
+
+            Set<Artist> availableArtists = new HashSet<>(artists);
+            Set<Artist> band = new HashSet<>();
+
+            //divisione singoli artisti e band da tutti gli artisti salvati
+            for(Artist artistCheck : artists){
+                if(!(artistCheck.getBandMembers().isEmpty())){
+                    availableArtists.remove(artistCheck);
+                    band.add(artistCheck);
+                }
+            }
+            //scrematura di artisti singoli rimasti non presenti in band e rimozione artisti presenti in band
+            for(Artist bandctr : band){
+                for(Artist art : bandctr.getBandMembers()){
+                    for(Artist single2 : availableArtists) {
+
+                        if (art.getId().intValue() == single2.getId().intValue()) {
+                            artists.remove(single2);
+                        }
+
+                    }
+                }
+            }
+            //rimozione band da set principale
+            for(Artist removeBand : band){
+                artists.remove(removeBand);
+            }
+
+            for(Artist addBack : artist.getBandMembers()){
+                boolean checkArtist = false;
+                for(Artist check : addMembers) {
+                    if (addBack.getId().intValue() == check.getId().intValue()){
+                        checkArtist = true;
+                        break;
+                    }
+                }
+                if(!checkArtist) artists.add(addBack);
+            }
+
+            for (Artist artistCtrl : artists) {
+
+                Button add = new Button("Add");
+                add.setCursor(Cursor.HAND);
+                add.setOnAction((ActionEvent event) -> {
+                    addMembers.add(artistCtrl);
+                    HBox hBox = new HBox();
+                    Label aName = new Label(artistCtrl.getName());
+                    Button del = new Button("Delete");
+                    del.setOnAction((action) -> {
+                        addMembers.remove(artistCtrl);
+                        artistsModifyListView.getItems().remove(hBox);
+                        add.setDisable(false);
+                    });
+                    hBox.getChildren().add(aName);
+                    hBox.getChildren().add(del);
+                    if(dispatcher.getSituation() == ViewSituations.modify) artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> del.setDisable(a.getList().size() <= 2));
+                    artistsModifyListView.getItems().add(hBox);
+                    add.setDisable(true);
+                });
+
+                Label name = new Label(artistCtrl.getName());
+                HBox hBox = new HBox();
+                hBox.getChildren().add(name);
+                hBox.getChildren().add(add);
+
+                for(Artist ctrl : addMembers){
+                    if(artistCtrl.getId().intValue() == ctrl.getId().intValue()){
+                        add.setDisable(true);
+                        break;
+                    }
+                }
+                vBox.getChildren().add(hBox);
+            }
+        } catch (BusinessException e) {
+            throw new RuntimeException(e);
+        }
+
+        ScrollPane scrollPane = new ScrollPane(vBox);
+        scrollPane.setMaxHeight(200);//Adjust max height of the popup here
+        scrollPane.setMaxWidth(130);//Adjust max width of the popup here
+        Button closeButton = new Button("Close");
+        closeButton.setId("b1");
+        closeButton.setCursor(Cursor.HAND);
+        closeButton.setOnAction(e -> {
+            popupwindow.close();
+        });
+        container.getChildren().addAll(scrollPane, closeButton);
+        container.setAlignment(Pos.CENTER);
+        Scene scene1 = new Scene(container, 150, 200);
+
+        /*scene1.getStylesheets().add(MyStyle);*/
+
+        popupwindow.setScene(scene1);
+        popupwindow.setResizable(false);
+        popupwindow.setTitle("Add artists");
+        popupwindow.showAndWait();
     }
     @Override
     public void initializeData(Artist artist) {
@@ -407,7 +480,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     
     public void focusImage(Picture image){
         imgUrl = image;
-        artistsListView.setVisible(false);
         cancelbox.setVisible(true);
     }
     
@@ -473,13 +545,11 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         modifyImages.getChildren().clear();
         loadModifyImages(tempPictures);
         cancelbox.setVisible(false);
-        if(membersModify.isVisible()) artistsListView.setVisible(true);
     }
     @FXML
     public void cancelDeleteSelection(ActionEvent event){
         imgUrl = null;
         cancelbox.setVisible(false);
-        if(membersModify.isVisible()) artistsListView.setVisible(true);
     }
     @FXML
     public void deleteThisArtist(){

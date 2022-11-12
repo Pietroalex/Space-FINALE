@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -126,11 +125,20 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <MenuButton id="b1" fx:id="membersModify" layoutX="692.0" layoutY="129.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="187.0" text="Band composed of :" visible="false" />
-      <ListView fx:id="artistsListView" layoutX="692.0" layoutY="169.0" prefHeight="71.0" prefWidth="187.0" visible="false">
-      	<placeholder>
-        	<Label text="Single Artist" />
-    	</placeholder>
-      </ListView>
+      <AnchorPane fx:id="artistsModifyPane" layoutX="693.0" layoutY="114.0" prefHeight="122.0" prefWidth="208.0" visible="false">
+         <children>
+            <Label layoutY="32.0" text="Band composed of :" />
+            <Button id="b1" fx:id="addArtists" layoutX="106.0" layoutY="5.0" mnemonicParsing="false" onAction="#showArtistsSelection" prefHeight="28.0" prefWidth="91.0" text="Chose artists">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <ListView fx:id="artistsModifyListView" layoutY="51.0" prefHeight="71.0" prefWidth="187.0">
+            	<placeholder>
+              	<Label text="Single Artist" />
+          	</placeholder>
+            </ListView>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

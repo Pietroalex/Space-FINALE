@@ -35,7 +35,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				throw new AlreadyExistingException("New Artist, Already Existing artist with this name");
 			}
 		}
-
+		if(artist.getBandMembers().size() == 1)	throw new AlreadyExistingException("New Artist, The Band Must be composed at least of 2 artists");
 		artist.setId(idArtists++);
 
 		for(Picture picture : artist.getPictures()){
@@ -75,6 +75,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				throw new AlreadyExistingException("Modify Artist, Already Existing artist with this name");
 			}
 		}
+
 		for(Artist artistCheck : storedArtists){
 			if(artistCheck.getId().intValue() == id.intValue()) {
 				Set<Picture> artistPictures;

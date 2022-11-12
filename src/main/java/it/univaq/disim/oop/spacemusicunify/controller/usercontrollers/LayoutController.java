@@ -92,8 +92,6 @@ public class LayoutController implements DataInitializable<User> {
 				vBox.getChildren().add(item);
 			}
 		}
-		Button it = new Button(".-_papp_papp");
-		vBox.getChildren().add(it);
 		ScrollPane scrollPane = new ScrollPane(vBox);
 		scrollPane.setMaxHeight(200);//Adjust max height of the popup here
 		scrollPane.setMaxWidth(130);//Adjust max width of the popup here
