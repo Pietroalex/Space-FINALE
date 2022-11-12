@@ -140,8 +140,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
                         if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
                     });
-                    ObservableList<Artist> bamdMembersData = FXCollections.observableArrayList(artist.getBandMembers());
-                    artistsDetailListView.setItems(bamdMembersData);
+                    ObservableList<Artist> bandMembersData = FXCollections.observableArrayList(artist.getBandMembers());
+                    artistsDetailListView.setItems(bandMembersData);
                 }
                 name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
@@ -390,7 +390,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             }
         }
     }
-    
+
     public void loadModifyImages(Set<Picture> pictures) {
         if (!(pictures.isEmpty()) ) {
             for (Picture img : pictures) {
