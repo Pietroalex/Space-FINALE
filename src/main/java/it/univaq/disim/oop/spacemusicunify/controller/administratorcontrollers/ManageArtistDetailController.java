@@ -175,12 +175,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         });
                         hBox.getChildren().add(aName);
                         hBox.getChildren().add(del);
-                        artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> {
-                            del.setDisable(a.getList().size() <= 2);
-                        });
+                        artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> del.setDisable(a.getList().size() <= 2));
                         artistsModifyListView.getItems().add(hBox);
-
-
                     }
                 }
                 nationalityField.getItems().addAll(Nationality.values());
