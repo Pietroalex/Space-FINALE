@@ -98,7 +98,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private ArtistService artistService;
 	private AlbumService albumService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
-	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";
+	private static final String MyStyle = "resources/views/controllerStyle.css";
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();

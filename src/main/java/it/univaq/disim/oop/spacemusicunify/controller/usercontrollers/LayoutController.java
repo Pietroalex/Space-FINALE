@@ -35,7 +35,7 @@ public class LayoutController implements DataInitializable<User> {
 	private User user;
 	private PlayerService playerService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
-	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";
+	private static final String MyStyle = "src\\main\\resources\\views\\controllerStyle.css";
 
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
