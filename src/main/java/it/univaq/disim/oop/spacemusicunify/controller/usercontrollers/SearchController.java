@@ -470,8 +470,8 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 		// operazione annulla
 		Button closeButton = new Button("Close");
-		closeButton.setId("b1");
 		closeButton.setCursor(Cursor.HAND);
+		closeButton.setId("b1");
 		closeButton.setOnAction(e -> {
 			popupwindow.close();
 		});
