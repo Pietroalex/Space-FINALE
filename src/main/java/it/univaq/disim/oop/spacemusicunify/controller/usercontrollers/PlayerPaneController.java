@@ -56,7 +56,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 	private final ViewDispatcher dispatcher;
     private final UserService userService;
 	private PlayerService playerService;
-	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";	
+	private static final String MyStyle = "views/controllerStyle.css";	
 	
     @FXML
     private Button playButton, nextButton, previousButton, pauseButton, volumeButton, queueButton, addToPlaylistButton;

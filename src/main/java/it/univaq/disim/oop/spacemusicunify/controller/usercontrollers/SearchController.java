@@ -98,7 +98,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 	private ArtistService artistService;
 	private AlbumService albumService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
-	private static final String MyStyle = "resources/views/controllerStyle.css";
+	private static final String MyStyle = "views/controllerStyle.css";
 	
 	public SearchController() {
 		dispatcher = ViewDispatcher.getInstance();
@@ -366,6 +366,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
 
 		final Button addButton = new Button("Add here");
+		addButton.setId("b2");
 		if(checkForClones(param.getValue(), songToAdd))addButton.setDisable(true);
 		addButton.setOnAction((ActionEvent evento) -> {
 
@@ -397,6 +398,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 		// operazione annulla
 		Button closeButton = new Button("Close");
+		closeButton.setId("b1");
 		closeButton.setCursor(Cursor.HAND);
 		closeButton.setOnAction(e -> {
 			popupwindow.close();

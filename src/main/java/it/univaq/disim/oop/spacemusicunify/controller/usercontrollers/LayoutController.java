@@ -35,8 +35,8 @@ public class LayoutController implements DataInitializable<User> {
 	private User user;
 	private PlayerService playerService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
-	private static final String MyStyle = "src\\main\\resources\\views\\controllerStyle.css";
-
+	private static final String MyStyle = "views/controllerStyle.css";
+	
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();

@@ -37,7 +37,7 @@ import java.util.*;
 public class PlaylistPaneController implements Initializable, DataInitializable<User> {
     private final ViewDispatcher dispatcher;
     private final UserService userService;
-	private static final String MyStyle = "it/univaq/disim/oop/spacemusicunify/controller/usercontrollers/style.css";
+	private static final String MyStyle = "views/controllerStyle.css";
 
 
     @FXML
