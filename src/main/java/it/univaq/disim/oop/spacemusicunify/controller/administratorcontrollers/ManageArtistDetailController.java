@@ -36,7 +36,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private final ViewDispatcher dispatcher;
     private final ArtistService artistService;
     private Artist artist;
-
+    private static final String MyStyle = "views/controllerStyle.css";
+    
     @FXML
     private TextField nameField;
     @FXML
@@ -312,6 +313,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             for (Artist artistCtrl : artists) {
 
                 Button add = new Button("Add");
+                add.setId("b1");
                 add.setCursor(Cursor.HAND);
                 add.setOnAction((ActionEvent event) -> {
                     addMembers.add(artistCtrl);
@@ -360,7 +362,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         container.setAlignment(Pos.CENTER);
         Scene scene1 = new Scene(container, 150, 200);
 
-        /*scene1.getStylesheets().add(MyStyle);*/
+        scene1.getStylesheets().add(MyStyle); /*scene1.getStylesheets().add(MyStyle);*/
 
         popupwindow.setScene(scene1);
         popupwindow.setResizable(false);
