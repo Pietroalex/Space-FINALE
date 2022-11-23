@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
    <children>
       <TextField id="text" fx:id="nameField" alignment="CENTER" layoutX="115.0" layoutY="79.0" prefHeight="34.0" prefWidth="249.0" promptText="Name">
          <font>
@@ -54,9 +54,9 @@
             <HBox fx:id="modifyImages" prefHeight="120.0" prefWidth="120.0" spacing="10.0" />
          </content>
       </ScrollPane>
-      <Label fx:id="existingLabel" alignment="CENTER" layoutX="186.0" layoutY="389.0" prefHeight="34.0" prefWidth="539.0" text="This artist already exist" textFill="#dd4129" visible="false">
+      <Label fx:id="existingLabel" alignment="CENTER" layoutX="146.0" layoutY="389.0" prefHeight="34.0" prefWidth="619.0" text="This artist already exist" textFill="#dd4129" visible="false">
          <font>
-            <Font size="23.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="154.0" prefHeight="77.0" prefWidth="208.0" visible="false">

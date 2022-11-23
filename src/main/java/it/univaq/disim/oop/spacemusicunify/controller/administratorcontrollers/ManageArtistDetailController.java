@@ -313,7 +313,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             for (Artist artistCtrl : artists) {
 
                 Button add = new Button("Add");
-                add.setId("b1");
+                add.setId("b2");
                 add.setCursor(Cursor.HAND);
                 add.setOnAction((ActionEvent event) -> {
                     addMembers.add(artistCtrl);
@@ -335,7 +335,10 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 Label name = new Label(artistCtrl.getName());
                 HBox hBox = new HBox();
                 hBox.getChildren().add(name);
+                hBox.getChildren().add(new Label("    "));
                 hBox.getChildren().add(add);
+                
+                
 
                 for(Artist ctrl : addMembers){
                     if(artistCtrl.getId().intValue() == ctrl.getId().intValue()){
@@ -344,14 +347,18 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     }
                 }
                 vBox.getChildren().add(hBox);
+                Label space = new Label();
+                space.setStyle("-fx-font-size:1px;");
+                space.setPrefHeight(4);
+                vBox.getChildren().add(space);
             }
         } catch (BusinessException e) {
             throw new RuntimeException(e);
         }
 
         ScrollPane scrollPane = new ScrollPane(vBox);
-        scrollPane.setMaxHeight(200);//Adjust max height of the popup here
-        scrollPane.setMaxWidth(130);//Adjust max width of the popup here
+        scrollPane.setPrefHeight(500);//Adjust max height of the popup here
+        scrollPane.setPrefWidth(130);//Adjust max width of the popup here
         Button closeButton = new Button("Close");
         closeButton.setId("b1");
         closeButton.setCursor(Cursor.HAND);
