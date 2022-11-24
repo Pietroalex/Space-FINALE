@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
    <children>
          <Button id="b1" fx:id="modify" layoutX="14.0" layoutY="387.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
          <cursor>
@@ -53,7 +53,7 @@
             <TableColumn fx:id="addSongToQueue" prefWidth="134.0" />
          </columns>
       </TableView>
-      <VBox fx:id="coverAlbum" layoutX="33.0" layoutY="19.0" prefHeight="127.0" prefWidth="141.0" />
+      <VBox fx:id="coverAlbum" layoutX="33.0" layoutY="10.0" prefHeight="127.0" prefWidth="141.0" />
          <Label layoutX="317.0" layoutY="29.0" text="Title">
          <font>
             <Font size="17.0" />
