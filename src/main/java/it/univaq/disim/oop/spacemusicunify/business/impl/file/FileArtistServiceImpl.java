@@ -107,8 +107,8 @@ public class FileArtistServiceImpl implements ArtistService {
 		try {
 
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for(String[] column: fileData.getRows()) {
-				if(column[1].equals(artist.getName())) {
+			for(String[] columns: fileData.getRows()) {
+				if(columns[1].equals(artist.getName()) && !columns[0].equals(id.toString()) ) {
 					throw new AlreadyExistingException("Modify Artist, Already Existing artist with this name");
 				}
 			}
@@ -141,12 +141,13 @@ public class FileArtistServiceImpl implements ArtistService {
 								toRemovePictures.add(image);
 							}
 						}
+						for (Picture picture : toAddPictures){
+							multimediaService.modify(picture);
+						}
 						for (Picture picture : toRemovePictures){
 							multimediaService.delete(picture);
 						}
-						for (Picture picture : toAddPictures){
-							multimediaService.add(picture);
-						}
+
 						for(Picture picture : images){
 							imagesIds.add(picture.getId().toString());
 						}

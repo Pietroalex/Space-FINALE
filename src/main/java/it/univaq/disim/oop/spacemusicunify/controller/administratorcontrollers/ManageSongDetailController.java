@@ -208,8 +208,8 @@ public class ManageSongDetailController implements Initializable, DataInitializa
             } else {
               albumService.modify(song.getId(), titleField.getText(),  tempAudio, lyricsField.getText(), album, lengthField.getText(), genreField.getValue(), song);
             }
-            dispatcher.setSituation(ViewSituations.modify);
-            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
+            dispatcher.setSituation(ViewSituations.detail);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 
 
         }catch (AlreadyExistingException e){

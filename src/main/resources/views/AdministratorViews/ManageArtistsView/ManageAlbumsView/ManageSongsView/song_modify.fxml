@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -14,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageSongDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageSongDetailController">
    <children>
       <TextField id="text" fx:id="titleField" alignment="CENTER" layoutX="103.0" layoutY="81.0" prefHeight="32.0" prefWidth="271.0" promptText="Title">
          <font>
@@ -66,9 +61,9 @@
          </font>
       </TextField>
       <ComboBox id="text" fx:id="genreField" layoutX="715.0" layoutY="82.0" prefHeight="32.0" prefWidth="150.0" promptText="Genre" />
-      <Label fx:id="existingLabel" alignment="CENTER" layoutX="192.0" layoutY="382.0" prefHeight="34.0" prefWidth="472.0" text="This song already exists" textFill="#dd4129" visible="false">
+      <Label fx:id="existingLabel" alignment="CENTER" layoutX="181.0" layoutY="389.0" prefHeight="34.0" prefWidth="548.0" text="This song already exists" textFill="#dd4129" visible="false">
          <font>
-            <Font size="23.0" />
+            <Font size="18.0" />
          </font>
       </Label>
          <Button id="b1" fx:id="deletesong" layoutX="756.0" layoutY="13.0" mnemonicParsing="false" onAction="#deleteThisSong" text="Delete Song">

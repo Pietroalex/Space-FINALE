@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
    <children>
       <TextField id="text" fx:id="nameField" alignment="CENTER" layoutX="115.0" layoutY="79.0" prefHeight="34.0" prefWidth="249.0" promptText="Name">
          <font>
@@ -44,12 +44,12 @@
          </font>
       </Button>
       <ComboBox id="text" fx:id="nationalityField" layoutX="694.0" layoutY="79.0" prefHeight="34.0" prefWidth="150.0" promptText="Nationality" />
-      <TextArea id="text2" fx:id="biographyField" layoutX="24.0" layoutY="144.0" prefHeight="97.0" prefWidth="661.0" promptText="Biography">
+      <TextArea id="text2" fx:id="biographyField" layoutX="24.0" layoutY="144.0" prefHeight="84.0" prefWidth="661.0" promptText="Biography">
          <font>
             <Font size="13.0" />
          </font>
       </TextArea>
-      <ScrollPane fx:id="scroll" layoutX="23.0" layoutY="254.0" prefHeight="122.0" prefWidth="856.0">
+      <ScrollPane fx:id="scroll" layoutX="23.0" layoutY="254.0" prefHeight="122.0" prefWidth="661.0">
          <content>
             <HBox fx:id="modifyImages" prefHeight="120.0" prefWidth="120.0" spacing="10.0" />
          </content>
@@ -59,7 +59,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="154.0" prefHeight="77.0" prefWidth="208.0" visible="false">
+      <VBox fx:id="cancelbox" alignment="CENTER" layoutX="693.0" layoutY="254.0" prefHeight="77.0" prefWidth="208.0" visible="false">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="21.0" prefWidth="204.0" text="Do you want to delete this image?">
                <font>
@@ -140,5 +140,10 @@
             </ListView>
          </children>
       </AnchorPane>
+      <Label fx:id="existingLocalLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="230.0" prefHeight="21.0" prefWidth="661.0" text="Do you want to delete this image?" textFill="#f50303" visible="false">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

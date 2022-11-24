@@ -11,8 +11,10 @@ public interface MultimediaService {
     void add(Audio audio) throws BusinessException;
 
     void delete(Audio audio) throws BusinessException;
+    void modify(Audio audio) throws BusinessException;
 
     void add(Picture picture) throws BusinessException;
+    void modify(Picture picture) throws BusinessException;
 
     void delete(Picture picture) throws BusinessException;
     

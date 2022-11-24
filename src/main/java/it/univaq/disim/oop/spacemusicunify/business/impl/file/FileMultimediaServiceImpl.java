@@ -32,16 +32,63 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                 if (song.getId().intValue() != ((Song) audio.getOwnership()).getId().intValue()) {
 
                     //canzone "DefaultSingles" di qualsiasi album "Singles" che ha genere "singles" può avere il file mp3 uguale a quelle di altri album "Singles" e diverso invece rispetto a tutte le altre canzoni in altri album.
-                    if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
-                        if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
+                    if(((Song) audio.getOwnership()).getAlbum().getGenre() == Genre.singles){
+                        if ((!((Song) audio.getOwnership()).getTitle().contains("DefaultSingles") && !(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData()))) {
                             ((Song) audio.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("Already Existing song with this audio");
+                            throw new AlreadyExistingException("New Song, Already Existing song with this audio");
                         }
                     } else {
                         //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
                         if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
                             ((Song) audio.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("Already Existing song with this audio");
+                            throw new AlreadyExistingException("New Song, Already Existing song with this audio");
+                        }
+                    }
+
+                }
+            }
+
+            FileData fileData = Utility.readAllRows(audiosFile);
+            try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
+                long contatore = fileData.getCounter();
+                writer.println((contatore + 1));
+                for (String[] righe : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                }
+                audio.setId((int) contatore);
+
+                StringBuilder row = new StringBuilder();
+                row.append(contatore);
+                row.append(Utility.COLUMN_SEPARATOR);
+                row.append(saveANDstore(audio.getData(), "audio"));
+                row.append(Utility.COLUMN_SEPARATOR);
+                row.append(((Song) audio.getOwnership()).getId() );
+
+                writer.println(row.toString());
+
+            }
+        } catch (IOException e) {
+            throw new BusinessException(e);
+        }
+    }
+    @Override
+    public void modify(Audio audio) throws BusinessException {
+        AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
+        try {
+            for(Song song : albumService.getSongList()) {
+
+                if (song.getId().intValue() != ((Song) audio.getOwnership()).getId().intValue()) {
+
+                    //canzone "DefaultSingles" di qualsiasi album "Singles" che ha genere "singles" può avere il file mp3 uguale a quelle di altri album "Singles" e diverso invece rispetto a tutte le altre canzoni in altri album.
+                    if(((Song) audio.getOwnership()).getTitle().contains("DefaultSingles")){
+                        if (!(song.getTitle().contains("DefaultSingles")) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
+
+                            throw new AlreadyExistingException("Modify Song, Already Existing song with this audio");
+                        }
+                    } else {
+                        //canzone non "DefaultSingles" e non la canzone di default di un nuovo album ma qualsiasi canzone di qualsiasi album deve avere il file mp3 diverso da quello di tutte le altre canzoni
+                        if (!(((Song) audio.getOwnership()).getAlbum().getSongs().isEmpty()) && Arrays.equals(song.getFileMp3().getData(), audio.getData())) {
+                            throw new AlreadyExistingException("Modify Song, Already Existing song with this audio");
                         }
                     }
 
@@ -109,9 +156,9 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         try {
             if(picture.getOwnership() instanceof Artist) {
                 for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
-                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+                    if(pictureCheck.getId() != null && Arrays.equals(pictureCheck.getData(), picture.getData())){
                         ((Artist) picture.getOwnership()).setId(null);
-                        throw new AlreadyExistingException("Duplicated picture for this artist");
+                        throw new AlreadyExistingException("New Artist, Duplicated picture for this artist");
                     }
                 }
             } else {
@@ -123,13 +170,77 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                         if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                             if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 ((Album) picture.getOwnership()).setId(null);
-                                throw new AlreadyExistingException("Already Existing album with this cover");
+                                throw new AlreadyExistingException("New Album, Already Existing album with this cover");
                             }
                         } else {
                             //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                             if (Arrays.equals(album.getCover().getData(), picture.getData())) {
                                 ((Album) picture.getOwnership()).setId(null);
-                                throw new AlreadyExistingException("Already Existing album with this cover");
+                                throw new AlreadyExistingException("New Album, Already Existing album with this cover");
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            FileData fileData = Utility.readAllRows(picturesFile);
+            try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
+                long contatore = fileData.getCounter();
+                writer.println((contatore + 1));
+                for (String[] righe : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                }
+                picture.setId((int) contatore);
+
+                StringBuilder row = new StringBuilder();
+                row.append(contatore);
+                row.append(Utility.COLUMN_SEPARATOR);
+                row.append(saveANDstore(picture.getData(), "image"));
+                row.append(Utility.COLUMN_SEPARATOR);
+                row.append(picture.getHeight());
+                row.append(Utility.COLUMN_SEPARATOR);
+                row.append(picture.getWidth());
+                row.append(Utility.COLUMN_SEPARATOR);
+                if(picture.getOwnership() instanceof Artist) {
+                    row.append(((Artist) picture.getOwnership()).getId() );
+                } else {
+                    row.append(((Album) picture.getOwnership()).getId() );
+                }
+                writer.println(row.toString());
+
+            }
+        } catch (IOException e) {
+            throw new BusinessException(e);
+        }
+    }
+    @Override
+    public void modify(Picture picture) throws BusinessException {
+        AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
+        try {
+            if(picture.getOwnership() instanceof Artist) {
+                for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
+                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+
+                        throw new AlreadyExistingException("Modify Artist, Duplicated picture for this artist");
+                    }
+                }
+            } else {
+
+                for(Album album : albumService.getAlbumList()) {
+                    if (album.getId().intValue() != ((Album) picture.getOwnership()).getId().intValue()) {
+
+                        //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
+                        if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
+                            if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
+
+                                throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
+                            }
+                        } else {
+                            //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
+                            if (Arrays.equals(album.getCover().getData(), picture.getData())) {
+
+                                throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
                             }
                         }
 

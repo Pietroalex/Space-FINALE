@@ -29,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -74,6 +75,10 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	private TableColumn<Song, Button> addSongToQueue;
 	@FXML
+	private AnchorPane artistsPane;
+	@FXML
+	private ListView<Artist> artistsDetailListView;
+	@FXML
 	private TextField titleField;
 	@FXML
 	private ComboBox<Genre> genreField;
@@ -96,8 +101,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	private Button newSong;
 	@FXML
-	private MenuButton artistS;
-	@FXML
 	private Button cancel;
 	@FXML
 	private Button addToQueue;
@@ -105,8 +108,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private Button deletealbum;
 	@FXML
 	private Label existingLabel;
-	
-	private String imageUrl;
+
 	private Artist artist;
 	private Album album;
 	private Picture tempPicture;
@@ -142,7 +144,28 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
 				genretab.setCellValueFactory(new PropertyValueFactory<>("genre"));
 				try {
-					Set<Artist> artistsSet = albumService.findAllArtists(album);
+					artistsPane.setVisible(true);
+					artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+						@Override
+						protected void updateItem(Artist item, boolean empty) {
+							super.updateItem(item, empty);
+
+							if (empty || item == null || item.getName() == null) {
+								setText(null);
+							} else {
+								setText(item.getName());
+							}
+						}
+
+					});
+
+					artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+						if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+					});
+
+					ObservableList<Artist> artistsData = FXCollections.observableArrayList(albumService.findAllArtists(album));
+					artistsDetailListView.setItems(artistsData);
+/*					Set<Artist> artistsSet = albumService.findAllArtists(album);
 					artistS.setVisible(true);
 					for (Artist artistCtrl : artistsSet) {
 						MenuItem menuItem = new MenuItem();
@@ -152,7 +175,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
 						});
 						artistS.getItems().add(menuItem);
-					}
+					}*/
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}
@@ -242,7 +265,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				imgview2.setFitWidth(album.getCover().getWidth());
 				imgview2.setCursor(Cursor.HAND);
 				imgview2.setOnMouseClicked(event -> {
-					this.focusImage(String.valueOf(album.getCover().getId()));
+					this.focusImage();
 				});
 
 				coverField.getChildren().add(imgview2);
@@ -301,7 +324,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				imgsv.setFitWidth(album.getCover().getWidth());
 				imgsv.setCursor(Cursor.HAND);
 				imgsv.setOnMouseClicked(event -> {
-					this.focusImage(String.valueOf(album.getCover().getId()));
+					this.focusImage();
 				});
 				coverField.getChildren().add(imgsv);
 
@@ -319,18 +342,27 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
 				genretab.setCellValueFactory(new PropertyValueFactory<>("genre"));
 				try {
-					Set<Artist> artistsSet = albumService.findAllArtists(album);
-					artistS.setVisible(true);
-					for (Artist artistCtrl : artistsSet) {
-						MenuItem menuItem = new MenuItem();
-						menuItem.setText(artistCtrl.getName());
-						menuItem.setOnAction((ActionEvent event) -> {
-							artistS.hide();
-							/*dispatcher.setSituation(ViewSituations.user);*/
-							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-						});
-						artistS.getItems().add(menuItem);
-					}
+					artistsPane.setVisible(true);
+					artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+						@Override
+						protected void updateItem(Artist item, boolean empty) {
+							super.updateItem(item, empty);
+
+							if (empty || item == null || item.getName() == null) {
+								setText(null);
+							} else {
+								setText(item.getName());
+							}
+						}
+
+					});
+
+					artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+						if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+					});
+
+					ObservableList<Artist> artistsData = FXCollections.observableArrayList(albumService.findAllArtists(album));
+					artistsDetailListView.setItems(artistsData);
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}
@@ -444,14 +476,11 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}
 
 	}
-	private void focusImage(String image){
-		imageUrl = image;
-
+	private void focusImage(){
 		cancelBox.setVisible(true);
 	}
 	@FXML
-	public void cancelDeleteSelection(ActionEvent event){
-		this.imageUrl = "";
+	public void cancelDeleteSelection(){
 		cancelBox.setVisible(false);
 
 	}
@@ -481,7 +510,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				imgview2.setFitWidth(tempPicture.getWidth());
 				imgview2.setCursor(Cursor.HAND);
 				imgview2.setOnMouseClicked(event -> {
-					this.focusImage(path);
+					this.focusImage();
 				});
 
 				coverField.getChildren().clear();

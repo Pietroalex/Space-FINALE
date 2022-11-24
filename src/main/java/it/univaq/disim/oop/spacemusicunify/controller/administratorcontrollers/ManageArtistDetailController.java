@@ -83,19 +83,16 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     @FXML
     private Label existingLabel;
     @FXML
-    private MenuButton members;
+    private Label existingLocalLabel;
     @FXML Button addArtists;
-
     private Administrator admin;
-    private UserService userService;
-
     private static Picture imgUrl;
     @FXML
     private AnchorPane artistsPane;
     @FXML
     private AnchorPane artistsModifyPane;
     @FXML
-    private Set<Artist> addMembers ;
+    private Set<Artist> addMembers;
     private Set<Picture> tempPictures;
 
 
@@ -512,34 +509,34 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 for (Picture pictureCheck : artist.getPictures()){
                     if(Arrays.equals(pictureCheck.getData(), picture.getData())){
                         check = true;
-                        existingLabel.setText("Already present picture, chose another or leave it as it is");
-                        existingLabel.setVisible(true);
+                        existingLocalLabel.setText("Already present picture, pick another one or leave it as it is");
+                        existingLocalLabel.setVisible(true);
                         break;
                     }
                 }
                 for (Picture pictureCheck : tempPictures){
                     if(Arrays.equals(pictureCheck.getData(), picture.getData())){
                         check = true;
-                        existingLabel.setText("Already present picture, chose another or leave it as it is");
-                        existingLabel.setVisible(true);
+                        existingLocalLabel.setText("Already present picture, pick another one or leave it as it is");
+                        existingLocalLabel.setVisible(true);
                         break;
                     }
                 }
                 if(!check) {
+                    existingLocalLabel.setVisible(false);
                     tempPictures.add(picture);
                     modifyImages.getChildren().clear();
-                    /*artist.setPictures(tempPictures);*/
                     loadModifyImages(tempPictures);
                 }
             }else{
-                existingLabel.setText("Wrong image File type, Only .png or .jpg are allowed");
-                existingLabel.setVisible(true);
+                existingLocalLabel.setText("Wrong image File type, Only .png or .jpg are allowed");
+                existingLocalLabel.setVisible(true);
             }
 
 
         }else {
-            existingLabel.setText("Please choose an image to continue");
-            existingLabel.setVisible(true);
+            existingLocalLabel.setText("Please choose an image to continue");
+            existingLocalLabel.setVisible(true);
         }
     }
     @FXML

@@ -47,8 +47,6 @@ public class FilePlayerServiceImpl implements PlayerService {
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(false);
 				row.append(Utility.COLUMN_SEPARATOR);
-				row.append(false);
-				row.append(Utility.COLUMN_SEPARATOR);
 				row.append("[]");
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(0);

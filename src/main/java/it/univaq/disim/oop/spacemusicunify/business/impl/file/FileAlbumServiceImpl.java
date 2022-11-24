@@ -32,10 +32,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] column: fileData.getRows()) {
 				if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-					throw new AlreadyExistingException("The title must not contain 'Singles'");
+					throw new AlreadyExistingException("New Album, The title must not contain 'Singles'");
 				}
 				if (column[1].equals(album.getTitle()) ) {
-					throw new AlreadyExistingException("Already Existing album with this title");
+					throw new AlreadyExistingException("New Album, Already Existing album with this title");
 				}
 			}
 		//scrivo il file album
@@ -107,10 +107,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] columns: fileData.getRows()) {
 					if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-						throw new AlreadyExistingException("The title must not contain 'Singles'");
+						throw new AlreadyExistingException("Modify Album, The title must not contain 'Singles'");
 					}
 					if (columns[1].equals(title) && !columns[0].equals(id.toString()) ){
-						throw new AlreadyExistingException("Already Existing album with this title");
+						throw new AlreadyExistingException("Modify Album, Already Existing album with this title");
 					}
 			}
 
@@ -124,8 +124,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 					String[] row;
 					if(tempPicture != null){
 						savePicture = tempPicture;
+
+						multimediaService.modify(tempPicture);
 						multimediaService.delete(album.getCover());
-						multimediaService.add(tempPicture);
 					}else{
 						savePicture = album.getCover();
 					}
@@ -209,10 +210,10 @@ public class FileAlbumServiceImpl implements AlbumService {
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] rows: fileData.getRows()) {
 				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
-					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+					throw new AlreadyExistingException("New Song, The title must not contain 'DefaultSingles'");
 				}
 				if(rows[1].equals(song.getTitle())) {
-					throw new AlreadyExistingException("Already Existing song with this title");
+					throw new AlreadyExistingException("New Song, Already Existing song with this title");
 				}
 			}
 
@@ -286,11 +287,11 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] columns: fileData.getRows()) {
-				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
-					throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
+				if(song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
+					throw new AlreadyExistingException("Modify Song, The title must not contain 'DefaultSingles'");
 				}
-				if(columns[1].equals(song.getTitle())) {
-					throw new AlreadyExistingException("Already Existing song with this title");
+				if(columns[1].equals(song.getTitle()) && !columns[0].equals(id.toString())) {
+					throw new AlreadyExistingException("Modify Song, Already Existing song with this title");
 				}
 			}
 			int cont = 0;
@@ -303,7 +304,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 					if(tempAudio != null){
 						saveAudio = tempAudio;
 
-						multimediaService.add(tempAudio);
+						multimediaService.modify(tempAudio);
 						multimediaService.delete(song.getFileMp3());
 					}else{
 						saveAudio = song.getFileMp3();
@@ -461,7 +462,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				productionList.add(production);
 			}
 		}
-		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this album");
+		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this album with ID "+album.getId());
 		return productionList;
 	}
 	@Override
