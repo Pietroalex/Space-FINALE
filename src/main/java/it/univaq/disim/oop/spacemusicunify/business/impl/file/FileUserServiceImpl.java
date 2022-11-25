@@ -71,6 +71,8 @@ public class FileUserServiceImpl implements UserService {
 						StringBuilder row = new StringBuilder();
 						row.append(id);
 						row.append(Utility.COLUMN_SEPARATOR);
+						row.append(rows[1]);
+						row.append(Utility.COLUMN_SEPARATOR);
 						row.append(username);
 						row.append(Utility.COLUMN_SEPARATOR);
 						row.append(password);

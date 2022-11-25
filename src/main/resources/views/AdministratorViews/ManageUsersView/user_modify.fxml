@@ -16,12 +16,12 @@
             <Image url="@background2.png" />
          </image>
       </ImageView>
-      <TextField id="text" fx:id="usernameField" alignment="CENTER" layoutX="362.0" layoutY="160.0" prefHeight="49.0" prefWidth="196.0">
+      <TextField id="text" fx:id="usernameField" alignment="CENTER" layoutX="358.0" layoutY="160.0" prefHeight="49.0" prefWidth="196.0">
          <font>
             <Font size="21.0" />
          </font>
       </TextField>
-      <TextField id="text" fx:id="passwordField" alignment="CENTER" layoutX="362.0" layoutY="255.0" prefHeight="49.0" prefWidth="196.0">
+      <TextField id="text" fx:id="passwordField" alignment="CENTER" layoutX="357.0" layoutY="256.0" prefHeight="49.0" prefWidth="196.0">
          <font>
             <Font size="21.0" />
          </font>
@@ -31,12 +31,12 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label layoutX="413.0" layoutY="122.0" text="Username" textFill="#496fcd">
+      <Label alignment="CENTER" layoutY="122.0" prefWidth="910.0" text="Username" textFill="#496fcd">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="413.0" layoutY="217.0" prefHeight="31.0" prefWidth="94.0" text="Password" textFill="#496fcd">
+      <Label alignment="CENTER" layoutY="217.0" prefHeight="31.0" prefWidth="910.0" text="Password" textFill="#496fcd">
          <font>
             <Font size="21.0" />
          </font>
@@ -46,7 +46,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label fx:id="existingLabel" alignment="CENTER" layoutX="309.0" layoutY="109.0" prefHeight="34.0" prefWidth="472.0" text="This username is already taken" textFill="#dd4129" visible="false">
+      <Label fx:id="existingLabel" alignment="CENTER" layoutY="305.0" prefHeight="34.0" prefWidth="910.0" text="This username is already taken" textFill="#dd4129" visible="false">
          <font>
             <Font size="23.0" />
          </font>
@@ -56,7 +56,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label fx:id="title" alignment="CENTER" layoutX="202.0" layoutY="58.0" prefHeight="36.0" prefWidth="516.0" text="title" textFill="WHITE">
+      <Label fx:id="title" alignment="CENTER" layoutY="58.0" prefHeight="36.0" prefWidth="910.0" text="title" textFill="WHITE">
          <font>
             <Font size="32.0" />
          </font>

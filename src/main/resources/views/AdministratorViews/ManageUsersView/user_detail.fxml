@@ -15,7 +15,7 @@
             <Image url="@background2.png" />
          </image>
       </ImageView>
-      <Button id="b2" fx:id="modify" layoutX="419.0" layoutY="336.0" mnemonicParsing="false" onAction="#showModify" text="Modify">
+      <Button id="b2" fx:id="modify" layoutX="418.0" layoutY="336.0" mnemonicParsing="false" onAction="#showModify" text="Modify">
          <font>
             <Font size="16.0" />
          </font>
@@ -23,27 +23,27 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label layoutX="411.0" layoutY="122.0" text="Username" textFill="#496fcd">
+      <Label alignment="CENTER" layoutY="122.0" prefHeight="31.0" prefWidth="910.0" text="Username" textFill="#496fcd">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="414.0" layoutY="217.0" text="Password" textFill="#496fcd">
+      <Label alignment="CENTER" layoutY="217.0" prefHeight="31.0" prefWidth="910.0" text="Password" textFill="#496fcd">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="394.0" layoutY="56.0" text="User Info" textFill="WHITE">
+      <Label alignment="CENTER" layoutY="56.0" prefHeight="47.0" prefWidth="910.0" text="User Info" textFill="WHITE">
          <font>
             <Font size="32.0" />
          </font>
       </Label>
-      <Label fx:id="password" alignment="CENTER" contentDisplay="CENTER" layoutX="284.0" layoutY="255.0" prefHeight="49.0" prefWidth="348.0" text="User Password" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="password" alignment="CENTER" contentDisplay="CENTER" layoutY="255.0" prefHeight="49.0" prefWidth="910.0" text="User Password" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label fx:id="username" alignment="CENTER" contentDisplay="CENTER" layoutX="284.0" layoutY="160.0" prefHeight="49.0" prefWidth="348.0" text="User Username" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="username" alignment="CENTER" contentDisplay="CENTER" layoutY="160.0" prefHeight="49.0" prefWidth="910.0" text="User Username" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
