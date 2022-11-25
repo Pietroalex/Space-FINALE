@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
+import it.univaq.disim.oop.spacemusicunify.controller.usercontrollers.PlayerPaneController;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class RAMAlbumServiceImpl implements AlbumService {
@@ -175,12 +176,11 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			if(albumCheck.getId().intValue() ==  album.getId().intValue()) {
 				check = true;
 
-				for(Song song : album.getSongs()){
-					delete(song);
-				}
-
 				for(Production production : productionService.getAllProductions()){
 					if(production.getAlbum().getId().intValue() == album.getId().intValue()) productionService.delete(production);
+				}
+				for(Song song : album.getSongs()){
+					delete(song);
 				}
 				multimediaService.delete(album.getCover());
 				storedAlbums.removeIf((Album albumCheck2) -> albumCheck2.getId().intValue() == album.getId().intValue());
@@ -254,7 +254,6 @@ public class RAMAlbumServiceImpl implements AlbumService {
 	public void delete(Song song) throws BusinessException {
 		boolean check = false;
 		Album album = song.getAlbum();
-
 		for (Song songs : getSongList()) {
 			if(songs.getId().intValue() == song.getId().intValue()) {
 				check = true;
@@ -274,8 +273,8 @@ public class RAMAlbumServiceImpl implements AlbumService {
 						}
 					}
 				}
-
 				multimediaService.delete(song.getFileMp3());
+
 				storedSongs.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());
 				Set<Song> songList = album.getSongs();
 				songList.removeIf((Song songCheck) -> songCheck.getId().intValue() == song.getId().intValue());

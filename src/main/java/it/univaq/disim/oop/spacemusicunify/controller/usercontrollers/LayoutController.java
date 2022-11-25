@@ -56,6 +56,11 @@ public class LayoutController implements DataInitializable<User> {
 	@FXML
 	public void logout(MouseEvent event) {
 		dispatcher.logout();
+
+		spacemusicunifyPlayer.getQueue().removeListener(spacemusicunifyPlayer.getChangeListener());
+		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
+		spacemusicunifyPlayer.setChangeListener(null);
+		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
 		if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 			spacemusicunifyPlayer.getMediaPlayer().stop();
 			spacemusicunifyPlayer.getMediaPlayer().dispose();

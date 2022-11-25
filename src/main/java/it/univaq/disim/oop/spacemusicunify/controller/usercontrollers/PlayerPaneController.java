@@ -93,8 +93,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
 		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
 
-		spacemusicunifyPlayer.getQueue().addListener((ListChangeListener.Change<? extends Song> c) -> {
-			
+		spacemusicunifyPlayer.setChangeListener((ListChangeListener.Change<? extends Song> c) -> {
+			System.out.println("vedem : "+c.getList());
 			if(spacemusicunifyPlayer.getQueue().size() > 0) {
 				//viene riabilitato il player
 				addToPlaylistButton.setDisable(false);
@@ -145,8 +145,10 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				System.out.println("add");
 				loadSong();
 			}
-			
+
 		});
+		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
+		spacemusicunifyPlayer.getQueue().addListener(spacemusicunifyPlayer.getChangeListener());
 
 		/*
 		 * if(playerService.getPlayerOnPlay() == null) {

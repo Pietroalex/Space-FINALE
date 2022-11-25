@@ -12,7 +12,7 @@
 
 <AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
    <children>
-         <Button id="b1" fx:id="modify" layoutX="14.0" layoutY="387.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
+         <Button id="b1" fx:id="modify" layoutX="23.0" layoutY="387.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -84,5 +84,13 @@
             </ListView>
          </children>
       </AnchorPane>
+      <Button id="b1" fx:id="newSong" layoutX="751.0" layoutY="387.0" mnemonicParsing="false" onAction="#createNewSong" prefHeight="41.0" prefWidth="134.0" text="Add New Song">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

@@ -311,7 +311,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					dispatcher.renderError(e);
 				}
 
-				newSong.setVisible(false);
 				deletealbum.setVisible(false);
 				genreField.getItems().addAll(Genre.values());
 				genreField.getItems().remove(Genre.singles);
@@ -337,6 +336,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				addToPlaylist.setVisible(true);
 				addToQueue.setVisible(true);
 				addSongToQueue.setVisible(true);
+				newSong.setVisible(false);
 				id.setCellValueFactory(new PropertyValueFactory<>("id"));
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
