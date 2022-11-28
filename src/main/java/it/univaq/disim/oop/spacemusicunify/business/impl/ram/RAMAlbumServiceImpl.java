@@ -187,7 +187,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("This album doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This album doesn't exist");
 	}
 
 	@Override
@@ -285,7 +285,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 			}
 		}
 
-		if(!check)throw new ObjectNotFoundException("This song doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This song doesn't exist");
 
 	}
 
@@ -307,7 +307,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 		for(Production production : findAllProductions(album)) {
 			artists.add(production.getArtist());
 		}
-		if(artists.isEmpty()) throw new ObjectNotFoundException("There is no artist for this album");
+		if(artists.isEmpty()) throw new BusinessException("Object not found, There is no artist for this album");
 		return artists;
 	}
 
@@ -319,7 +319,7 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				productions.add(production);
 			}
 		}
-		if(productions.isEmpty()) throw new ObjectNotFoundException("There is no production for this album");
+		if(productions.isEmpty()) throw new BusinessException("Object not found, There is no production for this album");
 		return productions;
 	}
 

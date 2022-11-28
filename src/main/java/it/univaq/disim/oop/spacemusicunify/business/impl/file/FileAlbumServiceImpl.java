@@ -200,7 +200,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check)throw new ObjectNotFoundException("This album doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This album doesn't exist");
 	}
 	
 	@Override
@@ -265,7 +265,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 				cont++;
 			}
-			if(!check)throw new ObjectNotFoundException("This album doesn't exist");
+			if(!check)throw new BusinessException("Object not found, This album doesn't exist");
 
 			try(PrintWriter writer = new PrintWriter(new File(albumsFile))){
 				writer.println(fileData.getCounter());
@@ -323,7 +323,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				}
 				cont++;
 			}
-			if(!check)throw new BusinessException("This song doesn't exist");
+			if(!check)throw new BusinessException("Object not found, This song doesn't exist");
 
 			try(PrintWriter writer = new PrintWriter(new File(songsFile))){
 				writer.println(fileData.getCounter());
@@ -411,7 +411,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("This song doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This song doesn't exist");
 	}
 	@Override
 	public Set<Album> getAlbumList() throws BusinessException {
@@ -451,7 +451,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 		for (Production production : findAllProductions(album)){
 			artists.add(production.getArtist());
 		}
-		if(artists.isEmpty()) throw new ObjectNotFoundException("There is no artist for this album");
+		if(artists.isEmpty()) throw new BusinessException("Object not found, There is no artist for this album");
 		return artists;
 	}
 	@Override
@@ -462,7 +462,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 				productionList.add(production);
 			}
 		}
-		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this album with ID "+album.getId());
+		if(productionList.isEmpty()) throw new BusinessException("Object not found, There is no production for this album with ID "+album.getId());
 		return productionList;
 	}
 	@Override

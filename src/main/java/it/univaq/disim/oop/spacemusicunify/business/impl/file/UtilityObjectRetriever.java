@@ -52,55 +52,55 @@ public class UtilityObjectRetriever {
 					for (String[] columns : fileData.getRows()) {
 						if (columns[0].equals(id)) object = findSong(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Song with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Song with ID "+id+ " not found");
 					break;
 
 				case "albums.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findAlbum(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Album with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Album with ID "+id+ " not found");
 					break;
 
 				case "artists.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findArtist(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Artist with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Artist with ID "+id+ " not found");
 					break;
 
 				case "players.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findPlayer(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Player with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Player with ID "+id+ " not found");
 					break;
 
 				case "users.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findUser(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, User with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, User with ID "+id+ " not found");
 					break;
 
 				case "playlists.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findPlaylist(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Playlist with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Playlist with ID "+id+ " not found");
 					break;
 
 				case "productions.txt":
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findProduction(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Production with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Production with ID "+id+ " not found");
 					break;
 				default:
 					for (String[] columns : fileData.getRows()) {
 						if(columns[0].equals(id)) object = findMultimedia(columns);
 					}
-					if(object == null) throw new ObjectNotFoundException("File error, Multimedia with ID "+id+ " not found");
+					if(object == null) throw new BusinessException("File error, Multimedia with ID "+id+ " not found");
 					break;
 
 			}

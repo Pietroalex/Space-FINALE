@@ -168,7 +168,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				break;
 			}
 		}
-		if(!check)throw new ObjectNotFoundException("This artist doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This artist doesn't exist");
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 		for(Production production : findAllProductions(artist)) {
 			albums.add(production.getAlbum());
 		}
-		if(albums.isEmpty()) throw new ObjectNotFoundException("There is no album for this artist");
+		if(albums.isEmpty()) throw new BusinessException("Object not found, There is no album for this artist");
 		return albums;
 	}
 
@@ -195,7 +195,7 @@ public class RAMArtistServiceImpl implements ArtistService {
 				productions.add(production);
 			}
 		}
-		if(productions.isEmpty()) throw new ObjectNotFoundException("There is no production for this artist");
+		if(productions.isEmpty()) throw new BusinessException("Object not found, There is no production for this artist");
 		return productions;
 	}
 }

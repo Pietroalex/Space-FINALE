@@ -72,7 +72,7 @@ public class RAMUserServiceImpl implements UserService {
 		} catch (BusinessException e) {
 		ViewDispatcher.getInstance().renderError(e);
 		}
-		if(!check) throw new ObjectNotFoundException("This user doesn't exist");
+		if(!check) throw new BusinessException("Object not found, This user doesn't exist");
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class RAMUserServiceImpl implements UserService {
 				}
 			}
 		}
-		throw new ObjectNotFoundException("User Not Found");
+		throw new BusinessException("Object not found, User Not Found");
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class RAMUserServiceImpl implements UserService {
 	public void add(Playlist playlist) throws BusinessException {
 		for (Playlist playlistCheck : storedPlaylists) {
 			if (playlistCheck.getTitle().equals(playlist.getTitle()) && playlistCheck.getUser().getId().intValue() == playlist.getUser().getId().intValue()) {
-				throw new AlreadyExistingException("This playlist already exists in the users playlists");
+				throw new AlreadyExistingException("This playlist already exists in the user playlists");
 			}
 		}
 
@@ -135,7 +135,7 @@ public class RAMUserServiceImpl implements UserService {
 				break;
 			}
 		}
-		if(!check) throw new BusinessException("This playlist doesn't exist");
+		if(!check) throw new BusinessException("Object not found, This playlist doesn't exist");
 		storedPlaylists.removeIf((Playlist playlistCheck) -> playlistCheck.getId().intValue() == playlist.getId().intValue());
 	}
 	
@@ -159,7 +159,7 @@ public class RAMUserServiceImpl implements UserService {
 			}
 			return userPlaylists;
 		}
-		throw new BusinessException("This user doesn't exist");
+		throw new BusinessException("Object not found, This user doesn't exist");
 	}
 	
 }

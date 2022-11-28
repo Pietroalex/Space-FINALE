@@ -5,7 +5,6 @@ import java.util.Set;
 
 import it.univaq.disim.oop.spacemusicunify.business.AlreadyExistingException;
 import it.univaq.disim.oop.spacemusicunify.business.BusinessException;
-import it.univaq.disim.oop.spacemusicunify.business.ObjectNotFoundException;
 import it.univaq.disim.oop.spacemusicunify.business.PlayerService;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
@@ -36,7 +35,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				break;
 			}
 		}
-		if(!check) throw new ObjectNotFoundException("This Player doesn't exist");
+		if(!check) throw new BusinessException("Object not found, This Player doesn't exist");
 
 	}
 	@Override
@@ -46,7 +45,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 				return player;
 			}
 		}
-		throw new ObjectNotFoundException("There is no player for this user");
+		throw new BusinessException("Object not found, There is no player for this user");
 	}
 
 	@Override

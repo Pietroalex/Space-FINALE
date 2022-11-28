@@ -144,7 +144,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new ObjectNotFoundException("This audio doesn't exist");
+            if(!check)throw new BusinessException("Object not found, This audio doesn't exist");
         } catch (IOException e) {
             throw new BusinessException(e);
         }
@@ -304,7 +304,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     break;
                 }
             }
-            if(!check)throw new ObjectNotFoundException("This picture doesn't exist");
+            if(!check)throw new BusinessException("Object not found, This picture doesn't exist");
         } catch (IOException e) {
             throw new BusinessException(e);
         }

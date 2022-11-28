@@ -118,7 +118,7 @@ public class FileUserServiceImpl implements UserService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check) throw new ObjectNotFoundException("This user doesn't exist");
+		if(!check) throw new BusinessException("Object not found, This user doesn't exist");
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class FileUserServiceImpl implements UserService {
 					return user;
 				}
 			}
-			throw new ObjectNotFoundException("User Not Found");
+			throw new BusinessException("Object not found, User Not Found");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
@@ -243,7 +243,7 @@ public class FileUserServiceImpl implements UserService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check) throw new BusinessException("This playlist doesn't exist");
+		if(!check) throw new BusinessException("Object not found, This playlist doesn't exist");
 	}
 	@Override
 	public void delete(Playlist playlist) throws BusinessException {
@@ -274,7 +274,7 @@ public class FileUserServiceImpl implements UserService {
 			throw new BusinessException(e);
 		}
 
-		if(!check)throw new ObjectNotFoundException("This playlist doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This playlist doesn't exist");
 
 	}
 	@Override

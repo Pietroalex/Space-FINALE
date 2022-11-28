@@ -230,7 +230,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if(!check)throw new ObjectNotFoundException("This artist doesn't exist");
+		if(!check)throw new BusinessException("Object not found, This artist doesn't exist");
 	}
 
 
@@ -257,7 +257,7 @@ public class FileArtistServiceImpl implements ArtistService {
 		for (Production production : productions){
 			albums.add(production.getAlbum());
 		}
-		if(albums.isEmpty()) throw new ObjectNotFoundException("There is no album for this artist");
+		if(albums.isEmpty()) throw new BusinessException("Object not found, There is no album for this artist");
 		return albums;
 	}
 	@Override
@@ -268,7 +268,7 @@ public class FileArtistServiceImpl implements ArtistService {
 				productionList.add(production);
 			}
 		}
-		if(productionList.isEmpty()) throw new ObjectNotFoundException("There is no production for this artist");
+		if(productionList.isEmpty()) throw new BusinessException("Object not found, There is no production for this artist");
 		return productionList;
 	}
 

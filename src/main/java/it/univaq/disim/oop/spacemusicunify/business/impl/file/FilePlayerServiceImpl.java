@@ -85,7 +85,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 					break;
 				}
 			}
-			if(!check)throw new BusinessException("This Player doesn't exist");
+			if(!check)throw new BusinessException("Object not found, This Player doesn't exist");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
@@ -105,13 +105,13 @@ public class FilePlayerServiceImpl implements PlayerService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-		if (player == null) throw new ObjectNotFoundException("There is no player for this user");
+		if (player == null) throw new BusinessException("Object not found, There is no player for this user");
 		return player;
 	}
 
 	@Override
 	public void updateDuration(SpacemusicunifyPlayer player, Duration duration) throws BusinessException {
-		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player");
+		if(player.getQueue() == null) throw new BusinessException("Error in song queue for this player, empty queue");
 		player.setDuration(duration);
 
 		try {
