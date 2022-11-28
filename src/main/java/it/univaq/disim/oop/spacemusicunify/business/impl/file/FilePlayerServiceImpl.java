@@ -4,6 +4,7 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.SpacemusicunifyPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -258,7 +259,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 							/*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
 
 							} else {												//canzone corrente in prima posizione */
-					if(player.getMediaPlayer() != null) {
+					if(player.getMediaPlayer() != null && player.getMediaPlayer().getStatus() != Status.STOPPED) {
 						player.getMediaPlayer().stop();
 						player.getMediaPlayer().dispose();
 						player.setMediaPlayer(null);
@@ -274,6 +275,8 @@ public class FilePlayerServiceImpl implements PlayerService {
 				}
 			}
 
+			updateDuration(player, Duration.ZERO); //serve per far partire da capo una eventuale prossima canzone
+			
 		} else {																				//canzone in corso diversa da quella selezionata
 
 			for(int i = 0; i < player.getQueue().size(); i++) {

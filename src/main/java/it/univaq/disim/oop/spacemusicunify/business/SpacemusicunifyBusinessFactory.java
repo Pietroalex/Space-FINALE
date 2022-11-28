@@ -5,9 +5,9 @@ import it.univaq.disim.oop.spacemusicunify.business.impl.ram.RAMSpacemusicunifyB
 
 public abstract class SpacemusicunifyBusinessFactory {
 
-	private static SpacemusicunifyBusinessFactory factory = new RAMSpacemusicunifyBusinessFactoryImpl();
+	//private static SpacemusicunifyBusinessFactory factory = new RAMSpacemusicunifyBusinessFactoryImpl();
 
-	//private static SpacemusicunifyBusinessFactory factory = new FileSpacemusicunifyBusinessFactoryImpl();
+	private static SpacemusicunifyBusinessFactory factory = new FileSpacemusicunifyBusinessFactoryImpl();
 	
 	public static SpacemusicunifyBusinessFactory getInstance() {
 		return factory;
