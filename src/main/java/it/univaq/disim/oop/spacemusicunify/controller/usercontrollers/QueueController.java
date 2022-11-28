@@ -1,6 +1,7 @@
 package it.univaq.disim.oop.spacemusicunify.controller.usercontrollers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -21,8 +22,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
 
 public class QueueController implements Initializable, DataInitializable<User> {
 
@@ -72,6 +75,31 @@ public class QueueController implements Initializable, DataInitializable<User> {
 		albumName.setCellValueFactory((TableColumn.CellDataFeatures<Song, String> param) -> new SimpleStringProperty(param.getValue().getAlbum().getTitle()));
 		duration.setCellValueFactory(new PropertyValueFactory<>("length"));
 		delete.setStyle("-fx-alignment: CENTER;");
+		
+		queueTable.setRowFactory( tablerow -> {
+			TableRow<Song> songTableRow = new TableRow<>();
+			songTableRow.setOnMouseClicked(( event) -> {
+				if(songTableRow.getItem() != null){
+					if(event.getClickCount() == 2) {
+						PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
+						if(spacemusicunifyPlayer.getQueue().size() > 1) {
+
+							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != songTableRow.getItem().getId().intValue()) {
+								try {
+									playerService.updateCurrentSong(spacemusicunifyPlayer, songTableRow.getIndex());
+									spacemusicunifyPlayer.setDuration(Duration.ZERO);
+									dispatcher.renderView("UserViews/HomeView/playerPane", RunTimeService.getCurrentUser());
+								} catch (BusinessException e) {
+									dispatcher.renderError(e);
+								}
+							}
+							
+						}
+					}
+				}
+			});
+			return songTableRow;
+		});
 	}
 	@Override
 	public void initializeData(User user) {

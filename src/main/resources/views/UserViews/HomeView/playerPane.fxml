@@ -179,8 +179,8 @@
                   <Label layoutX="94.0" layoutY="20.0" prefHeight="24.0" prefWidth="60.0" text="Album:" GridPane.rowIndex="1" />
                   <Label layoutX="94.0" layoutY="38.0" prefHeight="24.0" prefWidth="60.0" text="Artists:" GridPane.rowIndex="2" />
                   <Label id="sname" fx:id="songTitle" layoutX="148.0" layoutY="2.0" prefHeight="24.0" prefWidth="200.0" text="songName" GridPane.columnIndex="1" />
-                  <Label id="aname" fx:id="songAlbum" layoutX="148.0" layoutY="20.0" prefHeight="24.0" prefWidth="200.0" text="AlbumName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label id="arname" fx:id="songArtist" layoutX="148.0" layoutY="38.0" prefHeight="24.0" prefWidth="200.0" text="artistName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label id="aname" fx:id="songAlbum" layoutX="148.0" layoutY="20.0" prefHeight="24.0" prefWidth="200.0" text="albumName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label id="arname" fx:id="songArtist" layoutX="148.0" layoutY="38.0" prefHeight="24.0" prefWidth="200.0" text="artistsName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
