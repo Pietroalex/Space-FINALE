@@ -92,63 +92,66 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         this.user = user;
 
 		this.spacemusicunifyPlayer = RunTimeService.getPlayer();
-
-		spacemusicunifyPlayer.setChangeListener((ListChangeListener.Change<? extends Song> c) -> {
-			System.out.println("vedem : "+c.getList());
-			if(spacemusicunifyPlayer.getQueue().size() > 0) {
-				//viene riabilitato il player
-				addToPlaylistButton.setDisable(false);
-				playButton.setDisable(false);
-				pauseButton.setDisable(false);
-				progressSlider.setDisable(false);
-				volumeButton.setDisable(false);
-				volumeSlider.setDisable(false);
-				if(spacemusicunifyPlayer.getMediaPlayer() == null) {
-					loadSong();
+		
+		if(spacemusicunifyPlayer.getChangeListener() == null) {
+			spacemusicunifyPlayer.setChangeListener((ListChangeListener.Change<? extends Song> c) -> {
+				System.out.println("vedem : "+c.getList());
+				if(spacemusicunifyPlayer.getQueue().size() > 0) {
+					//viene riabilitato il player
+					addToPlaylistButton.setDisable(false);
+					playButton.setDisable(false);
+					pauseButton.setDisable(false);
+					progressSlider.setDisable(false);
+					volumeButton.setDisable(false);
+					volumeSlider.setDisable(false);
+					if(spacemusicunifyPlayer.getMediaPlayer() == null) {
+						loadSong();
+						dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
+					} else if(c.next() == c.wasReplaced()) {
+						loadSong();
+					}
+				} else {
+					addToPlaylistButton.setDisable(true);
+					playButton.setDisable(true);
+					pauseButton.setDisable(true);
+					nextButton.setDisable(true);
+					previousButton.setDisable(true);
+					progressSlider.setDisable(true);
+					volumeButton.setDisable(true);
+					volumeSlider.setDisable(true);
+					spacemusicunifyPlayer.setMediaPlayer(null);
+					Image img;
+					try {
+						img = new Image(Files.newInputStream(Paths.get(path + "mute.png")));
+	
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+					volumeImg.setImage(img);
+					playButton.setVisible(true);
+					pauseButton.setVisible(false);
 					dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
-				} else if(c.next() == c.wasReplaced()) {
+	
+				}
+	
+				if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
+					nextButton.setDisable(true);
+				} else {
+					nextButton.setDisable(false);
+				}
+				if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
+				else previousButton.setDisable(false);
+	
+				if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null)) { //riabilitazioni successive del player
+					System.out.println("add");
 					loadSong();
 				}
-			} else {
-				addToPlaylistButton.setDisable(true);
-				playButton.setDisable(true);
-				pauseButton.setDisable(true);
-				nextButton.setDisable(true);
-				previousButton.setDisable(true);
-				progressSlider.setDisable(true);
-				volumeButton.setDisable(true);
-				volumeSlider.setDisable(true);
-				spacemusicunifyPlayer.setMediaPlayer(null);
-				Image img;
-				try {
-					img = new Image(Files.newInputStream(Paths.get(path + "mute.png")));
-
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-				volumeImg.setImage(img);
-				playButton.setVisible(true);
-				pauseButton.setVisible(false);
-				dispatcher.renderView("UserViews/HomeView/playerPane", user); //per garantire una grafica funzionante
-
-			}
-
-			if(spacemusicunifyPlayer.getCurrentSong() >= spacemusicunifyPlayer.getQueue().size() - 1) {
-				nextButton.setDisable(true);
-			} else {
-				nextButton.setDisable(false);
-			}
-			if(spacemusicunifyPlayer.getCurrentSong() == 0) previousButton.setDisable(true);
-			else previousButton.setDisable(false);
-
-			if(c.next() == c.wasAdded() && (spacemusicunifyPlayer.getMediaPlayer().getStatus() == Status.DISPOSED || spacemusicunifyPlayer.getMediaPlayer() == null)) { //riabilitazioni successive del player
-				System.out.println("add");
-				loadSong();
-			}
-
-		});
-		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
-		spacemusicunifyPlayer.getQueue().addListener(spacemusicunifyPlayer.getChangeListener());
+	
+			});
+			System.out.println(spacemusicunifyPlayer.getChangeListener());
+			
+			spacemusicunifyPlayer.getQueue().addListener(spacemusicunifyPlayer.getChangeListener());
+		}
 
 		/*
 		 * if(playerService.getPlayerOnPlay() == null) {

@@ -3,8 +3,14 @@ package it.univaq.disim.oop.spacemusicunify.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +27,8 @@ public class SpacemusicunifyPlayer {
 	private ObservableList<Song> queue = FXCollections.observableArrayList(); //songs to play
 	private int currentSong; //current song loaded
 	private User user;
-	ListChangeListener<? super Song> changeListener;
-	public void setChangeListener(ListChangeListener<? super Song> change){
-		this.changeListener = change;
-	}
-	public ListChangeListener<? super Song> getChangeListener(){
-		return changeListener;
-	}
+	private ListChangeListener<? super Song> changeListener;
+	
 	public SpacemusicunifyPlayer(User user) {
 		this.volume = 0.5;
 		this.duration = Duration.ZERO;
@@ -35,7 +36,7 @@ public class SpacemusicunifyPlayer {
 		this.play = false;
 		this.currentSong = 0;
 		this.user = user;
-
+		this.changeListener = null;
 	}
 	
 	public void setVolume(double volume) {
@@ -105,6 +106,14 @@ public class SpacemusicunifyPlayer {
 
 	public void setMediaPlayer(MediaPlayer mediaPlayer) {
 		this.mediaPlayer = mediaPlayer;
+	}
+	
+	public ListChangeListener<? super Song> getChangeListener(){
+		return changeListener;
+	}
+
+	public void setChangeListener(ListChangeListener<? super Song> changeListener) {
+		this.changeListener = changeListener;
 	}
 	
 }
