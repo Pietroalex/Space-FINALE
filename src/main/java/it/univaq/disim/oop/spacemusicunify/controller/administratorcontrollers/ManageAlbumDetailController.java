@@ -126,6 +126,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Artist, String> artist_name;
 	@FXML
 	private TableColumn<Artist, Button> artist_add;
+	private Set<Artist> addMembers;
 
 	public ManageAlbumDetailController(){
 		dispatcher = ViewDispatcher.getInstance();
@@ -279,6 +280,151 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				break;
 
 			case newobject:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				try {
+					Set<Artist> allArtists = artistService.getArtistList();
+
+					Set<Artist> availableArtists = new HashSet<>(allArtists);
+					Set<Artist> availableBands = new HashSet<>();
+					Set<Artist> availableBandsComponents = new HashSet<>();
+					Set<Artist> finalArtists = new HashSet<>();
+
+					//divisione singoli artisti e band da tutti gli artisti salvati
+					for(Artist artistCheck : allArtists){
+						if(!(artistCheck.getBandMembers().isEmpty())){
+							availableArtists.remove(artistCheck);
+							availableBands.add(artistCheck);
+						}
+					}
+					//scrematura di artisti singoli rimasti non presenti in band e rimozione artisti presenti in band e salvataggio componenti band separatamente
+					for(Artist bandsCheck : availableBands){
+						for(Artist bandComponent : bandsCheck.getBandMembers()){
+							availableBandsComponents.add(bandComponent);
+							availableArtists.removeIf((Artist possibleSingle) -> bandComponent.getId().intValue() == possibleSingle.getId().intValue());
+							/*for(Artist possibleSingle : availableArtists) {
+
+								if (bandComponent.getId().intValue() == possibleSingle.getId().intValue()) {
+									allArtists.remove(possibleSingle);
+								}
+
+							}*/
+						}
+					}
+/*					//rimozione band da set principale
+					for(Artist removeBand : availableBands){
+						allArtists.remove(removeBand);
+					}*/
+
+					/*for(Artist addBack : artist.getBandMembers()){
+						boolean checkArtist = false;
+						for(Artist check : addMembers) {
+							if (addBack.getId().intValue() == check.getId().intValue()){
+								checkArtist = true;
+								break;
+							}
+						}
+						if(!checkArtist) allArtists.add(addBack);
+					}*/
+					//rimuovo il corrente artista singolo/componente di un gruppo e il suo intero gruppo/corrente gruppo inclusi i membri dalla scelta
+					if(!(artist.getBandMembers().isEmpty())){
+						availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+						for(Artist artistBand : artist.getBandMembers()) {
+							availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+						}
+					} else {
+						if(availableBandsComponents.contains(artist)){
+							for(Artist bands : allArtists){
+								if(bands.getBandMembers().contains(artist)){
+									availableBands.remove(bands);
+									for(Artist artistBand : bands.getBandMembers()) {
+										availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+									}
+									break;
+								}
+							}
+						}
+
+						availableArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+					}
+
+					System.out.println("Artista corrente: "+artist.getName());
+					finalArtists.addAll(availableArtists);
+					finalArtists.addAll(availableBands);
+					finalArtists.addAll(availableBandsComponents);
+					System.out.println("Artisti ");
+					for (Artist artistCtrl : finalArtists) {
+						System.out.println("Artista available: "+artistCtrl.getName());
+
+
+						/*Button add = new Button("Add");
+						add.setId("b2");
+						add.setCursor(Cursor.HAND);
+						add.setOnAction((ActionEvent event) -> {
+							addMembers.add(artistCtrl);
+							HBox hBox = new HBox();
+							Label aName = new Label(artistCtrl.getName());
+							Button del = new Button("Delete");
+							del.setOnAction((action) -> {
+								addMembers.remove(artistCtrl);
+								artistsModifyListView.getItems().remove(hBox);
+								add.setDisable(false);
+							});
+							hBox.getChildren().add(aName);
+							hBox.getChildren().add(del);
+							if(dispatcher.getSituation() == ViewSituations.modify) artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> del.setDisable(a.getList().size() <= 2));
+							artistsModifyListView.getItems().add(hBox);
+							add.setDisable(true);
+						});
+
+						Label name = new Label(artistCtrl.getName());
+						HBox hBox = new HBox();
+						hBox.getChildren().add(name);
+						hBox.getChildren().add(new Label("    "));
+						hBox.getChildren().add(add);
+
+
+
+						for(Artist ctrl : addMembers){
+							if(artistCtrl.getId().intValue() == ctrl.getId().intValue()){
+								add.setDisable(true);
+								break;
+							}
+						}
+						vBox.getChildren().add(hBox);
+						Label space = new Label();
+						space.setStyle("-fx-font-size:1px;");
+						space.setPrefHeight(4);
+						vBox.getChildren().add(space);*/
+					}
+					ObservableList<Artist> artistsData = FXCollections.observableArrayList(finalArtists);
+					artistTable.getItems().addAll(artistsData);
+
+
+
+
+
+
+
+
+
+
+
+
+
 				confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
 				titleField.textProperty().addListener((obs, oldText, newText)-> {
 					if (existingLabel.isVisible()) {
@@ -297,19 +443,64 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					add.setCursor(Cursor.HAND);
 					add.setOnAction((ActionEvent event) -> {
 						artistSet.add(param.getValue());
+						if(!(param.getValue().getBandMembers().isEmpty())){
+							//band inserita, si procede con l'eliminazione della band dalle band disponibili
+							availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());
+							//pare non funziona l'aggiornamento della tabella
+							/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
+
+							for(Artist artistBand : param.getValue().getBandMembers()) {
+								//dopo si procede ad eliminare dagli artisti presenti nella lista degli artisti componenti di gruppi quelli della band inserita
+								availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+								//pare non funziona l'aggiornamento della tabella
+								/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
+							}
+						} else {
+							if(availableBandsComponents.contains(param.getValue())){
+								//artista componente di una band inserito, si procede con l'eliminazione della sua band
+								for(Artist bands : allArtists){
+									if(bands.getBandMembers().contains(param.getValue())){
+										availableBands.remove(bands);
+										//riuscito soltanto a selezionare la band del componente selezionato senza apportare modifiche alla tabella
+										artistTable.getSelectionModel().select(bands);
+
+										//pare non funziona l'aggiornamento della tabella
+										/*finalArtists.remove(bands);*/
+										for(Artist artistBand : bands.getBandMembers()) {
+											//si procede a rimuovere tutti i componenti della band dell'artista selezionato compreso esso
+											availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+
+											//pare non funziona l'aggiornamento della tabella
+											/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());*/
+										}
+										break;
+									}
+								}
+							}
+						}
+						for (Artist artistCtrl : availableBands) {
+							System.out.println("Band available: " + artistCtrl.getName());
+						}
+						for (Artist artistCtrl : availableBandsComponents) {
+							System.out.println("Band Component available: " + artistCtrl.getName());
+						}
+						System.out.println("finito");
+						/*artistTable.refresh();*/
 						add.setDisable(true);
 					});
 					return new SimpleObjectProperty<Button>(add);
 				});
-
-				try {
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
+/*				try {
 					Set<Artist> artists = artistService.getArtistList();
 					artists.removeIf((Artist artist2) -> artist2.getId().intValue() == artist.getId().intValue());
 					ObservableList<Artist> artistsData = FXCollections.observableArrayList(artists);
 					artistTable.getItems().addAll(artistsData);
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
-				}
+				}*/
 
 				deletealbum.setVisible(false);
 				genreField.getItems().addAll(Genre.values());
