@@ -411,7 +411,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						vBox.getChildren().add(space);*/
 					}
 					ObservableList<Artist> artistsData = FXCollections.observableArrayList(finalArtists);
-					artistTable.getItems().addAll(artistsData);
+					artistTable.setItems(artistsData);
 
 
 
@@ -445,31 +445,33 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						artistSet.add(param.getValue());
 						if(!(param.getValue().getBandMembers().isEmpty())){
 							//band inserita, si procede con l'eliminazione della band dalle band disponibili
-							availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());
+							/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
 							//pare non funziona l'aggiornamento della tabella
 							/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
 
 							for(Artist artistBand : param.getValue().getBandMembers()) {
 								//dopo si procede ad eliminare dagli artisti presenti nella lista degli artisti componenti di gruppi quelli della band inserita
-								availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+								/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 								//pare non funziona l'aggiornamento della tabella
 								/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
+								artistTable.getItems().remove(artistBand);
 							}
 						} else {
 							if(availableBandsComponents.contains(param.getValue())){
 								//artista componente di una band inserito, si procede con l'eliminazione della sua band
 								for(Artist bands : allArtists){
 									if(bands.getBandMembers().contains(param.getValue())){
-										availableBands.remove(bands);
+										/*availableBands.remove(bands);*/
 										//riuscito soltanto a selezionare la band del componente selezionato senza apportare modifiche alla tabella
-										artistTable.getSelectionModel().select(bands);
 
 										//pare non funziona l'aggiornamento della tabella
 										/*finalArtists.remove(bands);*/
 										for(Artist artistBand : bands.getBandMembers()) {
 											//si procede a rimuovere tutti i componenti della band dell'artista selezionato compreso esso
-											availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
+											/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 
+											/*artistTable.getItems().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());
+											*/
 											//pare non funziona l'aggiornamento della tabella
 											/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());*/
 										}
@@ -485,7 +487,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 							System.out.println("Band Component available: " + artistCtrl.getName());
 						}
 						System.out.println("finito");
-						/*artistTable.refresh();*/
 						add.setDisable(true);
 					});
 					return new SimpleObjectProperty<Button>(add);
