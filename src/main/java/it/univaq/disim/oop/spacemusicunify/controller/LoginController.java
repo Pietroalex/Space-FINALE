@@ -44,7 +44,6 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	public void initialize(URL location, ResourceBundle resources) {
 		loginButton.disableProperty().bind(username.textProperty().isEmpty()
 										   .or(password.textProperty().isEmpty()));
-		this.errorLabel.setVisible(false);
 	}
 	
 	@FXML
@@ -53,10 +52,12 @@ public class LoginController implements Initializable, DataInitializable<Object>
 		try {
 			GeneralUser generalUser = userService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(generalUser);
+		} catch (UserNotFoundException e) {
+			errorLabel.setText(e.getMessage());
+			errorLabel.setVisible(true);
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		} catch (ViewException e) {
-			e.printStackTrace();
 			throw new ViewException();
 		}
 		

@@ -77,7 +77,7 @@ public class RAMUserServiceImpl implements UserService {
 
 	@Override
 	public GeneralUser authenticate(String username, String password) throws BusinessException {
-		if ("admin".equalsIgnoreCase(username)) {
+		if ("admin".equalsIgnoreCase(username) && "admin".equalsIgnoreCase(password)) {
 			GeneralUser admin = new Administrator();
 			admin.setUsername(username);
 			admin.setPassword(password);
@@ -91,7 +91,7 @@ public class RAMUserServiceImpl implements UserService {
 				}
 			}
 		}
-		throw new BusinessException("Object not found, User Not Found");
+		throw new UserNotFoundException("User Not Found");
 	}
 
 	@Override

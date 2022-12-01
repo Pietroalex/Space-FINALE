@@ -153,7 +153,7 @@ public class FileUserServiceImpl implements UserService {
 					return user;
 				}
 			}
-			throw new BusinessException("Object not found, User Not Found");
+			throw new UserNotFoundException("User Not Found");
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
