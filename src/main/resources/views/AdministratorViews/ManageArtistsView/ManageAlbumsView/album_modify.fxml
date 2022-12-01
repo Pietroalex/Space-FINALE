@@ -18,7 +18,7 @@
 <AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
    <children>
       <TextField id="text" fx:id="titleField" alignment="CENTER" layoutX="524.0" layoutY="84.0" prefHeight="27.0" prefWidth="200.0" promptText="Title" />
-      <Button id="b1" fx:id="confirm" layoutX="14.0" layoutY="384.0" mnemonicParsing="false" onAction="#confirmAlbum" text="Confirm">
+      <Button id="b1" fx:id="confirm" layoutX="24.0" layoutY="384.0" mnemonicParsing="false" onAction="#confirmAlbum" text="Confirm">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -31,7 +31,7 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <Button id="b1" fx:id="cancel" layoutX="820.0" layoutY="384.0" mnemonicParsing="false" onAction="#cancelModify" text="Cancel">
+      <Button id="b1" fx:id="cancel" layoutX="813.0" layoutY="384.0" mnemonicParsing="false" onAction="#cancelModify" text="Cancel">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -98,11 +98,17 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <TableView fx:id="artistTable" layoutX="165.0" layoutY="205.0" prefHeight="172.0" prefWidth="582.0" visible="false">
+      <TableView fx:id="artistTable" layoutX="24.0" layoutY="205.0" prefHeight="172.0" prefWidth="536.0" visible="false">
         <columns>
           <TableColumn fx:id="artist_id" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="artist_name" prefWidth="448.0" text="Name" />
-            <TableColumn fx:id="artist_add" minWidth="0.0" prefWidth="58.0" />
+          <TableColumn fx:id="artist_name" prefWidth="349.0" text="Name" />
+            <TableColumn fx:id="artist_add" minWidth="0.0" prefWidth="100.0" />
+        </columns>
+      </TableView>
+      <TableView fx:id="selectedArtistsTable" layoutX="584.0" layoutY="205.0" prefHeight="172.0" prefWidth="308.0" visible="false">
+        <columns>
+          <TableColumn fx:id="selectedArtistColumn" prefWidth="203.0" text="Album made by" />
+          <TableColumn fx:id="selectedArtistDeleteColumn" prefWidth="93.0" />
         </columns>
       </TableView>
    </children>

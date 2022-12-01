@@ -16,7 +16,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -126,6 +126,13 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	private TableColumn<Artist, String> artist_name;
 	@FXML
 	private TableColumn<Artist, Button> artist_add;
+	@FXML
+	private TableView<Artist> selectedArtistsTable;
+	@FXML
+	private TableColumn<Artist, String> selectedArtistColumn;
+	@FXML
+	private TableColumn<Artist, Button> selectedArtistDeleteColumn;
+	
 	private Set<Artist> addMembers;
 
 	public ManageAlbumDetailController(){
@@ -281,23 +288,51 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 			case newobject:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				try {
 					Set<Artist> allArtists = artistService.getArtistList();
+					ObservableList<Artist> finalArtists = FXCollections.observableArrayList(allArtists);
+					artistTable.setItems(finalArtists);
+					ObservableList<Artist> productionArtists = FXCollections.observableArrayList();
+					productionArtists.add(artist);
+					selectedArtistsTable.setItems(productionArtists);
+					
+					artist_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+					artist_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+					artist_add.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
+						final Button add = new Button("Add");
+						add.setCursor(Cursor.HAND);
+						add.setOnAction((ActionEvent event) -> {
+							finalArtists.remove(param.getValue());
+							productionArtists.add(param.getValue());
+						});
+						return new SimpleObjectProperty<Button>(add);
+					});
+					
+					selectedArtistColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+					selectedArtistDeleteColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
+						final Button delete = new Button("Delete");
+						delete.setCursor(Cursor.HAND);
+						delete.setOnAction((ActionEvent event) -> {
+							Artist selected = param.getValue();
+							if(!(selected.getBandMembers().isEmpty())) {
+								for(Artist choosenArtist : selected.getBandMembers()) {
+									finalArtists.add(choosenArtist);
+								}
+							}
+							finalArtists.add(selected);
+							productionArtists.remove(param.getValue());
+						});
+						return new SimpleObjectProperty<Button>(delete);
+					});
+					
+					confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
+					titleField.textProperty().addListener((obs, oldText, newText)-> {
+						if (existingLabel.isVisible()) {
+							existingLabel.setVisible(false);
+						}
+					});
 
+				/**
 					Set<Artist> availableArtists = new HashSet<>(allArtists);
 					Set<Artist> availableBands = new HashSet<>();
 					Set<Artist> availableBandsComponents = new HashSet<>();
@@ -321,13 +356,13 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 									allArtists.remove(possibleSingle);
 								}
 
-							}*/
+							}/
 						}
 					}
 /*					//rimozione band da set principale
 					for(Artist removeBand : availableBands){
 						allArtists.remove(removeBand);
-					}*/
+					}/
 
 					/*for(Artist addBack : artist.getBandMembers()){
 						boolean checkArtist = false;
@@ -338,7 +373,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 							}
 						}
 						if(!checkArtist) allArtists.add(addBack);
-					}*/
+					}/
 					//rimuovo il corrente artista singolo/componente di un gruppo e il suo intero gruppo/corrente gruppo inclusi i membri dalla scelta
 					if(!(artist.getBandMembers().isEmpty())){
 						availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
@@ -357,10 +392,10 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 								}
 							}
 						}
-
+	
 						availableArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
 					}
-
+	
 					System.out.println("Artista corrente: "+artist.getName());
 					finalArtists.addAll(availableArtists);
 					finalArtists.addAll(availableBands);
@@ -368,8 +403,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					System.out.println("Artisti ");
 					for (Artist artistCtrl : finalArtists) {
 						System.out.println("Artista available: "+artistCtrl.getName());
-
-
+	
+	
 						/*Button add = new Button("Add");
 						add.setId("b2");
 						add.setCursor(Cursor.HAND);
@@ -389,15 +424,15 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 							artistsModifyListView.getItems().add(hBox);
 							add.setDisable(true);
 						});
-
+	
 						Label name = new Label(artistCtrl.getName());
 						HBox hBox = new HBox();
 						hBox.getChildren().add(name);
 						hBox.getChildren().add(new Label("    "));
 						hBox.getChildren().add(add);
-
-
-
+	
+	
+	
 						for(Artist ctrl : addMembers){
 							if(artistCtrl.getId().intValue() == ctrl.getId().intValue()){
 								add.setDisable(true);
@@ -408,92 +443,71 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						Label space = new Label();
 						space.setStyle("-fx-font-size:1px;");
 						space.setPrefHeight(4);
-						vBox.getChildren().add(space);*/
+						vBox.getChildren().add(space);/
 					}
-					ObservableList<Artist> artistsData = FXCollections.observableArrayList(finalArtists);
-					artistTable.setItems(artistsData);
-
-
-
-
-
-
-
-
-
-
-
-
-
-				confirm.disableProperty().bind(titleField.textProperty().isEmpty().or(existingLabel.visibleProperty()));
-				titleField.textProperty().addListener((obs, oldText, newText)-> {
-					if (existingLabel.isVisible()) {
-						existingLabel.setVisible(false);
-					}
-				});
-				modifyalbumsongs.setVisible(false);
-				table_label.setVisible(false);
-				cancelBox.setVisible(false);
-				artistTable.setVisible(true);
-
-				artist_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-				artist_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-				artist_add.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
-					final Button add = new Button("Add");
-					add.setCursor(Cursor.HAND);
-					add.setOnAction((ActionEvent event) -> {
-						artistSet.add(param.getValue());
-						if(!(param.getValue().getBandMembers().isEmpty())){
-							//band inserita, si procede con l'eliminazione della band dalle band disponibili
-							/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
-							//pare non funziona l'aggiornamento della tabella
-							/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
-
-							for(Artist artistBand : param.getValue().getBandMembers()) {
-								//dopo si procede ad eliminare dagli artisti presenti nella lista degli artisti componenti di gruppi quelli della band inserita
-								/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
+						
+					artist_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+					artist_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+					artist_add.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
+						final Button add = new Button("Add");
+						add.setCursor(Cursor.HAND);
+						add.setOnAction((ActionEvent event) -> {
+							artistSet.add(param.getValue());
+							selectedArtistsTable.getItems().add(param.getValue());
+							if(!(param.getValue().getBandMembers().isEmpty())){
+								//band inserita, si procede con l'eliminazione della band dalle band disponibili
+								/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());/
 								//pare non funziona l'aggiornamento della tabella
-								/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
-								artistTable.getItems().remove(artistBand);
-							}
-						} else {
-							if(availableBandsComponents.contains(param.getValue())){
-								//artista componente di una band inserito, si procede con l'eliminazione della sua band
-								for(Artist bands : allArtists){
-									if(bands.getBandMembers().contains(param.getValue())){
-										/*availableBands.remove(bands);*/
-										//riuscito soltanto a selezionare la band del componente selezionato senza apportare modifiche alla tabella
-
-										//pare non funziona l'aggiornamento della tabella
-										/*finalArtists.remove(bands);*/
-										for(Artist artistBand : bands.getBandMembers()) {
-											//si procede a rimuovere tutti i componenti della band dell'artista selezionato compreso esso
-											/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
-
-											/*artistTable.getItems().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());
-											*/
+								/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());/
+	
+								for(Artist artistBand : param.getValue().getBandMembers()) {
+									//dopo si procede ad eliminare dagli artisti presenti nella lista degli artisti componenti di gruppi quelli della band inserita
+									/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());/
+									//pare non funziona l'aggiornamento della tabella
+									/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());/
+									artistTable.getItems().remove(artistBand);
+								}
+							} else {
+								if(availableBandsComponents.contains(param.getValue())){
+									//artista componente di una band inserito, si procede con l'eliminazione della sua band
+									for(Artist bands : allArtists){
+										if(bands.getBandMembers().contains(param.getValue())){
+											/*availableBands.remove(bands);/
+											//riuscito soltanto a selezionare la band del componente selezionato senza apportare modifiche alla tabella
+	
 											//pare non funziona l'aggiornamento della tabella
-											/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());*/
+											/*finalArtists.remove(bands);/
+											for(Artist artistBand : bands.getBandMembers()) {
+												//si procede a rimuovere tutti i componenti della band dell'artista selezionato compreso esso
+												/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());/
+	
+												/*artistTable.getItems().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());
+												/
+												//pare non funziona l'aggiornamento della tabella
+												/*finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());/
+											}
+											break;
 										}
-										break;
 									}
 								}
 							}
-						}
-						for (Artist artistCtrl : availableBands) {
-							System.out.println("Band available: " + artistCtrl.getName());
-						}
-						for (Artist artistCtrl : availableBandsComponents) {
-							System.out.println("Band Component available: " + artistCtrl.getName());
-						}
-						System.out.println("finito");
-						add.setDisable(true);
+							for (Artist artistCtrl : availableBands) {
+								System.out.println("Band available: " + artistCtrl.getName());
+							}
+							for (Artist artistCtrl : availableBandsComponents) {
+								System.out.println("Band Component available: " + artistCtrl.getName());
+							}
+							System.out.println("finito");
+							//add.setDisable(true);
+							artistTable.getItems().remove(param.getValue());
+						});
+						return new SimpleObjectProperty<Button>(add);
 					});
-					return new SimpleObjectProperty<Button>(add);
-				});
-		} catch (BusinessException e) {
-			dispatcher.renderError(e);
-		}
+						**/
+					
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
 /*				try {
 					Set<Artist> artists = artistService.getArtistList();
 					artists.removeIf((Artist artist2) -> artist2.getId().intValue() == artist.getId().intValue());
@@ -502,25 +516,27 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}*/
-
+				modifyalbumsongs.setVisible(false);
+				table_label.setVisible(false);
+				cancelBox.setVisible(false);
+				artistTable.setVisible(true);
+				selectedArtistsTable.setVisible(true);
 				deletealbum.setVisible(false);
 				genreField.getItems().addAll(Genre.values());
 				genreField.getItems().remove(Genre.singles);
 				titleField.setText(album.getTitle());
 				genreField.setValue(album.getGenre());
 				releaseField.setValue(album.getRelease());
+				titleView.setText("New Album");
+				confirm.setText("Create");
+				
 				Image imgs = new Image(new ByteArrayInputStream(album.getCover().getData()));
 				ImageView imgsv = new ImageView(imgs);
 				imgsv.setFitHeight(album.getCover().getHeight());
 				imgsv.setFitWidth(album.getCover().getWidth());
 				imgsv.setCursor(Cursor.HAND);
-				imgsv.setOnMouseClicked(event -> {
-					this.focusImage();
-				});
+				imgsv.setOnMouseClicked(event -> { this.focusImage(); });
 				coverField.getChildren().add(imgsv);
-
-				titleView.setText("New Album");
-				confirm.setText("Create");
 
 				break;
 				
