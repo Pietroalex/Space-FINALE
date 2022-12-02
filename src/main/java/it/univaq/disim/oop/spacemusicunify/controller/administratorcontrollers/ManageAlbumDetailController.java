@@ -238,8 +238,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						try{
 							if (param.getValue().getId() != null ) {
 								albumService.delete(param.getValue());
-							}else{
-								System.out.println("Song not found");
 							}
 							dispatcher.setSituation(ViewSituations.modify);
 							dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
@@ -395,7 +393,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 							finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());
 							productionArtists.add(param.getValue());
-							System.out.println("finito add");
 						});
 						return new SimpleObjectProperty<Button>(add);
 					});
