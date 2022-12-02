@@ -307,30 +307,9 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						for(Artist bandComponent : bandsCheck.getBandMembers()){
 							availableBandsComponents.add(bandComponent);
 							availableArtists.removeIf((Artist possibleComponent) -> bandComponent.getId().intValue() == possibleComponent.getId().intValue());
-							/*for(Artist possibleComponent : availableArtists) {
-
-								if (bandComponent.getId().intValue() == possibleComponent.getId().intValue()) {
-									allArtists.remove(possibleComponent);
-								}
-
-							}*/
 						}
 					}
-/*				//rimozione band da set principale
-					for(Artist removeBand : availableBands){
-						allArtists.remove(removeBand);
-					}*/
 
-		/*			for(Artist addBack : artist.getBandMembers()){
-						boolean checkArtist = false;
-						for(Artist check : addMembers) {
-							if (addBack.getId().intValue() == check.getId().intValue()){
-								checkArtist = true;
-								break;
-							}
-						}
-						if(!checkArtist) allArtists.add(addBack);
-					}*/
 					//rimuovo il corrente artista singolo/componente di un gruppo e il suo intero gruppo/corrente gruppo inclusi i membri dalla scelta
 					if(!(artist.getBandMembers().isEmpty())){
 						/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());*/
@@ -361,21 +340,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						/*availableArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());*/
 						finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
 					}
-
-
-					for(Artist cos : availableArtists){
-						System.out.println("Available arist "+cos.getName());
-					}
-					for(Artist cos : availableBands){
-						System.out.println("Available bands "+cos.getName());
-						for(Artist a : cos.getBandMembers()){
-							System.out.println("Available bands component "+a.getName());
-						}
-					}
-					for(Artist cos : availableBandsComponents){
-						System.out.println("Available component "+cos.getName());
-					}
-
+					
 					artistTable.setItems(finalArtists);
 
 					productionArtists.add(artist);
@@ -476,10 +441,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 							if(singleArtist) finalArtists.add(param.getValue());
 							productionArtists.remove(param.getValue());
-							System.out.println("finito delete");
 						});
 						delete.setDisable((selected.getId().intValue() == artist.getId().intValue()));
-
 
 						return new SimpleObjectProperty<Button>(delete);
 					});
@@ -578,8 +541,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						try {
 							if(!(checkForClones(RunTimeService.getPlayer(), param.getValue()))) SpacemusicunifyBusinessFactory.getInstance().getPlayerService().addSongToQueue(RunTimeService.getPlayer(), param.getValue());
 							addButton.setDisable(true);
-						} catch (BusinessException b) {
-							dispatcher.renderError(b);
+						} catch (BusinessException e) {
+							dispatcher.renderError(e);
 						}
 					});
 
@@ -780,16 +743,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				}
 			}
 		}
-
-
-		SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
-			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-				spacemusicunifyPlayer.getMediaPlayer().stop();
-				spacemusicunifyPlayer.getMediaPlayer().dispose();
-			}
-
-
-		dispatcher.renderView("UserViews/HomeView/playerPane", user);
 	}
 	@FXML
 	public void addAlbumToPlaylist(ActionEvent event) {

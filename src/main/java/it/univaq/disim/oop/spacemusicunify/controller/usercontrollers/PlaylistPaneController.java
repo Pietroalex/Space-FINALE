@@ -101,27 +101,27 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         Label error = new Label("This playlist already exists");
         error.setTextFill(Paint.valueOf("red"));
         error.setVisible(false);
-        Label insert = new Label("Insert name");
+        Label insert = new Label("Playlist's title:");
         // operazione annulla
         Button closeButton = new Button("Cancel");
         closeButton.setCursor(Cursor.HAND);
         closeButton.setId("b1");
-        closeButton.setOnAction(e -> popupwindow.close());
+        closeButton.setOnAction(ae -> popupwindow.close());
 
         // operazione conferma
         Button createButton = new Button("Confirm");
         createButton.setCursor(Cursor.HAND);
         createButton.setId("b1");
 
-        createButton.setOnAction(e -> {
+        createButton.setOnAction(ae -> {
             playlist.setTitle(title.getText());
             // aggiungere la playlist alla TableView
             try {
                 userService.add(playlist);
-            } catch (AlreadyExistingException e1) {
+            } catch (AlreadyExistingException e) {
             	error.setVisible(true);
-            } catch (BusinessException e1) {
-                dispatcher.renderError(e1);
+            } catch (BusinessException e) {
+                dispatcher.renderError(e);
             }
             dispatcher.renderView("UserViews/HomeView/playlistPane", this.user);
             
@@ -129,7 +129,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
         });
         
         createButton.disableProperty().bind(title.textProperty().isEmpty().or(error.visibleProperty()));
-        title.textProperty().addListener((obs, oldText, newText)-> {
+        title.textProperty().addListener((obs, oldText, newText) -> {
             if (error.isVisible()) {
                 error.setVisible(false);
             }

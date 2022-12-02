@@ -184,27 +184,23 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 
 	@FXML
 	public void addPlaylistToQueue() {
-		User user = playlist.getUser();
-		Set<Song> lista = playlist.getSongList();
-		for(Song canzonePlaylist: lista) {
+		for(Song playlistSong: playlist.getSongList()) {
 			Boolean alreadyAdded = false;
-			/*for(Song canzone: utente.getSongQueue()) {
-				if(canzonePlaylist.getId().intValue() == canzone.getId().intValue()) {
+			for(Song song: spacemusicunifyPlayer.getQueue()) {
+				if(playlistSong.getId().intValue() == song.getId().intValue()) {
 					alreadyAdded = true;
 					break;
 				}
 			}
 			if(!alreadyAdded) {
-				utente.getSongQueue().add(canzonePlaylist);
-			}*/
-		}
-		
-		SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
-			if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-				spacemusicunifyPlayer.getMediaPlayer().stop();
-				spacemusicunifyPlayer.getMediaPlayer().dispose();
+				try {
+					playerService.addSongToQueue(spacemusicunifyPlayer, playlistSong);
+				} catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
 			}
-		dispatcher.renderView("UserViews/HomeView/playerPane", user);
+		}
+		playlistTable.refresh();
 	}
 	
 	@FXML
