@@ -25,6 +25,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 public class QueueController implements Initializable, DataInitializable<User> {
@@ -82,18 +83,28 @@ public class QueueController implements Initializable, DataInitializable<User> {
 				if(songTableRow.getItem() != null){
 					if(event.getClickCount() == 2) {
 						PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
-						if(spacemusicunifyPlayer.getQueue().size() > 1) {
-
+						if(spacemusicunifyPlayer.getQueue().size() > 0) {
 							if(spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong()).getId().intValue() != songTableRow.getItem().getId().intValue()) {
 								try {
+							    	spacemusicunifyPlayer.getQueue().removeListener(spacemusicunifyPlayer.getChangeListener());
+									spacemusicunifyPlayer.setChangeListener(null);
+									
+									if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
+										spacemusicunifyPlayer.getMediaPlayer().stop();
+										spacemusicunifyPlayer.getMediaPlayer().dispose();
+									}
+									
 									playerService.updateCurrentSong(spacemusicunifyPlayer, songTableRow.getIndex());
-									spacemusicunifyPlayer.setDuration(Duration.ZERO);
+									playerService.updateDuration(spacemusicunifyPlayer, Duration.ZERO);
+				
 									dispatcher.renderView("UserViews/HomeView/playerPane", RunTimeService.getCurrentUser());
+									
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
 								}
-							}
-							
+							} /*
+								 * else { spacemusicunifyPlayer.getMediaPlayer().seek(Duration.ZERO); }
+								 */
 						}
 					}
 				}
