@@ -69,6 +69,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 
     private SpacemusicunifyPlayer spacemusicunifyPlayer;
     private User user;
+    private boolean endOfMedia = false;
 
     public PlayerPaneController() {
         dispatcher = ViewDispatcher.getInstance();
@@ -235,6 +236,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
         	
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration current) {
+            	endOfMedia = false;
                 progressSlider.setValue(current.toSeconds());
                 int minTime = (int) current.toMinutes();
                 int secTime = (int) current.toSeconds();
@@ -251,20 +253,18 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 					}
 					/*spacemusicunifyPlayer.setDuration(current);*/
 				}
-				
-				if(spacemusicunifyPlayer.getMediaPlayer() != null && current.greaterThanOrEqualTo(Duration.millis(spacemusicunifyPlayer.getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()))) {
-                	if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) {
-                        try {
-							playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() + 1);
-							loadSong();
-							previousButton.setDisable(false);
-							if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
-                        } catch (BusinessException e) {
-							dispatcher.renderError(e);
-						}
-                	}
-                }
-                
+				/*
+				 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
+				 * current.greaterThanOrEqualTo(Duration.millis(spacemusicunifyPlayer.
+				 * getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()))) {
+				 * if(spacemusicunifyPlayer.getCurrentSong() <
+				 * spacemusicunifyPlayer.getQueue().size() - 1) { try {
+				 * playerService.updateCurrentSong(spacemusicunifyPlayer,
+				 * spacemusicunifyPlayer.getCurrentSong() + 1); loadSong();
+				 * previousButton.setDisable(false); if(spacemusicunifyPlayer.getCurrentSong()
+				 * == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
+				 * } catch (BusinessException e) { dispatcher.renderError(e); } } }
+				 */
             }
         });
 
@@ -302,6 +302,19 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             }
         });
         
+        spacemusicunifyPlayer.getMediaPlayer().setOnEndOfMedia(() -> {
+        	if(spacemusicunifyPlayer.getCurrentSong() < spacemusicunifyPlayer.getQueue().size() - 1) {
+                try {
+					playerService.updateCurrentSong(spacemusicunifyPlayer, spacemusicunifyPlayer.getCurrentSong() + 1);
+					loadSong();
+					previousButton.setDisable(false);
+					if(spacemusicunifyPlayer.getCurrentSong() == spacemusicunifyPlayer.getQueue().size() - 1) nextButton.setDisable(true);
+                } catch (BusinessException e) {
+					dispatcher.renderError(e);
+				}
+        	} else endOfMedia = true;
+        });
+        
     }
 
     public void loadSong() {
@@ -332,7 +345,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
             
 			try {
 				playerService.updateDuration(spacemusicunifyPlayer, Duration.ZERO);
-
+				
 				/*spacemusicunifyPlayer.setDuration(Duration.ZERO);*/
 				spacemusicunifyPlayer.setPlay(true);
 				pauseButton.setVisible(true);
@@ -378,6 +391,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
     }
 
     public void pauseSong(ActionEvent event) {
+    	//the mediaplayer keeps having playing status even if the whole media is consumed (java specific). Thus it's needed to seek a valid duration to change the status of the mediaplayer from playing to paused.
+    	if(endOfMedia) spacemusicunifyPlayer.getMediaPlayer().seek(Duration.millis(spacemusicunifyPlayer.getMediaPlayer().getTotalDuration().toMillis() - Scarto.toMillis()));
     	spacemusicunifyPlayer.setPlay(false);
         playButton.setVisible(true);
         pauseButton.setVisible(false);
