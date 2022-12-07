@@ -35,6 +35,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
     private final ViewDispatcher dispatcher;
     private final ArtistService artistService;
+    public Label artistLabel;
     private Artist artist;
     private static final String MyStyle = "views/controllerStyle.css";
 
@@ -119,27 +120,66 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         switch (dispatcher.getSituation()){
             case detail:
                 loadImages(artist.getPictures());
-                if(!(artist.getBandMembers().isEmpty())) {
-                    artistsPane.setVisible(true);
-                    artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
-                        @Override
-                        protected void updateItem(Artist item, boolean empty) {
-                            super.updateItem(item, empty);
 
-                            if (empty || item == null || item.getName() == null) {
-                                setText(null);
-                            } else {
-                                setText(item.getName());
+                ObservableList<Artist> bandMembersData = FXCollections.observableArrayList();
+                artistsPane.setVisible(true);
+                artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+                    @Override
+                    protected void updateItem(Artist item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (empty || item == null || item.getName() == null) {
+                            setText(null);
+                        } else {
+                            setText(item.getName());
+                        }
+                    }
+
+                });
+
+                artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+                    if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+                });
+                if(!(artist.getBandMembers().isEmpty())) {
+                    artistLabel.setVisible(true);
+                    bandMembersData = FXCollections.observableArrayList(artist.getBandMembers());
+                    artistsDetailListView.setItems(bandMembersData);
+                } else {
+                    //scrematura artisti in band
+                    Set<Artist> artists = null;
+                    Artist bandCheck = null;
+
+                    try {
+                        artists = artistService.getArtistList();
+
+                        Set<Artist> availableBands = new HashSet<>();
+
+                        //divisione singoli artisti e band da tutti gli artisti salvati
+                        for (Artist artistCheck : artists) {
+                            if (!(artistCheck.getBandMembers().isEmpty())) {
+                                availableBands.add(artistCheck);
                             }
                         }
 
-                    });
+                        for (Artist band : availableBands) {
+                            for (Artist component : band.getBandMembers()) {
+                                if (component.getId().intValue() == artist.getId().intValue()) {
+                                    bandCheck = band;
+                                    break;
+                                }
+                            }
+                            if(bandCheck != null) {
+                                bandMembersData.add(bandCheck);
+                                artistsDetailListView.setItems(bandMembersData);
+                                artistLabel.setText("Present in :");
+                                artistLabel.setVisible(true);
+                                break;
+                            }
+                        }
 
-                    artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
-                        if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
-                    });
-                    ObservableList<Artist> bandMembersData = FXCollections.observableArrayList(artist.getBandMembers());
-                    artistsDetailListView.setItems(bandMembersData);
+                    } catch (BusinessException e) {
+                        dispatcher.renderError(e);
+                    }
                 }
                 name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
@@ -227,27 +267,65 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
             case user:
                 loadImages(artist.getPictures());
-                if(!(artist.getBandMembers().isEmpty())) {
-                    artistsPane.setVisible(true);
-                    artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
-                        @Override
-                        protected void updateItem(Artist item, boolean empty) {
-                            super.updateItem(item, empty);
+                ObservableList<Artist> bandMembersData2 = FXCollections.observableArrayList();
+                artistsPane.setVisible(true);
+                artistsDetailListView.setCellFactory(param -> new ListCell<Artist>() {
+                    @Override
+                    protected void updateItem(Artist item, boolean empty) {
+                        super.updateItem(item, empty);
 
-                            if (empty || item == null || item.getName() == null) {
-                                setText(null);
-                            } else {
-                                setText(item.getName());
+                        if (empty || item == null || item.getName() == null) {
+                            setText(null);
+                        } else {
+                            setText(item.getName());
+                        }
+                    }
+
+                });
+
+                artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
+                    if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
+                });
+                if(!(artist.getBandMembers().isEmpty())) {
+                    artistLabel.setVisible(true);
+                    bandMembersData2 = FXCollections.observableArrayList(artist.getBandMembers());
+                    artistsDetailListView.setItems(bandMembersData2);
+                } else {
+                    //scrematura artisti in band
+                    Set<Artist> artists = null;
+                    Artist bandCheck = null;
+
+                    try {
+                        artists = artistService.getArtistList();
+
+                        Set<Artist> availableBands = new HashSet<>();
+
+                        //divisione singoli artisti e band da tutti gli artisti salvati
+                        for (Artist artistCheck : artists) {
+                            if (!(artistCheck.getBandMembers().isEmpty())) {
+                                availableBands.add(artistCheck);
                             }
                         }
 
-                    });
+                        for (Artist band : availableBands) {
+                            for (Artist component : band.getBandMembers()) {
+                                if (component.getId().intValue() == artist.getId().intValue()) {
+                                    bandCheck = band;
+                                    break;
+                                }
+                            }
+                            if(bandCheck != null) {
+                                bandMembersData2.add(bandCheck);
+                                artistsDetailListView.setItems(bandMembersData2);
+                                artistLabel.setText("Present in :");
+                                artistLabel.setVisible(true);
+                                break;
+                            }
+                        }
 
-                    artistsDetailListView.setOnMouseClicked( mouseEvent ->  {
-                        if(artistsDetailListView.getSelectionModel().getSelectedItem() != null) dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistsDetailListView.getSelectionModel().getSelectedItem());
-                    });
-                    ObservableList<Artist> bamdMembersData = FXCollections.observableArrayList(artist.getBandMembers());
-                    artistsDetailListView.setItems(bamdMembersData);
+                    } catch (BusinessException e) {
+                        dispatcher.renderError(e);
+                    }
                 }
                 name.setText(artist.getName());
                 yearsOfActivity.setText(String.valueOf(artist.getYearsOfActivity()));
