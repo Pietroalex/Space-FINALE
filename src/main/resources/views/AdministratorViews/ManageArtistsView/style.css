@@ -11,6 +11,19 @@
 -fx-text-fill:black;      
 -fx-border-color:black; 
 }
+#b3{
+    -fx-background-color: black;
+    -fx-border-color: linear-gradient(to top, #ea3a27 0%, #f8bb16 100%);
+    -fx-border-width: 2px;
+    -fx-background-radius: 25px;
+    -fx-border-radius: 25px;
+    -fx-text-fill: white;
+}
+#b3:hover {
+    -fx-background-color: black;
+    -fx-text-fill: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
+    -fx-border-color: linear-gradient(to top, #ea3a27 0%, #f8bb16 100%);
+}
 #text{
 -fx-border-radius:25px;
 -fx-background-color:transparent;

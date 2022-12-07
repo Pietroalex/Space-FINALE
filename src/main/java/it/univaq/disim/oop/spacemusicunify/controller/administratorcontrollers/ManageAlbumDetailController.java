@@ -189,6 +189,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
+					modify.setId("b3");
 					modify.setCursor(Cursor.HAND);
 					modify.setOnAction((ActionEvent event) -> {
 						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());

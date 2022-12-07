@@ -53,6 +53,7 @@ public class ManageUsersController implements Initializable, DataInitializable<A
         viewmodify.setStyle("-fx-alignment: CENTER;");
         viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<User, Button> param) -> {
             final Button modify = new Button("Detail");
+            modify.setId("b3");
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
 

@@ -99,6 +99,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         viewmodify.setStyle("-fx-alignment: CENTER;");
         viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
             final Button modify = new Button("Detail");
+            modify.setId("b3");
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
                 if (dispatcher.getSituation() == ViewSituations.user) {
