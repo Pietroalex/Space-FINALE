@@ -182,9 +182,11 @@ public class FileArtistServiceImpl implements ArtistService {
 
 	@Override
 	public void delete(Artist artist) throws BusinessException {
+		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
+			List<String[]> finalArtists = fileData.getRows();
 			for(String[] righeCheck: fileData.getRows()) {
 				if(righeCheck[0].equals(artist.getId().toString())) {
 
@@ -193,38 +195,51 @@ public class FileArtistServiceImpl implements ArtistService {
 					Set<Album> albumList = findAllAlbums(artist);
 					//aggiorno il file album.txt
 					for (Album albumCtrl : albumList) {
-						Set<Production> productions = SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl);
+						Set<Production> productions = albumService.findAllProductions(albumCtrl);
 						if(productions.size() > 1){
 							for(Production prod : productions){
 								if(prod.getArtist().getId().intValue() == artist.getId().intValue()) productionService.delete(prod);
 							}
 						}else{
-							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);
+							albumService.delete(albumCtrl);
 						}
 					}
-
-					//aggiorno il file artisti.txt
-					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
-						writer.println(fileData.getCounter());
-						for (String[] righe : fileData.getRows()) {
-							if (righe[0].equals(artist.getId().toString())) {
-								//jump line
-								continue;
-							} else {
-								writer.println(String.join("§", righe));
-							}
-						}
-					}
-
-
-
-
-
+					
 					for(Picture picture : artist.getPictures()){
 						multimediaService.delete(picture);
 					}
-					break;
+					
+					finalArtists.remove(righeCheck);
+					
+				} else {
+					List<String> members = Utility.readArray(righeCheck[6]);
+					for(String member : Utility.readArray(righeCheck[6])) {
+						if(member.equals(artist.getId().toString())) {
+							if(members.size() == 2) {
+								//delete band
+								finalArtists.remove(righeCheck);
+								//delete productions, albums
+							} else {
+								//delete artist from band
+								finalArtists.remove(righeCheck);
+								members.remove(member);
+								String[] edit = righeCheck;
+								edit[6] = String.join(",", members);
+								finalArtists.add(edit);
+							}
+							break;
+						}
+					}
 				}
+				
+				//aggiorno il file artisti.txt
+				try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
+					writer.println(fileData.getCounter());
+					for (String[] righe : finalArtists) {
+						writer.println(String.join("§", righe));
+					}
+				}
+				
 			}
 
 		} catch (IOException e) {

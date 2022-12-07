@@ -16,7 +16,7 @@
             <Image url="@background2.png" />
          </image>
       </ImageView>
-      <TextField id="text" fx:id="usernameField" alignment="CENTER" layoutX="358.0" layoutY="160.0" prefHeight="49.0" prefWidth="196.0">
+      <TextField id="text" fx:id="usernameField" alignment="CENTER" layoutX="357.0" layoutY="160.0" prefHeight="49.0" prefWidth="196.0">
          <font>
             <Font size="21.0" />
          </font>
@@ -48,7 +48,7 @@
       </Button>
       <Label fx:id="existingLabel" alignment="CENTER" layoutY="305.0" prefHeight="34.0" prefWidth="910.0" text="This username is already taken" textFill="#dd4129" visible="false">
          <font>
-            <Font size="23.0" />
+            <Font size="17.0" />
          </font>
       </Label>
       <Button id="b2" fx:id="delete" layoutX="405.0" layoutY="387.0" mnemonicParsing="false" onAction="#deleteUser" prefHeight="37.0" prefWidth="109.0" text="Delete">

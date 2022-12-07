@@ -170,6 +170,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         del.setOnAction((action) -> {
                             addMembers.remove(artistCtrl);
                             artistsModifyListView.getItems().remove(hBox);
+                            existingLabel.setVisible(false);
                         });
                         hBox.getChildren().add(aName);
                         hBox.getChildren().add(del);
@@ -320,12 +321,14 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     del.setOnAction((action) -> {
                         addMembers.remove(artistCtrl);
                         artistsModifyListView.getItems().remove(hBox);
+                        existingLabel.setVisible(false);
                         add.setDisable(false);
                     });
                     hBox.getChildren().add(aName);
                     hBox.getChildren().add(del);
                     if(dispatcher.getSituation() == ViewSituations.modify) artistsModifyListView.getItems().addListener((ListChangeListener<? super HBox>) a -> del.setDisable(a.getList().size() <= 2));
                     artistsModifyListView.getItems().add(hBox);
+                    existingLabel.setVisible(false);
                     add.setDisable(true);
                 });
 
@@ -558,8 +561,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         try{
             if (artist.getId() != null) {
             	artistService.delete(artist);
-            }else{
-                System.out.println("Artist not found");
             }
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
 
