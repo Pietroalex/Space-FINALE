@@ -13,20 +13,20 @@ import it.univaq.disim.oop.spacemusicunify.business.*;
 import it.univaq.disim.oop.spacemusicunify.domain.*;
 
 public class FileArtistServiceImpl implements ArtistService {
-	
+
 	private String artistsFile;
 	private ProductionService productionService;
 	private MultimediaService multimediaService;
-	
+
 	public FileArtistServiceImpl(String artistsFile, ProductionService productionService, MultimediaService multimediaService) {
 		this.artistsFile = artistsFile;
 		this.productionService = productionService;
 		this.multimediaService = multimediaService;
 	}
-	
+
 	@Override
 	public void add(Artist artist) throws BusinessException {
-		
+
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] column: fileData.getRows()) {
@@ -182,64 +182,75 @@ public class FileArtistServiceImpl implements ArtistService {
 
 	@Override
 	public void delete(Artist artist) throws BusinessException {
-		AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			List<String[]> finalArtists = fileData.getRows();
 			for(String[] righeCheck: fileData.getRows()) {
 				if(righeCheck[0].equals(artist.getId().toString())) {
-
 					check = true;
+					Artist bandCheck = null;
+					if(artist.getBandMembers().isEmpty()) {
+						//scrematura artisti in band
+						Set<Artist> artists = getArtistList();
+						Set<Artist> availableBands = new HashSet<>();
+
+						//divisione singoli artisti e band da tutti gli artisti salvati
+						for (Artist artistCheck : artists) {
+							if (!(artistCheck.getBandMembers().isEmpty())) {
+								availableBands.add(artistCheck);
+							}
+						}
+
+						for (Artist band : availableBands) {
+							for (Artist component : band.getBandMembers()) {
+								if (component.getId().intValue() == artist.getId().intValue()) {
+									bandCheck = band;
+									break;
+								}
+							}
+							if(bandCheck != null) break;
+						}
+					}
 
 					Set<Album> albumList = findAllAlbums(artist);
 					//aggiorno il file album.txt
 					for (Album albumCtrl : albumList) {
-						Set<Production> productions = albumService.findAllProductions(albumCtrl);
+						Set<Production> productions = SpacemusicunifyBusinessFactory.getInstance().getAlbumService().findAllProductions(albumCtrl);
 						if(productions.size() > 1){
 							for(Production prod : productions){
 								if(prod.getArtist().getId().intValue() == artist.getId().intValue()) productionService.delete(prod);
 							}
 						}else{
-							albumService.delete(albumCtrl);
+							SpacemusicunifyBusinessFactory.getInstance().getAlbumService().delete(albumCtrl);
 						}
 					}
-					
 					for(Picture picture : artist.getPictures()){
 						multimediaService.delete(picture);
 					}
-					
-					finalArtists.remove(righeCheck);
-					
-				} else {
-					List<String> members = Utility.readArray(righeCheck[6]);
-					for(String member : Utility.readArray(righeCheck[6])) {
-						if(member.equals(artist.getId().toString())) {
-							if(members.size() == 2) {
-								//delete band
-								finalArtists.remove(righeCheck);
-								//delete productions, albums
+					//aggiorno il file artisti.txt
+					try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
+						writer.println(fileData.getCounter());
+						for (String[] righe : fileData.getRows()) {
+							if (righe[0].equals(artist.getId().toString())) {
+								//jump line
+								continue;
 							} else {
-								//delete artist from band
-								finalArtists.remove(righeCheck);
-								members.remove(member);
-								String[] edit = righeCheck;
-								edit[6] = String.join(",", members);
-								finalArtists.add(edit);
+								writer.println(String.join("§", righe));
 							}
-							break;
 						}
 					}
-				}
-				
-				//aggiorno il file artisti.txt
-				try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
-					writer.println(fileData.getCounter());
-					for (String[] righe : finalArtists) {
-						writer.println(String.join("§", righe));
+					if(bandCheck != null){
+						if(bandCheck.getBandMembers().size() > 2){
+							bandCheck.getBandMembers().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+							modify(bandCheck.getId(), bandCheck.getName(), bandCheck.getBiography(), bandCheck.getYearsOfActivity(), bandCheck.getNationality(), null, bandCheck.getBandMembers(), bandCheck);
+						} else {
+							bandCheck.getBandMembers().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+							modify(bandCheck.getId(), bandCheck.getName(), bandCheck.getBiography(), bandCheck.getYearsOfActivity(), bandCheck.getNationality(), null, bandCheck.getBandMembers(), bandCheck);
+							delete(bandCheck);
+						}
 					}
+					break;
 				}
-				
 			}
 
 		} catch (IOException e) {

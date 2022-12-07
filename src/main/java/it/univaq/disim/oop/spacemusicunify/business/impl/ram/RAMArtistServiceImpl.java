@@ -141,10 +141,34 @@ public class RAMArtistServiceImpl implements ArtistService {
 	public void delete(Artist artist) throws BusinessException {
 		boolean check = false;
 
-		for(Artist artistCheck : getArtistList()) {
+		for(Artist artistDel : getArtistList()) {
 
-			if(artistCheck.getId().intValue() ==  artist.getId().intValue()) {
+			if(artistDel.getId().intValue() ==  artist.getId().intValue()) {
 				check = true;
+
+				Artist bandCheck = null;
+				if(artist.getBandMembers().isEmpty()) {
+					//scrematura artisti in band
+					Set<Artist> artists = getArtistList();
+					Set<Artist> availableBands = new HashSet<>();
+
+					//divisione singoli artisti e band da tutti gli artisti salvati
+					for (Artist artistCheck : artists) {
+						if (!(artistCheck.getBandMembers().isEmpty())) {
+							availableBands.add(artistCheck);
+						}
+					}
+
+					for (Artist band : availableBands) {
+						for (Artist component : band.getBandMembers()) {
+							if (component.getId().intValue() == artist.getId().intValue()) {
+								bandCheck = band;
+								break;
+							}
+						}
+						if(bandCheck != null) break;
+					}
+				}
 
 				AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
 
@@ -165,6 +189,16 @@ public class RAMArtistServiceImpl implements ArtistService {
 				}
 
 				storedArtists.removeIf((Artist artistCheck2) -> artistCheck2.getId().intValue() == artist.getId().intValue());
+				if(bandCheck != null){
+					if(bandCheck.getBandMembers().size() > 2){
+						bandCheck.getBandMembers().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+						modify(bandCheck.getId(), bandCheck.getName(), bandCheck.getBiography(), bandCheck.getYearsOfActivity(), bandCheck.getNationality(), null, bandCheck.getBandMembers(), bandCheck);
+					} else {
+						bandCheck.getBandMembers().removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
+						modify(bandCheck.getId(), bandCheck.getName(), bandCheck.getBiography(), bandCheck.getYearsOfActivity(), bandCheck.getNationality(), null, bandCheck.getBandMembers(), bandCheck);
+						delete(bandCheck);
+					}
+				}
 				break;
 			}
 		}

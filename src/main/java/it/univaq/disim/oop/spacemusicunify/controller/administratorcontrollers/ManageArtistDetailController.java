@@ -37,7 +37,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private final ArtistService artistService;
     private Artist artist;
     private static final String MyStyle = "views/controllerStyle.css";
-    
+
     @FXML
     private TextField nameField;
     @FXML
@@ -114,7 +114,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         });*/
 
     }
-    
+
     public void setView2(){
         switch (dispatcher.getSituation()){
             case detail:
@@ -161,13 +161,13 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
                 if(!(artist.getBandMembers().isEmpty())) {
                     artistsModifyPane.setVisible(true);
-                    addMembers = new HashSet<>(artist.getBandMembers());
                     for (Artist artistCtrl : artist.getBandMembers()) {
 
                         HBox hBox = new HBox();
                         Label aName = new Label(artistCtrl.getName());
                         Button del = new Button("Delete");
                         del.setOnAction((action) -> {
+                            if(addMembers == null) addMembers = new HashSet<>(artist.getBandMembers());
                             addMembers.remove(artistCtrl);
                             artistsModifyListView.getItems().remove(hBox);
                             existingLabel.setVisible(false);
@@ -224,7 +224,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 confirm.setText("Create");
 
                 break;
-                
+
             case user:
                 loadImages(artist.getPictures());
                 if(!(artist.getBandMembers().isEmpty())) {
@@ -256,9 +256,9 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 biography.setEditable(false);
                 modify.setVisible(false);
                 break;
-                
+
             default:
-            	break;
+                break;
         }
     }
     @FXML
@@ -269,7 +269,6 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         VBox vBox = new VBox();
         try {
             Set<Artist> artists = artistService.getArtistList();
-
             Set<Artist> availableArtists = new HashSet<>(artists);
             Set<Artist> band = new HashSet<>();
 
@@ -296,24 +295,25 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             for(Artist removeBand : band){
                 artists.remove(removeBand);
             }
-
-            for(Artist addBack : artist.getBandMembers()){
-                boolean checkArtist = false;
-                for(Artist check : addMembers) {
-                    if (addBack.getId().intValue() == check.getId().intValue()){
-                        checkArtist = true;
-                        break;
+            if(addMembers != null) {
+                for (Artist addBack : artist.getBandMembers()) {
+                    boolean checkArtist = false;
+                    for (Artist check : addMembers) {
+                        if (addBack.getId().intValue() == check.getId().intValue()) {
+                            checkArtist = true;
+                            break;
+                        }
                     }
+                    if (!checkArtist) artists.add(addBack);
                 }
-                if(!checkArtist) artists.add(addBack);
             }
-
             for (Artist artistCtrl : artists) {
 
                 Button add = new Button("Add");
                 add.setId("b2");
                 add.setCursor(Cursor.HAND);
                 add.setOnAction((ActionEvent event) -> {
+                    if(addMembers == null) addMembers = new HashSet<>(artist.getBandMembers());
                     addMembers.add(artistCtrl);
                     HBox hBox = new HBox();
                     Label aName = new Label(artistCtrl.getName());
@@ -337,13 +337,15 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 hBox.getChildren().add(name);
                 hBox.getChildren().add(new Label("    "));
                 hBox.getChildren().add(add);
-                
-                
 
-                for(Artist ctrl : addMembers){
-                    if(artistCtrl.getId().intValue() == ctrl.getId().intValue()){
-                        add.setDisable(true);
-                        break;
+
+
+                if(addMembers != null) {
+                    for (Artist ctrl : addMembers) {
+                        if (artistCtrl.getId().intValue() == ctrl.getId().intValue()) {
+                            add.setDisable(true);
+                            break;
+                        }
                     }
                 }
                 vBox.getChildren().add(hBox);
@@ -353,7 +355,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 vBox.getChildren().add(space);
             }
         } catch (BusinessException e) {
-            throw new RuntimeException(e);
+            dispatcher.renderError(e);
         }
 
         ScrollPane scrollPane = new ScrollPane(vBox);
@@ -379,15 +381,15 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     @Override
     public void initializeData(Artist artist) {
         this.artist = artist;
-	    setView2();
+        setView2();
     }
-    
+
     public void loadImages(Set<Picture> pictures){
         if (!(pictures.isEmpty())) {
             for( Picture img: pictures) {
                 ImageView imgview;
 
-                    imgview = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
+                imgview = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
 
                 imgview.setFitHeight(img.getHeight());
                 imgview.setFitWidth(img.getWidth());
@@ -402,14 +404,14 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
 
                 ImageView imgs;
 
-                    imgs = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
-                    imgs.setFitHeight(img.getHeight());
-                    imgs.setFitWidth(img.getWidth());
-                    imgs.setCursor(Cursor.HAND);
+                imgs = new ImageView(new Image(new ByteArrayInputStream(img.getData())));
+                imgs.setFitHeight(img.getHeight());
+                imgs.setFitWidth(img.getWidth());
+                imgs.setCursor(Cursor.HAND);
 
-                    imgs.setOnMouseClicked( (mouseEvent) -> {
-                        this.focusImage(img);
-                    });
+                imgs.setOnMouseClicked( (mouseEvent) -> {
+                    this.focusImage(img);
+                });
 
                 modifyImages.getChildren().add(imgs);
             }
@@ -454,7 +456,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 if(tempPictures != null ) artist.setPictures(tempPictures);
                 artistService.add(artist);
             } else {
-            	artistService.modify(artist.getId(), nameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), tempPictures, addMembers, artist);
+                artistService.modify(artist.getId(), nameField.getText(), biographyField.getText(), yearsOfActivityField.getValue(), nationalityField.getValue(), tempPictures, addMembers, artist);
             }
 
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
@@ -482,12 +484,12 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     public void manageAlbums(ActionEvent event) {
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
     }
-    
+
     public void focusImage(Picture image){
         imgUrl = image;
         cancelbox.setVisible(true);
     }
-    
+
     public void focusAdd(){
         cancelbox.setVisible(false);
         FileChooser fileChoose = new FileChooser();
@@ -559,9 +561,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     @FXML
     public void deleteThisArtist(){
         try{
-            if (artist.getId() != null) {
-            	artistService.delete(artist);
-            }
+            if (artist.getId() != null) artistService.delete(artist);
+
             dispatcher.renderView("AdministratorViews/ManageArtistsView/manage_artists", this.admin);
 
         } catch (BusinessException e) {
@@ -573,5 +574,5 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
         dispatcher.setSituation(ViewSituations.modify);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artist);
     }
-    
+
 }
