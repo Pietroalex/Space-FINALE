@@ -99,6 +99,9 @@
          </font>
       </Button>
       <TableView fx:id="artistTable" layoutX="24.0" layoutY="205.0" prefHeight="172.0" prefWidth="536.0" visible="false">
+      	<placeholder>
+      		<Label text="No artist available for production"/>
+      	</placeholder>
         <columns>
           <TableColumn fx:id="artist_id" prefWidth="75.0" text="ID" />
           <TableColumn fx:id="artist_name" prefWidth="349.0" text="Name" />
