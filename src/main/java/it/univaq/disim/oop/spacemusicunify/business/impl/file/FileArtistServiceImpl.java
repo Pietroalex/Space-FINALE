@@ -113,8 +113,8 @@ public class FileArtistServiceImpl implements ArtistService {
 				}
 			}
 			int cont = 0;
-			for (String[] righe : fileData.getRows()) {
-				if (righe[0].equals(id.toString())) {
+			for (String[] rows : fileData.getRows()) {
+				if (rows[0].equals(id.toString())) {
 					List<String> imagesIds = new ArrayList<>();
 					if (images != null) {
 						Set<Picture> toAddPictures = new HashSet<>();
@@ -129,15 +129,15 @@ public class FileArtistServiceImpl implements ArtistService {
 						}
 						for(Picture image : artist.getPictures()) {
 
-							boolean checktoremove = true;
+							boolean checkToRemove = true;
 							for (Picture img : toCheckPictures) {
 
 								if (image.getId().intValue() == img.getId().intValue()) {
-									checktoremove = false;
+									checkToRemove = false;
 									break;
 								}
 							}
-							if (checktoremove) {
+							if (checkToRemove) {
 								toRemovePictures.add(image);
 							}
 						}
@@ -152,7 +152,7 @@ public class FileArtistServiceImpl implements ArtistService {
 							imagesIds.add(picture.getId().toString());
 						}
 					}else{
-						imagesIds.addAll(Utility.readArray(righe[4]));
+						imagesIds.addAll(Utility.readArray(rows[4]));
 					}
 					List<String> membersIds = new ArrayList<>();
 					if(addMembers != null){
@@ -160,9 +160,9 @@ public class FileArtistServiceImpl implements ArtistService {
 							membersIds.add(artistCtrl.getId().toString());
 						}
 					}else{
-						membersIds.addAll(Utility.readArray(righe[6]));
+						membersIds.addAll(Utility.readArray(rows[6]));
 					}
-					String[] row = new String[]{righe[0], name,  String.valueOf(yearsOfActivity), biography, imagesIds.toString(),String.valueOf(nationality),  membersIds.toString()};
+					String[] row = new String[]{rows[0], name,  String.valueOf(yearsOfActivity), biography, imagesIds.toString(),String.valueOf(nationality),  membersIds.toString()};
 					fileData.getRows().set(cont, row);
 
 					break;
@@ -171,8 +171,8 @@ public class FileArtistServiceImpl implements ArtistService {
 			}
 			try (PrintWriter writer = new PrintWriter(new File(artistsFile))) {
 				writer.println(fileData.getCounter());
-				for (String[] righe : fileData.getRows()) {
-					writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+				for (String[] rows : fileData.getRows()) {
+					writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
 				}
 			}
 		} catch (IOException e) {
@@ -185,8 +185,8 @@ public class FileArtistServiceImpl implements ArtistService {
 		boolean check = false;
 		try {
 			FileData fileData = Utility.readAllRows(artistsFile);
-			for(String[] righeCheck: fileData.getRows()) {
-				if(righeCheck[0].equals(artist.getId().toString())) {
+			for(String[] rowsCheck: fileData.getRows()) {
+				if(rowsCheck[0].equals(artist.getId().toString())) {
 					check = true;
 					Artist bandCheck = null;
 					if(artist.getBandMembers().isEmpty()) {

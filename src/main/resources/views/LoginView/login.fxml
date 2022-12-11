@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="sfondo" maxHeight="600.0" maxWidth="1070.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.LoginController">
+<AnchorPane id="pane" maxHeight="600.0" maxWidth="1070.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.LoginController">
    <children>
       <AnchorPane pickOnBounds="false" prefHeight="600.0" prefWidth="1070.0" stylesheets="@style.css">
          <children>
@@ -37,7 +37,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="signupButtton" layoutX="459.0" layoutY="520.0" mnemonicParsing="false" onAction="#signupAction" style="-fx-background-color: transparent;" text="Sign up" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="signupButton" layoutX="459.0" layoutY="520.0" mnemonicParsing="false" onAction="#signupAction" style="-fx-background-color: transparent;" text="Sign up" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>

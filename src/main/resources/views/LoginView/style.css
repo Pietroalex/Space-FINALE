@@ -18,6 +18,6 @@
 -fx-text-fill:white;
 -fx-background-radius:25px;
 }
-#sfondo{
+#pane{
 -fx-background: linear-gradient(to bottom right, #e366d0 0%, #45b5fb 100%);
 }

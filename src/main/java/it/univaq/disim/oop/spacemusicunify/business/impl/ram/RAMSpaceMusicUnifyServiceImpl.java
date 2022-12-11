@@ -21,8 +21,6 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		ArtistService artistService = factory.getArtistService();
 		UserService userService = factory.getUserService();
 
-
-
 		// creo l'artista1
 		Artist artist1 = new Artist();
 		artist1.setName("Pasquale Arrosto");
@@ -82,7 +80,7 @@ public class RAMSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 
 
 			User user = new User();
-			user.setUsername("utente");
+			user.setUsername("user");
 			user.setPassword("123456");
 
 			Playlist userPlaylist = new Playlist();

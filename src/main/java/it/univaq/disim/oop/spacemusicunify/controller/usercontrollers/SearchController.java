@@ -228,20 +228,10 @@ public class SearchController implements Initializable, DataInitializable<User>{
 						if(!checkForClones(spacemusicunifyPlayer, albumSong)) playerService.addSongToQueue(spacemusicunifyPlayer, albumSong);
 					}
 					addButton.setDisable(true);
-					/*
-					 * if(spacemusicunifyPlayer.getMediaPlayer() != null &&
-					 * spacemusicunifyPlayer.getMediaPlayer().getStatus() !=
-					 * MediaPlayer.Status.STOPPED){ spacemusicunifyPlayer.getMediaPlayer().stop();
-					 * spacemusicunifyPlayer.getMediaPlayer().dispose(); }
-					 */
+
 				} catch (BusinessException b) {
 					dispatcher.renderError(b);
 				}
-				
-				/*
-				 * playerService.setPlayerState(PlayerState.searchSingleClick);
-				 * dispatcher.renderView("UserViews/HomeView/playerPane", user);
-				 */
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -352,7 +342,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		});
 
 	}
-	public void addThisSongToPlaylist(Song songToAdd) {
+	private void addThisSongToPlaylist(Song songToAdd) {
 
 		Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
@@ -414,7 +404,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 		popupwindow.setTitle("Add to playlist");
 		popupwindow.showAndWait();
 	}
-	public boolean checkForClones(Object object, Song value){
+	private boolean checkForClones(Object object, Song value){
 
 		if(object instanceof SpacemusicunifyPlayer) {
 			for (Song songs : ((SpacemusicunifyPlayer) object).getQueue()) {

@@ -91,12 +91,12 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				FileWriter writer = new FileWriter(new File(usersFile));
 				writer.write("3" + "\n");
 				writer.write("1§admin§admin§admin" + "\n");
-				writer.write("2§user§utente§123456"+ "\n");
+				writer.write("2§user§user§123456"+ "\n");
 				writer.close();
 
 				User user = new User();
 				user.setId(2);
-				user.setUsername("utente");
+				user.setUsername("user");
 				user.setPassword("123456");
 				SpacemusicunifyBusinessFactory.getInstance().getPlayerService().add(user);
 			}

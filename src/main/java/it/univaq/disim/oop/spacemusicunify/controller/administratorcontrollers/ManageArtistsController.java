@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
+import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -103,7 +104,6 @@ public class ManageArtistsController implements Initializable, DataInitializable
 		});
 
 	}
-
 	@Override
 	public void initializeData(Administrator admin) {
 		Set<Artist> artists = null;
@@ -112,26 +112,37 @@ public class ManageArtistsController implements Initializable, DataInitializable
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
-		ObservableList<Artist> artistaData = FXCollections.observableArrayList(artists);
-			artistList.setItems(artistaData);
-		
+		ObservableList<Artist> artistData = FXCollections.observableArrayList(artists);
+		artistList.setItems(artistData);
 
 	}
 
-
-
 	@FXML
 	public void newArtist(ActionEvent event) {
+		String path = "src"+ File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator;
 		Artist artist = new Artist();
-		artist.setName("test group");
+		artist.setName("new artist");
 		artist.setYearsOfActivity(1);
-		artist.setBiography("test bio");
+		artist.setBiography("new artist bio");
 		Set<Picture> pictures = new HashSet<>();
+
+		Picture picture = new Picture();
+
+		try {
+			picture.setData(path+"pasqualearrosto.jpg");
+		} catch (BusinessException e) {
+			dispatcher.renderError(e);
+		}
+
+		picture.setHeight(120);
+		picture.setWidth(120);
+		picture.setOwnership(artist);
+		pictures.add(picture);
+
 		artist.setPictures(pictures);
 		artist.setNationality(Nationality.british);
 		Set<Artist> artists = new HashSet<>();
 		artist.setBandMembers(artists);
-
 
 		dispatcher.setSituation(ViewSituations.newobject);
 		dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_modify", artist);

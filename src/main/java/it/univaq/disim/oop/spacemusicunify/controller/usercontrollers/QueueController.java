@@ -102,9 +102,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);
 								}
-							} /*
-								 * else { spacemusicunifyPlayer.getMediaPlayer().seek(Duration.ZERO); }
-								 */
+							}
 						}
 					}
 				}

@@ -58,7 +58,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Button id="b1" fx:id="back" layoutX="706.0" layoutY="388.0" mnemonicParsing="false" onAction="#backToTheAlbum" text="Back to the Album">
+      <Button id="b1" fx:id="back" layoutX="706.0" layoutY="388.0" mnemonicParsing="false" onAction="#backToTheAlbum" text="View the Album">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

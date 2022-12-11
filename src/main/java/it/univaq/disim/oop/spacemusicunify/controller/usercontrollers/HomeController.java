@@ -17,9 +17,7 @@ public class HomeController implements Initializable, DataInitializable<User> {
 	private Label benvenutoLabel;
 	
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		
-	}
+	public void initialize(URL location, ResourceBundle resources) {}
 	@Override
 	public void initializeData(User user) {
 		benvenutoLabel.setText("Benvenuto " +  user.getUsername().substring(0, 1).toUpperCase(Locale.ROOT).concat(user.getUsername().substring(1)) + "!");

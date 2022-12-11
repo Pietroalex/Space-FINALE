@@ -6,6 +6,7 @@ import it.univaq.disim.oop.spacemusicunify.domain.Administrator;
 import it.univaq.disim.oop.spacemusicunify.domain.User;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -33,7 +34,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
     @FXML
     private Label existingLabel;
     private Administrator admin;
-    private User utente;
+    private User user;
     @FXML
     private Button delete;
 
@@ -43,24 +44,24 @@ public class ManageUserDetailController implements Initializable, DataInitializa
         userService = factory.getUserService();
 
     }
-    public void setView2(){
+    private void setView(){
         switch (dispatcher.getSituation()){
             case detail:
-                this.username.setText(utente.getUsername());
-                this.password.setText(utente.getPassword());
+                this.username.setText(user.getUsername());
+                this.password.setText(user.getPassword());
                 break;
 
             case modify:
                 title.setText("Modify User");
                 confirm.setText("Modify");
-                this.usernameField.setText(utente.getUsername());
-                this.passwordField.setText(utente.getPassword());
+                this.usernameField.setText(user.getUsername());
+                this.passwordField.setText(user.getPassword());
                 confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
                 break;
 
             case newobject:
-                this.usernameField.setText(utente.getUsername());
-                this.passwordField.setText(utente.getPassword());
+                this.usernameField.setText(user.getUsername());
+                this.passwordField.setText(user.getPassword());
                 confirm.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
                 delete.setVisible(false);
                 title.setText("New User");
@@ -78,22 +79,20 @@ public class ManageUserDetailController implements Initializable, DataInitializa
         }
     }
     @Override
-    public void initializeData(User utente) {
-        this.utente = utente;
-        this.setView2();
+    public void initializeData(User user) {
+        this.user = user;
+        this.setView();
     }
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    	
-    }
+    public void initialize(URL location, ResourceBundle resources) {}
     @FXML
-    public void confirmUser() {
+    public void confirmUser(ActionEvent event) {
         try {
 
-            if (utente.getId() == null) {
-                utente.setUsername(usernameField.getText());
-                utente.setPassword(passwordField.getText());
-                userService.add(utente);
+            if (user.getId() == null) {
+                user.setUsername(usernameField.getText());
+                user.setPassword(passwordField.getText());
+                userService.add(user);
                 if (dispatcher.getSituation() == ViewSituations.register) {
                     dispatcher.logout();
                 } else {
@@ -101,7 +100,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
                 }
 
             } else {
-                userService.modify(utente.getId(), usernameField.getText(), passwordField.getText());
+                userService.modify(user.getId(), usernameField.getText(), passwordField.getText());
                 dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
             }
 
@@ -115,7 +114,7 @@ public class ManageUserDetailController implements Initializable, DataInitializa
         }
     }
     @FXML
-    public void cancelModify() {
+    public void cancelModify(ActionEvent event) {
         switch (dispatcher.getSituation()){
             case register:
                 dispatcher.logout();
@@ -125,16 +124,14 @@ public class ManageUserDetailController implements Initializable, DataInitializa
                 break;
             default:
                 dispatcher.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", utente);
+                dispatcher.renderView("AdministratorViews/ManageUsersView/user_detail", user);
         }
     }
     @FXML
-    public void deleteUser(){
+    public void deleteUser(ActionEvent event){
         try{
-            if (utente.getId() != null) {
-                userService.delete(utente);
-            }else{
-                System.out.println("Utente not found");
+            if (user.getId() != null) {
+                userService.delete(user);
             }
             dispatcher.renderView("AdministratorViews/ManageUsersView/manage_users", this.admin);
 
@@ -143,9 +140,9 @@ public class ManageUserDetailController implements Initializable, DataInitializa
         }
     }
     @FXML
-    public void showModify() {
+    public void showModify(ActionEvent event) {
         dispatcher.setSituation(ViewSituations.modify);
-        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", utente);
+        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", user);
     }
 
 }

@@ -14,9 +14,7 @@ import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
 import javafx.beans.property.SimpleObjectProperty;
 
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,10 +26,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -139,7 +136,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		artistService = factory.getArtistService();
 		albumService = factory.getAlbumService();
 	}
-	private void setView2(ObservableList<Song> songData) {
+	private void setView(ObservableList<Song> songData) {
 		switch (dispatcher.getSituation()){
 			case detail:
 				addToPlaylist.setVisible(false);
@@ -171,17 +168,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 					ObservableList<Artist> artistsData = FXCollections.observableArrayList(albumService.findAllArtists(album));
 					artistsDetailListView.setItems(artistsData);
-/*					Set<Artist> artistsSet = albumService.findAllArtists(album);
-					artistS.setVisible(true);
-					for (Artist artistCtrl : artistsSet) {
-						MenuItem menuItem = new MenuItem();
-						menuItem.setText(artistCtrl.getName());
-						menuItem.setOnAction((ActionEvent event) -> {
-							artistS.hide();
-							dispatcher.renderView("AdministratorViews/ManageArtistsView/artist_detail", artistCtrl);
-						});
-						artistS.getItems().add(menuItem);
-					}*/
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}
@@ -311,10 +297,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 					//rimuovo il corrente artista singolo/componente di un gruppo e il suo intero gruppo/corrente gruppo inclusi i membri dalla scelta
 					if(!(artist.getBandMembers().isEmpty())){
-						/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());*/
 						finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
 						for(Artist artistBand : artist.getBandMembers()) {
-							/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 							finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
 						}
 					} else {
@@ -325,7 +309,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 										if (component.getId().intValue() == artist.getId().intValue()) {
 											finalArtists.remove(band);
 											for (Artist artistBand : band.getBandMembers()) {
-												/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 												finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
 											}
 											break;
@@ -336,7 +319,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 							}
 						}
 
-						/*availableArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());*/
+
 						finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artist.getId().intValue());
 					}
 					
@@ -351,18 +334,14 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 						final Button add = new Button("Add");
 						add.setCursor(Cursor.HAND);
 						add.setOnAction((ActionEvent event) -> {
-							/*artistSet.add(param.getValue());*/
-							/*selectedArtistsTable.getItems().add(param.getValue());*/
 							if(!(param.getValue().getBandMembers().isEmpty())){
 								//band inserita, si procede con l'eliminazione della band dalle band disponibili
 
-								/*availableBands.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());*/
 								finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == param.getValue().getId().intValue());
 
 								for(Artist artistBand : param.getValue().getBandMembers()) {
 									//dopo si procede ad eliminare dagli artisti presenti nella lista degli artisti componenti di gruppi quelli della band inserita
 
-									/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 									finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());
 								}
 							} else {
@@ -372,15 +351,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 										for (Artist bands : availableBands) {
 											for (Artist component : bands.getBandMembers()){
 												if (component.getId().intValue() == param.getValue().getId().intValue()) {
-													/*availableBands.remove(bands);*/
 													//riuscito soltanto a selezionare la band del componente selezionato senza apportare modifiche alla tabella
 
-													//pare non funziona l'aggiornamento della tabella
 													finalArtists.remove(bands);
 													for (Artist artistBand : bands.getBandMembers()) {
 														//si procede a rimuovere tutti i componenti della band dell'artista selezionato compreso esso
 
-														/*availableBandsComponents.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue());*/
 														finalArtists.removeIf((Artist artistCheck) -> artistCheck.getId().intValue() == artistBand.getId().intValue() && artistCheck.getId().intValue() != param.getValue().getId().intValue());
 													}
 													break;
@@ -567,9 +543,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}
 	}
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-
-	}
+	public void initialize(URL location, ResourceBundle resources) {}
 	@Override
 	public void initializeData(Album album) {
 		this.album = album;
@@ -580,15 +554,12 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		}
 		Set<Song> songs = album.getSongs();
 		ObservableList<Song> songData = FXCollections.observableArrayList(songs);
-		setView2(songData);
+		setView(songData);
 
 	}
 
-
-
 	@FXML
 	public void confirmAlbum(ActionEvent event) {
-
 		try {
 			if (album.getId() == null) {
 				album.setTitle(titleField.getText());
@@ -614,23 +585,19 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	}
 	@FXML
 	public void cancelModify(ActionEvent event) {
-		switch (dispatcher.getSituation()){
-			case newobject:
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
-				break;
-			default:
-				dispatcher.setSituation(ViewSituations.detail);
-				dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+		if (dispatcher.getSituation() == ViewSituations.newobject) {
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
+		} else {
+			dispatcher.setSituation(ViewSituations.detail);
+			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
 		}
-
 	}
 	private void focusImage(){
 		cancelBox.setVisible(true);
 	}
 	@FXML
-	public void cancelDeleteSelection(){
+	public void cancelDeleteSelection(ActionEvent event){
 		cancelBox.setVisible(false);
-
 	}
 	private void focusAdd(){
 		cancelBox.setVisible(false);
@@ -697,7 +664,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 
 	}
 	@FXML
-	public void createNewSong() {
+	public void createNewSong(ActionEvent event) {
 		Song song = new Song();
 		song.setAlbum(this.album);
 		song.setTitle("New song");
@@ -730,7 +697,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 	@FXML
 	public void addAlbumToQueue(ActionEvent event) {
 		//aggiungere la canzone alla coda di riproduzione dell'utente
-		User user = RunTimeService.getCurrentUser();
 		PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
 		for(Song albumSong: album.getSongs()) {
 			if(!(checkForClones(RunTimeService.getPlayer(), albumSong))) {
@@ -782,7 +748,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
 			tableView.setItems(observableList);
 		} catch (BusinessException e1) {
-			e1.printStackTrace();
+			dispatcher.renderError(e1);
 		}
 
 		// operazione annulla

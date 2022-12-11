@@ -2,7 +2,6 @@ package it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.spacemusicunify.business.*;
@@ -11,7 +10,6 @@ import it.univaq.disim.oop.spacemusicunify.controller.DataInitializable;
 import it.univaq.disim.oop.spacemusicunify.domain.Album;
 import it.univaq.disim.oop.spacemusicunify.domain.Audio;
 import it.univaq.disim.oop.spacemusicunify.domain.Genre;
-import it.univaq.disim.oop.spacemusicunify.domain.Production;
 import it.univaq.disim.oop.spacemusicunify.domain.Song;
 import it.univaq.disim.oop.spacemusicunify.view.ViewDispatcher;
 import it.univaq.disim.oop.spacemusicunify.view.ViewSituations;
@@ -23,7 +21,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
 public class ManageSongDetailController implements Initializable, DataInitializable<Song> {
@@ -78,7 +75,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
         SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
         albumService = factory.getAlbumService();
     }
-    public void setView2(){
+    private void setView(){
         switch (dispatcher.getSituation()){
             case detail:
                 title.setText(song.getTitle());
@@ -97,9 +94,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                                 .or(songField.textProperty().isEqualTo("No MP3 File selected"))
                 );
                 titleField.textProperty().addListener((obs, oldText, newText)-> {
-                    if (existingLabel.isVisible()) {
-                        existingLabel.setVisible(false);
-                    }
+                    if(existingLabel.isVisible())   existingLabel.setVisible(false);
                 });
                 genreField.getItems().addAll(Genre.values());
                 genreField.getItems().remove(Genre.singles);
@@ -133,10 +128,8 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                         .or(existingLabel.visibleProperty())
                         .or(songField.textProperty().isEqualTo("No MP3 File selected"))
                 );
-                titleField.textProperty().addListener((obs, oldText, newText)-> {
-                    if (existingLabel.isVisible()) {
-                        existingLabel.setVisible(false);
-                    }
+                titleField.textProperty().addListener((obs, oldText, newText) -> {
+                    if(existingLabel.isVisible())   existingLabel.setVisible(false);
                 });
 
                 genreField.getItems().addAll(Genre.values());
@@ -177,14 +170,12 @@ public class ManageSongDetailController implements Initializable, DataInitializa
         }
     }
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
+    public void initialize(URL location, ResourceBundle resources) {}
     @Override
     public void initializeData(Song song) {
         this.song = song;
         album = song.getAlbum();
-        setView2();
+        setView();
     }
     @FXML
     public void confirmSong(ActionEvent event) {
@@ -221,25 +212,23 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 			dispatcher.renderError(e);
 		}
     }
-
+    @FXML
     public void cancelModify(ActionEvent event) {
-        switch (dispatcher.getSituation()){
-            case newobject:
-                dispatcher.setSituation(ViewSituations.modify);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", album);
-                break;
-            default:
-                dispatcher.setSituation(ViewSituations.detail);
-                dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
+        if (dispatcher.getSituation() == ViewSituations.newobject) {
+            dispatcher.setSituation(ViewSituations.detail);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
+        } else {
+            dispatcher.setSituation(ViewSituations.detail);
+            dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", song);
         }
     }
     @FXML
-    public void backToTheAlbum(){
+    public void backToTheAlbum(ActionEvent event){
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_detail", album);
     }
 
     @FXML
-    public void pickMP3(){
+    public void pickMP3(ActionEvent event){
 
             FileChooser fileChoose = new FileChooser();
             File file =  fileChoose.showOpenDialog(null);
@@ -266,7 +255,6 @@ public class ManageSongDetailController implements Initializable, DataInitializa
 
             }
 
-
     }
     @FXML
     public void deleteThisSong(ActionEvent event) {
@@ -285,7 +273,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
     }
 
     @FXML
-    public void showModify() {
+    public void showModify(ActionEvent event) {
         dispatcher.setSituation(ViewSituations.modify);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_modify", song);
     }

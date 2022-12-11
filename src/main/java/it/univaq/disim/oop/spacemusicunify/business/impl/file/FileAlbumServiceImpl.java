@@ -115,9 +115,9 @@ public class FileAlbumServiceImpl implements AlbumService {
 			}
 
 			int cont = 0;
-			for (String[] righe : fileData.getRows()) {
-				if (righe[0].equals(id.toString())) {
-					oldGenre = righe[2];
+			for (String[] rows : fileData.getRows()) {
+				if (rows[0].equals(id.toString())) {
+					oldGenre = rows[2];
 
 					Picture savePicture;
 
@@ -130,7 +130,7 @@ public class FileAlbumServiceImpl implements AlbumService {
 					}else{
 						savePicture = album.getCover();
 					}
-					row = new String[]{righe[0], title, String.valueOf(genre), savePicture.getId().toString(), righe[4],String.valueOf(release)};
+					row = new String[]{rows[0], title, String.valueOf(genre), savePicture.getId().toString(), rows[4],String.valueOf(release)};
 					fileData.getRows().set(cont, row);
 					break;
 				}

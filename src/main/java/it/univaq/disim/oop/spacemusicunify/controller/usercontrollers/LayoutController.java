@@ -25,7 +25,6 @@ import javafx.stage.Stage;
 
 public class LayoutController implements DataInitializable<User> {
 
-	private final UserService userService;
 	private ViewDispatcher dispatcher;
 	@FXML
 	private TextField searchField;
@@ -33,15 +32,12 @@ public class LayoutController implements DataInitializable<User> {
 	private Button menu;
 
 	private User user;
-	private PlayerService playerService;
 	private SpacemusicunifyPlayer spacemusicunifyPlayer;
 	private static final String MyStyle = "views/controllerStyle.css";
 	
 	public LayoutController() {
 		dispatcher = ViewDispatcher.getInstance();
 		SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
-		userService = factory.getUserService();
-		playerService = factory.getPlayerService();
 	}
 	@Override
 	public void initializeData(User user) {
@@ -58,9 +54,7 @@ public class LayoutController implements DataInitializable<User> {
 		dispatcher.logout();
 
 		spacemusicunifyPlayer.getQueue().removeListener(spacemusicunifyPlayer.getChangeListener());
-		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
 		spacemusicunifyPlayer.setChangeListener(null);
-		/*System.out.println(spacemusicunifyPlayer.getChangeListener());*/
 		if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
 			spacemusicunifyPlayer.getMediaPlayer().stop();
 			spacemusicunifyPlayer.getMediaPlayer().dispose();
@@ -74,12 +68,6 @@ public class LayoutController implements DataInitializable<User> {
 	}
 	@FXML
 	public void showGenreSelection(ActionEvent event) {
-		/*for(Genre genre: Genre.values()){
-			MenuItem menuItem = new MenuItem();
-			menuItem.setText(genre.toString());
-			menuItem.setOnAction( (ActionEvent event) -> { searchField.setText(menuItem.getText()); });
-			menu.getItems().add(menuItem);
-		}*/
 		Stage popupwindow = new Stage();
 		popupwindow.initModality(Modality.APPLICATION_MODAL);
 		VBox container = new VBox();

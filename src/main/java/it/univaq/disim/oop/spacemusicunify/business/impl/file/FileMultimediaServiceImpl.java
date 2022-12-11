@@ -219,7 +219,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         try {
             if(picture.getOwnership() instanceof Artist) {
                 for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
-                    if(Arrays.equals(pictureCheck.getData(), picture.getData())){
+                    if(pictureCheck.getId() != null && Arrays.equals(pictureCheck.getData(), picture.getData())){
 
                         throw new AlreadyExistingException("Modify Artist, Duplicated picture for this artist");
                     }

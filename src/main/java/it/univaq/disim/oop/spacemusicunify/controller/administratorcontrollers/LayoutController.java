@@ -19,15 +19,12 @@ import java.util.ResourceBundle;
 
 
 public class LayoutController implements Initializable, DataInitializable<Administrator> {
-	
 	private static final String Folder = "AdministratorViews/";
-	
 	private Administrator admin;
-
     private static final MenuElement MENU_HOME = new MenuElement("Home", Folder + "HomeView/home");
     private static final MenuElement[] MENU_ADMIN = {
-            new MenuElement("Gestione Artisti", Folder + "ManageArtistsView/manage_artists"),//ManageArtistsView/manage_artist
-            new MenuElement("Gestione Utenti", Folder + "ManageUsersView/manage_users"),//ManageUsersView/manage_user
+            new MenuElement("Manage Artists", Folder + "ManageArtistsView/manage_artists"),
+            new MenuElement("Manage Users", Folder + "ManageUsersView/manage_users"),
 
     };
     @FXML
@@ -43,10 +40,9 @@ public class LayoutController implements Initializable, DataInitializable<Admini
         menuBar.getChildren().add(new Separator());
     }
     @Override
-    public void initializeData(Administrator amministratore) {
-		this.admin = amministratore;
+    public void initializeData(Administrator admin) {
+		this.admin = admin;
 	}
-
 
     @FXML
     public void logout(MouseEvent event) {

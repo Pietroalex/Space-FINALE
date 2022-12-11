@@ -80,7 +80,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#deleteThisImage" style="-fx-background-color: transparent;">
+                  <Button fx:id="delImage" contentDisplay="CENTER" mnemonicParsing="false" onAction="#deleteThisImage" style="-fx-background-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>

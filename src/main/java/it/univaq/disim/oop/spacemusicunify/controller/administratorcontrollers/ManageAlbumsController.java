@@ -131,28 +131,17 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     			final Button addButton = new Button("Add to queue");
     			addButton.setCursor(Cursor.HAND);
     			addButton.setOnAction((ActionEvent event) -> {
-    				//aggiungere la canzone alla coda di riproduzione dell'utente
-    				Set<Song> lista = param.getValue().getSongs();
-    				for(Song canzoneAlbum: lista) {
-    					Boolean alreadyAdded = false;
-    					/*for(Song canzone: utente.getSongQueue()) {
-    						if(canzoneAlbum.getId().intValue() == canzone.getId().intValue()) {
-    							alreadyAdded = true;
-    							break;
-    						}
-    					}
-    					if(!alreadyAdded) {
-    						spaceMusicUnifyService.addSongToQueue(utente, canzoneAlbum);
-    					}*/
-    				}
-    				SpacemusicunifyPlayer spacemusicunifyPlayer = RunTimeService.getPlayer();
-    					if(spacemusicunifyPlayer.getMediaPlayer() != null && spacemusicunifyPlayer.getMediaPlayer().getStatus() != MediaPlayer.Status.STOPPED){
-    						spacemusicunifyPlayer.getMediaPlayer().stop();
-    						spacemusicunifyPlayer.getMediaPlayer().dispose();
-    					}
-
-    				dispatcher.renderView("UserViews/UserHomeView/playerPane", RunTimeService.getCurrentUser());
-    			});
+                    //aggiungere la canzone alla coda di riproduzione dell'utente
+                    for(Song albumSong: param.getValue().getSongs()) {
+                        if(!(checkForClones(RunTimeService.getPlayer(), albumSong))) {
+                            try {
+                                playerService.addSongToQueue(RunTimeService.getPlayer(), albumSong);
+                            } catch (BusinessException e) {
+                                dispatcher.renderError(e);
+                            }
+                        }
+                    }
+                });
     			return new SimpleObjectProperty<Button>(addButton);
     		});
     		
@@ -161,80 +150,12 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     			final Button addButton = new Button("Add to playlist");
     			addButton.setCursor(Cursor.HAND);
     			addButton.setOnAction((ActionEvent event) -> {
-    				showPopupSelectPlaylist(param.getValue());
+    				addAlbumToPlaylist(param.getValue());
     			});
     			return new SimpleObjectProperty<Button>(addButton);
     		});
         }
     }
-
-	private void showPopupSelectPlaylist(Album selectedAlbum) {
-		UserService userService = SpacemusicunifyBusinessFactory.getInstance().getUserService();
-		Stage popupwindow = new Stage();
-		popupwindow.initModality(Modality.APPLICATION_MODAL);
-		Label title = new Label("Seleziona la playlist");
-		title.setAlignment(Pos.CENTER);
-		//selezione multipla playlist
-		TableView<Playlist> tableView = new TableView<>();
-		TableColumn<Playlist, String> name = new TableColumn<Playlist,String>("Title");
-		TableColumn<Playlist, Button> add = new TableColumn<Playlist, Button>();
-		name.setCellValueFactory(new PropertyValueFactory<>("title"));
-		add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
-			final Button addButton = new Button("add");
-			addButton.setOnAction((ActionEvent event) -> {
-				//aggiunto album alla playlist
-				Set<Song> lista = param.getValue().getSongList();
-				for(Song canzoneAlbum: selectedAlbum.getSongs()) {
-					Boolean alreadyAdded = false;
-					for(Song canzonePlaylist: lista) {
-						if(canzoneAlbum.getId().intValue() == canzonePlaylist.getId().intValue()) {
-							alreadyAdded = true;
-							break;
-						}
-					}
-					if(!alreadyAdded) {
-						lista.add(canzoneAlbum);
-					}
-				}
-				try {
-					userService.modify(lista, param.getValue());
-				} catch (BusinessException e) {
-					 e.printStackTrace();
-				}
-
-				addButton.setDisable(true);
-			});
-			return new SimpleObjectProperty<Button>(addButton);
-		});
-		
-		tableView.getColumns().add(name);
-		tableView.getColumns().add(add);
-
-		try {
-			ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(RunTimeService.getCurrentUser()));
-			tableView.setItems(observableList);
-		} catch (BusinessException e1) {
-			e1.printStackTrace();
-		}
-
-		// operazione annulla
-		Button closeButton = new Button("Cancel");
-		closeButton.setCursor(Cursor.HAND);
-		closeButton.setOnAction(e -> {
-			dispatcher.renderView("UserViews/HomeView/playlistPane", RunTimeService.getCurrentUser());
-			popupwindow.close();
-		});
-
-		VBox layout = new VBox(10);
-		layout.getChildren().addAll(title, tableView, closeButton);
-		layout.setAlignment(Pos.CENTER);
-		Scene scene1 = new Scene(layout, 300, 150);
-		popupwindow.setScene(scene1);
-		popupwindow.setResizable(false);
-		popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");
-		popupwindow.showAndWait();
-	}
-
     @Override
     public void initializeData(Artist artist) {
         this.artist = artist;
@@ -244,8 +165,8 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
 
         stageName.setText(artist.getName());
         if(dispatcher.getSituation() == ViewSituations.user) {
-        	newAlbumButton.setVisible(false);
-        	operation.setText("View");
+            newAlbumButton.setVisible(false);
+            operation.setText("View");
         }
 
         Set<Album> albums = null;
@@ -259,11 +180,11 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         albumList.setItems(albumsData);
     }
     @FXML
-    public void createNewAlbum(){
-    	Album newAlbum = new Album();
-    	newAlbum.setTitle("new album of "+artist.getName());
-    	newAlbum.setGenre(Genre.rock);
-    	newAlbum.setRelease(LocalDate.now());
+    public void createNewAlbum(ActionEvent event){
+        Album newAlbum = new Album();
+        newAlbum.setTitle("new album of "+artist.getName());
+        newAlbum.setGenre(Genre.rock);
+        newAlbum.setRelease(LocalDate.now());
         Set<Song> songs = new HashSet<>();
         newAlbum.setSongs(songs);
         Picture picture = new Picture();
@@ -283,4 +204,78 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         dispatcher.setSituation(ViewSituations.newobject);
         dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/album_modify", newAlbum);
     }
+    private void addAlbumToPlaylist(Album selectedAlbum) {
+        User user = RunTimeService.getCurrentUser();
+        SpacemusicunifyBusinessFactory factory = SpacemusicunifyBusinessFactory.getInstance();
+        UserService userService = factory.getUserService();
+
+        Stage popupwindow = new Stage();
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        Label title = new Label("Choose the playlist");
+        title.setAlignment(Pos.CENTER);
+        //selezione multipla playlist
+        TableView<Playlist> tableView = new TableView<>();
+        TableColumn<Playlist, String> name = new TableColumn<Playlist,String>("Title");
+        TableColumn<Playlist, Button> add = new TableColumn<Playlist, Button>();
+        name.setCellValueFactory(new PropertyValueFactory<>("title"));
+        add.setCellValueFactory((TableColumn.CellDataFeatures<Playlist,Button> param) -> {
+            final Button addButton = new Button("add");
+            addButton.setOnAction((actionEvent) -> {
+                //aggiunto album alla playlist
+                Set<Song> songList = param.getValue().getSongList();
+                for(Song albumSong: selectedAlbum.getSongs()) {
+                    if(checkForClones(param.getValue(), albumSong)) songList.add(albumSong);
+                }
+                try {
+                    userService.modify(songList, param.getValue());
+                    dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
+                } catch (BusinessException e) {
+                    dispatcher.renderError(e);
+                }
+
+                addButton.setDisable(true);
+            });
+            return new SimpleObjectProperty<Button>(addButton);
+        });
+        tableView.getColumns().add(name);
+        tableView.getColumns().add(add);
+        try {
+            ObservableList<Playlist> observableList = FXCollections.observableArrayList(userService.getAllPlaylists(user));
+            tableView.setItems(observableList);
+        } catch (BusinessException e1) {
+            dispatcher.renderError(e1);
+        }
+
+        // operazione annulla
+        Button closeButton = new Button("Cancel");
+        closeButton.setCursor(Cursor.HAND);
+        closeButton.setOnAction(e -> {
+            popupwindow.close();
+        });
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(title, tableView, closeButton);
+        layout.setAlignment(Pos.CENTER);
+        Scene scene1 = new Scene(layout, 300, 150);
+        popupwindow.setScene(scene1);
+        popupwindow.setResizable(false);
+        popupwindow.setTitle("Add " + selectedAlbum.getTitle() + " to playlist?");
+        popupwindow.showAndWait();
+    }
+
+    private boolean checkForClones(Object object, Song value){
+
+        if(object instanceof SpacemusicunifyPlayer) {
+            for (Song songs : ((SpacemusicunifyPlayer) object).getQueue()) {
+                if (songs.getId().intValue() ==  value.getId().intValue()) return true;
+            }
+            return false;
+        } else {
+            for (Song songs : ((Playlist) object).getSongList()) {
+                if (songs.getId().intValue() == value.getId().intValue()) return false;
+            }
+            return true;
+        }
+    }
+
 }

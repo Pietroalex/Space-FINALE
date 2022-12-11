@@ -83,7 +83,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             dispatcher.renderError(e);
         }
     }
-
+    @FXML
     public void addNewPlaylist(ActionEvent event) {
         Playlist newPlaylist = new Playlist();
         newPlaylist.setUser(user);

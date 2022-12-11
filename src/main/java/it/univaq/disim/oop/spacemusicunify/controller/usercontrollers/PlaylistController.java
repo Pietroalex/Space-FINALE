@@ -175,7 +175,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 		ObservableList<Song> playlistData = FXCollections.observableArrayList(songList);
 		playlistTable.setItems(playlistData);
 	}
-	public boolean checkForClones(SpacemusicunifyPlayer player, Song value){
+	private boolean checkForClones(SpacemusicunifyPlayer player, Song value){
 		for (Song songs : player.getQueue()) {
 			if (songs.getId().intValue() ==  value.getId().intValue()) return true;
 		}
@@ -183,7 +183,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 	}
 
 	@FXML
-	public void addPlaylistToQueue() {
+	public void addPlaylistToQueue(ActionEvent event) {
 		for(Song playlistSong: playlist.getSongList()) {
 			Boolean alreadyAdded = false;
 			for(Song song: spacemusicunifyPlayer.getQueue()) {

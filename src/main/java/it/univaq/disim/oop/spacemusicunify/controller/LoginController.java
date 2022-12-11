@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class LoginController implements Initializable, DataInitializable<Object>{
 
@@ -27,8 +28,6 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	private Label errorLabel;
 	@FXML
 	private Button loginButton;
-	@FXML
-	private Button signupButton;
 	
 	private ViewDispatcher dispatcher;
 	
@@ -48,7 +47,6 @@ public class LoginController implements Initializable, DataInitializable<Object>
 	
 	@FXML
 	private void loginAction(ActionEvent event) throws ViewException {
-		
 		try {
 			GeneralUser generalUser = userService.authenticate(username.getText(), password.getText());
 			dispatcher.loggedIn(generalUser);

@@ -64,26 +64,25 @@ public class ManageUsersController implements Initializable, DataInitializable<A
         });
     }
     @Override
-    public void initializeData(Administrator amministratore) {
-
-        Set<User> utenti = null;
+    public void initializeData(Administrator admin) {
+        Set<User> users = null;
         try {
-            utenti = userService.getAllUsers();
+            users = userService.getAllUsers();
         } catch (BusinessException e) {
             dispatcher.renderError(e);
         }
-        ObservableList<User> utenteData = FXCollections.observableArrayList(utenti);
-            usersList.setItems(utenteData);
+        ObservableList<User> userData = FXCollections.observableArrayList(users);
+            usersList.setItems(userData);
 
     }
     @FXML
-    public void addNewUser(){
-        User utente = new User();
-        utente.setUsername("utente");
-        utente.setPassword("123456");
+    public void addNewUser(ActionEvent event){
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("123456");
 
         dispatcher.setSituation(ViewSituations.newobject);
-        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", utente);
+        dispatcher.renderView("AdministratorViews/ManageUsersView/user_modify", user);
 
     }
 
