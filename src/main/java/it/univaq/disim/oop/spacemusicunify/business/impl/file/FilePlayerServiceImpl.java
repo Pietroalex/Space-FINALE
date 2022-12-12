@@ -52,9 +52,7 @@ public class FilePlayerServiceImpl implements PlayerService {
 				row.append(Utility.COLUMN_SEPARATOR);
 				row.append(0);
 
-
 				writer.println(row.toString());
-
 			}
 		} catch (IOException e) {
 			throw new BusinessException(e);
@@ -118,16 +116,16 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
 
 					String[] row = new String[]{rows[0], rows[1], String.valueOf(duration.toMillis()), rows[3], rows[4], rows[5] };
-					fileData.getRows().set(cont, row);
+					fileData.getRows().set(count, row);
 
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -149,16 +147,16 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
 
 					String[] row = new String[]{rows[0], String.valueOf(volume), rows[2], rows[3], rows[4], rows[5] };
-					fileData.getRows().set(cont, row);
+					fileData.getRows().set(count, row);
 
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -180,16 +178,16 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
 
 					String[] row = new String[]{rows[0], rows[1], rows[2], String.valueOf(mute), rows[4], rows[5] };
-					fileData.getRows().set(cont, row);
+					fileData.getRows().set(count, row);
 
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -216,18 +214,14 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
-
-
-
 					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3],  String.valueOf(queueIDS), rows[5] };
-					fileData.getRows().set(cont, row);
-
+					fileData.getRows().set(count, row);
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -256,15 +250,13 @@ public class FilePlayerServiceImpl implements PlayerService {
 					updateCurrentSong(player, player.getCurrentSong() - 1);
 
 				} else {	//canzone corrente tra prima posizione e penultima
-							/*if(spacemusicunifyPlayer.getCurrentSong() != 0) {
-
-							} else {												//canzone corrente in prima posizione */
+													
 					if(player.getMediaPlayer() != null && player.getMediaPlayer().getStatus() != Status.STOPPED) {
 						player.getMediaPlayer().stop();
 						player.getMediaPlayer().dispose();
 						player.setMediaPlayer(null);
 					}
-					//}
+					
 				}
 
 			} else {									//una sola canzone in riproduzione
@@ -282,14 +274,13 @@ public class FilePlayerServiceImpl implements PlayerService {
 			for(int i = 0; i < player.getQueue().size(); i++) {
 				if(player.getQueue().get(i).equals(song)) {
 					if (player.getCurrentSong() > i ) {
-
 						updateCurrentSong(player, player.getCurrentSong() - 1);
-
 						break;
 					}
 				}
 			}
 		}
+		
 		if(!(player.getQueue().removeIf((Song songcheck) -> songcheck.getId().intValue() == song.getId().intValue()))) throw new BusinessException("Error in removal of the song, not removed");
 
 		List<String> queueIDS = new ArrayList<>();
@@ -299,18 +290,14 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
-
-
-
 					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], String.valueOf(queueIDS), rows[5] };
-					fileData.getRows().set(cont, row);
-
+					fileData.getRows().set(count, row);
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -322,27 +309,25 @@ public class FilePlayerServiceImpl implements PlayerService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-
 
 	}
 
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside player");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside the player");
 
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
 					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], rows[4], String.valueOf(position) };
-					fileData.getRows().set(cont, row);
-
+					fileData.getRows().set(count, row);
 					player.setCurrentSong(position);
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){
@@ -354,7 +339,6 @@ public class FilePlayerServiceImpl implements PlayerService {
 		} catch (IOException e) {
 			throw new BusinessException(e);
 		}
-
 
 	}
 	@Override
@@ -364,19 +348,19 @@ public class FilePlayerServiceImpl implements PlayerService {
 		try {
 
 			FileData fileData = Utility.readAllRows(playersFile);
-			int cont = 0;
+			int count = 0;
 			for(String[] rows: fileData.getRows()) {
 				if(rows[0].equals(player.getUser().getId().toString())) {
 					List<String> queueIDS = Utility.readArray(rows[4]);
 					queueIDS.set(player.getCurrentSong(), song.getId().toString());
 
 					String[] row = new String[]{rows[0], rows[1], rows[2], rows[3], String.valueOf(queueIDS), rows[5] };
-					fileData.getRows().set(cont, row);
+					fileData.getRows().set(count, row);
 
 					player.getQueue().set(player.getCurrentSong(), song);
 					break;
 				}
-				cont++;
+				count++;
 			}
 
 			try(PrintWriter writer = new PrintWriter(new File(playersFile))){

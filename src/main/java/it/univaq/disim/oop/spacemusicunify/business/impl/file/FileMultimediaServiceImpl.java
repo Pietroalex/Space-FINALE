@@ -50,15 +50,15 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(audiosFile);
             try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
-                long contatore = fileData.getCounter();
-                writer.println((contatore + 1));
-                for (String[] righe : fileData.getRows()) {
-                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                long counter = fileData.getCounter();
+                writer.println((counter + 1));
+                for (String[] rows : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
                 }
-                audio.setId((int) contatore);
+                audio.setId((int) counter);
 
                 StringBuilder row = new StringBuilder();
-                row.append(contatore);
+                row.append(counter);
                 row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(audio.getData(), "audio"));
                 row.append(Utility.COLUMN_SEPARATOR);
@@ -96,15 +96,15 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(audiosFile);
             try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
-                long contatore = fileData.getCounter();
-                writer.println((contatore + 1));
-                for (String[] righe : fileData.getRows()) {
-                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                long counter = fileData.getCounter();
+                writer.println((counter + 1));
+                for (String[] rows : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
                 }
-                audio.setId((int) contatore);
+                audio.setId((int) counter);
 
                 StringBuilder row = new StringBuilder();
-                row.append(contatore);
+                row.append(counter);
                 row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(audio.getData(), "audio"));
                 row.append(Utility.COLUMN_SEPARATOR);
@@ -123,19 +123,19 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
         try {
             FileData fileData = Utility.readAllRows(audiosFile);
-            for(String[] righeCheck: fileData.getRows()) {
-                if(righeCheck[0].equals(audio.getId().toString())) {
-                    Files.deleteIfExists(Paths.get(mp3Directory+File.separator+righeCheck[1]));
+            for(String[] rowsCheck: fileData.getRows()) {
+                if(rowsCheck[0].equals(audio.getId().toString())) {
+                    Files.deleteIfExists(Paths.get(mp3Directory+File.separator+rowsCheck[1]));
                     check = true;
                     //aggiorno il file audios.txt
                     try (PrintWriter writer = new PrintWriter(new File(audiosFile))) {
                         writer.println(fileData.getCounter());
-                        for (String[] righe : fileData.getRows()) {
-                            if (righe[0].equals(audio.getId().toString())) {
+                        for (String[] rows : fileData.getRows()) {
+                            if (rows[0].equals(audio.getId().toString())) {
                                 //jump line
                                 continue;
                             } else {
-                                writer.println(String.join("§", righe));
+                                writer.println(String.join("§", rows));
                             }
                         }
                     }
@@ -185,15 +185,15 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(picturesFile);
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
-                long contatore = fileData.getCounter();
-                writer.println((contatore + 1));
-                for (String[] righe : fileData.getRows()) {
-                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                long counter = fileData.getCounter();
+                writer.println((counter + 1));
+                for (String[] rows : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
                 }
-                picture.setId((int) contatore);
+                picture.setId((int) counter);
 
                 StringBuilder row = new StringBuilder();
-                row.append(contatore);
+                row.append(counter);
                 row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(picture.getData(), "image"));
                 row.append(Utility.COLUMN_SEPARATOR);
@@ -232,13 +232,11 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                         //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
                         if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                             if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
-
                                 throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
                             }
                         } else {
                             //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                             if (Arrays.equals(album.getCover().getData(), picture.getData())) {
-
                                 throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
                             }
                         }
@@ -249,15 +247,15 @@ public class FileMultimediaServiceImpl implements MultimediaService {
 
             FileData fileData = Utility.readAllRows(picturesFile);
             try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
-                long contatore = fileData.getCounter();
-                writer.println((contatore + 1));
-                for (String[] righe : fileData.getRows()) {
-                    writer.println(String.join(Utility.COLUMN_SEPARATOR, righe));
+                long counter = fileData.getCounter();
+                writer.println((counter + 1));
+                for (String[] rows : fileData.getRows()) {
+                    writer.println(String.join(Utility.COLUMN_SEPARATOR, rows));
                 }
-                picture.setId((int) contatore);
+                picture.setId((int) counter);
 
                 StringBuilder row = new StringBuilder();
-                row.append(contatore);
+                row.append(counter);
                 row.append(Utility.COLUMN_SEPARATOR);
                 row.append(saveANDstore(picture.getData(), "image"));
                 row.append(Utility.COLUMN_SEPARATOR);
@@ -290,12 +288,12 @@ public class FileMultimediaServiceImpl implements MultimediaService {
                     //aggiorno il file pictures.txt
                     try (PrintWriter writer = new PrintWriter(new File(picturesFile))) {
                         writer.println(fileData.getCounter());
-                        for (String[] righe : fileData.getRows()) {
-                            if (righe[0].equals(picture.getId().toString())) {
+                        for (String[] rows : fileData.getRows()) {
+                            if (rows[0].equals(picture.getId().toString())) {
                                 //jump line
                                 continue;
                             } else {
-                                writer.println(String.join("§", righe));
+                                writer.println(String.join("§", rows));
                             }
                         }
                     }
@@ -309,7 +307,7 @@ public class FileMultimediaServiceImpl implements MultimediaService {
         }
     }
 
-    public String saveANDstore(byte[] bytes, String type) throws BusinessException {
+    private String saveANDstore(byte[] bytes, String type) throws BusinessException {
         String existImage = picturesDirectory + "image";
         String existMp3 = mp3Directory + "audio";
 

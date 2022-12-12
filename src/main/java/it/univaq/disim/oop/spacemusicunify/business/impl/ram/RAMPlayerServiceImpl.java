@@ -114,9 +114,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 			for(int i = 0; i < player.getQueue().size(); i++) {
 				if(player.getQueue().get(i).equals(song)) {
 					if (player.getCurrentSong() > i ) {
-
 						updateCurrentSong(player, player.getCurrentSong() - 1);
-						
 						break;
 					}
 				}
@@ -126,7 +124,7 @@ public class RAMPlayerServiceImpl implements PlayerService {
 	}
 	@Override
 	public void updateCurrentSong(SpacemusicunifyPlayer player, int position) throws BusinessException {
-		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside player");
+		if(position >= player.getQueue().size() || position < 0) throw new BusinessException("Error in position inside the player");
 		player.setCurrentSong(position);
 	}
 	@Override

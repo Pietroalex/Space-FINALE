@@ -26,13 +26,12 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void add(Album album) throws BusinessException {
+		
+		if (album.getTitle().contains("Singles") && album.getGenre() != Genre.singles)
+				throw new AlreadyExistingException("New Album, The title must not contain 'Singles'");
+		
 		for (Album albums : storedAlbums) {
-			if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-				throw new AlreadyExistingException("The title must not contain 'Singles'");
-			}
-			if (albums.getTitle().equals(album.getTitle()) ) {
-				throw new AlreadyExistingException("Already Existing album with this title");
-			}
+			if (albums.getTitle().equals(album.getTitle())) throw new AlreadyExistingException("New Album, Already Existing album with this title");
 		}
 		album.setId(idAlbum++);
 		multimediaService.add(album.getCover());
@@ -128,13 +127,13 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture, Set<Song> songlist, LocalDate release, Album album) throws BusinessException {
+		
+		if (album.getTitle().contains("Singles") && album.getGenre() != Genre.singles)
+			throw new AlreadyExistingException("Modify Album, The title must not contain 'Singles'");
+		
 		for (Album albums : storedAlbums) {
-			if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-				throw new AlreadyExistingException("The title must not contain 'Singles'");
-			}
-			if (albums.getTitle().equals(title) && albums.getId().intValue() != id.intValue() ){
-				throw new AlreadyExistingException("Already Existing album with this title");
-			}
+			if (albums.getTitle().equals(title) && albums.getId().intValue() != id.intValue())
+				throw new AlreadyExistingException("Modify Album, Already Existing album with this title");
 		}
 		for (Album albumCheck : storedAlbums) {
 			if (albumCheck.getId().equals(id)) {
@@ -192,13 +191,12 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void add(Song song) throws BusinessException {
+		
+		if((song.getTitle().contains("DefaultSingles") && (song.getAlbum().getSongs() != null && song.getAlbum().getSongs().size() > 1)) || (song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles))
+			throw new AlreadyExistingException("New Song, The title must not contain 'DefaultSingles'");
+		
 		for (Song songs : storedSongs) {
-			if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
-				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
-			}
-			if(songs.getTitle().equals(song.getTitle())) {
-				throw new AlreadyExistingException("Already Existing song with this title");
-			}
+			if(songs.getTitle().equals(song.getTitle())) throw new AlreadyExistingException("Already Existing song with this title");
 		}
 
 		song.setId(idSong++);
@@ -217,14 +215,15 @@ public class RAMAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void modify(Integer id, String title, Audio tempAudio, String lyrics, Album album, String length, Genre genre, Song oldSong) throws BusinessException {
+		
+		if((title.contains("DefaultSingles") && album.getSongs().size() > 1) || (title.contains("DefaultSingles") && album.getGenre() != Genre.singles))
+			throw new AlreadyExistingException("Modify Song, The title must not contain 'DefaultSingles'");
+			
 		for (Song songs : storedSongs) {
-			if ( title.contains("DefaultSingles") && album.getGenre() != Genre.singles){
-				throw new AlreadyExistingException("The title must not contain 'DefaultSingles'");
-			}
-			if(songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue()) {
-				throw new AlreadyExistingException("Already Existing song with this title");
-			}
+			if(songs.getTitle().equals(title) && songs.getId().intValue() != id.intValue())
+				throw new AlreadyExistingException("Modify Song, Already Existing song with this title");
 		}
+		
 		for (Song song : storedSongs) {
 			if (song.getId().intValue() == id.intValue()) {
 				Audio saveAudio;

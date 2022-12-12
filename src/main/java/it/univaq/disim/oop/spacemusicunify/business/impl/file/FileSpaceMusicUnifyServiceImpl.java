@@ -16,8 +16,8 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 	private final String albumsFile;
 	private final String artistsFile;
 	private final String songsFile;
-	private final String playlistFile;
-	private final String productionFile;
+	private final String playlistsFile;
+	private final String productionsFile;
 	private final String audiosFile;
 	private final String picturesFile;
 	private final String picturesDirectory;
@@ -29,11 +29,11 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 		albumsFile = albumsFileName;
 		artistsFile = artistsFileName;
 		songsFile = songsFileName;
-		playlistFile = playlistsFileName;
+		playlistsFile = playlistsFileName;
 		picturesFile = picturesFileName;
 		picturesDirectory = picturesDirectoryName;
 		mp3Directory = filesMp3DirectoryName;
-		productionFile = productionsFileName;
+		productionsFile = productionsFileName;
 		audiosFile = audiosFileName;
 		playersFile = playersFileName;
 	}
@@ -56,10 +56,10 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				writer.write("1" + "\n");
 				writer.close();
 			}
-			path = Paths.get(productionFile);
+			path = Paths.get(productionsFile);
 			if (Files.notExists(path)) {
-				if (!(new File(productionFile).createNewFile())) throw new BusinessException("productionFile creation error");
-				FileWriter writer = new FileWriter(new File(productionFile));
+				if (!(new File(productionsFile).createNewFile())) throw new BusinessException("productionFile creation error");
+				FileWriter writer = new FileWriter(new File(productionsFile));
 				writer.write("1" + "\n");
 				writer.close();
 			}
@@ -70,10 +70,10 @@ public class FileSpaceMusicUnifyServiceImpl implements SPACEMusicUnifyService {
 				writer.write("1" + "\n");
 				writer.close();
 			}
-			path = Paths.get(playlistFile);
+			path = Paths.get(playlistsFile);
 			if (Files.notExists(path)) {
-				if (!(new File(playlistFile).createNewFile())) throw new BusinessException("playlistFile creation error");
-				FileWriter writer = new FileWriter(new File(playlistFile));
+				if (!(new File(playlistsFile).createNewFile())) throw new BusinessException("playlistsFile creation error");
+				FileWriter writer = new FileWriter(new File(playlistsFile));
 				writer.write("1" + "\n");
 				writer.close();
 			}

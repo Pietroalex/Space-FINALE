@@ -108,7 +108,7 @@ public class FileArtistServiceImpl implements ArtistService {
 
 			FileData fileData = Utility.readAllRows(artistsFile);
 			for(String[] columns: fileData.getRows()) {
-				if(columns[1].equals(artist.getName()) && !columns[0].equals(id.toString()) ) {
+				if(columns[1].equals(artist.getName()) && !columns[0].equals(id.toString())) {
 					throw new AlreadyExistingException("Modify Artist, Already Existing artist with this name");
 				}
 			}

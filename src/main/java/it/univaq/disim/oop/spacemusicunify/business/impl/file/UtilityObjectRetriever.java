@@ -164,14 +164,14 @@ public class UtilityObjectRetriever {
 		Set<Picture> pictures = new HashSet<>();
 		List<String> picturesSource = Utility.readArray(columns[4]);
 		for(String pictureId : picturesSource){
-			pictures.add( (Picture) UtilityObjectRetriever.findObjectById(pictureId, picturesFileName));
+			pictures.add((Picture) UtilityObjectRetriever.findObjectById(pictureId, picturesFileName));
 		}
 		artist.setPictures(pictures);
 		artist.setNationality(Nationality.valueOf(columns[5]));
 		Set<Artist> bandMembers = new HashSet<>();
 		List<String> bandMembersIds = Utility.readArray(columns[6]);
 		for(String artistId : bandMembersIds){
-			bandMembers.add( (Artist) UtilityObjectRetriever.findObjectById(artistId, artistsFileName));
+			bandMembers.add((Artist) UtilityObjectRetriever.findObjectById(artistId, artistsFileName));
 		}
 		artist.setBandMembers(bandMembers);
 		currentArtist = null;
@@ -183,7 +183,7 @@ public class UtilityObjectRetriever {
 		song.setId(Integer.parseInt(columns[0]));
 		song.setTitle(columns[1]);
 		currentSong = song;
-		song.setFileMp3((Audio)  UtilityObjectRetriever.findObjectById(columns[2], audiosFileName));
+		song.setFileMp3((Audio) UtilityObjectRetriever.findObjectById(columns[2], audiosFileName));
 		song.setLyrics(columns[3]);
 		if(currentAlbum == null) song.setAlbum((Album) UtilityObjectRetriever.findObjectById(columns[4], albumsFileName));
 		else song.setAlbum(currentAlbum);
@@ -198,7 +198,7 @@ public class UtilityObjectRetriever {
 		album.setTitle(columns[1]);
 		album.setGenre(Genre.valueOf(columns[2]));
 		currentAlbum = album;
-		album.setCover(((Picture)  UtilityObjectRetriever.findObjectById(columns[3], picturesFileName)));
+		album.setCover(((Picture) UtilityObjectRetriever.findObjectById(columns[3], picturesFileName)));
 		Set<Song> songSet = new HashSet<>();
 		for(String songs: Utility.readArray(columns[4])){
 			songSet.add((Song) UtilityObjectRetriever.findObjectById(songs, songsFileName));
@@ -242,8 +242,5 @@ public class UtilityObjectRetriever {
 			multimedia.setOwnership(currentArtist);
 		}
 		return multimedia;
-
 	}
-
 }
-

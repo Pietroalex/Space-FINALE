@@ -28,15 +28,14 @@ public class FileAlbumServiceImpl implements AlbumService {
 	
 	@Override
 	public void add(Album album) throws BusinessException {
+		
+		if (album.getTitle().contains("Singles") && album.getGenre() != Genre.singles)
+			throw new AlreadyExistingException("New Album, The title must not contain 'Singles'");
+		
 		try {
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] column: fileData.getRows()) {
-				if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-					throw new AlreadyExistingException("New Album, The title must not contain 'Singles'");
-				}
-				if (column[1].equals(album.getTitle()) ) {
-					throw new AlreadyExistingException("New Album, Already Existing album with this title");
-				}
+				if (column[1].equals(album.getTitle())) throw new AlreadyExistingException("New Album, Already Existing album with this title");
 			}
 		//scrivo il file album
 
@@ -101,17 +100,16 @@ public class FileAlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void modify(Integer id, String title, Genre genre, Picture tempPicture,  Set<Song> songs, LocalDate release, Album album) throws BusinessException {
+		
+		if (album.getTitle().contains("Singles") && album.getGenre() != Genre.singles)
+			throw new AlreadyExistingException("Modify Album, The title must not contain 'Singles'");
+		
 		String oldGenre = null;
 		try {
 
 			FileData fileData = Utility.readAllRows(albumsFile);
 			for(String[] columns: fileData.getRows()) {
-					if ( album.getTitle().contains("Singles") && album.getGenre() != Genre.singles){
-						throw new AlreadyExistingException("Modify Album, The title must not contain 'Singles'");
-					}
-					if (columns[1].equals(title) && !columns[0].equals(id.toString()) ){
-						throw new AlreadyExistingException("Modify Album, Already Existing album with this title");
-					}
+				if (columns[1].equals(title) && !columns[0].equals(id.toString())) throw new AlreadyExistingException("Modify Album, Already Existing album with this title");
 			}
 
 			int cont = 0;
@@ -205,16 +203,15 @@ public class FileAlbumServiceImpl implements AlbumService {
 	
 	@Override
 	public void add(Song song) throws BusinessException {
+		
+		if((song.getTitle().contains("DefaultSingles") && (song.getAlbum().getSongs() != null && song.getAlbum().getSongs().size() > 1)) || (song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles))
+			throw new AlreadyExistingException("New Song, The title must not contain 'DefaultSingles'");
+		
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] rows: fileData.getRows()) {
-				if ( song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
-					throw new AlreadyExistingException("New Song, The title must not contain 'DefaultSingles'");
-				}
-				if(rows[1].equals(song.getTitle())) {
-					throw new AlreadyExistingException("New Song, Already Existing song with this title");
-				}
+				if(rows[1].equals(song.getTitle())) throw new AlreadyExistingException("New Song, Already Existing song with this title");
 			}
 
 			song.setId(Integer.parseInt(String.valueOf(fileData.getCounter())));
@@ -282,17 +279,16 @@ public class FileAlbumServiceImpl implements AlbumService {
 	@Override
 	public void modify(Integer id, String title, Audio tempAudio,String lyrics,Album album,String length,Genre genre, Song song) throws BusinessException {
 
+		if((title.contains("DefaultSingles") && album.getSongs().size() > 1) || (title.contains("DefaultSingles") && album.getGenre() != Genre.singles))
+			throw new AlreadyExistingException("Modify Song, The title must not contain 'DefaultSingles'");
+		
 		boolean check = false;
 		try {
 
 			FileData fileData = Utility.readAllRows(songsFile);
 			for(String[] columns: fileData.getRows()) {
-				if(song.getTitle().contains("DefaultSingles") && song.getAlbum().getGenre() != Genre.singles){
-					throw new AlreadyExistingException("Modify Song, The title must not contain 'DefaultSingles'");
-				}
-				if(columns[1].equals(song.getTitle()) && !columns[0].equals(id.toString())) {
+				if(columns[1].equals(song.getTitle()) && !columns[0].equals(id.toString()))
 					throw new AlreadyExistingException("Modify Song, Already Existing song with this title");
-				}
 			}
 			int cont = 0;
 			for(String[] righe: fileData.getRows()) {

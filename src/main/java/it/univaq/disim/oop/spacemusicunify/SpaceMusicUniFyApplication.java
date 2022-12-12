@@ -16,8 +16,8 @@ public class SpaceMusicUniFyApplication extends Application {
 			SPACEMusicUnifyService.setAllDefaults();
 		} catch (BusinessException e){
 			ViewDispatcher.getInstance().renderError(e);
-	}
-			launch(args);
+		}
+		launch(args);
 	}
 
 	@Override

@@ -83,9 +83,6 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
         if(!check)throw new BusinessException("Object not found, This song's audio doesn't exist");
         else storedAudios.removeIf((Audio audioCheck) -> audioCheck.getId().intValue() == audio.getId().intValue() && Arrays.equals(audioCheck.getData(), audio.getData()));
     }
-
-
-
     @Override
     public void add(Picture picture) throws BusinessException {
         AlbumService albumService = SpacemusicunifyBusinessFactory.getInstance().getAlbumService();
@@ -93,7 +90,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
             for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
                 if(pictureCheck.getId() != null && Arrays.equals(pictureCheck.getData(), picture.getData())){
                     ((Artist) picture.getOwnership()).setId(null);
-                    throw new AlreadyExistingException("Duplicated picture for this artist");
+                    throw new AlreadyExistingException("New Artist, Duplicated picture for this artist");
                 }
             }
         } else {
@@ -105,24 +102,21 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                     if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                         if (album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
                             ((Album) picture.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("Already Existing album with this cover");
+                            throw new AlreadyExistingException("New Album, Already Existing album with this cover");
                         }
                     } else {
                         //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                         if (Arrays.equals(album.getCover().getData(), picture.getData())) {
                             ((Album) picture.getOwnership()).setId(null);
-                            throw new AlreadyExistingException("Already Existing album with this cover");
+                            throw new AlreadyExistingException("New Album, Already Existing album with this cover");
                         }
                     }
-
                 }
             }
         }
 
         picture.setId(idPictures++);
         storedPictures.add(picture);
-
-
     }
 
     @Override
@@ -132,7 +126,7 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
             for(Picture pictureCheck : ((Artist) picture.getOwnership()).getPictures()){
                 if(pictureCheck.getId() != null && Arrays.equals(pictureCheck.getData(), picture.getData())){
                     ((Artist) picture.getOwnership()).setId(null);
-                    throw new AlreadyExistingException("Duplicated picture for this artist");
+                    throw new AlreadyExistingException("Modify Artist, Duplicated picture for this artist");
                 }
             }
         } else {
@@ -143,14 +137,12 @@ public class RAMMultimediaServiceImpl implements MultimediaService {
                     //album "Inediti" di qualsiasi artista che ha genere "singoli" può avere la cover uguale a quelle di altri album "Inediti" e diversa invece rispetto a tutti gli altri album.
                     if(((Album) picture.getOwnership()).getGenre() == Genre.singles){
                         if(album.getGenre() != Genre.singles && Arrays.equals(album.getCover().getData(), picture.getData())) {
-
-                            throw new AlreadyExistingException("Already Existing album with this cover");
+                            throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
                         }
                     } else {
                         //album "nuovo" con genere diverso da "singoli" deve avere la cover diversa da quelle di tutti gli altri album, compresi "Inediti"
                         if(Arrays.equals(album.getCover().getData(), picture.getData())) {
-
-                            throw new AlreadyExistingException("Already Existing album with this cover");
+                            throw new AlreadyExistingException("Modify Album, Already Existing album with this cover");
                         }
                     }
 

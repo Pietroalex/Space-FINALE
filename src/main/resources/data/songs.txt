@@ -1,3 +1,4 @@
-3
+19
 1§DefaultSingles1§1§Lyrics§1§04:02§pop
 2§DefaultSingles2§2§Lyrics§2§04:02§pop
+11§New song§11§papapapa pappappa§1§10:00§disco
