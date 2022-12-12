@@ -25,7 +25,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -129,6 +128,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     		addAlbumToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
 
     			final Button addButton = new Button("Add to queue");
+    			addButton.setId("b3");
     			addButton.setCursor(Cursor.HAND);
     			addButton.setOnAction((ActionEvent event) -> {
                     //aggiungere la canzone alla coda di riproduzione dell'utente
@@ -148,6 +148,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     		addAlbumToPlaylist.setStyle("-fx-alignment: CENTER;");
     		addAlbumToPlaylist.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
     			final Button addButton = new Button("Add to playlist");
+    			addButton.setId("b3");
     			addButton.setCursor(Cursor.HAND);
     			addButton.setOnAction((ActionEvent event) -> {
     				addAlbumToPlaylist(param.getValue());

@@ -20,7 +20,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-         <Label layoutX="303.0" layoutY="93.0" text="Genre">
+         <Label layoutX="311.0" layoutY="93.0" text="Genre">
          <font>
             <Font size="17.0" />
          </font>
@@ -30,12 +30,12 @@
             <Font size="17.0" />
          </font>
       </Label>
-         <Label fx:id="genreAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="272.0" layoutY="116.0" prefHeight="21.0" prefWidth="118.0" text="Album genre">
+         <Label fx:id="genreAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="253.0" layoutY="116.0" prefHeight="21.0" prefWidth="161.0" text="Album genre">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-         <Label fx:id="releaseAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="475.0" layoutY="116.0" prefHeight="21.0" prefWidth="118.0" text="Album release">
+         <Label fx:id="releaseAlbum" alignment="CENTER" contentDisplay="CENTER" layoutX="464.0" layoutY="116.0" prefHeight="21.0" prefWidth="118.0" text="Album release">
          <font>
             <Font size="14.0" />
          </font>
@@ -80,10 +80,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <AnchorPane fx:id="artistsPane" layoutX="731.0" layoutY="10.0" prefHeight="143.0" prefWidth="148.0" visible="false">
+      <AnchorPane fx:id="artistsPane" layoutX="675.0" layoutY="10.0" prefHeight="127.0" prefWidth="205.0">
          <children>
-            <Label layoutX="1.0" layoutY="6.0" prefHeight="17.0" prefWidth="147.0" text="Made By:" />
-            <ListView fx:id="artistsDetailListView" layoutX="1.0" layoutY="21.0" prefHeight="122.0" prefWidth="147.0">
+            <Label layoutX="2.0" prefHeight="17.0" prefWidth="147.0" text="Made By:" />
+            <ListView fx:id="artistsDetailListView" layoutX="1.0" layoutY="23.0" prefHeight="102.0" prefWidth="204.0">
                <placeholder>
                   <Label text="Single Artist" />
                </placeholder>

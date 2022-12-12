@@ -39,7 +39,7 @@
             <Font size="17.0" />
          </font>
       </Button>
-      <DatePicker fx:id="releaseField" layoutX="469.0" layoutY="123.0" prefHeight="27.0" prefWidth="141.0" promptText="Relaise Date" />
+      <DatePicker fx:id="releaseField" layoutX="469.0" layoutY="123.0" prefHeight="27.0" prefWidth="141.0" promptText="Relase Date" />
       <TableView fx:id="modifyalbumsongs" layoutY="205.0" prefHeight="172.0" prefWidth="910.0">
         <placeholder>
         <Label text="album is empty" />
@@ -100,7 +100,7 @@
       </Button>
       <TableView fx:id="artistTable" layoutX="24.0" layoutY="205.0" prefHeight="172.0" prefWidth="536.0" visible="false">
       	<placeholder>
-      		<Label text="No artist available for collaboration"/>
+      		<Label text="No artist available for collaboration" />
       	</placeholder>
         <columns>
           <TableColumn fx:id="artist_id" prefWidth="75.0" text="ID" />

@@ -68,9 +68,9 @@
             <Font size="15.0" />
          </font>
       </TextArea>
-      <AnchorPane fx:id="artistsPane" layoutX="748.0" layoutY="74.0" prefHeight="143.0" prefWidth="148.0" visible="false">
+      <AnchorPane fx:id="artistsPane" layoutX="748.0" layoutY="74.0" prefHeight="143.0" prefWidth="148.0" stylesheets="@../../controllerStyle.css" visible="false">
          <children>
-            <Label fx:id="artistLabel" layoutX="1.0" layoutY="6.0" prefHeight="17.0" prefWidth="147.0" text="Band composed of :" visible="false" />
+            <Label fx:id="artistLabel" layoutX="1.0" prefHeight="17.0" prefWidth="147.0" text="Band composed of :" visible="false" />
             <ListView fx:id="artistsDetailListView" layoutX="1.0" layoutY="21.0" prefHeight="122.0" prefWidth="147.0">
                <placeholder>
                   <Label text="Single Artist" />

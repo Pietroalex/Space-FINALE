@@ -203,6 +203,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                         HBox hBox = new HBox();
                         Label aName = new Label(artistCtrl.getName());
                         Button del = new Button("Delete");
+                        //del.setId("b1");
+                        del.setCursor(Cursor.HAND);
                         del.setOnAction((action) -> {
                             if(addMembers == null) addMembers = new HashSet<>(artist.getBandMembers());
                             addMembers.remove(artistCtrl);
@@ -393,6 +395,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     HBox hBox = new HBox();
                     Label aName = new Label(artistCtrl.getName());
                     Button del = new Button("Delete");
+                    del.setId("b2");
+                    del.setCursor(Cursor.HAND);
                     del.setOnAction((action) -> {
                         addMembers.remove(artistCtrl);
                         artistsModifyListView.getItems().remove(hBox);
@@ -468,7 +472,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     }
 
     private void loadModifyImages(Set<Picture> pictures) {
-        if (!(pictures.isEmpty()) ) {
+        if (!(pictures.isEmpty())) {
             for (Picture img : pictures) {
 
                 ImageView imgs;
@@ -487,15 +491,16 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
             ImageView imgAdd;
             try {
                 imgAdd = new ImageView(new Image(new FileInputStream("src" + File.separator + "main" + File.separator + "resources" + File.separator + "data" + File.separator + "RAMfiles" + File.separator + "addp.png")));
+	            imgAdd.setFitHeight(120);
+	            imgAdd.setFitWidth(120);
+	            imgAdd.setOnMouseClicked(event -> {
+	                this.focusAdd();
+	            });
+	            modifyImages.getChildren().add(imgAdd);
             } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+                dispatcher.renderError(e);
             }
-            imgAdd.setFitHeight(120);
-            imgAdd.setFitWidth(120);
-            imgAdd.setOnMouseClicked(event -> {
-                this.focusAdd();
-            });
-            modifyImages.getChildren().add(imgAdd);
+
         } else {
             ImageView imgAdd;
             try {
@@ -555,8 +560,8 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
     private void focusImage(Picture image){
         imgUrl = image;
         cancelbox.setVisible(true);
-        System.out.println(modifyImages.getChildren().size());
         if(modifyImages.getChildren().size() < 3) delImage.setDisable(true);
+        else delImage.setDisable(false);
     }
 
     private void focusAdd(){

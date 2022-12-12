@@ -127,13 +127,13 @@
       </Label>
       <AnchorPane fx:id="artistsModifyPane" layoutX="693.0" layoutY="114.0" prefHeight="122.0" prefWidth="208.0" visible="false">
          <children>
-            <Label layoutY="32.0" text="Band composed of :" />
-            <Button id="b1" fx:id="addArtists" layoutX="106.0" layoutY="5.0" mnemonicParsing="false" onAction="#showArtistsSelection" prefHeight="28.0" prefWidth="91.0" text="Chose artists">
+            <Label layoutX="2.0" layoutY="5.0" prefHeight="21.0" prefWidth="137.0" text="Band composed of :" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="5.0" />
+            <Button fx:id="addArtists" layoutX="100.0" layoutY="2.0" mnemonicParsing="false" onAction="#showArtistsSelection" prefHeight="31.0" prefWidth="114.0" style="-fx-background-color: transparent;" text="Chose artists" textFill="#eb0ecd" underline="true" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="2.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <ListView fx:id="artistsModifyListView" layoutY="51.0" prefHeight="71.0" prefWidth="187.0">
+            <ListView fx:id="artistsModifyListView" layoutY="30.0" prefHeight="84.0" prefWidth="208.0">
             	<placeholder>
               	<Label text="Single Artist" />
           	</placeholder>
