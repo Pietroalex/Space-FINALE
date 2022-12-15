@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageArtistDetailController">
    <children>
       <TextField id="text" fx:id="nameField" alignment="CENTER" layoutX="115.0" layoutY="79.0" prefHeight="34.0" prefWidth="249.0" promptText="Name">
          <font>
@@ -133,7 +133,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <ListView fx:id="artistsModifyListView" layoutY="30.0" prefHeight="84.0" prefWidth="208.0">
+            <ListView id="lista" fx:id="artistsModifyListView" layoutY="30.0" prefHeight="84.0" prefWidth="208.0">
             	<placeholder>
               	<Label text="Single Artist" />
           	</placeholder>

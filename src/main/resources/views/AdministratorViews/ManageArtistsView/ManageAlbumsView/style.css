@@ -1,3 +1,6 @@
+#lista{
+-fx-background-color: linear-gradient(to bottom right, #45b5fb 0%, #e366d0 100%);
+}
 #b1{
 -fx-background-color:transparent;
 -fx-border-color: #e366d0;

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
+<AnchorPane fx:id="masterPane" prefHeight="440.0" prefWidth="910.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.ManageAlbumDetailController">
    <children>
          <Button id="b1" fx:id="modify" layoutX="23.0" layoutY="387.0" mnemonicParsing="false" onAction="#showModify" text="Modify Album">
          <cursor>
@@ -83,7 +83,7 @@
       <AnchorPane fx:id="artistsPane" layoutX="675.0" layoutY="10.0" prefHeight="127.0" prefWidth="205.0">
          <children>
             <Label layoutX="2.0" prefHeight="17.0" prefWidth="147.0" text="Made By:" />
-            <ListView fx:id="artistsDetailListView" layoutX="1.0" layoutY="23.0" prefHeight="102.0" prefWidth="204.0">
+            <ListView id="lista" fx:id="artistsDetailListView" layoutX="1.0" layoutY="23.0" prefHeight="102.0" prefWidth="204.0">
                <placeholder>
                   <Label text="Single Artist" />
                </placeholder>
