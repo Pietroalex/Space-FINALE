@@ -157,6 +157,7 @@ public class ManageSongDetailController implements Initializable, DataInitializa
                 break;
                 
             case user:
+            	back.setId("b3");
                 title.setText(song.getTitle());
                 length.setText(song.getLength());
                 lyrics.setText(song.getLyrics());

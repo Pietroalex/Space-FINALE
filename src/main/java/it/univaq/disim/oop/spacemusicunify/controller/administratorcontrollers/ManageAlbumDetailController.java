@@ -464,6 +464,8 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				addToQueue.setVisible(true);
 				addSongToQueue.setVisible(true);
 				newSong.setVisible(false);
+				addToPlaylist.setId("b3");
+				addToQueue.setId("b3");
 				id.setCellValueFactory(new PropertyValueFactory<>("id"));
 				title.setCellValueFactory(new PropertyValueFactory<>("title"));
 				length.setCellValueFactory(new PropertyValueFactory<>("length"));
@@ -497,6 +499,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
+					modify.setId("b3");
 					modify.setCursor(Cursor.HAND);
 					modify.setOnAction((ActionEvent event) -> {
 						if(dispatcher.getSituation() == ViewSituations.user){
@@ -512,6 +515,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				addSongToQueue.setStyle("-fx-alignment: CENTER;");
 				addSongToQueue.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button addButton = new Button("Add to queue");
+					addButton.setId("b3");
 					addButton.setCursor(Cursor.HAND);
 					addButton.setOnAction((ActionEvent event) -> {
 						//aggiungere la canzone alla coda di riproduzione dell'utente

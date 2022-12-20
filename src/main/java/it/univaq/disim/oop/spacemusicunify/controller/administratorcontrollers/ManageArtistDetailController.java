@@ -265,6 +265,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 break;
 
             case user:
+            	albums.setId("b3");
                 loadImages(artist.getPictures());
                 ObservableList<Artist> bandMembersData2 = FXCollections.observableArrayList();
                 artistsPane.setVisible(true);
