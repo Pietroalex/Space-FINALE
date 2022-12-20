@@ -175,7 +175,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				detailSong.setStyle("-fx-alignment: CENTER;");
 				detailSong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button modify = new Button("Detail");
-					modify.setId("b3");
+					modify.setId("b1");
 					modify.setCursor(Cursor.HAND);
 					modify.setOnAction((ActionEvent event) -> {
 						dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/ManageSongsView/song_detail", param.getValue());
@@ -217,6 +217,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				managesong.setStyle("-fx-alignment: CENTER;");
 				managesong.setCellValueFactory((TableColumn.CellDataFeatures<Song, Button> param) -> {
 					final Button deletesong = new Button("Delete");
+					deletesong.setId("b1");
 					deletesong.setCursor(Cursor.HAND);
 					if(album.getSongs().size() == 1){
 						deletesong.setDisable(true);
@@ -332,6 +333,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					artist_name.setCellValueFactory(new PropertyValueFactory<>("name"));
 					artist_add.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 						final Button add = new Button("Add");
+						add.setId("b1");
 						add.setCursor(Cursor.HAND);
 						add.setOnAction((ActionEvent event) -> {
 							if(!(param.getValue().getBandMembers().isEmpty())){
@@ -377,6 +379,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 					selectedArtistColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 					selectedArtistDeleteColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 						final Button delete = new Button("Delete");
+						delete.setId("b1");
 						delete.setCursor(Cursor.HAND);
 						Artist selected = param.getValue();
 

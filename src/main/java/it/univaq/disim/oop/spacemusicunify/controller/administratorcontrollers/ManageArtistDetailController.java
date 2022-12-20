@@ -200,7 +200,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                     artistsModifyPane.setVisible(true);
                     for (Artist artistCtrl : artist.getBandMembers()) {
 
-                        HBox hBox = new HBox();
+                        HBox hBox = new HBox(20);
                         Label aName = new Label(artistCtrl.getName());
                         Button del = new Button("Delete");
                         del.setId("b1");
@@ -392,7 +392,7 @@ public class ManageArtistDetailController implements Initializable, DataInitiali
                 add.setOnAction((ActionEvent event1) -> {
                     if(addMembers == null) addMembers = new HashSet<>(artist.getBandMembers());
                     addMembers.add(artistCtrl);
-                    HBox hBox = new HBox();
+                    HBox hBox = new HBox(20);
                     Label aName = new Label(artistCtrl.getName());
                     Button del = new Button("Delete");
                     del.setId("b1");

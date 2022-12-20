@@ -67,7 +67,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 		viewmodify.setStyle("-fx-alignment: CENTER;");
 		viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 			final Button modify = new Button("Detail");
-			modify.setId("b3");
+			modify.setId("b1");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
 				dispatcher.setSituation(ViewSituations.detail);
@@ -78,7 +78,7 @@ public class ManageArtistsController implements Initializable, DataInitializable
 		viewalbums.setStyle("-fx-alignment: CENTER;");
 		viewalbums.setCellValueFactory((TableColumn.CellDataFeatures<Artist, Button> param) -> {
 			final Button modify = new Button("Albums");
-			modify.setId("b3");
+			modify.setId("b1");
 			modify.setCursor(Cursor.HAND);
 			modify.setOnAction((ActionEvent event) -> {
 				Set<Artist> artists = new HashSet<>();
