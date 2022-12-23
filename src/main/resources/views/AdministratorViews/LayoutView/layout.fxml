@@ -24,7 +24,7 @@
             </Label>
             <ImageView fx:id="logoApp" fitHeight="79.0" fitWidth="78.0" layoutX="315.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="15.0" AnchorPane.topAnchor="16.0">
                <image>
-                  <Image url="@../HomeView/logo.png" />
+                  <Image url="@../../HomeView/logo.png" />
                </image></ImageView>
             <Button id="b" fx:id="logout" layoutX="40.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#logout" prefHeight="35.0" prefWidth="119.0" text="LogOut" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="949.0" AnchorPane.topAnchor="40.0">
                <cursor>

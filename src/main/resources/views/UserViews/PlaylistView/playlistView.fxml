@@ -33,7 +33,7 @@
          <graphic>
             <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../HomeView/icon/play-button.png" />
+                  <Image url="@../LayoutView/icon/play-button.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />

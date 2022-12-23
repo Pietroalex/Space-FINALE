@@ -123,7 +123,7 @@ public class PlaylistPaneController implements Initializable, DataInitializable<
             } catch (BusinessException e) {
                 dispatcher.renderError(e);
             }
-            dispatcher.renderView("UserViews/HomeView/playlistPane", this.user);
+            dispatcher.renderView("UserViews/LayoutView/playlistPane", this.user);
             
             if(!error.isVisible()) popupwindow.close();
         });

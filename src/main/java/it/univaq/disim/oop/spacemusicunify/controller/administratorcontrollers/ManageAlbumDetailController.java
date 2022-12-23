@@ -740,7 +740,7 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 				}
 				try {
 					userService.modify(songList, param.getValue());
-					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
+					dispatcher.renderView("UserViews/LayoutView/playlistPane", param.getValue().getUser());
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
 				}

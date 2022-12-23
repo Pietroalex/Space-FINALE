@@ -440,7 +440,7 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 				try {
 					userService.modify(list, param.getValue());
 					if("playlist".equals(dispatcher.getLayout().getCenter().getId() )) dispatcher.renderView("UserViews/PlaylistView/playlistView", param.getValue());
-					dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
+					dispatcher.renderView("UserViews/LayoutView/playlistPane", param.getValue().getUser());
 
 				} catch (BusinessException e) {
 					dispatcher.renderError(e);
@@ -479,8 +479,8 @@ public class PlayerPaneController implements Initializable, DataInitializable<Us
 		popupwindow.showAndWait();
     }
 	@FXML
-    public void showSongInfo(ActionEvent event) {
-		if((!spacemusicunifyPlayer.getQueue().isEmpty())) {
+    public void showSongInfo(MouseEvent event) {
+		if(!(spacemusicunifyPlayer.getQueue().isEmpty())) {
 			Song song = spacemusicunifyPlayer.getQueue().get(spacemusicunifyPlayer.getCurrentSong());
 			if (song != null) {
 				dispatcher.setSituation(ViewSituations.user);

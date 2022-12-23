@@ -72,7 +72,7 @@
                      <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0">
                            <image>
-                              <Image url="@../HomeView/icon/cancel.png" />
+                              <Image url="@../LayoutView/icon/cancel.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -84,7 +84,7 @@
                      <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../HomeView/icon/delete.png" />
+                              <Image url="@../LayoutView/icon/delete.png" />
                            </image>
                         </ImageView>
                      </graphic>

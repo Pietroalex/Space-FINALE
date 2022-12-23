@@ -255,7 +255,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 			addButton.setCursor(Cursor.HAND);
 			addButton.setOnAction((ActionEvent event) -> {
 				showPopupSelectPlaylist(param.getValue());
-				dispatcher.renderView("UserViews/HomeView/playlistPane", user);
+				dispatcher.renderView("UserViews/LayoutView/playlistPane", user);
 			});
 			return new SimpleObjectProperty<Button>(addButton);
 		});
@@ -366,7 +366,7 @@ public class SearchController implements Initializable, DataInitializable<User>{
 
 			try {
 				userService.modify(list, param.getValue());
-				dispatcher.renderView("UserViews/HomeView/playlistPane", param.getValue().getUser());
+				dispatcher.renderView("UserViews/LayoutView/playlistPane", param.getValue().getUser());
 
 			} catch (BusinessException e) {
 				dispatcher.renderError(e);

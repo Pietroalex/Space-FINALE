@@ -210,7 +210,7 @@ public class PlaylistController implements Initializable, DataInitializable<Play
 		} catch (BusinessException e) {
 			dispatcher.renderError(e);
 		}
-		dispatcher.renderView("UserViews/HomeView/home", RunTimeService.getCurrentUser());
-		dispatcher.renderView("UserViews/HomeView/playlistPane", RunTimeService.getCurrentUser());
+		dispatcher.renderView("HomeView/home", RunTimeService.getCurrentUser());
+		dispatcher.renderView("UserViews/LayoutView/playlistPane", RunTimeService.getCurrentUser());
 	}
 }

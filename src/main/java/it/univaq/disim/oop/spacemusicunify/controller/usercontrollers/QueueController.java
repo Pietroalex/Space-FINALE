@@ -97,7 +97,7 @@ public class QueueController implements Initializable, DataInitializable<User> {
 									playerService.updateCurrentSong(spacemusicunifyPlayer, songTableRow.getIndex());
 									playerService.updateDuration(spacemusicunifyPlayer, Duration.ZERO);
 				
-									dispatcher.renderView("UserViews/HomeView/playerPane", RunTimeService.getCurrentUser());
+									dispatcher.renderView("UserViews/LayoutView/playerPane", RunTimeService.getCurrentUser());
 									
 								} catch (BusinessException e) {
 									dispatcher.renderError(e);

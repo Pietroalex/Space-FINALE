@@ -38,7 +38,7 @@ public class ViewDispatcher {
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setTitle("Space Music UNIFY");
-		stage.getIcons().add(new Image("/views/AdministratorViews/LayoutView/icon/logo.png"));
+		stage.getIcons().add(new Image("/views/HomeView/logo.png"));
 		stage.show();
 	}
 
