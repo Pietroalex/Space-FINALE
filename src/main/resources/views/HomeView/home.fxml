@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="homeBox" prefHeight="55.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.administratorcontrollers.HomeController">
+<VBox fx:id="homeBox" prefHeight="55.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.spacemusicunify.controller.HomeController">
    <children>
-      <Label fx:id="entryLabel" prefHeight="51.0" prefWidth="599.0" text="Benvenuto">
+      <Label fx:id="welcomeLabel" prefHeight="51.0" prefWidth="599.0" text="Welcome">
          <font>
             <Font size="18.0" />
          </font>

@@ -50,7 +50,7 @@ import java.util.*;
 
 public class PlayerPaneController implements Initializable, DataInitializable<User>{
     protected static final Duration Scarto = Duration.millis(60);
-	private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "HomeView" + File.separator + "icon" + File.separator;
+	private static final String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "views" + File.separator + "UserViews" + File.separator + "LayoutView" + File.separator + "icon" + File.separator;
 	private static final String volumeEnabled = path + "volume-up.png";
 	private static final String volumeDisabled = path + "mute.png";
 	private final ViewDispatcher dispatcher;

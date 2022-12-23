@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 public class LayoutController implements Initializable, DataInitializable<Administrator> {
 	private static final String Folder = "AdministratorViews/";
 	private Administrator admin;
-    private static final MenuElement MENU_HOME = new MenuElement("Home", Folder + "HomeView/home");
+    private static final MenuElement MENU_HOME = new MenuElement("Home", "HomeView/home");
     private static final MenuElement[] MENU_ADMIN = {
             new MenuElement("Manage Artists", Folder + "ManageArtistsView/manage_artists"),
             new MenuElement("Manage Users", Folder + "ManageUsersView/manage_users"),

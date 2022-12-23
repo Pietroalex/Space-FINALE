@@ -44,8 +44,8 @@ public class LayoutController implements DataInitializable<User> {
 		spacemusicunifyPlayer = RunTimeService.getPlayer();
 
 		this.user = user;
-		dispatcher.renderView("UserViews/HomeView/playerPane", user);
-		dispatcher.renderView("UserViews/HomeView/playlistPane", user);
+		dispatcher.renderView("UserViews/LayoutView/playerPane", user);
+		dispatcher.renderView("UserViews/LayoutView/playlistPane", user);
 
 		
 	}
@@ -73,7 +73,6 @@ public class LayoutController implements DataInitializable<User> {
 		VBox container = new VBox();
 		VBox vBox = new VBox();
 		for(Genre genre : Genre.values()) {
-			System.out.println(genre);
 			if(genre != Genre.singles) {
 				Button item = new Button(genre.toString());
 				item.setId("item");

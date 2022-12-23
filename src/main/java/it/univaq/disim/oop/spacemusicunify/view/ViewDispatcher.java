@@ -38,7 +38,7 @@ public class ViewDispatcher {
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setTitle("Space Music UNIFY");
-		stage.getIcons().add(new Image("/views/AdministratorViews/HomeView/icon/logo.png"));
+		stage.getIcons().add(new Image("/views/AdministratorViews/LayoutView/icon/logo.png"));
 		stage.show();
 	}
 
@@ -58,37 +58,28 @@ public class ViewDispatcher {
 	}
 
 	
-	public void loggedIn(GeneralUser utenteGenerico) throws ViewException {
+	public void loggedIn(GeneralUser generalUser) throws ViewException {
 		//definire se caricare la vista utente o amministratore
-		
-		//vista utente
-		if(utenteGenerico instanceof User) {
-			try{
-				View<User> layoutView = loadView("UserViews/HomeView/layout");
+		try{
+			
+			if(generalUser instanceof User) {
+				//vista utente
+				View<User> layoutView = loadView("UserViews/LayoutView/layout");
 				layout = (BorderPane) layoutView.getView();
 				DataInitializable<User> layoutController = layoutView.getController();
-				layoutController.initializeData((User) utenteGenerico);
-
-
-				renderView("UserViews/HomeView/home",(User) utenteGenerico);
-				Scene scene = new Scene(layout);
-				stage.setScene(scene);
-			} catch (ViewException e) {
-				renderError(e);
+				layoutController.initializeData((User) generalUser);
+			} else {
+				//vista amministratore	
+				View<Administrator> layoutView = loadView("AdministratorViews/LayoutView/layout");
+				DataInitializable<Administrator> layoutController = layoutView.getController();
+				layoutController.initializeData((Administrator) generalUser);
+				layout = (BorderPane) layoutView.getView();
 			}
-		} else {
-				try{
-					View<Administrator> layoutView = loadView("AdministratorViews/HomeView/layout");
-					DataInitializable<Administrator> layoutController = layoutView.getController();
-					layoutController.initializeData((Administrator) utenteGenerico);
-
-					layout = (BorderPane) layoutView.getView();
-					renderView("AdministratorViews/HomeView/home",(Administrator) utenteGenerico);
-					Scene scene = new Scene(layout);
-					stage.setScene(scene);
-				} catch (ViewException e) {
-					renderError(e);
-				}
+			renderView("HomeView/home", generalUser);
+			Scene scene = new Scene(layout);
+			stage.setScene(scene);
+		} catch (ViewException e) {
+			renderError(e);
 		}
 	}
 	public <T> void renderView(String viewName, T data) {
@@ -97,13 +88,12 @@ public class ViewDispatcher {
 			DataInitializable<T> controller = view.getController();
 			controller.initializeData(data);
 			String[] str = viewName.split("/");
-
 			switch (str[str.length-2]+"/"+str[str.length-1]){
-				case "HomeView/playerPane":
+				case "LayoutView/playerPane":
 					layout.setBottom(view.getView());
 					break;
 
-				case "HomeView/playlistPane":
+				case "LayoutView/playlistPane":
 					layout.setLeft(view.getView());
 					break;
 
