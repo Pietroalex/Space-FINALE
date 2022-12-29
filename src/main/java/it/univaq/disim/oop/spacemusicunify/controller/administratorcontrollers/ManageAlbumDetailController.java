@@ -691,8 +691,6 @@ public class ManageAlbumDetailController implements Initializable, DataInitializ
 		try{
 			if (album.getId() != null) {
 				albumService.delete(album);
-			}else{
-				System.out.println("Album not found");
 			}
 			dispatcher.renderView("AdministratorViews/ManageArtistsView/ManageAlbumsView/manage_albums", artist);
 

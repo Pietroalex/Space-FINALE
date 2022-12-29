@@ -178,7 +178,8 @@ public class RAMAlbumServiceImpl implements AlbumService {
 				for(Production production : productionService.getAllProductions()){
 					if(production.getAlbum().getId().intValue() == album.getId().intValue()) productionService.delete(production);
 				}
-				for(Song song : album.getSongs()){
+				Set<Song> songs = new HashSet<>(album.getSongs());
+				for(Song song : songs){
 					delete(song);
 				}
 				multimediaService.delete(album.getCover());

@@ -55,7 +55,8 @@ public class RAMUserServiceImpl implements UserService {
 	public void delete(User user) throws BusinessException {
 		boolean check = false;
 		try {
-			for (User userCheck : getAllUsers()) {
+			Set<User> allUsers = new HashSet<>(getAllUsers());
+			for (User userCheck : allUsers) {
 				if (userCheck.getId().intValue() == user.getId().intValue()) {
 					check = true;
 
@@ -64,13 +65,13 @@ public class RAMUserServiceImpl implements UserService {
 						delete(playlist);
 					}
 					SpacemusicunifyBusinessFactory.getInstance().getPlayerService().delete(user);
-
+					storedUsers.removeIf((User storedUser) -> storedUser.getId().intValue() == user.getId().intValue());
 					break;
 				}
 			}
 
 		} catch (BusinessException e) {
-		ViewDispatcher.getInstance().renderError(e);
+			ViewDispatcher.getInstance().renderError(e);
 		}
 		if(!check) throw new BusinessException("Object not found, This user doesn't exist");
 	}
