@@ -98,7 +98,11 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         viewmodify.setStyle("-fx-alignment: CENTER;");
         viewmodify.setCellValueFactory((TableColumn.CellDataFeatures<Album, Button> param) -> {
             final Button modify = new Button("Detail");
-            modify.setId("b1");
+            if (dispatcher.getSituation() == ViewSituations.user) {
+                modify.setId("b3");
+            } else {
+            	modify.setId("b1");
+            }
             modify.setCursor(Cursor.HAND);
             modify.setOnAction((ActionEvent event) -> {
                 if (dispatcher.getSituation() == ViewSituations.user) {
@@ -114,6 +118,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
         });
 
         if (dispatcher.getSituation() == ViewSituations.user){
+        	System.out.println("ciaoooooo");
             page.setPrefHeight(440);
             albumList.setPrefHeight(340);
             PlayerService playerService = SpacemusicunifyBusinessFactory.getInstance().getPlayerService();
@@ -157,6 +162,7 @@ public class ManageAlbumsController implements Initializable, DataInitializable<
     		});
         }
     }
+    
     @Override
     public void initializeData(Artist artist) {
         this.artist = artist;
